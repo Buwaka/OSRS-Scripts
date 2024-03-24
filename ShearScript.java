@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 
-@ScriptManifest(name = "ShearScript", description = "My script description!", author = "Developer Name",
+@ScriptManifest(name = "ShearScript", description = "Lumbridge Sheep shearing script", author = "Semanresu",
         version = 1.0, category = Category.CRAFTING, image = "")
 public class ShearScript extends AbstractScript{
 
@@ -103,86 +103,17 @@ public class ShearScript extends AbstractScript{
     Tile SheepLocationRTile;
     Tile BankLocationRTile;
 
+    Thread Ranomizer;
     @Override
-    public void onStart(String... params) {
-        super.onStart(params);
-        Logger.log(MouseSettings.getMouseTiming());
-        Logger.log(MouseSettings.getSpeed());
-        MouseSettings.setSpeed(1);
-        Walking.toggleNoClickWalk(true);
-        RandomizeTile();
+    public void onStart() {
+        super.onStart();
+        Ranomizer = OSRSUtilities.StartRandomizerThread();
     }
 
     Tile LastDestination = null;
     LocalPath<Tile> Path = null;
 
-    public void WalkTo(Tile Destination)
-    {
-        if(LastDestination == null || LastDestination != Destination || Path == null)
-        {
-            Path = LocalPathFinder.getLocalPathFinder().calculate(Players.getLocal().getTile(), Destination);
-            LastDestination = Destination;
-            Logger.log(Path);
 
-            if(Path == null || Path.isEmpty())
-            {
-                return ;
-            }
-        }
-
-
-        if(!Players.getLocal().isMoving())
-        {
-            Tile Next = Path.next();
-            Tile NextNext =  Path.next(1);
-            Logger.log("Next tile: " + Next);
-            Logger.log("PlayerTile: "+ Players.getLocal().getTile());
-            if(Players.getLocal().getTile().equals(Next))
-            {
-                Logger.log("Walking");
-                Walking.walk(Destination);
-                Sleep.sleep(rand.nextInt(2000) + 1000);
-            }
-            else if (Next != null && Next.canReach())
-            {
-                Logger.log("Clicking");
-                Logger.log(Next.distance(NextNext));
-                if(Map.isTileOnScreen(Next) && Math.abs(Next.distance(NextNext)) > 1.0)
-                {
-
-                    Point Center = Map.tileToScreen(Next);
-                    Center.translate(rand.nextInt(5) - 3, rand.nextInt(5) - 3);
-                    if(!Mouse.click(Center))
-                    {
-                        Center = Map.tileToScreen(Next);
-                        Mouse.click(Center);
-                    }
-                }
-                else
-                {
-                    Point Center = Map.tileToMiniMap(Next);
-                    if (Center.x == 0 && Center.y == 0)
-                    {
-                        // shouldn't happen
-                        return;
-                    }
-                    else
-                    {
-                        Center.translate(rand.nextInt(5) - 3, rand.nextInt(5) - 3);
-                        Walking.clickTileOnMinimap(Next);
-                    }
-                }
-
-                Sleep.sleep(rand.nextInt(2000) + 500);
-            }
-            else
-            {
-                Logger.log("Last resort walking");
-                Walking.walk(Destination);
-                Sleep.sleep(rand.nextInt(2000) + 1000);
-            }
-        }
-    }
 
     public void RandomizeTile()
     {
@@ -220,7 +151,7 @@ public class ShearScript extends AbstractScript{
                 }
                 else
                 {
-                    WalkTo(SheepLocationRTile);
+                    OSRSUtilities.WalkTo(SheepLocationRTile);
 
                 }
             }
@@ -233,7 +164,7 @@ public class ShearScript extends AbstractScript{
                     Camera.rotateToYaw(Camera.getYaw() + 450 % 2000);
                     Sheep = GetClosestSheep();
                     Logger.log(Sheep);
-                    WalkTo(SheepLocationRTile);
+                    OSRSUtilities.WalkTo(SheepLocationRTile);
                     Sleep.sleep(rand.nextInt(3000) + 500);
                 }
 
@@ -261,12 +192,12 @@ public class ShearScript extends AbstractScript{
                     }
                     else
                     {
-                        WalkTo(BankLocationRTile);
+                        OSRSUtilities.WalkTo(BankLocationRTile);
                     }
                 }
                 else
                 {
-                    WalkTo(BankLocationRTile);
+                    OSRSUtilities.WalkTo(BankLocationRTile);
                 }
             }
             case Banking -> {

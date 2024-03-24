@@ -1,16 +1,11 @@
 import org.dreambot.api.input.Keyboard;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.input.event.impl.keyboard.awt.Key;
-import org.dreambot.api.input.mouse.destination.impl.shape.AreaDestination;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.interactive.Players;
-import org.dreambot.api.methods.login.LoginStage;
-import org.dreambot.api.methods.map.Map;
-import org.dreambot.api.methods.tabs.Tab;
-import org.dreambot.api.methods.tabs.Tabs;
 import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.Category;
@@ -18,22 +13,17 @@ import org.dreambot.api.script.ScriptManager;
 import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
-import org.dreambot.api.utilities.InventoryMonitor;
 import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
-import org.dreambot.api.utilities.Timer;
-import org.dreambot.api.wrappers.interactive.Entity;
 import org.dreambot.api.wrappers.interactive.GameObject;
-import org.dreambot.api.wrappers.interactive.Player;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 
-@ScriptManifest(name = "WoolScript", description = "My script description!", author = "Developer Name",
+@ScriptManifest(name = "SpinningScript", description = "Lumbridge Spinning script", author = "Semanresu",
         version = 1.0, category = Category.CRAFTING, image = "")
-public class WoolScript extends AbstractScript {
+public class SpinningScript extends AbstractScript {
 
     public enum State
     {
@@ -64,20 +54,15 @@ public class WoolScript extends AbstractScript {
     final String StairUpAction = "Climb-up";
     final String StairDownAction = "Climb-down";
 
-    final long InteractionTimerMax = 5000;
-
     // vars
     State CurrentState = State.WalkingToSpin;
-    boolean InteractionInProgress = false;
     Random rand = new Random();
-    float TimeToRecheck = 0;
-    Timer InteractionTimer = new Timer();
 
-    Thread WaitThread;
-
+    Thread Ranomizer;
     @Override
-    public void onStart(String... params) {
-        super.onStart(params);
+    public void onStart() {
+        super.onStart();
+        Ranomizer = OSRSUtilities.StartRandomizerThread();
     }
 
     public boolean IsInsideSpinningArea()
