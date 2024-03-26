@@ -1,4 +1,6 @@
+import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
+import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.map.Tile;
@@ -10,6 +12,7 @@ import org.dreambot.api.wrappers.interactive.Entity;
 import org.dreambot.api.wrappers.interactive.GameObject;
 import org.dreambot.api.wrappers.interactive.NPC;
 
+import java.awt.*;
 import java.util.AbstractMap;
 
 
@@ -35,15 +38,19 @@ public class ShrimpBoyleScript extends AbstractScript {
     final Tile FishLocation = new Tile(3086, 3230);
 
     final int ShrimpID = 317;
+    final int AnchoviesID = 321;
     final int NetID = 303;
     final int CookAction = 1;
+
+    final boolean CookAncho = true;
+    final boolean CookShrimp = false;
 
 
     States LastState = States.TravelToFishSpot;
     public States GetState()
     {
         States out;
-        if(Inventory.isFull() && Inventory.contains(ShrimpID))
+        if(Inventory.isFull() && ((Inventory.contains(ShrimpID) && CookShrimp) || (Inventory.contains(AnchoviesID) && CookAncho)))
         {
             GameObject Fire = GameObjects.closest(FireID);
             if(Fire.isOnScreen())
@@ -99,30 +106,61 @@ public class ShrimpBoyleScript extends AbstractScript {
         switch (State)
         {
             case TravelToFishSpot -> {
-                OSRSUtilities.WalkTo(FishLocation);
+                OSRSUtilities.SimpleWalkTo(FishLocation);
             }
             case Fish -> {
                 OSRSUtilities.Fish(FishAction, FishSpotID);
             }
             case TravelToFire -> {
-                OSRSUtilities.WalkTo(FireLocation);
+                OSRSUtilities.SimpleWalkTo(FireLocation);
             }
             case Bake -> {
-                while(Inventory.contains(ShrimpID))
+                // Only bake ancho's for now
+                while((Inventory.contains(ShrimpID) && CookShrimp) || (Inventory.contains(AnchoviesID) && CookAncho))
                 {
-                    OSRSUtilities.PickSkillingMenuItem(CookAction);
-                    OSRSUtilities.WaitForEndAnimationLoop(1500, 10000);
+                    if(Inventory.contains(ShrimpID) && CookShrimp)
+                    {
+                        Inventory.use(ShrimpID);
+                    }
+                    if(Inventory.contains(AnchoviesID) && CookAncho)
+                    {
+                        Inventory.use(AnchoviesID);
+                    }
+
+                    GameObject Fire = GameObjects.closest(FireID);
+                    if(Fire != null && Fire.isOnScreen())
+                    {
+                        Point pt = Fire.getClickablePoint();
+                        OSRSUtilities.RandomizeClick(pt,2,2);
+                        Mouse.click(pt);
+                        OSRSUtilities.Wait();
+                        OSRSUtilities.PickSkillingMenuItem(CookAction);
+                        OSRSUtilities.WaitForEndAnimationLoop(1500, 10000);
+                    }
+                    else
+                    {
+                        OSRSUtilities.SimpleWalkTo(FireLocation);
+                        OSRSUtilities.Wait();
+                    }
                 }
 
             }
             case TravelToBank -> {
-                OSRSUtilities.WalkTo(BankLocation);
+                OSRSUtilities.SimpleWalkTo(BankLocation);
             }
             case Bank -> {
                 OSRSUtilities.BankDepositAll(NetID);
                 if(!Inventory.contains(NetID))
                 {
-                    OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(NetID, 1));
+                    if(Bank.contains(NetID))
+                    {
+                        OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(NetID, 1));
+                    }
+                    else
+                    {
+                        Logger.log("No small net found, stopping script.");
+                        this.stop();
+                    }
                 }
             }
         }

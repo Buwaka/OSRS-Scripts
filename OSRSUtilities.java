@@ -1,6 +1,8 @@
 import org.dreambot.api.Client;
+import org.dreambot.api.data.consumables.Food;
+import org.dreambot.api.input.Keyboard;
 import org.dreambot.api.input.Mouse;
-import org.dreambot.api.input.mouse.algorithm.StandardMouseAlgorithm;
+import org.dreambot.api.input.event.impl.keyboard.awt.Key;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
@@ -9,28 +11,27 @@ import org.dreambot.api.methods.input.mouse.MouseSettings;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
+import org.dreambot.api.methods.item.GroundItems;
+import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Map;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.methods.walking.path.impl.LocalPath;
-import org.dreambot.api.methods.walking.pathfinding.impl.PathFinder;
 import org.dreambot.api.methods.walking.pathfinding.impl.local.LocalPathFinder;
 import org.dreambot.api.methods.widget.Widgets;
 import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.GameObject;
 import org.dreambot.api.wrappers.interactive.NPC;
-import org.dreambot.api.wrappers.interactive.Player;
-import org.dreambot.api.wrappers.interactive.WalkingQueueSpeed;
-import org.dreambot.api.wrappers.interactive.util.Direction;
+import org.dreambot.api.wrappers.items.GroundItem;
 
 import java.awt.*;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.List;
 
 public class OSRSUtilities {
+
+    static final String[] ItemsToAlwaysPickUp = {"Clue scroll", "Coins"};
 
     static Random rand = new Random();
     public static boolean OpenBank()
@@ -130,7 +131,7 @@ public class OSRSUtilities {
         }
     }
 
-    public static boolean Combine(int ID1, int ID2)
+    public static boolean ClickCombine(int ID1, int ID2)
     {
         var Box1 = Inventory.itemBounds(Inventory.get(ID1));
         var Box2 = Inventory.itemBounds(Inventory.get(ID2));
@@ -139,11 +140,9 @@ public class OSRSUtilities {
         Point Click2 = new Point((int) Box2.getCenterX(), (int) Box2.getCenterY());
         Click2.translate(rand.nextInt(2) - 1, rand.nextInt(2) - 1);
 
-        Logger.log(Click1);
-        Logger.log(Click2);
-
         if(Box1.isEmpty() || Box2.isEmpty())
         {
+            Logger.log("Couldn't find points to click, box1: " + Box1 + " box2: " + Box2);
             return false;
         }
 
@@ -154,7 +153,7 @@ public class OSRSUtilities {
             Click1 = new Point((int) Box1.getCenterX(), (int) Box1.getCenterY());
             Click1.translate(rand.nextInt(6) - 3, rand.nextInt(6) - 3);
         }
-        Logger.log(Dialogues.inDialogue());
+
         return Mouse.click(Click2);
     }
 
@@ -172,7 +171,8 @@ public class OSRSUtilities {
         {
             ClosestSpot.interact(Action);
             Wait();
-            Sleep.sleepUntil(() -> Players.getLocal().getAnimation() == -1 && !Players.getLocal().isMoving(), 60000);
+            Mouse.moveOutsideScreen();
+            Sleep.sleepUntil(() -> (Players.getLocal().getAnimation() == -1 && !Players.getLocal().isMoving()) || Dialogues.inDialogue(), 120000);
 
             while(Dialogues.inDialogue())
             {
@@ -193,6 +193,117 @@ public class OSRSUtilities {
 
     return true;
     }
+
+    public static boolean PickupOnTile(Tile tile, List<Integer> IDs)
+    {
+
+        var Items = GroundItems.all(t -> t.getTile() == tile && (IDs.contains(t.getID())
+                || Arrays.stream(ItemsToAlwaysPickUp).anyMatch(x -> x.contains(t.getName()))));// Always pickup clue scrolls lol
+        Items.sort(Comparator.comparingDouble(p -> {
+            double dist = ((GroundItem)p).walkingDistance(Players.getLocal().getTile());
+            return Math.abs(dist);
+        }));
+        return PickupItems(Items);
+    }
+
+    public static boolean PickupOnArea(Area area, List<Integer> IDs)
+    {
+        var Items = GroundItems.all(t ->
+                        area.contains(t.getTile())
+                        && (IDs.contains(t.getID())
+                        || Arrays.stream(ItemsToAlwaysPickUp).anyMatch(x -> x.contains(t.getName())))); // Always pickup clue scrolls lol
+        Items.sort(Comparator.comparingDouble(p -> {
+            double dist = ((GroundItem)p).walkingDistance(Players.getLocal().getTile());
+            return Math.abs(dist);
+        }));
+
+        return PickupItems(Items);
+    }
+
+    public static boolean PickupItems(List<GroundItem> Items)
+    {
+        boolean result = true;
+        for(var Item : Items)
+        {
+            Logger.log(Item);
+            if(Item.exists() && Item.canReach())
+            {
+                boolean tempresult = Item.interact();
+                if(tempresult)
+                {
+                    result &= Sleep.sleepUntil(() -> !Players.getLocal().isMoving() && !Item.exists(), 15000);
+                    Sleep.sleepTicks(1);
+                }
+                else
+                {
+                    return tempresult;
+                }
+            }
+            else
+            {
+                Logger.log("Failed to pick up item: " + Item.toString());
+            }
+
+            if(Inventory.isFull())
+            {
+                Logger.log("Inventory is full");
+                return false;
+            }
+        }
+
+        return result;
+    }
+
+    public static int[] GetFoodIDs()
+    {
+        return new int[]{315};
+    }
+
+    public static int GetBestHealChoice()
+    {
+        return 315;
+    }
+
+    //Heal up completely
+    public static boolean Healup()
+    {
+        int FoodID = Food.getBestOnHand(true).getFromInventory().getID();
+        while(Players.getLocal().getHealthPercent() < 100 && Inventory.contains(FoodID))
+        {
+            Inventory.interact(FoodID);
+            Sleep.sleepTicks(3);
+            Sleep.sleepUntil(() -> Players.getLocal().getAnimation() == -1, 5000);
+            FoodID = Food.getBestOnHand(true).getFromInventory().getID();
+        }
+
+        if(Players.getLocal().getHealthPercent() < 100)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean BankContainsHeals()
+    {
+        return true;
+    }
+
+    public static boolean BankHeal()
+    {
+        if(OpenBank())
+        {
+            int FoodID = GetBestHealChoice();
+            Bank.withdrawAll(FoodID);
+            while(!Healup() && BankContainsHeals())
+            {
+                FoodID = GetBestHealChoice();
+                Bank.withdrawAll(FoodID);
+            }
+            return Players.getLocal().getHealthPercent() >= 100;
+        }
+        return false;
+    }
+
 
 //    public static void ShiftCameraToDirection(Direction direction)
 //    {
@@ -236,6 +347,13 @@ public class OSRSUtilities {
         while(Destination.distance(Players.getLocal().getTile()) > 1.0 && isMoving)
         {
             SimpleWalkTo_(Destination);
+
+            while(Dialogues.inDialogue())
+            {
+                Dialogues.continueDialogue();
+                Wait();
+            }
+
             isMoving = Players.getLocal().isMoving();
         }
     }
@@ -358,7 +476,45 @@ public class OSRSUtilities {
         {
             return child.interact();
         }
+        Logger.log("Failed to get child item, " + child);
         return false;
+    }
+
+    public static boolean ProcessItems(int index, int ID1, int ID2, int timeout)
+    {
+        while (Inventory.contains(ID1) && Inventory.contains(ID2))
+        {
+            while(Dialogues.inDialogue())
+            {
+                Dialogues.continueDialogue();
+                Wait(1000, 300);
+            }
+
+            if(!ClickCombine(ID1, ID2))
+            {
+                Logger.log("Failed to click combine");
+                return false;
+            }
+            Sleep.sleepTicks(3);
+            Wait(100, 500);
+
+            if(!PickSkillingMenuItem(index)){
+                Logger.log("Failed to pick menu item");
+                return false;
+            }
+
+            Sleep.sleep(rand.nextInt(2000) + 1000);
+
+            Mouse.moveOutsideScreen();
+
+            Sleep.sleepUntil(() -> {
+                return !Inventory.contains(ID1) || !Inventory.contains(ID2) || Dialogues.inDialogue();
+            }, timeout);
+
+            Sleep.sleep(rand.nextInt(2000) + 1000);
+        }
+
+        return true;
     }
 
 

@@ -1,42 +1,17 @@
-import org.dreambot.api.Client;
 import org.dreambot.api.input.Keyboard;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.input.event.impl.keyboard.awt.Key;
-import org.dreambot.api.input.mouse.destination.impl.PointDestination;
-import org.dreambot.api.methods.ViewportTools;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
-import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.container.impl.bank.BankQuantitySelection;
 import org.dreambot.api.methods.dialogues.Dialogues;
-import org.dreambot.api.methods.input.Camera;
-import org.dreambot.api.methods.input.mouse.MouseSettings;
-import org.dreambot.api.methods.interactive.GameObjects;
-import org.dreambot.api.methods.interactive.NPCs;
-import org.dreambot.api.methods.interactive.Players;
-import org.dreambot.api.methods.map.Map;
-import org.dreambot.api.methods.walking.impl.Walking;
-import org.dreambot.api.methods.walking.path.impl.LocalPath;
-import org.dreambot.api.methods.walking.pathfinding.impl.local.LocalPathFinder;
 import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.Category;
-import org.dreambot.api.script.ScriptManager;
 import org.dreambot.api.script.ScriptManifest;
-import org.dreambot.api.methods.map.Area;
-import org.dreambot.api.methods.map.Tile;
-import org.dreambot.api.script.loader.LocalLoader;
 import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
-import org.dreambot.api.wrappers.graphics.Viewport;
-import org.dreambot.api.wrappers.interactive.*;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @ScriptManifest(name = "ClayWatering", description = "Clay to soft clay using water vials, needs to be close to a bank", author = "Varrock",
         version = 1.0, category = Category.CRAFTING, image = "")
@@ -55,10 +30,16 @@ public class ClayWatering extends AbstractScript {
     @Override
     public void onStart() {
         super.onStart();
+        if(!OSRSUtilities.CanReachBank())
+        {
+            Logger.log("Not within reach of a bank");
+            this.stop();
+            return;
+        }
         Ranomizer = OSRSUtilities.StartRandomizerThread();
     }
     public int onLoop() {
-        Logger.log(Dialogues.inDialogue());
+
         switch (CurrentState)
         {
             case Watering -> {
@@ -66,7 +47,7 @@ public class ClayWatering extends AbstractScript {
                 {
                     while(!Dialogues.inDialogue())
                     {
-                        OSRSUtilities.Combine(WaterVialID, ClayID);
+                        OSRSUtilities.ClickCombine(WaterVialID, ClayID);
                         Sleep.sleep(rand.nextInt(1000) + 500);
                     }
 

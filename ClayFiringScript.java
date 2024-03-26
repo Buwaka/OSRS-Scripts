@@ -65,8 +65,6 @@ public class ClayFiringScript  extends AbstractScript{
             out = States.TravelToBank;
         }
 
-        Logger.log("State: " + out.toString());
-
 
         if(out != LastState)
         {
