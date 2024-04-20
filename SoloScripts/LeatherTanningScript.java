@@ -1,5 +1,7 @@
 package SoloScripts;
 
+import Utilities.OSRSUtilities;
+import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -13,48 +15,35 @@ import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.NPC;
 import org.dreambot.api.wrappers.widgets.Menu;
 
-import Utilities.OSRSUtilities;
-import Utilities.tpircSScript;
-
 import java.awt.*;
 
-@ScriptManifest(name = "SoloScripts.LeatherTanningScript", description = "Clay to soft clay using water vials, needs to be close to a bank", author = "Varrock",
-        version = 1.0, category = Category.CRAFTING, image = "")
+@ScriptManifest(name = "SoloScripts.LeatherTanningScript", description = "Clay to soft clay using water vials, needs to be close to a bank", author = "Varrock", version = 1.0, category = Category.CRAFTING, image = "")
 public class LeatherTanningScript extends tpircSScript
 {
 
-    final int CoinID = 995;
-    final int CowHideID = 1739;
-    final int TannerID = 3231;
-    final Tile TannerTile = new Tile(3276, 3191);
-    final Tile BankTile = new Tile(3270, 3166);
-    final String TannerAction = "Trade";
-    final String TanAllAction = "Tan All";
-    final int TannerWidgetID = 324;
-    final int LeatherWidgetID = 100;
+    final int    CoinID          = 995;
+    final int    CowHideID       = 1739;
+    final int    TannerID        = 3231;
+    final Tile   TannerTile      = new Tile(3276, 3191);
+    final Tile   BankTile        = new Tile(3270, 3166);
+    final String TannerAction    = "Trade";
+    final String TanAllAction    = "Tan All";
+    final int    TannerWidgetID  = 324;
+    final int    LeatherWidgetID = 100;
+    States LastState = States.TraveltoTan;
 
     NPC GetTanner()
     {
         return NPCs.closest(TannerID);
     }
 
-    enum States
-    {
-        TraveltoTan,
-        Tan,
-        TravelToBank,
-        Banking
-    }
-
-    States LastState = States.TraveltoTan;
-
     States GetState()
     {
         States result = LastState;
-        if (Inventory.contains(CowHideID) && Inventory.contains(CoinID))
+        if(Inventory.contains(CowHideID) && Inventory.contains(CoinID))
         {
             NPC Tanner = GetTanner();
-            if (Tanner != null)
+            if(Tanner != null)
             {
                 result = States.Tan;
             }
@@ -65,7 +54,7 @@ public class LeatherTanningScript extends tpircSScript
         }
         else
         {
-            if (OSRSUtilities.CanReachBank())
+            if(OSRSUtilities.CanReachBank())
             {
                 result = States.Banking;
             }
@@ -75,7 +64,7 @@ public class LeatherTanningScript extends tpircSScript
             }
         }
 
-        if (result != LastState)
+        if(result != LastState)
         {
             Logger.log("Transitioning to state: " + result);
             LastState = result;
@@ -90,7 +79,7 @@ public class LeatherTanningScript extends tpircSScript
 
         States State = GetState();
 
-        switch (State)
+        switch(State)
         {
             case TraveltoTan ->
             {
@@ -99,9 +88,9 @@ public class LeatherTanningScript extends tpircSScript
             case Tan ->
             {
                 NPC Tanner = GetTanner();
-                if (Tanner.canReach())
+                if(Tanner.canReach())
                 {
-                    while (!Widgets.isVisible(TannerWidgetID))
+                    while(!Widgets.isVisible(TannerWidgetID))
                     {
                         Tanner.interact(TannerAction);
 
@@ -109,7 +98,7 @@ public class LeatherTanningScript extends tpircSScript
                     }
 
                     var LeatherWidget = Widgets.get(TannerWidgetID, LeatherWidgetID);
-                    if (LeatherWidget != null)
+                    if(LeatherWidget != null)
                     {
                         Point Click = new Point((int) LeatherWidget.getRectangle().getCenterX(),
                                                 (int) LeatherWidget.getRectangle().getCenterY());
@@ -129,14 +118,14 @@ public class LeatherTanningScript extends tpircSScript
             case Banking ->
             {
                 OSRSUtilities.BankDepositAll(CoinID);
-                if (!Bank.contains(CowHideID) && !Inventory.contains(CowHideID))
+                if(!Bank.contains(CowHideID) && !Inventory.contains(CowHideID))
                 {
                     Logger.log("No more Cowhide, stopping script");
                     this.stop();
                     return 0;
                 }
 
-                if (!Inventory.contains(CoinID))
+                if(!Inventory.contains(CoinID))
                 {
                     Bank.withdraw(CoinID, 1000);
                 }
@@ -145,5 +134,13 @@ public class LeatherTanningScript extends tpircSScript
             }
         }
         return 0;
+    }
+
+    enum States
+    {
+        TraveltoTan,
+        Tan,
+        TravelToBank,
+        Banking
     }
 }

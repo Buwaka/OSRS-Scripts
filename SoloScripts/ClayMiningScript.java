@@ -1,5 +1,7 @@
 package SoloScripts;
 
+import Utilities.OSRSUtilities;
+import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.interactive.Players;
@@ -8,29 +10,17 @@ import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.utilities.Logger;
-import Utilities.OSRSUtilities;
-import Utilities.tpircSScript;
 
 
-@ScriptManifest(name = "SoloScripts.ClayMiningScript", description = "Varrock Clay mining script, Varrock west bank to Varrock mine", author = "Varrock",
-        version = 1.0, category = Category.MINING, image = "")
+@ScriptManifest(name = "SoloScripts.ClayMiningScript", description = "Varrock Clay mining script, Varrock west bank to Varrock mine", author = "Varrock", version = 1.0, category = Category.MINING, image = "")
 public class ClayMiningScript extends tpircSScript
 {
 
     final Area BankLocation = new Tile(3183, 3437).getArea(2);
     final Tile MinePosition = new Tile(3180, 3371);
-    final Tile Rock1 = new Tile(3180, 3372);
-    final Tile Rock2 = new Tile(3179, 3371);
-    final int ClayID = 434;
-
-    public enum States
-    {
-        TravelToRocks,
-        Mining,
-        TravelToBank,
-        Banking
-    }
-
+    final Tile Rock1        = new Tile(3180, 3372);
+    final Tile Rock2        = new Tile(3179, 3371);
+    final int  ClayID       = 434;
     States LastState = States.TravelToRocks;
 
     public boolean IsAtMinePosition()
@@ -42,15 +32,15 @@ public class ClayMiningScript extends tpircSScript
     public States GetState()
     {
         States State;
-        if (Bank.isOpen())
+        if(Bank.isOpen())
         {
             State = States.Banking;
         }
-        else if (Inventory.isFull())
+        else if(Inventory.isFull())
         {
             State = States.TravelToBank;
         }
-        else if (IsAtMinePosition())
+        else if(IsAtMinePosition())
         {
             State = States.Mining;
         }
@@ -59,7 +49,7 @@ public class ClayMiningScript extends tpircSScript
             State = States.TravelToRocks;
         }
 
-        if (State != LastState)
+        if(State != LastState)
         {
             Logger.log(State.toString());
             LastState = State;
@@ -68,13 +58,12 @@ public class ClayMiningScript extends tpircSScript
         return State;
     }
 
-
     public int onLoop()
     {
 
         States State = GetState();
 
-        switch (State)
+        switch(State)
         {
             case TravelToRocks ->
             {
@@ -105,5 +94,14 @@ public class ClayMiningScript extends tpircSScript
         }
 
         return 0;
+    }
+
+
+    public enum States
+    {
+        TravelToRocks,
+        Mining,
+        TravelToBank,
+        Banking
     }
 }

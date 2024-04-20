@@ -23,15 +23,17 @@ import java.awt.*;
  * @url https://github.com/blakeaholics/DreamBot-RandomHandler
  */
 
-public class RandomHandler {
+public class RandomHandler
+{
 
-    private static final int WIDGET_LAMP = 240;
-    private static final int WIDGET_LAMP_ENTER = 26;
-    private static int solvedCount = 0;
-    private static String status = "";
-    private static String prevStatus = "";
+    private static final int    WIDGET_LAMP       = 240;
+    private static final int    WIDGET_LAMP_ENTER = 26;
+    private static       int    solvedCount       = 0;
+    private static       String status            = "";
+    private static       String prevStatus        = "";
 
-    public static void loadRandoms() {
+    public static void loadRandoms()
+    {
         Client.getInstance().getRandomManager().disableSolver(RandomEvent.DISMISS);
         Client.getInstance().getRandomManager().disableSolver(RandomEvent.GENIE);
         Client.getInstance().getRandomManager().registerSolver(new DismissSolver());
@@ -44,8 +46,10 @@ public class RandomHandler {
         Client.getInstance().getRandomManager().registerSolver(new BeekeeperSolver());
     }
 
-    public static void loadSolver(Event solver) {
-        switch (solver) {
+    public static void loadSolver(Event solver)
+    {
+        switch(solver)
+        {
             case DISMISS:
                 Client.getInstance().getRandomManager().registerSolver(new DismissSolver());
                 break;
@@ -73,8 +77,10 @@ public class RandomHandler {
         }
     }
 
-    public static void unloadSolver(Event solver) {
-        switch (solver) {
+    public static void unloadSolver(Event solver)
+    {
+        switch(solver)
+        {
             case DISMISS:
                 Client.getInstance().getRandomManager().unregisterSolver("DismissyWitItSolver");
                 break;
@@ -102,7 +108,8 @@ public class RandomHandler {
         }
     }
 
-    public static void clearRandoms() {
+    public static void clearRandoms()
+    {
         Client.getInstance().getRandomManager().enableSolver(RandomEvent.DISMISS);
         Client.getInstance().getRandomManager().enableSolver(RandomEvent.GENIE);
         Client.getInstance().getRandomManager().unregisterSolver("IDreamOfGenieSolver");
@@ -115,33 +122,44 @@ public class RandomHandler {
         Client.getInstance().getRandomManager().unregisterSolver("BeekeeperSolver");
     }
 
-    public static boolean useLamp() {
-        if (!Inventory.contains("Lamp")) return false;
+    public static boolean useLamp()
+    {
+        if(!Inventory.contains("Lamp"))
+        {return false;}
 
-        if (!Tabs.isOpen(Tab.INVENTORY)) {
+        if(!Tabs.isOpen(Tab.INVENTORY))
+        {
             Tabs.open(Tab.INVENTORY);
             Sleep.sleep(550, 1500);
         }
 
-        if (Tabs.isOpen(Tab.INVENTORY)) {
+        if(Tabs.isOpen(Tab.INVENTORY))
+        {
             log("I love lamp. I love lamp! I love lamp!");
-            if (Inventory.interact("Lamp", "Rub")) {
+            if(Inventory.interact("Lamp", "Rub"))
+            {
                 Sleep.sleep(1350, 2500);
                 Sleep.sleepUntil(() -> Widgets.getWidget(WIDGET_LAMP) != null, Calculations.random(6000, 9000));
-                Widget skills = Widgets.getWidget(WIDGET_LAMP);
-                WidgetChild skill = null;
-                if (skills != null) {
-                    switch (Calculations.random(5)) {
+                Widget      skills = Widgets.getWidget(WIDGET_LAMP);
+                WidgetChild skill  = null;
+                if(skills != null)
+                {
+                    switch(Calculations.random(5))
+                    {
                         case 0:
-                            if (Calculations.random(2) == 1) {
+                            if(Calculations.random(2) == 1)
+                            {
                                 skill = skills.getChild(7); //HITPOINTS
-                            } else {
+                            }
+                            else
+                            {
                                 skill = skills.getChild(8); //PRAYER
                             }
                             break;
                         case 1:
                         case 2:
-                            switch (org.dreambot.api.methods.combat.Combat.getCombatStyle()) {
+                            switch(org.dreambot.api.methods.combat.Combat.getCombatStyle())
+                            {
                                 case ATTACK:
                                     skill = skills.getChild(2);
                                     break;
@@ -160,20 +178,24 @@ public class RandomHandler {
                             }
                             break;
                         default:
-                            skill = Client.isMembers() ?
-                                    skills.getChild(Calculations.random(2, 24)) :
-                                    Calculations.random(2) == 1 ?
-                                            skills.getChild(Calculations.random(2, 9)) :
-                                            skills.getChild(Calculations.random(16, 21));
+                            skill = Client.isMembers()
+                                    ? skills.getChild(Calculations.random(2, 24))
+                                    : Calculations.random(2) == 1
+                                            ? skills.getChild(Calculations.random(2, 9))
+                                            : skills.getChild(Calculations.random(16, 21));
                     }
 
-                    if (skill != null) {
+                    if(skill != null)
+                    {
                         skill = skill.getChild(4);
-                        if (skill.interact()) {
+                        if(skill.interact())
+                        {
                             Sleep.sleep(550, 1500);
                             WidgetChild enter = skills.getChild(WIDGET_LAMP_ENTER).getChild(0);
-                            if (enter != null) {
-                                if (enter.interact()) {
+                            if(enter != null)
+                            {
+                                if(enter.interact())
+                                {
                                     log("(We've got a lamp and we're using it)");
                                     Sleep.sleep(550, 1500);
                                     increaseSolvedCount();
@@ -186,54 +208,76 @@ public class RandomHandler {
                     }
                 }
                 log("Failed to get the skill widget for the lamp");
-            } else {
+            }
+            else
+            {
                 log("Failed to use the lamp :(");
             }
         }
         return false;
     }
 
-    public static void powerThroughDialogue() {
-        if (Dialogues.inDialogue()) {
-            while (Dialogues.canContinue() || Dialogues.isProcessing()) {
-                if (Dialogues.continueDialogue()) {
+    public static void powerThroughDialogue()
+    {
+        if(Dialogues.inDialogue())
+        {
+            while(Dialogues.canContinue() || Dialogues.isProcessing())
+            {
+                if(Dialogues.continueDialogue())
+                {
                     log("Continuing dialogue");
                     Sleep.sleep(800, 3500);
                 }
-                if (Dialogues.areOptionsAvailable()) return;
+                if(Dialogues.areOptionsAvailable())
+                {return;}
             }
         }
     }
 
-    public static void increaseSolvedCount() {
+    public static void increaseSolvedCount()
+    {
         solvedCount++;
     }
 
-    public static int getSolvedCount() {
+    public static int getSolvedCount()
+    {
         return solvedCount;
     }
 
-    public static void log(String stat, String solver) {
-        if (!getPrevStatus().equals(stat)) {
+    public static void log(String stat, String solver)
+    {
+        if(!getPrevStatus().equals(stat))
+        {
             Logger.log(new Color(93, 180, 82), "[" + solver + "] " + stat);
             setPrevStatus(stat);
         }
         status = stat;
     }
 
-    public static String getPrevStatus() {
+    public static String getPrevStatus()
+    {
         return prevStatus;
     }
 
-    public static void setPrevStatus(String prevStat) {
+    public static void setPrevStatus(String prevStat)
+    {
         prevStatus = prevStat;
     }
 
-    public static void log(String msg) {
+    public static void log(String msg)
+    {
         log(msg, "RandomHandler");
     }
 
-    enum Event {
-        DISMISS, GENIE, RICKY_TURPENTINE, FREAKY_FORESTER, OLD_MAN, DRUNKEN_DWARF, FROG, BEEKEEPER
+    enum Event
+    {
+        DISMISS,
+        GENIE,
+        RICKY_TURPENTINE,
+        FREAKY_FORESTER,
+        OLD_MAN,
+        DRUNKEN_DWARF,
+        FROG,
+        BEEKEEPER
     }
 }

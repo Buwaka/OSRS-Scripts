@@ -1,5 +1,7 @@
 package SoloScripts;
 
+import Utilities.OSRSUtilities;
+import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.input.Keyboard;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.input.event.impl.keyboard.awt.Key;
@@ -12,31 +14,22 @@ import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 
-import Utilities.OSRSUtilities;
-import Utilities.tpircSScript;
-
 import java.util.Random;
 
-@ScriptManifest(name = "SoloScripts.ClayWatering", description = "Clay to soft clay using water vials, needs to be close to a bank", author = "Semanresu",
-        version = 1.0, category = Category.CRAFTING, image = "")
+@ScriptManifest(name = "SoloScripts.ClayWatering", description = "Clay to soft clay using water vials, needs to be close to a bank", author = "Semanresu", version = 1.0, category = Category.CRAFTING, image = "")
 public class ClayWatering extends tpircSScript
 {
 
-    public enum States
-    {
-        Watering, Banking
-    }
-
-    States CurrentState = States.Banking;
-    Random rand = new Random();
     final int WaterVialID = 227;
-    final int ClayID = 434;
+    final int ClayID      = 434;
+    States CurrentState = States.Banking;
+    Random rand         = new Random();
 
     @Override
     public void onStart()
     {
         super.onStart();
-        if (!OSRSUtilities.CanReachBank())
+        if(!OSRSUtilities.CanReachBank())
         {
             Logger.log("Not within reach of a bank");
             this.stop();
@@ -46,13 +39,13 @@ public class ClayWatering extends tpircSScript
     public int onLoop()
     {
 
-        switch (CurrentState)
+        switch(CurrentState)
         {
             case Watering ->
             {
-                while (Inventory.contains(ClayID) && Inventory.contains(WaterVialID))
+                while(Inventory.contains(ClayID) && Inventory.contains(WaterVialID))
                 {
-                    while (!Dialogues.inDialogue())
+                    while(!Dialogues.inDialogue())
                     {
                         OSRSUtilities.ClickCombine(WaterVialID, ClayID);
                         Sleep.sleep(rand.nextInt(1000) + 500);
@@ -76,19 +69,19 @@ public class ClayWatering extends tpircSScript
             case Banking ->
             {
                 Bank.open();
-                if (Bank.getDefaultQuantity() != BankQuantitySelection.X)
+                if(Bank.getDefaultQuantity() != BankQuantitySelection.X)
                 {
                     Bank.setDefaultQuantity(BankQuantitySelection.X);
                 }
 
 
-                if (!Inventory.isEmpty())
+                if(!Inventory.isEmpty())
                 {
                     Bank.depositAllItems();
                 }
 
 
-                if (!Bank.contains(WaterVialID) || !Bank.contains(ClayID))
+                if(!Bank.contains(WaterVialID) || !Bank.contains(ClayID))
                 {
                     Logger.log("No Clay or water vials left");
                     //Utilities.ScriptStarter scriptStarter = new Utilities.ScriptStarter(SoloScripts.ClayMiningScript.class);
@@ -110,6 +103,12 @@ public class ClayWatering extends tpircSScript
         }
 
         return 0;
+    }
+
+    public enum States
+    {
+        Watering,
+        Banking
     }
 
 }

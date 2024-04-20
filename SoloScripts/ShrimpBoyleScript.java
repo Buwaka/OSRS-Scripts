@@ -1,5 +1,7 @@
 package SoloScripts;
 
+import Utilities.OSRSUtilities;
+import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -12,54 +14,36 @@ import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.interactive.GameObject;
 import org.dreambot.api.wrappers.interactive.NPC;
 
-import Utilities.OSRSUtilities;
-import Utilities.tpircSScript;
-
 import java.awt.*;
 import java.util.AbstractMap;
 
 
-@ScriptManifest(name = "SoloScripts.ShrimpBoyleScript", description = "Draynor Village Shrimp fishing and baking script", author = "Semanresu",
-        version = 1.0, category = Category.FISHING, image = "")
+@ScriptManifest(name = "SoloScripts.ShrimpBoyleScript", description = "Draynor Village Shrimp fishing and baking script", author = "Semanresu", version = 1.0, category = Category.FISHING, image = "")
 public class ShrimpBoyleScript extends tpircSScript
 {
 
-    public enum States
-    {
-        TravelToFishSpot,
-        Fish,
-        TravelToFire,
-        Bake,
-        TravelToBank,
-        Bank
-    }
-
-    final int FishSpotID = 1525;
-    final int FireID = 43475;
-
-    final String FishAction = "Small Net";
-    final Tile FireLocation = new Tile(3096, 3237);
-    final Tile BankLocation = new Tile(3094, 3243);
-    final Tile FishLocation = new Tile(3086, 3230);
-
-    final int ShrimpID = 317;
-    final int AnchoviesID = 321;
-    final int NetID = 303;
-    final int CookAction = 1;
-
-    final boolean CookAncho = true;
-    final boolean CookShrimp = false;
-
-
+    final int     FishSpotID   = 1525;
+    final int     FireID       = 43475;
+    final String  FishAction   = "Small Net";
+    final Tile    FireLocation = new Tile(3096, 3237);
+    final Tile    BankLocation = new Tile(3094, 3243);
+    final Tile    FishLocation = new Tile(3086, 3230);
+    final int     ShrimpID     = 317;
+    final int     AnchoviesID  = 321;
+    final int     NetID        = 303;
+    final int     CookAction   = 1;
+    final boolean CookAncho    = true;
+    final boolean CookShrimp   = false;
     States LastState = States.TravelToFishSpot;
 
     public States GetState()
     {
         States out;
-        if (Inventory.isFull() && ((Inventory.contains(ShrimpID) && CookShrimp) || (Inventory.contains(AnchoviesID) && CookAncho)))
+        if(Inventory.isFull() &&
+           ((Inventory.contains(ShrimpID) && CookShrimp) || (Inventory.contains(AnchoviesID) && CookAncho)))
         {
             GameObject Fire = GameObjects.closest(FireID);
-            if (Fire.isOnScreen())
+            if(Fire.isOnScreen())
             {
                 out = States.Bake;
             }
@@ -68,9 +52,9 @@ public class ShrimpBoyleScript extends tpircSScript
                 out = States.TravelToFire;
             }
         }
-        else if (Inventory.isFull() || !Inventory.contains(NetID))
+        else if(Inventory.isFull() || !Inventory.contains(NetID))
         {
-            if (OSRSUtilities.CanReachBank())
+            if(OSRSUtilities.CanReachBank())
             {
                 out = States.Bank;
             }
@@ -84,7 +68,7 @@ public class ShrimpBoyleScript extends tpircSScript
             NPC FishSpot = NPCs.closest(FishSpotID);
             Logger.log(FishSpot);
             Logger.log(FishSpot.isOnScreen());
-            if (FishSpot != null && FishSpot.isOnScreen())
+            if(FishSpot != null && FishSpot.isOnScreen())
             {
                 out = States.Fish;
             }
@@ -94,7 +78,7 @@ public class ShrimpBoyleScript extends tpircSScript
             }
         }
 
-        if (LastState != out)
+        if(LastState != out)
         {
             LastState = out;
             Logger.log("Transitioning to state: " + out);
@@ -103,13 +87,12 @@ public class ShrimpBoyleScript extends tpircSScript
         return out;
     }
 
-
     @Override
     public int onLoop()
     {
         final States State = GetState();
 
-        switch (State)
+        switch(State)
         {
             case TravelToFishSpot ->
             {
@@ -126,19 +109,19 @@ public class ShrimpBoyleScript extends tpircSScript
             case Bake ->
             {
                 // Only bake ancho's for now
-                while ((Inventory.contains(ShrimpID) && CookShrimp) || (Inventory.contains(AnchoviesID) && CookAncho))
+                while((Inventory.contains(ShrimpID) && CookShrimp) || (Inventory.contains(AnchoviesID) && CookAncho))
                 {
-                    if (Inventory.contains(ShrimpID) && CookShrimp)
+                    if(Inventory.contains(ShrimpID) && CookShrimp)
                     {
                         Inventory.use(ShrimpID);
                     }
-                    if (Inventory.contains(AnchoviesID) && CookAncho)
+                    if(Inventory.contains(AnchoviesID) && CookAncho)
                     {
                         Inventory.use(AnchoviesID);
                     }
 
                     GameObject Fire = GameObjects.closest(FireID);
-                    if (Fire != null && Fire.isOnScreen())
+                    if(Fire != null && Fire.isOnScreen())
                     {
                         Point pt = Fire.getClickablePoint();
                         OSRSUtilities.RandomizeClick(pt, 2, 2);
@@ -162,9 +145,9 @@ public class ShrimpBoyleScript extends tpircSScript
             case Bank ->
             {
                 OSRSUtilities.BankDepositAll(NetID);
-                if (!Inventory.contains(NetID))
+                if(!Inventory.contains(NetID))
                 {
-                    if (Bank.contains(NetID))
+                    if(Bank.contains(NetID))
                     {
                         OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(NetID, 1));
                     }
@@ -179,5 +162,16 @@ public class ShrimpBoyleScript extends tpircSScript
 
 
         return 0;
+    }
+
+
+    public enum States
+    {
+        TravelToFishSpot,
+        Fish,
+        TravelToFire,
+        Bake,
+        TravelToBank,
+        Bank
     }
 }

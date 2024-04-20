@@ -1,5 +1,7 @@
 package SoloScripts;
 
+import Utilities.OSRSUtilities;
+import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.map.Area;
@@ -9,50 +11,36 @@ import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.interactive.NPC;
 
-import Utilities.OSRSUtilities;
-import Utilities.tpircSScript;
-
 import java.util.AbstractMap;
 
-@ScriptManifest(name = "SoloScripts.SalmonScript", description = "Varrock Salmon Fishing and cooking script", author = "Semanresu",
-        version = 1.0, category = Category.FISHING, image = "")
+@ScriptManifest(name = "SoloScripts.SalmonScript", description = "Varrock Salmon Fishing and cooking script", author = "Semanresu", version = 1.0, category = Category.FISHING, image = "")
 public class SalmonScript extends tpircSScript
 {
 
-    final int FireID = 43475;
-    final int RodFishingID = 1526;
-    final int RodID = 309;
-    final int FeatherID = 314;
-    final int RawSalmonID = 331;
-    final int RawTroutID = 335;
-    final int BurntFishID = 343;
-    final Tile FishingTile = new Tile(3103, 3430);
-    final Area BankLocation = new Tile(3183, 3437).getArea(2);
-    final String FishAction = "Lure";
-
-    enum States
-    {
-        Fishing,
-        Cooking,
-        TravelToBank,
-        Banking,
-        TravelToFish
-    }
+    final int    FireID       = 43475;
+    final int    RodFishingID = 1526;
+    final int    RodID        = 309;
+    final int    FeatherID    = 314;
+    final int    RawSalmonID  = 331;
+    final int    RawTroutID   = 335;
+    final int    BurntFishID  = 343;
+    final Tile   FishingTile  = new Tile(3103, 3430);
+    final Area   BankLocation = new Tile(3183, 3437).getArea(2);
+    final String FishAction   = "Lure";
+    States LastState = States.Banking;
 
     NPC GetFishingSpot()
     {
         return NPCs.closest(RodFishingID);
     }
 
-    States LastState = States.Banking;
-
     States GetState()
     {
         States out;
-        NPC FishingSpot = GetFishingSpot();
-        if (!Inventory.contains(FeatherID) || !Inventory.contains(RodID))
+        NPC    FishingSpot = GetFishingSpot();
+        if(!Inventory.contains(FeatherID) || !Inventory.contains(RodID))
         {
-            if (OSRSUtilities.CanReachBank())
+            if(OSRSUtilities.CanReachBank())
             {
                 out = States.Banking;
             }
@@ -61,9 +49,9 @@ public class SalmonScript extends tpircSScript
                 out = States.TravelToBank;
             }
         }
-        else if (Inventory.isFull() && !Inventory.contains(RawSalmonID) && !Inventory.contains(RawTroutID))
+        else if(Inventory.isFull() && !Inventory.contains(RawSalmonID) && !Inventory.contains(RawTroutID))
         {
-            if (OSRSUtilities.CanReachBank())
+            if(OSRSUtilities.CanReachBank())
             {
                 out = States.Banking;
             }
@@ -72,9 +60,9 @@ public class SalmonScript extends tpircSScript
                 out = States.TravelToBank;
             }
         }
-        else if (FishingSpot != null && FishingSpot.canReach())
+        else if(FishingSpot != null && FishingSpot.canReach())
         {
-            if (Inventory.isFull())
+            if(Inventory.isFull())
             {
                 out = States.Cooking;
             }
@@ -88,7 +76,7 @@ public class SalmonScript extends tpircSScript
             out = States.TravelToFish;
         }
 
-        if (LastState != out)
+        if(LastState != out)
         {
             LastState = out;
             Logger.log("Transitioning to state: " + out);
@@ -103,7 +91,7 @@ public class SalmonScript extends tpircSScript
 
         States State = GetState();
 
-        switch (State)
+        switch(State)
         {
             case Fishing ->
             {
@@ -113,7 +101,7 @@ public class SalmonScript extends tpircSScript
             case Cooking ->
             {
                 OSRSUtilities.Bake(RawSalmonID, RawTroutID);
-                if (Inventory.contains(BurntFishID))
+                if(Inventory.contains(BurntFishID))
                 {
                     Inventory.dropAll(BurntFishID);
                 }
@@ -125,16 +113,16 @@ public class SalmonScript extends tpircSScript
             case Banking ->
             {
                 OSRSUtilities.BankDepositAll(RodID, FeatherID);
-                if (!Inventory.contains(FeatherID))
+                if(!Inventory.contains(FeatherID))
                 {
-                    if (!OSRSUtilities.BankWithdrawAll(FeatherID))
+                    if(!OSRSUtilities.BankWithdrawAll(FeatherID))
                     {
                         Logger.log("No Feathers, exiting script");
                         this.stop();
                         return 0;
                     }
                 }
-                if (!Inventory.contains(RodID))
+                if(!Inventory.contains(RodID))
                 {
                     OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(RodID, 1));
                 }
@@ -147,5 +135,14 @@ public class SalmonScript extends tpircSScript
             }
         }
         return 0;
+    }
+
+    enum States
+    {
+        Fishing,
+        Cooking,
+        TravelToBank,
+        Banking,
+        TravelToFish
     }
 }

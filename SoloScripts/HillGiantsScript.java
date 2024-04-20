@@ -1,8 +1,10 @@
 package SoloScripts;
 
+import Utilities.Combat.CombatManager;
+import Utilities.OSRSUtilities;
+import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.Players;
-import org.dreambot.api.methods.item.GroundItems;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.script.Category;
@@ -12,28 +14,23 @@ import org.dreambot.api.wrappers.interactive.Character;
 import org.dreambot.api.wrappers.interactive.NPC;
 import org.dreambot.api.wrappers.items.GroundItem;
 
-import Utilities.OSRSUtilities;
-import Utilities.tpircSScript;
-
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-@ScriptManifest(name = "SoloScripts.HillGiantsScript", description = "Slaughter and loot Hill Giants", author = "Semanresu",
-        version = 1.0, category = Category.COMBAT, image = "")
+@ScriptManifest(name = "SoloScripts.HillGiantsScript", description = "Slaughter and loot Hill Giants", author = "Semanresu", version = 1.0, category = Category.COMBAT, image = "")
 public class HillGiantsScript extends tpircSScript
 {
 
-    final int MinimumHP = 15;
-    final Boolean PrayBones = true;
+    final int     MinimumHP   = 15;
+    final Boolean PrayBones   = false;
     final Boolean FocusPickup = true;
 
-    final Area GiantArea = new Area(new Tile(3120, 9850), new Tile(3101, 9829));
-    final Area BankLocation = new Tile(3183, 3437).getArea(2);
-    final String HillGiantName = "Hill Giant";
-    final int[] PickupExcludes = {884, 1917};
-    final int[] PickupFocus = {
+    final Area   GiantArea          = new Area(new Tile(3120, 9850), new Tile(3101, 9829));
+    final Area   BankLocation       = new Tile(3183, 3437).getArea(2);
+    final String HillGiantName      = "Hill Giant";
+    final int[]  PickupExcludes     = {884, 1917, 527, 526, 1918};
+    final int[]  PickupFocus        = {
             563,
             560,
             561,
@@ -71,58 +68,42 @@ public class HillGiantsScript extends tpircSScript
             215,
             2485,
             217};
-    final int BrassKeyID = 983;
-    final int BigBonesID = 532;
-    final int BakedSalmonID = 329;
-    final int MinimumSalmonCount = 4;
-
-
-    enum States
-    {
-        TravelToHillGiants,
-        Fighting,
-        FocusPickup,
-        Praying,
-        Healing,
-        TravelToBank,
-        Banking
-    }
-
-    List<GroundItem> _pickups = new ArrayList<GroundItem>();
+    final int    BrassKeyID         = 983;
+    final int    BigBonesID         = 532;
+    final int    BakedSalmonID      = 329;
+    final int    MinimumSalmonCount = 1;
+    List<GroundItem> _pickups      = new ArrayList<GroundItem>();
+    NPC              _closestGiant = null;
+    States           LastState     = States.TravelToHillGiants;
 
     List<GroundItem> GetPickups()
     {
         // caching
-        if (OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 1, 1000))
-        {
-            _pickups = GroundItems.all(t -> Arrays.stream(PickupFocus).anyMatch(x -> x == t.getID()));
-        }
+//        if(OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 1, 1000))
+//        {
+//            _pickups = GroundItems.all(t -> Arrays.stream(PickupFocus).anyMatch(x -> x == t.getID()));
+//        }
         return _pickups;
     }
 
-    NPC _closestGiant = null;
-
     NPC GetNearestHillGiant()
     {
-        if (OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 2, 300))
+        if(OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 300))
         {
-            _closestGiant = OSRSUtilities.GetClosestUnoccupiedEnemy(HillGiantName);
+            _closestGiant = OSRSUtilities.GetClosestAttackableEnemy(HillGiantName);
         }
         return _closestGiant;
     }
-
-
-    States LastState = States.TravelToHillGiants;
 
     States GetState()
     {
         States out;
 
-        if (Players.getLocal().getHealthPercent() < MinimumHP)
+        if(Players.getLocal().getHealthPercent() < MinimumHP)
         {
             if(!Inventory.contains(BakedSalmonID))
             {
-                if (OSRSUtilities.CanReachBank())
+                if(OSRSUtilities.CanReachBank())
                 {
                     out = States.Banking;
                 }
@@ -136,17 +117,17 @@ public class HillGiantsScript extends tpircSScript
                 out = States.Healing;
             }
         }
-        else if (!GetPickups().isEmpty())
+        else if(!GetPickups().isEmpty())
         {
             out = States.FocusPickup;
         }
-        else if (Inventory.contains(BigBonesID))
+        else if(Inventory.contains(BigBonesID) && PrayBones)
         {
             out = States.Praying;
         }
-        else if (Inventory.isFull())
+        else if(Inventory.isFull())
         {
-            if (OSRSUtilities.CanReachBank())
+            if(OSRSUtilities.CanReachBank())
             {
                 out = States.Banking;
             }
@@ -158,7 +139,7 @@ public class HillGiantsScript extends tpircSScript
         else
         {
             NPC Giant = GetNearestHillGiant();
-            if (Players.getLocal().isInCombat() || Giant != null)
+            if(Players.getLocal().isInCombat() || Giant != null)
             {
                 out = States.Fighting;
             }
@@ -168,7 +149,7 @@ public class HillGiantsScript extends tpircSScript
             }
         }
 
-        if (out != LastState)
+        if(out != LastState)
         {
             Logger.log("Transitioning to state: " + out);
             LastState = out;
@@ -182,7 +163,7 @@ public class HillGiantsScript extends tpircSScript
     {
         States State = GetState();
 
-        switch (State)
+        switch(State)
         {
             case TravelToHillGiants ->
             {
@@ -190,15 +171,14 @@ public class HillGiantsScript extends tpircSScript
             }
             case Fighting ->
             {
-                if (!OSRSUtilities.SlaughterAndLoot(1000, 15000, PickupExcludes, HillGiantName)
-                        && !Players.getLocal().isMoving()
-                        && !Players.getLocal().isInteractedWith())
+                if(!OSRSUtilities.SlaughterAndLoot(1000, 15000, PickupExcludes, HillGiantName) &&
+                   !Players.getLocal().isMoving() && !Players.getLocal().isInteractedWith())
                 {
                     OSRSUtilities.SimpleWalkTo(GiantArea.getRandomTile());
                     OSRSUtilities.ResetCameraRandom(1000);
                 }
 
-                if (!Players.getLocal().isInteractedWith() && OSRSUtilities.IsAreaBusy(10))
+                if(!Players.getLocal().isInteractedWith() && OSRSUtilities.IsAreaBusy(10, true))
                 {
                     OSRSUtilities.JumpToOtherWorld();
                 }
@@ -217,13 +197,13 @@ public class HillGiantsScript extends tpircSScript
                 if(Foe != null && Foe.canAttack())
                 {
                     Logger.log("Continue fighting " + Foe.toString());
-                    OSRSUtilities.Fight(Foe);
+                    CombatManager.GetInstance(Players.getLocal()).Fight(Foe);
                 }
                 //resume fight if possible
             }
             case Praying ->
             {
-                OSRSUtilities.Pray(5000, BigBonesID);
+                OSRSUtilities.PrayAll(5000, BigBonesID);
             }
             case Healing ->
             {
@@ -243,7 +223,7 @@ public class HillGiantsScript extends tpircSScript
                 //Utilities.OSRSUtilities.BankDepositAll(BrassKeyID, BakedSalmonID);
                 OSRSUtilities.BankDepositAll();
                 OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<>(BrassKeyID, 1));
-                if (Inventory.count(BakedSalmonID) < MinimumSalmonCount)
+                if(Inventory.count(BakedSalmonID) < MinimumSalmonCount)
                 {
                     OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(BakedSalmonID,
                                                                                              MinimumSalmonCount));
@@ -253,6 +233,17 @@ public class HillGiantsScript extends tpircSScript
         }
 
         return 0;
+    }
+
+    enum States
+    {
+        TravelToHillGiants,
+        Fighting,
+        FocusPickup,
+        Praying,
+        Healing,
+        TravelToBank,
+        Banking
     }
 }
 

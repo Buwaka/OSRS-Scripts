@@ -17,24 +17,29 @@ import java.awt.*;
  * @author holic
  * @url https://github.com/blakeaholics/DreamBot-RandomHandler
  */
-public class GenieSolver extends RandomSolver {
+public class GenieSolver extends RandomSolver
+{
 
-    private final Integer[] GENIE = {326, 327, 4738};
-    private final String STRING_GENIE = "Genie";
+    private final Integer[] GENIE        = {326, 327, 4738};
+    private final String    STRING_GENIE = "Genie";
 
-    public GenieSolver() {
+    public GenieSolver()
+    {
         super("IDreamOfGenieSolver");
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean shouldExecute()
+    {
         NPC genie = NPCs.closest(GENIE);
         genie = (genie == null ? NPCs.closest(STRING_GENIE) : genie);
-        return (genie != null && genie.getInteractingCharacter() != null && genie.getInteractingCharacter().equals(Players.getLocal()));
+        return (genie != null && genie.getInteractingCharacter() != null &&
+                genie.getInteractingCharacter().equals(Players.getLocal()));
     }
 
     @Override
-    public void onPaint(Graphics2D graphics) {
+    public void onPaint(Graphics2D graphics)
+    {
         Rectangle screen = Client.getCanvas().getBounds();
         graphics.setFont(new Font("default", Font.BOLD, 16));
         graphics.setColor(new Color(74, 255, 129, 161));
@@ -46,31 +51,39 @@ public class GenieSolver extends RandomSolver {
     }
 
     @Override
-    public int onLoop() {
-        int ran = Calculations.random(1, 6);
+    public int onLoop()
+    {
+        int ran   = Calculations.random(1, 6);
         NPC genie = NPCs.closest(GENIE);
         genie = (genie == null ? NPCs.closest(STRING_GENIE) : genie);
-        if (genie != null) {
+        if(genie != null)
+        {
             RandomHandler.log("We've got a Genie!", "GenieSolver");
             Sleep.sleep(350, 850);
-            if (Inventory.isItemSelected()) {
+            if(Inventory.isItemSelected())
+            {
                 RandomHandler.log("Oops, item is selected", "DismissSolver");
                 Inventory.deselect();
                 Sleep.sleep(350, 850);
             }
-            if (Calculations.random(2) == 1) {
+            if(Calculations.random(2) == 1)
+            {
                 RandomHandler.log("Delaying speaking to Genie by " + ran + " seconds", "GenieSolver");
                 Sleep.sleep(ran * 1000L);
             }
-            if (genie.interact()) {
+            if(genie.interact())
+            {
                 Sleep.sleep(1550, 3500);
                 Sleep.sleepWhile(() -> Players.getLocal().isMoving(), 10000);
                 Sleep.sleep(1450, 2850);
                 RandomHandler.powerThroughDialogue();
                 Sleep.sleep(550, 2500);
             }
-            if (Inventory.contains("Lamp")) return RandomHandler.useLamp() ? -1 : 1;
-        } else {
+            if(Inventory.contains("Lamp"))
+            {return RandomHandler.useLamp() ? -1 : 1;}
+        }
+        else
+        {
             return -1;
         }
         return 1;

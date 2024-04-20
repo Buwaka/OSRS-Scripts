@@ -1,0 +1,191 @@
+{
+  "315": {
+    "id": 315,
+    "name": "Shrimps",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": false
+  },
+  "325": {
+    "id": 325,
+    "name": "Sardine",
+    "hitpoints": 4,
+    "uses": 1,
+    "members": false
+  },
+  "329": {
+    "id": 329,
+    "name": "Salmon",
+    "hitpoints": 9,
+    "uses": 1,
+    "members": false
+  },
+  "333": {
+    "id": 333,
+    "name": "Trout",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": false
+  },
+  "337": {
+    "id": 337,
+    "name": "Giant carp",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": true
+  },
+  "339": {
+    "id": 339,
+    "name": "Cod",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "347": {
+    "id": 347,
+    "name": "Herring",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": false
+  },
+  "351": {
+    "id": 351,
+    "name": "Pike",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": false
+  },
+  "355": {
+    "id": 355,
+    "name": "Mackerel",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": true
+  },
+  "361": {
+    "id": 361,
+    "name": "Tuna",
+    "hitpoints": 10,
+    "uses": 1,
+    "members": false
+  },
+  "365": {
+    "id": 365,
+    "name": "Bass",
+    "hitpoints": 13,
+    "uses": 1,
+    "members": true
+  },
+  "373": {
+    "id": 373,
+    "name": "Swordfish",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "379": {
+    "id": 379,
+    "name": "Lobster",
+    "hitpoints": 12,
+    "uses": 1,
+    "members": false
+  },
+  "385": {
+    "id": 385,
+    "name": "Shark",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  },
+  "1891": {
+    "id": 1891,
+    "name": "Cake",
+    "hitpoints": 4,
+    "uses": 3,
+    "members": false
+  },
+  "1897": {
+    "id": 1897,
+    "name": "Chocolate cake",
+    "hitpoints": 5,
+    "uses": 3,
+    "members": false
+  },
+  "1989": {
+    "id": 1989,
+    "name": "Half full wine jug",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": false
+  },
+  "1993": {
+    "id": 1993,
+    "name": "Jug of wine",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": false
+  },
+  "2003": {
+    "id": 2003,
+    "name": "Stew",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": false
+  },
+  "2011": {
+    "id": 2011,
+    "name": "Curry",
+    "hitpoints": 19,
+    "uses": 1,
+    "members": true
+  },
+  "2140": {
+    "id": 2140,
+    "name": "Cooked chicken",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": false
+  },
+  "2142": {
+    "id": 2142,
+    "name": "Cooked meat",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": false
+  },
+  "2309": {
+    "id": 2309,
+    "name": "Bread",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": false
+  },
+  "2323": {
+    "id": 2323,
+    "name": "Apple pie",
+    "hitpoints": 7,
+    "uses": 2,
+    "members": false
+  },
+  "2325": {
+    "id": 2325,
+    "name": "Redberry pie",
+    "hitpoints": 5,
+    "uses": 2,
+    "members": false
+  },
+  "2327": {
+    "id": 2327,
+    "name": "Meat pie",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": false
+  },
+  "6969": {
+    "id": 6969,
+    "name": "Shark",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  }
+}

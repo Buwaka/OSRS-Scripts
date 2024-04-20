@@ -18,21 +18,26 @@ import java.awt.*;
  * @author holic
  * @url https://github.com/blakeaholics/DreamBot-RandomHandler
  */
-public class RickyTurpentineSolver extends RandomSolver {
+public class RickyTurpentineSolver extends RandomSolver
+{
 
-    public RickyTurpentineSolver() {
+    public RickyTurpentineSolver()
+    {
         super("RickyTurpentineSolver");
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean shouldExecute()
+    {
         NPC rickTurps = NPCs.closest(375, 376);//Just need to click ok
         rickTurps = (rickTurps == null ? NPCs.closest("Rick Turpentine") : rickTurps);
-        return (rickTurps != null && rickTurps.getInteractingCharacter() != null && rickTurps.getInteractingCharacter().equals(Players.getLocal()));
+        return (rickTurps != null && rickTurps.getInteractingCharacter() != null &&
+                rickTurps.getInteractingCharacter().equals(Players.getLocal()));
     }
 
     @Override
-    public void onPaint(Graphics2D graphics) {
+    public void onPaint(Graphics2D graphics)
+    {
         Rectangle screen = Client.getCanvas().getBounds();
         graphics.setFont(new Font("default", Font.BOLD, 16));
         graphics.setColor(new Color(74, 255, 129, 161));
@@ -44,32 +49,39 @@ public class RickyTurpentineSolver extends RandomSolver {
     }
 
     @Override
-    public int onLoop() {
-        int ran = Calculations.random(1, 6);
+    public int onLoop()
+    {
+        int ran       = Calculations.random(1, 6);
         NPC rickTurps = NPCs.closest(375, 376);//Just need to click ok
         rickTurps = (rickTurps == null ? NPCs.closest("Rick Turpentine") : rickTurps);
 
-        if (rickTurps != null) {
+        if(rickTurps != null)
+        {
             RandomHandler.log("Shit, it's Ricky Turps!", "RickyTurpentineSolver");
-            if (Calculations.random(2) == 1) {
+            if(Calculations.random(2) == 1)
+            {
                 RandomHandler.log("Pretending not to see Ricky for " + ran + " seconds...", "RickyTurpentineSolver");
                 Sleep.sleep(ran * 1000L);
             }
             Sleep.sleep(350, 850);
-            if (Inventory.isItemSelected()) {
+            if(Inventory.isItemSelected())
+            {
                 RandomHandler.log("Oops, item is selected", "DismissSolver");
                 Inventory.deselect();
                 Sleep.sleep(350, 850);
             }
             RandomHandler.log("[fake joy] Oh! Hey, Ricky", "RickyTurpentineSolver");
-            if (rickTurps.interact()) {
+            if(rickTurps.interact())
+            {
                 Sleep.sleep(1450, 2850);
                 Sleep.sleepUntil(Dialogues::inDialogue, 10000);
                 RandomHandler.powerThroughDialogue();
                 Sleep.sleep(1350, 2850);
                 RandomHandler.increaseSolvedCount();
             }
-        } else {
+        }
+        else
+        {
             return -1;
         }
         return 1;

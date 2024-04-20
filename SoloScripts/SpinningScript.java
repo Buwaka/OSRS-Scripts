@@ -1,5 +1,6 @@
 package SoloScripts;
 
+import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.input.Keyboard;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.input.event.impl.keyboard.awt.Key;
@@ -18,50 +19,35 @@ import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.GameObject;
 
-import Utilities.OSRSUtilities;
-import Utilities.tpircSScript;
-
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 
-@ScriptManifest(name = "SoloScripts.SpinningScript", description = "Lumbridge Spinning script", author = "Semanresu",
-        version = 1.0, category = Category.CRAFTING, image = "")
+@ScriptManifest(name = "SoloScripts.SpinningScript", description = "Lumbridge Spinning script", author = "Semanresu", version = 1.0, category = Category.CRAFTING, image = "")
 public class SpinningScript extends tpircSScript
 {
 
-    public enum State
-    {
-        WalkingToSpin,
-        Spinning,
-        WalkingToBank,
-        Banking
-    }
-
     // consts
-    final Area BankLocation = Area.generateArea(3, new Tile(3208, 3219, 2));
-    final int BankID = 18492;
-    final Tile StairLocation1 = new Tile(3205, 3208, 1);
-    final Tile StairLocation2 = new Tile(3205, 3208, 2);
-    final int Stair2ID = 16673;
-    final int Stair1ID = 16672;
-    final Tile SpinLocation = new Tile(3209, 3213, 1);
-    final Area SpinArea = new Area(3213, 3217, 3208, 3212, 1);
-    final Tile SpinDoor = new Tile(3207, 3214, 1);
-    final int SpinDoorID = 1543;
-    final int SpinID = 14889;
-    final int WoolID = 1737;
-    final int BallWoolID = 1759;
-
-
-    final String SpinAction = "Spin";
-    final Key SpinStart = Key.SPACE;
-    final String StairUpAction = "Climb-up";
+    final Area   BankLocation    = Area.generateArea(3, new Tile(3208, 3219, 2));
+    final int    BankID          = 18492;
+    final Tile   StairLocation1  = new Tile(3205, 3208, 1);
+    final Tile   StairLocation2  = new Tile(3205, 3208, 2);
+    final int    Stair2ID        = 16673;
+    final int    Stair1ID        = 16672;
+    final Tile   SpinLocation    = new Tile(3209, 3213, 1);
+    final Area   SpinArea        = new Area(3213, 3217, 3208, 3212, 1);
+    final Tile   SpinDoor        = new Tile(3207, 3214, 1);
+    final int    SpinDoorID      = 1543;
+    final int    SpinID          = 14889;
+    final int    WoolID          = 1737;
+    final int    BallWoolID      = 1759;
+    final String SpinAction      = "Spin";
+    final Key    SpinStart       = Key.SPACE;
+    final String StairUpAction   = "Climb-up";
     final String StairDownAction = "Climb-down";
-
     // vars
-    State CurrentState = State.WalkingToSpin;
-    Random rand = new Random();
+    State  CurrentState = State.WalkingToSpin;
+    Random rand         = new Random();
 
     public boolean IsInsideSpinningArea()
     {
@@ -70,14 +56,15 @@ public class SpinningScript extends tpircSScript
 
     public boolean IsSpinDoorOpen()
     {
-        var Door = Arrays.stream(GameObjects.getObjectsOnTile(SpinDoor)).filter(x -> x.getID() == SpinDoorID).findFirst();
+        var Door = Arrays.stream(GameObjects.getObjectsOnTile(SpinDoor)).filter(x -> x.getID() ==
+                                                                                     SpinDoorID).findFirst();
         Logger.log(Door);
         return !Door.isPresent() || !Door.get().hasAction("Open");
     }
 
     public boolean OpenSpinDoor()
     {
-        if (!IsSpinDoorOpen())
+        if(!IsSpinDoorOpen())
         {
             Logger.log("Opening Spin Door");
             GameObject Door = GameObjects.closest(t -> t.getID() == SpinDoorID, SpinDoor);
@@ -86,40 +73,41 @@ public class SpinningScript extends tpircSScript
         return false;
     }
 
-
     @Override
     public int onLoop()
     {
 
-        if (rand.nextInt(100) > rand.nextInt(35))
+        if(rand.nextInt(100) > rand.nextInt(35))
         {
             return 0;
         }
 
 
         Tile CurrentPosition = Players.getLocal().getTile();
-        int Floor = CurrentPosition.getZ();
+        int  Floor           = CurrentPosition.getZ();
 
 
-        Optional<GameObject> Stair1 = Arrays.stream(GameObjects.getObjectsOnTile(StairLocation1)).filter(x -> x.getID() == Stair1ID).findFirst();
-        Optional<GameObject> Stair2 = Arrays.stream(GameObjects.getObjectsOnTile(StairLocation2)).filter(x -> x.getID() == Stair2ID).findFirst();
+        Optional<GameObject> Stair1 = Arrays.stream(GameObjects.getObjectsOnTile(StairLocation1)).filter(x -> x.getID() ==
+                                                                                                              Stair1ID).findFirst();
+        Optional<GameObject> Stair2 = Arrays.stream(GameObjects.getObjectsOnTile(StairLocation2)).filter(x -> x.getID() ==
+                                                                                                              Stair2ID).findFirst();
 
         Logger.log(CurrentState.toString());
 
-        switch (CurrentState)
+        switch(CurrentState)
         {
             case WalkingToSpin:
-                switch (Floor)
+                switch(Floor)
                 {
                     // bank floor
                     case 2:
 
                         Logger.log("Travel to stairs, to spin");
 
-                        if (Stair2.isPresent() && Players.getLocal().canReach(Stair2.get().getTile()))
+                        if(Stair2.isPresent() && Players.getLocal().canReach(Stair2.get().getTile()))
                         {
                             Logger.log("Down the stairs");
-                            if (Stair2.get().interact(StairDownAction))
+                            if(Stair2.get().interact(StairDownAction))
                             {
                                 Floor = 1;
                             }
@@ -137,11 +125,11 @@ public class SpinningScript extends tpircSScript
 
                         GameObject Spin = GameObjects.closest(t -> t.getID() == SpinID, SpinLocation);
 
-                        if (!IsInsideSpinningArea())
+                        if(!IsInsideSpinningArea())
                         {
                             Logger.log("Not inside Spin area, entering");
 
-                            if (!OpenSpinDoor())
+                            if(!OpenSpinDoor())
                             {
                                 Walking.walk(SpinLocation);
                             }
@@ -149,9 +137,9 @@ public class SpinningScript extends tpircSScript
                         else
                         {
                             Logger.log("inside Spin area, reaching for spin");
-                            if (Spin.canReach())
+                            if(Spin.canReach())
                             {
-                                if (Spin.interact(SpinAction))
+                                if(Spin.interact(SpinAction))
                                 {
                                     Logger.log("Transitioning state to Spinning");
                                     CurrentState = State.Spinning;
@@ -170,14 +158,14 @@ public class SpinningScript extends tpircSScript
                 }
                 break;
             case Spinning:
-                if (!Inventory.contains("Wool"))
+                if(!Inventory.contains("Wool"))
                 {
                     Logger.log("Transitioning state to Walking to the bank");
                     CurrentState = State.WalkingToBank;
                     break;
                 }
 
-                if (Players.getLocal().getAnimation() != -1)
+                if(Players.getLocal().getAnimation() != -1)
                 {
                     Logger.log("Spinning in progress");
                     break;
@@ -186,7 +174,7 @@ public class SpinningScript extends tpircSScript
                 Logger.log("Transitioning state to Spinning");
                 Keyboard.typeKey(SpinStart);
                 Sleep.sleep(rand.nextInt(3000) + 1000);
-                if (Players.getLocal().getAnimation() != -1)
+                if(Players.getLocal().getAnimation() != -1)
                 {
                     Mouse.moveOutsideScreen();
                     Logger.log("Is Spinning, wait until");
@@ -199,14 +187,14 @@ public class SpinningScript extends tpircSScript
                 }
 
 
-                if (!Inventory.contains("Wool"))
+                if(!Inventory.contains("Wool"))
                 {
                     Logger.log("Transitioning state to Spinning");
                     CurrentState = State.WalkingToBank;
                 }
                 else
                 {
-                    while (Dialogues.inDialogue())
+                    while(Dialogues.inDialogue())
                     {
                         Dialogues.clickContinue();
                         Sleep.sleep(rand.nextInt(3000) + 500);
@@ -217,14 +205,14 @@ public class SpinningScript extends tpircSScript
 
                 break;
             case WalkingToBank:
-                switch (Floor)
+                switch(Floor)
                 {
                     case 1:
                         Logger.log("Travel to stairs, to bank");
-                        if (IsInsideSpinningArea())
+                        if(IsInsideSpinningArea())
                         {
                             Logger.log("Inside Spin area, checking door");
-                            if (!OpenSpinDoor())
+                            if(!OpenSpinDoor())
                             {
                                 Walking.walk(StairLocation1);
                             }
@@ -235,10 +223,10 @@ public class SpinningScript extends tpircSScript
                             Logger.log(Stair1);
 
 
-                            if (Stair1.isPresent() && Stair1.get().hasAction(StairUpAction))
+                            if(Stair1.isPresent() && Stair1.get().hasAction(StairUpAction))
                             {
                                 Logger.log("Down the stairs");
-                                if (Stair1.get().interact(StairUpAction))
+                                if(Stair1.get().interact(StairUpAction))
                                 {
                                     Floor = 2;
                                 }
@@ -252,9 +240,9 @@ public class SpinningScript extends tpircSScript
                     case 2:
                         Tile PlayerTile = Players.getLocal().getTile();
                         GameObject BankObj = GameObjects.closest(BankID);
-                        if (BankLocation.contains(PlayerTile))
+                        if(BankLocation.contains(PlayerTile))
                         {
-                            if (Bank.open())
+                            if(Bank.open())
                             {
                                 CurrentState = State.Banking;
                             }
@@ -277,7 +265,7 @@ public class SpinningScript extends tpircSScript
                 boolean WoolLeft = Bank.withdrawAll(WoolID);
                 Sleep.sleep(rand.nextInt(3000) + 100);
 
-                if (WoolLeft)
+                if(WoolLeft)
                 {
                     CurrentState = State.WalkingToSpin;
                 }
@@ -293,6 +281,15 @@ public class SpinningScript extends tpircSScript
 
         Sleep.sleep(rand.nextInt(3000) + 1000);
         return 0;
+    }
+
+
+    public enum State
+    {
+        WalkingToSpin,
+        Spinning,
+        WalkingToBank,
+        Banking
     }
 
 }

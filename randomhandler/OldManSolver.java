@@ -18,24 +18,30 @@ import java.awt.*;
  * @author holic
  * @url https://github.com/blakeaholics/DreamBot-RandomHandler
  */
-public class OldManSolver extends RandomSolver {
+public class OldManSolver extends RandomSolver
+{
 
-    private final Integer[] OLD_MAN = {2830, 6742, 6750, 6751, 6752, 6753};
-    private final String STRING_OLD_MAN = "Mysterious Old Man";
+    private final Integer[] OLD_MAN        = {
+            2830, 6742, 6750, 6751, 6752, 6753};
+    private final String    STRING_OLD_MAN = "Mysterious Old Man";
 
-    public OldManSolver() {
+    public OldManSolver()
+    {
         super("OldManSolver");
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean shouldExecute()
+    {
         NPC oldMan = NPCs.closest(OLD_MAN);
         oldMan = (oldMan == null ? NPCs.closest(STRING_OLD_MAN) : oldMan);
-        return (oldMan != null && oldMan.getInteractingCharacter() != null && oldMan.getInteractingCharacter().equals(Players.getLocal()));
+        return (oldMan != null && oldMan.getInteractingCharacter() != null &&
+                oldMan.getInteractingCharacter().equals(Players.getLocal()));
     }
 
     @Override
-    public void onPaint(Graphics2D graphics) {
+    public void onPaint(Graphics2D graphics)
+    {
         Rectangle screen = Client.getCanvas().getBounds();
         graphics.setFont(new Font("default", Font.BOLD, 16));
         graphics.setColor(new Color(74, 255, 129, 161));
@@ -47,23 +53,32 @@ public class OldManSolver extends RandomSolver {
     }
 
     @Override
-    public int onLoop() {
+    public int onLoop()
+    {
         NPC oldMan = NPCs.closest(OLD_MAN);
         oldMan = (oldMan == null ? NPCs.closest(STRING_OLD_MAN) : oldMan);
-        if (oldMan != null) {
-            if (Dialogues.inDialogue()) {
-                if (!Dialogues.getNPCDialogue().contains("mime") && !Dialogues.getNPCDialogue().contains("maze")) {
+        if(oldMan != null)
+        {
+            if(Dialogues.inDialogue())
+            {
+                if(!Dialogues.getNPCDialogue().contains("mime") && !Dialogues.getNPCDialogue().contains("maze"))
+                {
                     RandomHandler.powerThroughDialogue();
                     Sleep.sleep(550, 2500);
-                } else {
+                }
+                else
+                {
                     RandomHandler.log("Old Man is offering a maze or mime, nah!", "OldManSolver");
-                    if (Dialogues.canContinue()) {
+                    if(Dialogues.canContinue())
+                    {
                         Sleep.sleep(550, 2500);
                         Dialogues.continueDialogue();
                         Sleep.sleep(550, 2500);
-                        if (Dialogues.chooseOption(2)) {
+                        if(Dialogues.chooseOption(2))
+                        {
                             Sleep.sleep(550, 2500);
-                            if (Dialogues.canContinue()) {
+                            if(Dialogues.canContinue())
+                            {
                                 Sleep.sleep(550, 2500);
                                 Dialogues.continueDialogue();
                                 Sleep.sleep(350, 850);
@@ -76,24 +91,28 @@ public class OldManSolver extends RandomSolver {
                 return -1;
             }
 
-            if (!Dialogues.inDialogue()) {
+            if(!Dialogues.inDialogue())
+            {
                 RandomHandler.log("Old Man! Old Man! We've got Old Man here! See? Nobody cares", "OldManSolver");
-                if (Calculations.random(2) == 1) {
+                if(Calculations.random(2) == 1)
+                {
                     int ran = Calculations.random(2, 6);
                     RandomHandler.log("Delaying speaking to Old Man by " + ran + " seconds", "OldManSolver");
                     Sleep.sleep(ran * 1000L);
                 }
                 Sleep.sleep(350, 850);
-                if (Inventory.isItemSelected()) {
+                if(Inventory.isItemSelected())
+                {
                     RandomHandler.log("Oops, item is selected", "DismissSolver");
                     Inventory.deselect();
                     Sleep.sleep(350, 850);
                 }
-                if (oldMan.interact()) {
+                if(oldMan.interact())
+                {
                     Sleep.sleep(450, 1850);
                     Sleep.sleepUntil(Dialogues::inDialogue, 10000);
-                    if (Calculations.random(3) == 1)
-                        RandomHandler.powerThroughDialogue();
+                    if(Calculations.random(3) == 1)
+                    {RandomHandler.powerThroughDialogue();}
                     RandomHandler.increaseSolvedCount();
                 }
             }

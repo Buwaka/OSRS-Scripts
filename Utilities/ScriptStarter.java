@@ -2,11 +2,12 @@ package Utilities;
 
 import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.ScriptManager;
+import org.dreambot.api.script.listener.GameTickListener;
 
 public class ScriptStarter implements Runnable
 {
 
-    public Class ClassClass = null;
+    public Class  ClassClass  = null;
     public String ClassString = "";
 
     public ScriptStarter(Class<? extends AbstractScript> className)
@@ -22,16 +23,17 @@ public class ScriptStarter implements Runnable
     @Override
     public void run()
     {
+        //TODO GameTickListener is an interface
+
         ScriptManager manager = ScriptManager.getScriptManager();
         try
         {
             Thread.sleep(1000);
-        }
-        catch (InterruptedException e)
+        } catch(InterruptedException e)
         {
             throw new RuntimeException(e);
         }
-        if (ClassClass != null)
+        if(ClassClass != null)
         {
             //manager.start(ClassClass);
         }

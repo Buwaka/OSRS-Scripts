@@ -1,5 +1,7 @@
 package SoloScripts;
 
+import Utilities.OSRSUtilities;
+import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -18,40 +20,35 @@ import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.GameObject;
 import org.dreambot.api.wrappers.interactive.NPC;
 
-import Utilities.OSRSUtilities;
-import Utilities.tpircSScript;
-
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 
-@ScriptManifest(name = "SoloScripts.ShearScript", description = "Lumbridge Sheep shearing script", author = "Semanresu",
-        version = 1.0, category = Category.CRAFTING, image = "")
+@ScriptManifest(name = "SoloScripts.ShearScript", description = "Lumbridge Sheep shearing script", author = "Semanresu", version = 1.0, category = Category.CRAFTING, image = "")
 public class ShearScript extends tpircSScript
 {
 
-    public enum States
-    {
-        TravelToSheep,
-        Shearing,
-        TravelToBank,
-        Banking
-    }
-
-    final int GateID = 12987;
-    final Tile GateLocation = new Tile(3213, 3261, 0);
-    final Area SheepArea = new Area(3193, 3276, 3212, 3258, 0);
-    final int FalseSheepID = 731;
-    final String ShearAction = "Shear";
-    final String SheepName = "Sheep";
-    final Area BankArea = Area.generateArea(3, new Tile(3209, 3219, 2));
-    final int WoolID = 1737;
+    final int    GateID       = 12987;
+    final Tile   GateLocation = new Tile(3213, 3261, 0);
+    final Area   SheepArea    = new Area(3193, 3276, 3212, 3258, 0);
+    final int    FalseSheepID = 731;
+    final String ShearAction  = "Shear";
+    final String SheepName    = "Sheep";
+    final Area   BankArea     = Area.generateArea(3, new Tile(3209, 3219, 2));
+    final int    WoolID       = 1737;
+    Random          rand            = new Random();
+    Tile            SheepLocationRTile;
+    Tile            BankLocationRTile;
+    Tile            LastDestination = null;
+    LocalPath<Tile> Path            = null;
+    States          LastState       = States.TravelToSheep;
 
     public Optional<GameObject> GetClosedGate()
     {
-        var Door = Arrays.stream(GameObjects.getObjectsOnTile(GateLocation)).filter(x -> x.getID() == GateID).findFirst();
-        if (Door.isPresent() && Door.get().hasAction("Open"))
+        var Door = Arrays.stream(GameObjects.getObjectsOnTile(GateLocation)).filter(x -> x.getID() ==
+                                                                                         GateID).findFirst();
+        if(Door.isPresent() && Door.get().hasAction("Open"))
         {
             return Door;
         }
@@ -71,9 +68,9 @@ public class ShearScript extends tpircSScript
     public States GetState()
     {
 
-        if (Inventory.isFull())
+        if(Inventory.isFull())
         {
-            if (IsInsideBankArea())
+            if(IsInsideBankArea())
             {
                 return States.Banking;
             }
@@ -82,7 +79,7 @@ public class ShearScript extends tpircSScript
                 return States.TravelToBank;
             }
         }
-        if (IsInsideSheepArea())
+        if(IsInsideSheepArea())
         {
             return States.Shearing;
         }
@@ -94,58 +91,46 @@ public class ShearScript extends tpircSScript
 
     public NPC GetClosestSheep()
     {
-        return NPCs.closest(t -> t.getName().equalsIgnoreCase(SheepName) &&
-                t.getID() != FalseSheepID &&
-                SheepArea.contains(t.getTile()) &&
-                t.hasAction(ShearAction) &&
-                !t.isMoving());
+        return NPCs.closest(t -> t.getName().equalsIgnoreCase(SheepName) && t.getID() != FalseSheepID &&
+                                 SheepArea.contains(t.getTile()) && t.hasAction(ShearAction) && !t.isMoving());
     }
-
-    Random rand = new Random();
-    Tile SheepLocationRTile;
-    Tile BankLocationRTile;
-    Tile LastDestination = null;
-    LocalPath<Tile> Path = null;
-
 
     public void RandomizeTile()
     {
         Logger.log("Randomize");
         SheepLocationRTile = SheepArea.getRandomTile();
-        BankLocationRTile = BankArea.getRandomTile();
+        BankLocationRTile  = BankArea.getRandomTile();
         MouseSettings.setSpeed(rand.nextInt(5) + 5);
     }
-
-    States LastState = States.TravelToSheep;
 
     @Override
     public int onLoop()
     {
 
-        if (rand.nextInt(100) > rand.nextInt(20))
+        if(rand.nextInt(100) > rand.nextInt(20))
         {
             return 0;
         }
 
-        if (rand.nextInt(1000) < rand.nextInt(80))
+        if(rand.nextInt(1000) < rand.nextInt(80))
         {
             RandomizeTile();
         }
 
         States State = GetState();
-        if (State != LastState)
+        if(State != LastState)
         {
             Logger.log(State);
         }
 
 
-        switch (State)
+        switch(State)
         {
             case TravelToSheep ->
             {
 
                 var Gate = GetClosedGate();
-                if (Gate.isPresent() && Gate.get().canReach() && Gate.get().hasAction("Open"))
+                if(Gate.isPresent() && Gate.get().canReach() && Gate.get().hasAction("Open"))
                 {
                     Gate.get().interact("Open");
                 }
@@ -160,7 +145,7 @@ public class ShearScript extends tpircSScript
                 MouseSettings.setSpeed(rand.nextInt(5) + 10);
                 NPC Sheep = GetClosestSheep();
                 Logger.log(Sheep);
-                while (Sheep == null)
+                while(Sheep == null)
                 {
                     Camera.rotateToYaw(Camera.getYaw() + 450 % 2000);
                     Sheep = GetClosestSheep();
@@ -172,11 +157,11 @@ public class ShearScript extends tpircSScript
                 Point Center = Sheep.getCenterPoint();
                 Center.translate(rand.nextInt(10) - 5, rand.nextInt(10) - 5);
                 Mouse.click(Center);
-                while (!Players.getLocal().isAnimating())
+                while(!Players.getLocal().isAnimating())
                 {
                     Mouse.click(Sheep.getClickablePoint());
                     Sleep.sleep(rand.nextInt(1000) + 500);
-                    if (!Sheep.hasAction(ShearAction))
+                    if(!Sheep.hasAction(ShearAction))
                     {
                         Sheep = GetClosestSheep();
                     }
@@ -186,9 +171,9 @@ public class ShearScript extends tpircSScript
             case TravelToBank ->
             {
                 var Gate = GetClosedGate();
-                if (SheepArea.contains(Players.getLocal().getTile()))
+                if(SheepArea.contains(Players.getLocal().getTile()))
                 {
-                    if (Gate.isPresent() && Gate.get().canReach() && Gate.get().hasAction("Open"))
+                    if(Gate.isPresent() && Gate.get().canReach() && Gate.get().hasAction("Open"))
                     {
                         Gate.get().interact("Open");
                     }
@@ -215,5 +200,13 @@ public class ShearScript extends tpircSScript
 
         LastState = State;
         return 0;
+    }
+
+    public enum States
+    {
+        TravelToSheep,
+        Shearing,
+        TravelToBank,
+        Banking
     }
 }

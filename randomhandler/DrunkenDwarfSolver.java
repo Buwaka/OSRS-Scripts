@@ -18,24 +18,29 @@ import java.awt.*;
  * @author holic
  * @url https://github.com/blakeaholics/DreamBot-RandomHandler
  */
-public class DrunkenDwarfSolver extends RandomSolver {
+public class DrunkenDwarfSolver extends RandomSolver
+{
 
-    private final Integer[] DWARF = {322, 2429, 4305};
-    private final String STRING_DWARF = "Drunken Dwarf";
+    private final Integer[] DWARF        = {322, 2429, 4305};
+    private final String    STRING_DWARF = "Drunken Dwarf";
 
-    public DrunkenDwarfSolver() {
+    public DrunkenDwarfSolver()
+    {
         super("DrunkenDwarfSolver");
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean shouldExecute()
+    {
         NPC dwarf = NPCs.closest(DWARF);//Just need to click ok
         dwarf = (dwarf == null ? NPCs.closest(STRING_DWARF) : dwarf);
-        return (dwarf != null && dwarf.getInteractingCharacter() != null && dwarf.getInteractingCharacter().equals(Players.getLocal()));
+        return (dwarf != null && dwarf.getInteractingCharacter() != null &&
+                dwarf.getInteractingCharacter().equals(Players.getLocal()));
     }
 
     @Override
-    public void onPaint(Graphics2D graphics) {
+    public void onPaint(Graphics2D graphics)
+    {
         Rectangle screen = Client.getCanvas().getBounds();
         graphics.setFont(new Font("default", Font.BOLD, 16));
         graphics.setColor(new Color(74, 255, 129, 161));
@@ -47,23 +52,28 @@ public class DrunkenDwarfSolver extends RandomSolver {
     }
 
     @Override
-    public int onLoop() {
+    public int onLoop()
+    {
         NPC dwarf = NPCs.closest(DWARF);//Just need to click ok
         dwarf = (dwarf == null ? NPCs.closest(STRING_DWARF) : dwarf);
-        if (dwarf != null) {
-            if (Calculations.random(2) == 1) {
+        if(dwarf != null)
+        {
+            if(Calculations.random(2) == 1)
+            {
                 int ran = Calculations.random(1, 6);
                 RandomHandler.log("Trying not to seem desperate for " + ran + " seconds...", "DrunkenDwarfSolver");
                 Sleep.sleep(ran * 1000L);
             }
             Sleep.sleep(350, 850);
-            if (Inventory.isItemSelected()) {
+            if(Inventory.isItemSelected())
+            {
                 RandomHandler.log("Oops, item is selected", "DismissSolver");
                 Inventory.deselect();
                 Sleep.sleep(350, 850);
             }
             RandomHandler.log("Oh, snap! It's beer o'clock!", "DrunkenDwarfSolver");
-            if (dwarf.interact()) {
+            if(dwarf.interact())
+            {
                 Sleep.sleep(450, 1850);
                 Sleep.sleepUntil(Dialogues::inDialogue, 10000);
                 RandomHandler.powerThroughDialogue();
