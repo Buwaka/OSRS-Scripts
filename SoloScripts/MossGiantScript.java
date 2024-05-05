@@ -3,6 +3,7 @@ package SoloScripts;
 import Cycles.CombatLootBankCycle;
 import Database.OSRSDataBase;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.ICycle;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
@@ -21,7 +22,7 @@ public class MossGiantScript extends tpircSScript
                                                                                                             1,
                                                                                                             563,
                                                                                                             1);
-    CombatLootBankCycle                             Cycle            = new CombatLootBankCycle(new Area[]{
+    CombatLootBankCycle                             Cycle            = new CombatLootBankCycle("Moss Giant slaughter", new Area[]{
             new Area(new Tile[]{
                     new Tile(3169, 9880, 0),
                     new Tile(3165, 9876, 0),
@@ -41,7 +42,8 @@ public class MossGiantScript extends tpircSScript
     @Override
     public void onStart()
     {
-        SetCycle(Cycle, 5);
+        Cycle.SetCycleType(ICycle.CycleType.Endless);
+        AddCycle(Cycle);
         super.onStart();
     }
 }

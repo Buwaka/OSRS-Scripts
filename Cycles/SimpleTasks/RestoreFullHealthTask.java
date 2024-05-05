@@ -1,6 +1,5 @@
 package Cycles.SimpleTasks;
 
-import Database.OSRSDataBase;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.Client;
@@ -8,16 +7,21 @@ import org.dreambot.api.data.consumables.Food;
 import org.dreambot.api.methods.interactive.Players;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.function.Supplier;
 
 public class RestoreFullHealthTask extends SimpleTask
 {
+
+    private GetCombatRationsTask Rations = null;
 
     public RestoreFullHealthTask(String Name)
     {
         super(Name);
         SetPassive(true);
+    }
+
+    public boolean IsFullHealth()
+    {
+        return Players.getLocal().getHealthPercent() == 100;
     }
 
     @Nonnull
@@ -28,19 +32,38 @@ public class RestoreFullHealthTask extends SimpleTask
     }
 
     @Override
-    public boolean accept()
+    public boolean Ready()
     {
-        var foods = OSRSDataBase.GetCommonFoods(!Client.isMembers());
-        return Players.getLocal().getHealthPercent() < 100 &&
-               OSRSUtilities.InventoryContainsAny(Arrays.stream(foods).mapToInt(t -> t.id).toArray()) && super.accept();
+        return OSRSUtilities.CanReachBank() && super.Ready();
     }
 
     @Override
-    public int execute()
+    public int Loop()
     {
+        if(IsFullHealth())
+        {
+            return 0;
+        }
+
         OSRSUtilities.ScriptIntenity Intensity = ScriptIntensity.get();
 
-        Food.eat(99, true);
-        return accept() ? OSRSUtilities.WaitTime(Intensity) : 0;
+        if(Rations == null && OSRSUtilities.InventoryContainsAnyFoods(Client.isMembers()))
+        {
+            Food.eat(99, true);
+            return !IsFullHealth() ? OSRSUtilities.WaitTime(Intensity) : 0;
+        }
+        else
+        {
+            if(Rations == null)
+            {
+                Rations = new GetCombatRationsTask("Restore Full Health", OSRSUtilities.GetMissingHP());
+            }
+            if(Rations.Loop() == 0)
+            {
+                Rations = null;
+            }
+        }
+
+        return super.Loop();
     }
 }

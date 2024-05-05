@@ -78,7 +78,7 @@ public class HillGiantsScript extends tpircSScript
 
     List<GroundItem> GetPickups()
     {
-        // caching
+//         caching
 //        if(OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 1, 1000))
 //        {
 //            _pickups = GroundItems.all(t -> Arrays.stream(PickupFocus).anyMatch(x -> x == t.getID()));
@@ -185,7 +185,6 @@ public class HillGiantsScript extends tpircSScript
             }
             case FocusPickup ->
             {
-                // TODO current Foe
                 Character Foe = null;
                 if(Players.getLocal().isInteractedWith())
                 {

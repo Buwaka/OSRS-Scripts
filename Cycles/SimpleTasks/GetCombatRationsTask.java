@@ -11,12 +11,11 @@ import java.util.function.Supplier;
 
 public class GetCombatRationsTask extends SimpleTask
 {
-//TODO make it so that it heals up completely and takes the required rations
     public  AtomicInteger                 HPToCarry     = new AtomicInteger(20);
     public  AtomicInteger                 MaxItems      = new AtomicInteger(10);
     private boolean                       FirstCheck    = true;
     private List<OSRSUtilities.BankEntry> ItemsToPickup = null;
-    private Supplier<Boolean> CompleteCondition;
+    private Supplier<Boolean>             CompleteCondition;
 
     public GetCombatRationsTask(String Name, int HPtoCarry)
     {
@@ -32,17 +31,18 @@ public class GetCombatRationsTask extends SimpleTask
     }
 
     @Override
-    public boolean accept()
+    public boolean Ready()
     {
-        return OSRSUtilities.CanReachBank() && super.accept();
+        return OSRSUtilities.CanReachBank() && OSRSUtilities.InventoryHPCount() < HPToCarry.get() && super.Ready();
     }
 
     @Override
-    public int execute()
+    public int Loop()
     {
         if(FirstCheck)
         {
-            var temp = OSRSUtilities.GetBestFoodChoice(HPToCarry.get());
+            var HPtoGet = HPToCarry.get();
+            var temp    = OSRSUtilities.GetBestFoodChoice(HPtoGet);
             if(temp == null)
             {
                 Logger.log("Failed to gather optimal food choices from bank");
@@ -51,7 +51,7 @@ public class GetCombatRationsTask extends SimpleTask
             AtomicInteger MaxCounter = new AtomicInteger(MaxItems.get());
             ItemsToPickup = temp.stream().map(t -> {
                 int max = MaxCounter.addAndGet(-t.getValue());
-                return new OSRSUtilities.BankEntry(t.getKey(),Math.min(max, t.getValue()));
+                return new OSRSUtilities.BankEntry(t.getKey(), Math.min(max, t.getValue()));
             }).toList();
             for(var item : ItemsToPickup)
             {
@@ -63,7 +63,7 @@ public class GetCombatRationsTask extends SimpleTask
         }
         else
         {
-            OSRSUtilities.ProcessBankEntries(null, ItemsToPickup, OSRSUtilities.WaitTime(ScriptIntensity.get()));
+            OSRSUtilities.ProcessBankEntries(GetScript(), null, ItemsToPickup, OSRSUtilities.WaitTime(ScriptIntensity.get()));
         }
 
         return 0;

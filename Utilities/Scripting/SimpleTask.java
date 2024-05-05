@@ -1,8 +1,12 @@
 package Utilities.Scripting;
 
 import Utilities.OSRSUtilities;
+import Utilities.Patterns.Delegates.Delegate1;
+import Utilities.Patterns.SimpleDelegate;
 import org.dreambot.api.script.TaskNode;
+import org.dreambot.api.utilities.Logger;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -12,19 +16,41 @@ public abstract class SimpleTask extends TaskNode implements ITask
     private final OSRSUtilities.ScriptIntenity                  _scriptIntensity  = OSRSUtilities.ScriptIntenity.Lax;
     public        AtomicReference<OSRSUtilities.ScriptIntenity> ScriptIntensity   = new AtomicReference<>(
             _scriptIntensity);
-    public        AtomicInteger     TaskPriority      = new AtomicInteger(1);
-    public    Supplier<Boolean> AcceptCondition   = () -> true;
-    public        Supplier<Boolean> CompleteCondition = null;
+    public        AtomicInteger                                 TaskPriority      = new AtomicInteger(1);
+    public        Supplier<Boolean>                             AcceptCondition   = () -> true;
+    public        Supplier<Boolean>                             CompleteCondition = null;
+    public        SimpleDelegate                                onComplete        = new SimpleDelegate();
+    public        Delegate1<SimpleTask>                         onReplaced        = new Delegate1<>();
+    public        SimpleDelegate                                onAccept          = new SimpleDelegate();
+    public        Delegate1<Integer>                            onExecute         = new Delegate1<>();
+    public        SimpleDelegate                                onStart           = new SimpleDelegate();
+    public        SimpleDelegate                                onStop            = new SimpleDelegate();
+    public        SimpleDelegate                                onPause           = new SimpleDelegate();
+    public        SimpleDelegate                                onUnPause         = new SimpleDelegate();
     private       boolean                                       Alive             = true;
     private       boolean                                       Passive           = false;
-    private       boolean                                       Paused           = false;
-    private       boolean                                       Persist          = false;
-    private       String                                        TaskName         = "";
+    private       boolean                                       Paused            = false;
+    private       boolean                                       Persist           = false;
+    private       String                                        TaskName          = "";
+    private       WeakReference<tpircSScript>                   ParentScript      = null;
 
     public SimpleTask(String Name)
     {
         TaskName = Name;
         Persist  = false;
+    }
+
+    /**
+     * Be sure to call this in case you don't add the task to the script using any of the addnode(), aka advanced tasks
+     */
+    public void Init(tpircSScript Script)
+    {
+        ParentScript = new WeakReference<>(Script);
+    }
+
+    public tpircSScript GetScript()
+    {
+        return ParentScript.get();
     }
 
     /**
@@ -38,9 +64,9 @@ public abstract class SimpleTask extends TaskNode implements ITask
     /**
      * @return Whether this task is necessary to be completed
      */
-    public final boolean IsPassive()    {return Passive;}
+    public final boolean IsPassive() {return Passive;}
 
-    public final boolean IsPaused()     {return Paused;}
+    public final boolean IsPaused() {return Paused;}
 
     /**
      * @return whether this task should go back into the task list once its completed
@@ -64,18 +90,6 @@ public abstract class SimpleTask extends TaskNode implements ITask
         return GetTaskType().name() + ": " + TaskName;
     }
 
-    @Override
-    public int priority()
-    {
-        return TaskPriority.get();
-    }
-
-    @Override
-    public boolean accept()
-    {
-        return AcceptCondition.get();
-    }
-
     /**
      * @return whether this task should go back into the task list once its completed
      */
@@ -93,9 +107,14 @@ public abstract class SimpleTask extends TaskNode implements ITask
      */
     protected final boolean StartTask(tpircSScript Script)
     {
-        Alive  = true;
+        Alive = true;
         ScriptIntensity.set(Script.GetScriptIntensity());
-        return onStartTask(Script);
+        boolean result = onStartTask(Script);
+        if(result)
+        {
+            onStart.Fire();
+        }
+        return result;
     }
 
     /**
@@ -106,7 +125,9 @@ public abstract class SimpleTask extends TaskNode implements ITask
     public final boolean PauseTask(tpircSScript Script)
     {
         Paused = true;
-        return onPauseTask(Script);
+        boolean result = onPauseTask(Script);
+        onPause.Fire();// see if we need to enclose this by a if check as well
+        return result;
     }
 
     /**
@@ -117,7 +138,9 @@ public abstract class SimpleTask extends TaskNode implements ITask
     public final boolean UnPauseTask(tpircSScript Script)
     {
         Paused = false;
-        return onUnPauseTask(Script);
+        boolean result = onUnPauseTask(Script);
+        onUnPause.Fire(); // see if we need to enclose this by a if check as well
+        return result;
     }
 
     /**
@@ -127,8 +150,19 @@ public abstract class SimpleTask extends TaskNode implements ITask
      */
     protected final boolean StopTask(tpircSScript Script)
     {
-        Alive  = false;
-        return onStopTask(Script);
+        Alive = false;
+        boolean result = onStopTask(Script);
+        if(result)
+        {
+            onStop.Fire();
+        }
+        return result;
+    }
+
+    protected final void ReplaceTask(tpircSScript Script, SimpleTask other)
+    {
+        onReplaced(Script, other);
+        onReplaced.Fire(other);
     }
 
     /**
@@ -138,8 +172,42 @@ public abstract class SimpleTask extends TaskNode implements ITask
      */
     public void onReplaced(tpircSScript Script, SimpleTask other) {}
 
+
     @Override
-    public int execute()
+    public int priority()
+    {
+        return TaskPriority.get();
+    }
+
+    @Override
+    public final boolean accept()
+    {
+        boolean result = Ready();
+        if(result)
+        {
+            onAccept.Fire();
+        }
+        return result;
+    }
+
+    protected boolean Ready()
+    {
+        return AcceptCondition.get();
+    }
+
+    @Override
+    public final int execute()
+    {
+        int result = Loop();
+        onExecute.Fire(result);
+        if(result == 0)
+        {
+            onComplete.Fire();
+        }
+        return result;
+    }
+
+    protected int Loop()
     {
         return CompleteCondition != null && CompleteCondition.get() ? 0 : OSRSUtilities.WaitTime(ScriptIntensity.get());
     }

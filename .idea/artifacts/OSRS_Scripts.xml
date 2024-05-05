@@ -1,8 +1,10 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="OSRS-Scripts">
+  <artifact type="jar" build-on-make="true" name="OSRS-Scripts">
     <output-path>$USER_HOME$/DreamBot/Scripts</output-path>
     <root id="archive" name="OSRS-Scripts.jar">
       <element id="module-output" name="OSRS-Scripts" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../../JavaLibs/vavr-0.10.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../../../JavaLibs/vavr-match-0.10.4.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

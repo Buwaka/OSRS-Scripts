@@ -12,13 +12,13 @@ import org.dreambot.api.wrappers.items.GroundItem;
 import javax.annotation.Nonnull;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class LootKillsTask extends SimpleTask implements PropertyChangeListener
 {
-    private final List<GroundItem> LootItems = new ArrayList<>();
+    //TODO priority based on rarity from itemdb
+    private final ConcurrentLinkedQueue<GroundItem> LootItems = new ConcurrentLinkedQueue<>();
 
     public LootKillsTask()
     {
@@ -26,10 +26,26 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
         SetPersistant(true);
     }
 
+    private void Cleanup()
+    {
+        for(var loot : LootItems)
+        {
+            if(!loot.exists())
+            {
+                LootItems.remove(loot);
+                Logger.log(loot.toString() + " removing from loot");
+            }
+            else
+            {
+                Logger.log(loot.toString() + " exists:" + loot.exists() + " isonscreen:" + loot.isOnScreen());
+            }
+
+        }
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
-
         int  ID       = (int) evt.getOldValue();
         Tile lootTile = (Tile) evt.getNewValue();
 
@@ -47,18 +63,15 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
     }
 
     @Override
-    public boolean accept()
+    public boolean Ready()
     {
-        return !LootItems.isEmpty() && super.accept();
+        return !LootItems.isEmpty() && super.Ready();
     }
 
     @Override
-    public int execute()
+    public int Loop()
     {
-        for(var loot : LootItems)
-        {
-            Logger.log(loot.toString() + " exists:" + loot.exists() + " isonscreen:" + loot.isOnScreen() );
-        }
+        Cleanup();
 
         if(LootItems.isEmpty())
         {
@@ -67,7 +80,7 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
         GroundItem Item = null;
         while(Item == null)
         {
-            var first = LootItems.getFirst();
+            var first = LootItems.peek();
             if(!first.exists())
             {
                 LootItems.remove(first);
@@ -91,13 +104,7 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
 
         Item.interact();
 
-        Sleep.sleepTicks(3);
-        if(!Item.exists())
-        {
-            LootItems.remove(Item);
-        }
-
-        return super.execute();
+        return super.Loop();
     }
 
     @Nonnull

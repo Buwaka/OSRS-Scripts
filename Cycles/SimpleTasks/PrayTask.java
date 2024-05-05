@@ -23,14 +23,14 @@ public class PrayTask extends SimpleTask
     }
 
     @Override
-    public boolean accept()
+    public boolean Ready()
     {
         return Inventory.contains(t -> t.hasAction(BuryAction, ScatterAction) &&
-                                       Arrays.stream(PrayExcepts).anyMatch(x -> x != t.getID())) && super.accept();
+                                       Arrays.stream(PrayExcepts).anyMatch(x -> x != t.getID())) && super.Ready();
     }
 
     @Override
-    public int execute()
+    public int Loop()
     {
         if(Inventory.contains(t -> t.hasAction(BuryAction, ScatterAction) &&
                                    Arrays.stream(PrayExcepts).anyMatch(x -> x != t.getID())))
@@ -44,7 +44,7 @@ public class PrayTask extends SimpleTask
             // Done
             return 0;
         }
-        return OSRSUtilities.WaitTime(ScriptIntensity.get());
+        return super.Loop();
     }
 
     @Nonnull

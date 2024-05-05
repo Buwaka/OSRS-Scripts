@@ -45,12 +45,16 @@ public interface ITask
         RestoreFullHealth,
         Pray,
         LootKills,
+        LootLookout,
         LootArea,
         MinimumHealth,
         FleeOvercrowd,
         BankItems,
         BankEquipment,
         GetCombatRations,
+        RestorePrayer,
+        Combine,
+        OpenBank,
 
         //Advanced tasks
         SlaughterAndLoot

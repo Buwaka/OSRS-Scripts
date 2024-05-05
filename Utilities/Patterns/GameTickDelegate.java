@@ -1,0 +1,40 @@
+package Utilities.Patterns;
+
+import org.dreambot.api.utilities.Logger;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
+
+public class GameTickDelegate extends SimpleDelegate
+{
+    ConcurrentLinkedQueue<Semaphore> Tickers = new ConcurrentLinkedQueue<>();
+
+    public void WaitTicks(int ticks)
+    {
+        Semaphore Lock = new Semaphore(-ticks);
+        Tickers.add(Lock);
+        try
+        {
+            Logger.log("Waiting for ticks");
+            Lock.acquire();
+            Tickers.remove(Lock);
+        } catch(Exception e)
+        {
+            Logger.log("GameTickDelegate: Failed to wait for the lock somehow, possibly thread got interrupted " + e);
+        }
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void Fire()
+    {
+        super.Fire();
+        for(var ticker : Tickers)
+        {
+            Logger.log(ticker.availablePermits() + " available permits left");
+            ticker.release();
+        }
+    }
+}

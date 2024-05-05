@@ -14,7 +14,7 @@ public class BankItemsTask extends SimpleTask
     private final List<OSRSUtilities.BankEntry> Withdraws = new ArrayList<>();
     private final List<OSRSUtilities.BankEntry> Deposits  = new ArrayList<>();
     private       BankLocation                  Location  = null;
-    private Supplier<Boolean> CompleteCondition;
+    private       Supplier<Boolean>             CompleteCondition;
 
     public BankItemsTask(String Name)
     {
@@ -56,15 +56,16 @@ public class BankItemsTask extends SimpleTask
     }
 
     @Override
-    public boolean accept()
+    public boolean Ready()
     {
-        return OSRSUtilities.CanReachBank(Location) && (!Withdraws.isEmpty() || !Deposits.isEmpty()) && super.accept();
+        return OSRSUtilities.CanReachBank(Location) && (!Withdraws.isEmpty() || !Deposits.isEmpty()) && super.Ready();
     }
 
     @Override
-    public int execute()
+    public int Loop()
     {
-        OSRSUtilities.ProcessBankEntries(Deposits, Withdraws, OSRSUtilities.WaitTime(ScriptIntensity.get()));
+        OSRSUtilities.ProcessBankEntries(GetScript(), Deposits, Withdraws, OSRSUtilities.WaitTime(ScriptIntensity.get()));
+        OSRSUtilities.BankClose();
         return 0;
     }
 

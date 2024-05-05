@@ -7,9 +7,11 @@
       <sourceFolder url="file://$MODULE_DIR$/Database/items" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/Database/monsters" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/Database/misc" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/Cycles/CycleDatabase" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="BotData" level="project" />
+    <orderEntry type="library" exported="" name="BotData" level="project" />
+    <orderEntry type="library" exported="" name="io.vavr" level="application" />
   </component>
 </module>

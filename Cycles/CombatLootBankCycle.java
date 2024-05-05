@@ -9,7 +9,6 @@ import Cycles.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
-import org.dreambot.api.Client;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.interactive.Players;
@@ -22,53 +21,48 @@ import org.dreambot.api.utilities.Logger;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CombatLootBankCycle extends SimpleCycle
 {
+
+    public  AtomicInteger                                   HPtoCarry        = new AtomicInteger(
+            Skills.getRealLevel(Skill.HITPOINTS) / 2);
     private Area[]                                          KillingArea;
     private int[]                                           Targets;
     private BankLocation                                    BankingLocation  = null;
     private List<AbstractMap.SimpleEntry<Integer, Integer>> ItemRequirements = null;
 
-    public CombatLootBankCycle(Area[] KillingArea, int[] Targets, List<AbstractMap.SimpleEntry<Integer, Integer>> ItemRequirements, BankLocation BankLoc)
+    public CombatLootBankCycle(String Name, Area[] KillingArea, int[] Targets, List<AbstractMap.SimpleEntry<Integer, Integer>> ItemRequirements, BankLocation BankLoc)
     {
+        super(Name);
         this.KillingArea      = KillingArea;
         this.Targets          = Targets;
         this.BankingLocation  = BankLoc;
         this.ItemRequirements = ItemRequirements;
-
-        SetCycleType(CycleType.byCount);
     }
 
-    public CombatLootBankCycle(Area[] KillingArea, int[] Targets)
+    public CombatLootBankCycle(String Name, Area[] KillingArea, int[] Targets)
     {
+        super(Name);
         this.KillingArea = KillingArea;
         this.Targets     = Targets;
-
-        SetCycleType(CycleType.byCount);
     }
 
-    public CombatLootBankCycle(Area[] KillingArea, int[] Targets, List<AbstractMap.SimpleEntry<Integer, Integer>> ItemRequirements)
+    public CombatLootBankCycle(String Name, Area[] KillingArea, int[] Targets, List<AbstractMap.SimpleEntry<Integer, Integer>> ItemRequirements)
     {
+        super(Name);
         this.KillingArea      = KillingArea;
         this.Targets          = Targets;
         this.ItemRequirements = ItemRequirements;
-
-        SetCycleType(CycleType.byCount);
     }
 
-    public CombatLootBankCycle(Area[] KillingArea, int[] Targets, BankLocation BankLoc)
+    public CombatLootBankCycle(String Name, Area[] KillingArea, int[] Targets, BankLocation BankLoc)
     {
+        super(Name);
         this.KillingArea     = KillingArea;
         this.Targets         = Targets;
         this.BankingLocation = BankLoc;
-
-        SetCycleType(CycleType.byCount);
-    }
-
-    public boolean IsReadyForCombat(int minHP)
-    {
-        return OSRSUtilities.CheckInventory(ItemRequirements, false) && Players.getLocal().getHealthPercent() > minHP;
     }
 
     public TravelTask TravelToBank()
@@ -92,14 +86,8 @@ public class CombatLootBankCycle extends SimpleCycle
         Travel1.CompleteCondition = () -> Arrays.stream(KillingArea).anyMatch(t -> t.contains(Players.getLocal().getTile()));
         SlaughterAndLoot SALTask = new SlaughterAndLoot("Killing and Looting", KillingArea, Targets, ItemRequirements);
 
-        if(!IsReadyForCombat(SALTask.GetMaxHit() + 2))
+        if(!OSRSUtilities.CheckInventory(ItemRequirements, false))
         {
-            RestoreFullHealthTask Healup = new RestoreFullHealthTask("Healup with scraps from last cycle");
-            Healup.TaskPriority.set(-2);
-            Healup.CompleteCondition = () -> OSRSUtilities.InventoryContainsAnyFoods(!Client.isMembers()) ||
-                                             Players.getLocal().getHealthPercent() == 100;
-            Healup.AcceptCondition   = () -> !Healup.CompleteCondition.get();
-
             Logger.log("NotReady for combat, first go to bank");
             TravelTask Travel3 = TravelToBank();
             Travel3.SetTaskName("Travel To Bank For ItemRequirements");
@@ -121,13 +109,22 @@ public class CombatLootBankCycle extends SimpleCycle
                 Setup.SetSpecificBank(BankingLocation);
             }
             Setup.TaskPriority.set(-1);
+            Script.addNodes(Setup);
+        }
 
-            GetCombatRationsTask Rations = new GetCombatRationsTask("Get Rations",
-                                                                    Skills.getRealLevel(Skill.HITPOINTS));
+        Logger.log(HPtoCarry.get() + " " + OSRSUtilities.InventoryHPCount());
+        if(OSRSUtilities.InventoryHPCount() < HPtoCarry.get())
+        {
+            GetCombatRationsTask Rations = new GetCombatRationsTask("Get Rations", HPtoCarry.get());
             Rations.TaskPriority.set(-1);
+            Script.addNodes(Rations);
+        }
 
-            Script.addNodes(Setup, Rations, Healup);
-
+        if(Players.getLocal().getHealthPercent() < (Skills.getRealLevel(Skill.HITPOINTS) / 2))
+        {
+            RestoreFullHealthTask Healup = new RestoreFullHealthTask("FullHeal");
+            Healup.TaskPriority.set(-2);
+            Script.addNodes(Healup);
         }
 
         TravelTask Travel2 = TravelToBank();
@@ -157,6 +154,12 @@ public class CombatLootBankCycle extends SimpleCycle
     }
 
     @Override
+    public boolean IsCycleComplete(tpircSScript Script)
+    {
+        return !Script.IsActiveTaskLeft();
+    }
+
+    @Override
     public boolean onRestart(tpircSScript Script)
     {
         StartCycle(Script);
@@ -164,17 +167,9 @@ public class CombatLootBankCycle extends SimpleCycle
     }
 
     @Override
-    public boolean onStart(tpircSScript Script, int CycleCount)
+    public boolean onStart(tpircSScript Script)
     {
         StartCycle(Script);
-        if(CycleCount == -1)
-        {
-            SetCycleType(CycleType.Endless);
-        }
-        else
-        {
-            SetCycleLimit(CycleCount);
-        }
         return true;
     }
 }

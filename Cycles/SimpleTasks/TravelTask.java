@@ -100,13 +100,7 @@ public class TravelTask extends SimpleTask
     }
 
     @Override
-    public boolean accept()
-    {
-        return AcceptCondition.get();
-    }
-
-    @Override
-    public int execute()
+    public int Loop()
     {
         OSRSUtilities.ScriptIntenity Intensity = ScriptIntensity.get();
 
@@ -218,7 +212,7 @@ public class TravelTask extends SimpleTask
             onReachedDestination.Fire();
             return 0;
         }
-        return OSRSUtilities.WaitTime(Intensity);
+        return super.Loop();
     }
 
     @Override

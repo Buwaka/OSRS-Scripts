@@ -16,13 +16,13 @@ public class BankEquipmentTask extends SimpleTask
     }
 
     @Override
-    public boolean accept()
+    public boolean Ready()
     {
         return false;
     }
 
     @Override
-    public int execute()
+    public int Loop()
     {
         return 0;
     }

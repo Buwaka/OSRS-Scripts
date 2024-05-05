@@ -1,5 +1,8 @@
 package Utilities.Patterns;
 
+
+import org.dreambot.api.utilities.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +12,7 @@ public class SimpleDelegate
 
     public boolean Subscribe(Runnable function)
     {
+        Logger.log("Adding sub: " + function);
         return Subscribers.add(function);
     }
 
@@ -18,5 +22,9 @@ public class SimpleDelegate
         {
             func.run();
         }
+    }
+
+    public int SubscribeCount() {
+        return Subscribers.size();
     }
 }

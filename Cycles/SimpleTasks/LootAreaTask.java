@@ -35,14 +35,14 @@ public class LootAreaTask extends SimpleTask
     }
 
     @Override
-    public boolean accept()
+    public boolean Ready()
     {
         CheckAreas();
-        return !LootItems.isEmpty() && super.accept();
+        return !LootItems.isEmpty() && super.Ready();
     }
 
     @Override
-    public int execute()
+    public int Loop()
     {
         if(LootItems.isEmpty())
         {
@@ -77,7 +77,7 @@ public class LootAreaTask extends SimpleTask
             LootItems.removeFirst();
         }
 
-        return super.execute();
+        return super.Loop();
     }
 
     @Nonnull

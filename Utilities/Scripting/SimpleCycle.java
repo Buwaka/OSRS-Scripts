@@ -5,15 +5,37 @@ import Utilities.Patterns.SimpleDelegate;
 import org.dreambot.api.utilities.Logger;
 
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 
 
-public class SimpleCycle implements ICycle
+public class SimpleCycle implements ICycle, Serializable
 {
-    public  PropertyChangeSupport onCompleteCycle = new PropertyChangeSupport(this);
-    public  SimpleDelegate        onCycleEnd      = new SimpleDelegate();
-    private CycleType             Type            = CycleType.Null;
-    private int                   CycleCount      = 0;
-    private int                   CycleLimit      = -1; //for byCount type cycles
+    public transient  PropertyChangeSupport onCompleteCycle = new PropertyChangeSupport(this);
+    public transient  SimpleDelegate        onCycleEnd      = new SimpleDelegate();
+    private transient CycleType             Type            = CycleType.Null;
+    private transient int                   CycleCount      = 0;
+    private transient boolean               Finished        = false;
+    private           String                CycleName       = "";
+
+    private SimpleCycle()
+    {
+        onCompleteCycle = new PropertyChangeSupport(this);
+        onCycleEnd      = new SimpleDelegate();
+    }
+
+    public SimpleCycle(String name)
+    {
+        CycleName = name;
+    }
+
+    public String GetName()          {return CycleName;}
+
+    public void SetName(String name) {CycleName = name;}
+
+    public String toString()
+    {
+        return CycleName + " type: " + Type.name() + " CycleCount: " + CycleCount;
+    }
 
     @Override
     public final int GetCycleCount()
@@ -33,9 +55,15 @@ public class SimpleCycle implements ICycle
         return Type;
     }
 
+    @Override
+    public boolean IsFinished()
+    {
+        return Finished;
+    }
+
     public void SetCycleLimit(int Limit)
     {
-        CycleLimit = Limit;
+        Type.Count = Limit;
     }
 
     protected final void CompleteCycle()
@@ -50,25 +78,26 @@ public class SimpleCycle implements ICycle
         CycleCount = 0;
     }
 
-    protected final boolean Start(tpircSScript Script, int CycleCount)
-    {
-        return onStart(Script, CycleCount);
-    }
+    //protected boolean CanStart(tpircSScript Script) { return true;}
 
     protected final boolean Start(tpircSScript Script)
     {
-        return onStart(Script, -1);
+        return onStart(Script);
     }
 
     public final boolean End(tpircSScript Script)
     {
-        return onEnd(Script);
+        Finished = true;
+        onCycleEnd.Fire();
+        return true;
     }
 
+    /**
+     * No excuses, the cycle ends now, doesn't trigger any delegate, be sure to call End first in case you want it to fire
+     */
     public final void EndNow(tpircSScript Script)
     {
         onEndNow(Script);
-        onCycleEnd.Fire();
     }
 
     public boolean CanRestart(tpircSScript Script) {return true;}
@@ -82,27 +111,20 @@ public class SimpleCycle implements ICycle
     {
         int result = onLoop(Script);
 
-//        if(!Script.IsActiveTaskLeft())
-//        {
-//            Logger.log("Inside Cycle");
-//            CompleteCycle();
-//            Restart(Script);
-//        }
-
         switch(Type)
         {
             case byCount ->
             {
-                if(CycleCount >= CycleLimit && End(Script))
+                if(CycleCount >= Type.Count && End(Script))
                 {
-                    onCycleEnd.Fire();
+                    EndNow(Script);
                 }
             }
             case byGoal ->
             {
-                if(GoalIsMet() && End(Script))
+                if(Type.Goal != null && Type.Goal.get() && End(Script))
                 {
-                    onCycleEnd.Fire();
+                    EndNow(Script);
                 }
             }
             case Endless ->

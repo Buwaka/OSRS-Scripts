@@ -424,7 +424,7 @@ public class OSRSDataBase
         return out.toArray(out.toArray(new Food[0]));
     }
 
-    public static Food[] GetCommonFoods(boolean f2p)
+    public static Food[] GetCommonFoods(boolean Member)
     {
         if(!CommonFoodDBCache.isEmpty())
         {
@@ -446,7 +446,7 @@ public class OSRSDataBase
             {
                 int  ID  = Integer.parseInt(Reader.nextName());
                 Food Obj = gson.fromJson(Reader, Food.class);
-                if(!f2p || Obj.members)
+                if(!Obj.members || Member)
                 {
                     out.add(Obj);
                 }

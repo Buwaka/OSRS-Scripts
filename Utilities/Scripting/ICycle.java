@@ -1,5 +1,7 @@
 package Utilities.Scripting;
 
+import java.util.function.Supplier;
+
 public interface ICycle
 {
     /**
@@ -11,23 +13,32 @@ public interface ICycle
 
     CycleType GetCycleType();
 
-    default boolean GoalIsMet() {return false;}
+    /**
+     * @return Cycle is completely done and should/will be terminated
+     */
+    boolean IsFinished();
+
+    /**
+     * will onlu be called once there are no active tasks anymore, so implement this as an extra check
+     *
+     * @return Cycle completed, ready for a restart
+     */
+    default boolean IsCycleComplete(tpircSScript Script) {return true;}
+
+    ;
 
     /**
      * @param Script
-     * @param CycleCount Amount of cycles to perform
      *
      * @return if cycle has successfully started
      */
-    default boolean onStart(tpircSScript Script, int CycleCount) {return true;}
+    default boolean onStart(tpircSScript Script) {return true;}
 
     /**
      * End cycle after current cycle has finished
      *
      * @return if cycle has successfully ended
      */
-// Cycle until goal has been reached
-//boolean Start(Requirement)
     default boolean onEnd(tpircSScript Script) {return true;}
 
     /**
@@ -46,7 +57,13 @@ public interface ICycle
         byCount,
         byGoal,
         Endless,
-        Null
+        Null;
+
+        /**
+         * returns true when goal is met
+         */
+        public Supplier<Boolean> Goal  = null;
+        public Integer           Count = null;
     }
 
 }

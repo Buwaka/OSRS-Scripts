@@ -5,6 +5,7 @@ import Utilities.Combat.CombatManager;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import Utilities.Scripting.tpircSScript;
+import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
@@ -16,7 +17,8 @@ import org.dreambot.api.wrappers.interactive.NPC;
 import javax.annotation.Nonnull;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SlaughterTask extends SimpleTask
@@ -26,25 +28,21 @@ public class SlaughterTask extends SimpleTask
     public AtomicInteger         CombatTimeout = new AtomicInteger(1000);
     public AtomicInteger         CacheTimeout  = new AtomicInteger(300);
     NPC _closestTarget = null;
-    private Area[]                     KillingAreas      = null;
-    private int[]                      TargetIDs         = null;
-    private long                       _taskTimeoutStart = 0;
-    private HashMap<Character, Thread> TargetListeners   = new HashMap<>();
+    private Area[]                             KillingAreas      = null;
+    private int[]                              TargetIDs         = null;
+    private long                               _taskTimeoutStart = 0;
+    private ConcurrentHashMap<Integer, Thread> TargetListeners   = new ConcurrentHashMap<>();
 
-    public SlaughterTask(String Name)
+    public SlaughterTask(String Name, Area[] TargetAreas, String TargetName, boolean Exact)
     {
         super(Name);
-    }
-
-    // Whether Names have to exactly the same
-    public void Init(Area[] TargetAreas, String TargetName, boolean Exact)
-    {
         KillingAreas   = TargetAreas;
         this.TargetIDs = OSRSDataBase.GetMonsterIDsByName(TargetName, Exact);
     }
 
-    public void Init(Area[] TargetAreas, int[] TargetIDs)
+    public SlaughterTask(String Name, Area[] TargetAreas, int[] TargetIDs)
     {
+        super(Name);
         KillingAreas   = TargetAreas;
         this.TargetIDs = TargetIDs;
     }
@@ -62,14 +60,17 @@ public class SlaughterTask extends SimpleTask
     {
         if(!TargetListeners.isEmpty())
         {
-            Character weakest    = null;
-            int       healthperc = 100;
-            for(var terget : TargetListeners.entrySet())
+            Character    weakest    = null;
+            int          healthperc = 100;
+            Set<Integer> keys       = TargetListeners.keySet();
+            var          Targets    = NPCs.all(y -> keys.contains(y.hashCode()));
+
+            for(var target : Targets)
             {
-                if(terget.getKey().getHealthPercent() <= healthperc)
+                if(target.getHealthPercent() <= healthperc)
                 {
-                    weakest    = terget.getKey();
-                    healthperc = terget.getKey().getHealthPercent();
+                    weakest    = target;
+                    healthperc = target.getHealthPercent();
                 }
             }
             return weakest;
@@ -91,7 +92,7 @@ public class SlaughterTask extends SimpleTask
     }
 
     @Override
-    public boolean accept()
+    public boolean Ready()
     {
         return GetTarget() != null;
     }
@@ -103,21 +104,20 @@ public class SlaughterTask extends SimpleTask
 
     private void TargetListener(Character Target)
     {
-        Logger.log("Starting to listen to target: " + Target.toString());
+        Logger.log("Starting to listen to target: " + Target.toString() + " hashcode: " + Target.hashCode());
         if(Sleep.sleepUntil(() -> !Target.exists(), Long.MAX_VALUE))
         {
             Logger.log("Target has ceased to exist or has been defeated, waiting for end of animation for loot");
             Sleep.sleepUntil(() -> !Target.isAnimating(), 10000);
             Sleep.sleepTicks(3);
             onKill(Target.getID(), Target.getTile());
-
         }
         else
         {
             Logger.log("Target Timeout");
         }
-        Logger.log("Stop listening to target: " + Target.toString());
-        TargetListeners.remove(Target);
+        Logger.log("Stop listening to target: " + Target.toString() + " hashcode: " + Target.hashCode());
+        TargetListeners.remove(Target.hashCode());
     }
 
     @Override
@@ -128,30 +128,34 @@ public class SlaughterTask extends SimpleTask
     }
 
     @Override
-    public int execute()
+    public int Loop()
     {
         var allTargets = OSRSUtilities.GetAllCharactersInteractingWith(Players.getLocal());
         for(var target : allTargets)
         {
-            if(!TargetListeners.containsKey(target))
+            Integer hashcode = target.hashCode();
+            if(!TargetListeners.containsKey(hashcode) && target.canAttack())
             {
-                Logger.log("New Enemy found, listening, UID: " + target.toString());
+                //TODO for some reason, the map gets reset after every update
+                Logger.log("New Enemy found, listening, UID: " + hashcode);
                 Thread TargetListener = new Thread(() -> TargetListener(target));
                 TargetListener.start();
-                TargetListeners.put(target, TargetListener);
+                Thread th = new Thread(TargetListener);
+                TargetListeners.put(hashcode, th);
             }
             Logger.log("EnemyCount " + TargetListeners.size());
         }
 
         var Target = GetTarget();
 
-        if(Target != null && (Players.getLocal().getInteractingCharacter() != Target || !Players.getLocal().isHealthBarVisible() ))
+        if(Target != null &&
+           (Players.getLocal().getInteractingCharacter() != Target || !Players.getLocal().isHealthBarVisible()))
         {
             CombatManager.GetInstance(Players.getLocal()).Fight(Target);
         }
 
 
-        return super.execute();
+        return super.Loop();
     }
 
     @Nonnull

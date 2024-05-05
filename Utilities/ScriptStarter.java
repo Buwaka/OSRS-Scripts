@@ -4,7 +4,7 @@ import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.ScriptManager;
 import org.dreambot.api.script.listener.GameTickListener;
 
-public class ScriptStarter implements Runnable
+public class ScriptStarter implements Runnable, GameTickListener
 {
 
     public Class  ClassClass  = null;
@@ -23,7 +23,6 @@ public class ScriptStarter implements Runnable
     @Override
     public void run()
     {
-        //TODO GameTickListener is an interface
 
         ScriptManager manager = ScriptManager.getScriptManager();
         try
@@ -41,5 +40,11 @@ public class ScriptStarter implements Runnable
         {
             //manager.start(ClassString, null);
         }
+    }
+
+    @Override
+    public void onGameTick()
+    {
+
     }
 }

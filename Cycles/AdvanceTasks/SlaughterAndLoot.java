@@ -58,9 +58,9 @@ public class SlaughterAndLoot extends SimpleTask
     }
 
     @Override
-    public boolean accept()
+    public boolean Ready()
     {
-        return OSRSUtilities.GetClosestAttackableEnemy(TargetIDs) != null && super.accept();
+        return OSRSUtilities.GetClosestAttackableEnemy(TargetIDs) != null && super.Ready();
     }
 
     public int GetMaxHit()
@@ -100,14 +100,15 @@ public class SlaughterAndLoot extends SimpleTask
         {
             LootTask = new LootKillsTask();
             LootTask.TaskPriority.set(TaskPriority.get() - 1);
-            Script.addPersistentNodes(LootTask);
+            LootTask.Init(Script);
+            //Script.addPersistentNodes(LootTask);
         }
 
         // Slaughter
-        SlaughterTask = new SlaughterTask("Slaughter");
-        SlaughterTask.Init(Areas, TargetIDs);
+        SlaughterTask = new SlaughterTask("Slaughter", Areas, TargetIDs);
         SlaughterTask.TaskPriority.set(TaskPriority.get());
         SlaughterTask.onKill.addPropertyChangeListener(LootTask);
+        SlaughterTask.Init(Script);
 
         MinimumHealth = new MinimumHealthTask("Prevent dying", GetMaxHit() + 2);
 
@@ -122,7 +123,7 @@ public class SlaughterAndLoot extends SimpleTask
     }
 
     @Override
-    public int execute()
+    public int Loop()
     {
         if(Inventory.isFull())
         {
@@ -130,34 +131,34 @@ public class SlaughterAndLoot extends SimpleTask
             return 0;
         }
 
-        if(MinimumHealth.accept())
+        if(MinimumHealth.Ready())
         {
             Logger.log("SLA: Heal");
-            MinimumHealth.execute();
+            MinimumHealth.Loop();
         }
-        else if(Players.getLocal().getHealthPercent() < MinimumHealth.GetMinimumHealthAsPercent())
+        else if(Players.getLocal().getHealthPercent() < OSRSUtilities.HPtoPercent(MinimumHealth.GetMinimumHealth()))
         {
             Logger.log("Too low health and no more food, exiting task");
             return 0;
         }
 
-        if(Travel != null && Travel.execute() != 0)
+        if(Travel != null && Travel.Loop() != 0)
         {
             Logger.log("SLA: Travel");
-            return super.execute();
+            return super.Loop();
         }
 
-        if(LootTask.accept())
+        if(LootTask.Ready())
         {
             Logger.log("SLA: Loot");
             AttemptCount = 0;
-            LootTask.execute();
+            LootTask.Loop();
         }
-        else if(SlaughterTask.accept())
+        else if(SlaughterTask.Ready())
         {
             Logger.log("SLA: Slaughter");
             AttemptCount = 0;
-            SlaughterTask.execute();
+            SlaughterTask.Loop();
         }
         else
         {
@@ -176,6 +177,6 @@ public class SlaughterAndLoot extends SimpleTask
             }
         }
 
-        return super.execute();
+        return super.Loop();
     }
 }

@@ -2,6 +2,7 @@ package Utilities;
 
 import Database.OSRSDataBase;
 import Utilities.Combat.CombatManager;
+import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.Client;
 import org.dreambot.api.data.consumables.Food;
 import org.dreambot.api.input.Mouse;
@@ -18,6 +19,8 @@ import org.dreambot.api.methods.item.GroundItems;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Map;
 import org.dreambot.api.methods.map.Tile;
+import org.dreambot.api.methods.skills.Skill;
+import org.dreambot.api.methods.skills.Skills;
 import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.methods.walking.path.impl.LocalPath;
 import org.dreambot.api.methods.walking.pathfinding.impl.local.LocalPathFinder;
@@ -42,14 +45,20 @@ import java.util.zip.CRC32;
 
 public class OSRSUtilities
 {
-
-    static final String AttackAction = "Attack";
-
+    public static final  int                           Tick                = 600;
+    public static final  int                           InventorySpace      = 28;
+    static final         String                        AttackAction        = "Attack";
     static final         String[]                      ItemsToAlwaysPickUp = {"Clue scroll", "Coins"};
     private static final ConcurrentHashMap<Long, Long> TimeStamps          = new ConcurrentHashMap<Long, Long>();
-
     // TODO make function to equip best combat gear, perhaps even splitting it up into combat/magic/ranged
-    static Random rand = new Random();
+    static               Random                        rand                = new Random();
+
+
+    public static BankLocation GetValidBank()
+    {
+        // TODO ask pandemic if getnearest also cares about the bank being valid
+        return null;
+    }
 
     /**
      * @param Deposits
@@ -58,15 +67,17 @@ public class OSRSUtilities
      *
      * @return true if successful, false if failed
      */
-    public static boolean ProcessBankEntries(List<BankEntry> Deposits, List<BankEntry> Withdraws, int sleepdelay)
+    public static boolean ProcessBankEntries(tpircSScript Script, List<BankEntry> Deposits, List<BankEntry> Withdraws, int sleepdelay)
     {
+        final int retries = 5;
+        int       tries   = 0;
         if(OSRSUtilities.OpenBank())
         {
-            boolean              result   = true;
             ArrayList<BankEntry> Deposit  = Deposits == null ? new ArrayList<>() : new ArrayList<>(Deposits);
             ArrayList<BankEntry> Withdraw = Withdraws == null ? new ArrayList<>() : new ArrayList<>(Withdraws);
-            while((!Deposit.isEmpty() || !Withdraw.isEmpty()) && result)
+            while((!Deposit.isEmpty() || !Withdraw.isEmpty()))
             {
+                boolean success;
                 // Deposits first
                 if(!Deposit.isEmpty())
                 {
@@ -77,17 +88,27 @@ public class OSRSUtilities
                     }
                     if(deposit.ItemID == -1)
                     {
-                        result &= Bank.depositAllItems();
+                        success = Bank.depositAllItems();
                     }
                     else if(deposit.Amount == -1)
                     {
-                        result &= Bank.depositAll(deposit.ItemID);
+                        success = Bank.depositAll(deposit.ItemID);
                     }
                     else
                     {
-                        result &= Bank.deposit(deposit.ItemID, deposit.Amount);
+                        success = Bank.deposit(deposit.ItemID, deposit.Amount);
                     }
-                    Logger.log("Deposit complete: " + result);
+                    Logger.log("Deposit complete: " + success);
+                    if(!success)
+                    {
+                        tries++;
+                        if(tries > retries)
+                        {
+                            return false;
+                        }
+                        continue;
+                    }
+                    tries = 0;
                     Deposit.removeFirst();
                 }
                 else if(!Withdraw.isEmpty())
@@ -95,23 +116,32 @@ public class OSRSUtilities
                     var withdraw = Withdraw.getFirst();
                     if(Bank.getCurrentTab() != withdraw.BankTab)
                     {
-                        result &= Bank.openTab(withdraw.BankTab);
+                        Bank.openTab(withdraw.BankTab);
                     }
                     if(withdraw.Amount == -1)
                     {
-                        result &= Bank.withdrawAll(withdraw.ItemID);
+                        success = Bank.withdrawAll(withdraw.ItemID);
                     }
                     else
                     {
-                        result &= Bank.withdraw(withdraw.ItemID, withdraw.Amount);
+                        success = Bank.withdraw(withdraw.ItemID, withdraw.Amount);
                     }
-                    Logger.log("Withdrawal complete" + result);
+                    Logger.log("Withdrawal complete" + success);
+                    if(!success)
+                    {
+                        tries++;
+                        if(tries > retries)
+                        {
+                            return false;
+                        }
+                        continue;
+                    }
+                    tries = 0;
                     Withdraw.removeFirst();
                 }
-
-                Sleep.sleep(sleepdelay);
+                Script.onGameTick.WaitTicks(1);
             }
-            return result;
+            return true;
         }
 
         return Deposits.isEmpty() && Withdraws.isEmpty();
@@ -211,6 +241,29 @@ public class OSRSUtilities
         return true;
     }
 
+    public static int HPtoPercent(int HP)
+    {
+        return (int) (((float) HP / (float) Skills.getRealLevel(Skill.HITPOINTS)) * 100);
+    }
+
+    public static int GetMissingHP()
+    {
+        return (Skills.getRealLevel(Skill.HITPOINTS) - Skills.getBoostedLevel(Skill.HITPOINTS));
+    }
+
+    public static int InventoryHPCount()
+    {
+        var AllFood = Inventory.all(t -> OSRSDataBase.isFood(t.getID()));
+
+        int TotalHP = 0;
+        for(var food : AllFood)
+        {
+            TotalHP += OSRSDataBase.GetFood(food.getID()).hitpoints;
+        }
+
+        return TotalHP;
+    }
+
     public static boolean InventoryContainsAny(int... IDs)
     {
         for(var id : IDs)
@@ -223,9 +276,9 @@ public class OSRSUtilities
         return false;
     }
 
-    public static boolean InventoryContainsAnyFoods(boolean f2p)
+    public static boolean InventoryContainsAnyFoods(boolean Member)
     {
-        var foods = OSRSDataBase.GetCommonFoods(f2p);
+        var foods = OSRSDataBase.GetCommonFoods(Member);
         for(var food : foods)
         {
             if(Inventory.contains(food.id))
@@ -239,7 +292,7 @@ public class OSRSUtilities
     public static List<Character> GetAllCharactersInteractingWith(Character Target)
     {
         List<Character> result = new ArrayList<>();
-        var all =  NPCs.all();
+        var             all    = NPCs.all();
         for(Character npc : all)
         {
             if(npc.isInteracting(Target))
@@ -930,14 +983,14 @@ public class OSRSUtilities
 
         if(OpenBank())
         {
-            var                                   CommonFood = OSRSDataBase.GetCommonFoods(!Client.isMembers());
+            var                                   CommonFood = OSRSDataBase.GetCommonFoods(Client.isMembers());
             SortedMap<Integer, OSRSDataBase.Food> Choice     = new TreeMap<>();// score // ID
             for(var food : CommonFood)
             {
                 var count = Bank.count(food.id);
-
                 Choice.put(count * food.hitpoints, food);
             }
+
             var                                             reversed = Choice.reversed();
             List<AbstractMap.SimpleEntry<Integer, Integer>> out      = new ArrayList<>();
             for(var food : reversed.entrySet())
@@ -945,8 +998,7 @@ public class OSRSUtilities
                 Integer count = (int) Math.min(Math.ceil((double) TotalHP / food.getValue().hitpoints),
                                                Bank.count(food.getValue().id));
                 out.add(new AbstractMap.SimpleEntry<>(food.getValue().id, count));
-
-                if(count * food.getValue().hitpoints > TotalHP)
+                if(count * food.getValue().hitpoints >= TotalHP)
                 {
                     return out;
                 }
@@ -1141,6 +1193,11 @@ public class OSRSUtilities
         Wait(500, 2000);
     }
 
+    public static void Wait(ScriptIntenity Intensity)
+    {
+        Wait(Intensity, 1.0f);
+    }
+
     public static void Wait(ScriptIntenity Intensity, float Multiplier)
     {
         switch(Intensity)
@@ -1223,7 +1280,6 @@ public class OSRSUtilities
     {
         int ThreadID   = Thread.currentThread().hashCode();
         int FunctionID = Thread.currentThread().getStackTrace()[1].hashCode();
-        ;
 
         CRC32 CRC = new CRC32();
         CRC.update(ThreadID);
@@ -1245,7 +1301,6 @@ public class OSRSUtilities
         return false;
     }
 
-    // TODO apply these presets to the randomizers and click operations
     public enum ScriptIntenity
     {
         Lax,
