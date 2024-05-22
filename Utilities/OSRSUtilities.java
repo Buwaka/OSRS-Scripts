@@ -3,6 +3,9 @@ package Utilities;
 import Database.OSRSDataBase;
 import Utilities.Combat.CombatManager;
 import Utilities.Scripting.tpircSScript;
+import Utilities.Serializers.AreaSerializer;
+import Utilities.Serializers.TileSerializer;
+import com.google.gson.GsonBuilder;
 import org.dreambot.api.Client;
 import org.dreambot.api.data.consumables.Food;
 import org.dreambot.api.input.Mouse;
@@ -36,6 +39,7 @@ import org.dreambot.api.wrappers.items.GroundItem;
 import org.dreambot.api.wrappers.widgets.WidgetChild;
 
 import java.awt.*;
+import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.*;
@@ -52,6 +56,16 @@ public class OSRSUtilities
     private static final ConcurrentHashMap<Long, Long> TimeStamps          = new ConcurrentHashMap<Long, Long>();
     // TODO make function to equip best combat gear, perhaps even splitting it up into combat/magic/ranged
     static               Random                        rand                = new Random();
+    public static GsonBuilder OSRSGsonBuilder = new GsonBuilder().setPrettyPrinting().setLenient().excludeFieldsWithModifiers(
+            Modifier.STATIC,
+            Modifier.TRANSIENT,
+            Modifier.PROTECTED);
+
+    static
+    {
+        OSRSGsonBuilder.registerTypeAdapter(Area.class, new AreaSerializer());
+        OSRSGsonBuilder.registerTypeAdapter(Tile.class, new TileSerializer());
+    }
 
 
     public static BankLocation GetValidBank()
@@ -73,6 +87,7 @@ public class OSRSUtilities
         int       tries   = 0;
         if(OSRSUtilities.OpenBank())
         {
+            Withdraws.sort((x,y) -> x.GetCount() - y.GetCount());
             ArrayList<BankEntry> Deposit  = Deposits == null ? new ArrayList<>() : new ArrayList<>(Deposits);
             ArrayList<BankEntry> Withdraw = Withdraws == null ? new ArrayList<>() : new ArrayList<>(Withdraws);
             while((!Deposit.isEmpty() || !Withdraw.isEmpty()))
@@ -151,18 +166,19 @@ public class OSRSUtilities
     {
         if(Bank.isOpen())
         {
+            Logger.log("OpenBank: Bank is open");
             return true;
         }
 
         if(!CanReachBank())
         {
+            Logger.log("Can't reach bank");
             return false;
         }
 
-        var Banks = BankLocation.getSortedValidLocations(Players.getLocal().getTile());
         while(!Bank.isOpen())
         {
-            Bank.open(Banks.get(0));
+            Bank.open();
             Sleep.sleepUntil(() -> Bank.isOpen(), 5000);
         }
 
@@ -1078,7 +1094,7 @@ public class OSRSUtilities
     public static boolean JumpToOtherWorld()
     {
         List<World> Wlords = Worlds.all(t -> t.isF2P() && !t.isHighRisk() && !t.isPVP() && t.isNormal() &&
-                                             !t.getDescription().contains("skill total"));
+                                             !t.getDescription().contains("skill total") && t != Worlds.getCurrent());
         Wlords.sort(Comparator.comparingInt(t -> t.getPopulation()));
 
         for(int i = 0; i < Wlords.size(); i++)
@@ -1087,11 +1103,10 @@ public class OSRSUtilities
         }
 
         WorldHopper.openWorldHopper();
-        Wait();
-        Mouse.moveOutsideScreen();
-        Wait(5000, 10000);
         Logger.log("Changing to world " + Wlords.get(0).getWorld());
-        return WorldHopper.hopWorld(Wlords.get(0));
+        boolean result = WorldHopper.hopWorld(Wlords.get(0));
+        Wait();
+        return result;
     }
 
     public static boolean IsAreaBusy(int max, boolean OnlyActive)
@@ -1344,6 +1359,8 @@ public class OSRSUtilities
             this.Amount = entry.getValue();
             BankTab     = 0;
         }
+
+        public int GetCount() {return Amount;}
 
         @Override
         public String toString()

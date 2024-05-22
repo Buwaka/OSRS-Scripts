@@ -13,5 +13,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="BotData" level="project" />
     <orderEntry type="library" exported="" name="io.vavr" level="application" />
+    <orderEntry type="library" name="fasterxml.jackson.core.databind" level="application" />
+    <orderEntry type="library" name="json" level="application" />
   </component>
 </module>

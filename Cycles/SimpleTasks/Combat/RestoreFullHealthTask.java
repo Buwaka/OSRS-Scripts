@@ -1,5 +1,6 @@
-package Cycles.SimpleTasks;
+package Cycles.SimpleTasks.Combat;
 
+import Cycles.SimpleTasks.Bank.GetCombatRationsTask;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.Client;
@@ -16,7 +17,6 @@ public class RestoreFullHealthTask extends SimpleTask
     public RestoreFullHealthTask(String Name)
     {
         super(Name);
-        SetPassive(true);
     }
 
     public boolean IsFullHealth()

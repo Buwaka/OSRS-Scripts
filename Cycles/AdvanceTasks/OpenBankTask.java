@@ -4,7 +4,10 @@ import Cycles.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import Utilities.Scripting.tpircSScript;
+import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
+import org.dreambot.api.methods.interactive.Players;
+import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nonnull;
 
@@ -22,15 +25,21 @@ public class OpenBankTask extends SimpleTask
         BankingLocation = loc;
     }
 
+    private BankLocation NearestThatIsntGE()
+    {
+        var all = BankLocation.getSortedValidLocations(Players.getLocal().getTile());
+        return all.stream().filter(t -> t != BankLocation.GRAND_EXCHANGE).toList().getFirst();
+    }
+
     BankLocation GetBankLocation()
     {
         if(BankingLocation != null)
         {
             return BankingLocation;
         }
-        else if(BankLocation.getNearest() != null)
+        else if(NearestThatIsntGE() != null)
         {
-            return BankLocation.getNearest();
+            return NearestThatIsntGE();
         }
         return BankLocation.LUMBRIDGE;
     }
@@ -49,12 +58,25 @@ public class OpenBankTask extends SimpleTask
     @Override
     public int Loop()
     {
-        if(travelToBank != null && travelToBank.IsAlive())
+        if(Bank.isOpen())
         {
-            return travelToBank.execute();
+            return 0;
+        }
+
+        if(travelToBank != null && travelToBank.isActive())
+        {
+            Logger.log("OpenBankTask: Travel");
+            int result = travelToBank.execute();
+            if(result == 0)
+            {
+                travelToBank = null;
+                return OSRSUtilities.WaitTime(ScriptIntensity.get());
+            }
+            return result;
         }
         else
         {
+            Logger.log("OpenBankTask: Open Bank");
             return OSRSUtilities.OpenBank() ? 0 : super.Loop();
         }
     }

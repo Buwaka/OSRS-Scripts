@@ -4,7 +4,6 @@ import Utilities.OSRSUtilities;
 import Utilities.Patterns.Delegates.Delegate1;
 import Utilities.Patterns.SimpleDelegate;
 import org.dreambot.api.script.TaskNode;
-import org.dreambot.api.utilities.Logger;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,18 +25,15 @@ public abstract class SimpleTask extends TaskNode implements ITask
     public        SimpleDelegate                                onStart           = new SimpleDelegate();
     public        SimpleDelegate                                onStop            = new SimpleDelegate();
     public        SimpleDelegate                                onPause           = new SimpleDelegate();
-    public        SimpleDelegate                                onUnPause         = new SimpleDelegate();
-    private       boolean                                       Alive             = true;
-    private       boolean                                       Passive           = false;
+    public  SimpleDelegate onUnPause = new SimpleDelegate();
+    private boolean        Active    = true;
     private       boolean                                       Paused            = false;
-    private       boolean                                       Persist           = false;
     private       String                                        TaskName          = "";
     private       WeakReference<tpircSScript>                   ParentScript      = null;
 
     public SimpleTask(String Name)
     {
         TaskName = Name;
-        Persist  = false;
     }
 
     /**
@@ -54,24 +50,14 @@ public abstract class SimpleTask extends TaskNode implements ITask
     }
 
     /**
-     * @return Whether this task hasn't been stopped yet
+     * @return Whether this task is still ongoing
      */
-    public final boolean IsAlive()
+    public final boolean isActive()
     {
-        return Alive;
+        return Active;
     }
 
-    /**
-     * @return Whether this task is necessary to be completed
-     */
-    public final boolean IsPassive() {return Passive;}
-
-    public final boolean IsPaused() {return Paused;}
-
-    /**
-     * @return whether this task should go back into the task list once its completed
-     */
-    public final boolean IsPersistent() {return Persist;}
+    public final boolean isPaused() {return Paused;}
 
     public void SetTaskName(String Name)
     {
@@ -91,23 +77,13 @@ public abstract class SimpleTask extends TaskNode implements ITask
     }
 
     /**
-     * @return whether this task should go back into the task list once its completed
-     */
-    public void SetPersistant(boolean persist) {Persist = persist;}
-
-    /**
-     * @param passive Whether a task has to be completed before a cycle can end
-     */
-    public void SetPassive(boolean passive) {Passive = passive;}
-
-    /**
      * @param Script Caller script, this basically
      *
      * @return return true if successful, false if we need more time, keep triggering start until it is ready
      */
     protected final boolean StartTask(tpircSScript Script)
     {
-        Alive = true;
+        Active = true;
         ScriptIntensity.set(Script.GetScriptIntensity());
         boolean result = onStartTask(Script);
         if(result)
@@ -150,13 +126,20 @@ public abstract class SimpleTask extends TaskNode implements ITask
      */
     protected final boolean StopTask(tpircSScript Script)
     {
-        Alive = false;
         boolean result = onStopTask(Script);
         if(result)
         {
+            Active = false;
             onStop.Fire();
         }
         return result;
+    }
+
+    protected final void StopTaskNOW(tpircSScript Script)
+    {
+        onStopTask(Script);
+        Active = false;
+        onStop.Fire();
     }
 
     protected final void ReplaceTask(tpircSScript Script, SimpleTask other)

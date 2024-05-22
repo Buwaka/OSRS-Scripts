@@ -1,4 +1,4 @@
-package Cycles.SimpleTasks;
+package Cycles.SimpleTasks.Combat;
 
 import Database.OSRSDataBase;
 import Utilities.OSRSUtilities;
@@ -23,7 +23,6 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
     public LootKillsTask()
     {
         super("Loot items after kill");
-        SetPersistant(true);
     }
 
     private void Cleanup()

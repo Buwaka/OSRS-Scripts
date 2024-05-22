@@ -95,7 +95,7 @@ public class TravelTask extends SimpleTask
     @Override
     public boolean onStopTask(tpircSScript Script)
     {
-        Script.ResetRandomizer();
+        //Script.ResetRandomizer();
         return true;
     }
 
@@ -201,15 +201,19 @@ public class TravelTask extends SimpleTask
 //            }
 //        }
 
-        if(CompleteCondition != null)
-        {
-            Logger.log("CompleteCondition result: " + CompleteCondition.get());
-        }
-        if(Destination.getArea(5).contains(Players.getLocal().getServerTile()) ||
-           (CompleteCondition != null && CompleteCondition.get()))
+//        if(CompleteCondition != null)
+//        {
+//            Logger.log("CompleteCondition result: " + CompleteCondition.get());
+//        }
+        if(Destination.getArea(5).contains(Players.getLocal().getServerTile()))
         {
             Logger.log("Reached Destination");
             onReachedDestination.Fire();
+            return 0;
+        }
+        if((CompleteCondition != null && CompleteCondition.get()))
+        {
+            Logger.log("Complete Condition fulfilled");
             return 0;
         }
         return super.Loop();
@@ -219,6 +223,6 @@ public class TravelTask extends SimpleTask
     public void onReplaced(tpircSScript Script, SimpleTask other)
     {
         super.onReplaced(Script, other);
-        Script.StopTask(this);
+        Script.StopTaskNow(this);
     }
 }

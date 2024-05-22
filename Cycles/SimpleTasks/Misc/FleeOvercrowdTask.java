@@ -1,4 +1,4 @@
-package Cycles.SimpleTasks;
+package Cycles.SimpleTasks.Misc;
 
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
@@ -26,7 +26,8 @@ public class FleeOvercrowdTask extends SimpleTask
     public FleeOvercrowdTask()
     {
         super("Flee Overcrowded Area");
-        SetPersistant(true);
+        //SetPersistant(true);
+        TaskPriority.set(-1);
     }
 
     @Override

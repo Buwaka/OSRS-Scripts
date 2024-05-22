@@ -1,4 +1,4 @@
-package Cycles.SimpleTasks;
+package Cycles.SimpleTasks.Combat;
 
 import Database.OSRSDataBase;
 import Utilities.OSRSUtilities;
@@ -21,8 +21,6 @@ public class MinimumHealthTask extends SimpleTask
     {
         super(Name);
         MinimumHealth = MinHealth;
-        SetPassive(true);
-        SetPersistant(true);
     }
 
     public int GetMinimumHealth() {return MinimumHealth;}

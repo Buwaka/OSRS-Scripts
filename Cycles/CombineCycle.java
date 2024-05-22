@@ -1,25 +1,18 @@
 package Cycles;
 
-import Cycles.SimpleTasks.BankItemsTask;
-import Cycles.SimpleTasks.CombineTask;
+import Cycles.SimpleTasks.Bank.BankItemsTask;
+import Cycles.SimpleTasks.ItemProcessing.CombineTask;
 import Cycles.SimpleTasks.TravelTask;
-import Database.OSRSDataBase;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nullable;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.util.Objects;
 
 public class CombineCycle extends SimpleCycle implements Serializable
 {
@@ -64,8 +57,8 @@ public class CombineCycle extends SimpleCycle implements Serializable
     {
         if(!Bank.isCached())
         {
-            Logger.log("CombineCycle.isValid: Bank isn't cached, can't check if this combinecycle is valid");
-            return false;
+            Logger.log("CombineCycle.isValid: Bank isn't cached, count as valid to check");
+            return true;
         }
 
         if(Bank.count(source) >= sourceRatio && Bank.count(target) >= targetRatio)
@@ -80,7 +73,10 @@ public class CombineCycle extends SimpleCycle implements Serializable
      */
     public int GetPossibleCycleCount()
     {
-        return Math.min(Bank.count(source) / sourceRatio, Bank.count(target) / targetRatio);
+        Logger.log("CombineCycle:GetPossibleCycleCount: " + Bank.count(source) / sourceRatio + " " +
+                   Bank.count(target) / targetRatio + " " + OSRSUtilities.InventorySpace / (sourceRatio + targetRatio));
+        return Math.min(Bank.count(source) / sourceRatio, Bank.count(target) / targetRatio) /
+               (OSRSUtilities.InventorySpace / (sourceRatio + targetRatio));
     }
 
     private void StartCycle(tpircSScript script)
@@ -99,16 +95,12 @@ public class CombineCycle extends SimpleCycle implements Serializable
         {
             bankItemsTask.DepositAll();
         }
-        bankItemsTask.AddWithdraw(source,
-                                  (int) Math.ceil(OSRSUtilities.InventorySpace / (double) (sourceRatio + targetRatio) *
-                                                  sourceRatio));
-        bankItemsTask.AddWithdraw(target,
-                                  (int) Math.ceil(OSRSUtilities.InventorySpace / (double) (sourceRatio + targetRatio) *
-                                                  targetRatio));
+        bankItemsTask.FillInventory(source, sourceRatio);
+        bankItemsTask.FillInventory(target, targetRatio);
 
 
         combineTask                 = new CombineTask("Combining items", source, target);
-        combineTask.AcceptCondition = () -> !bankItemsTask.IsAlive();
+        combineTask.AcceptCondition = () -> !bankItemsTask.isActive();
 
         script.addNodes(bankItemsTask, combineTask);
     }
@@ -125,7 +117,7 @@ public class CombineCycle extends SimpleCycle implements Serializable
     public boolean onStart(tpircSScript Script)
     {
         StartCycle(Script);
-        return true;
+        return super.onStart(Script);
     }
 
 //    public static void main(String[] args) throws IOException

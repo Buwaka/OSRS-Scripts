@@ -1,24 +1,26 @@
 package Utilities.Patterns.Delegates;
 
-import io.vavr.Function3;
+import io.vavr.Function4;
+import org.dreambot.api.utilities.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.WeakHashMap;
 
 public class Delegate3<A, B, C>
 {
-    List<Function3<A, B, C, Boolean>> Subscribers = new ArrayList<>();
+    WeakHashMap<Object, Function4<Object, A, B, C, Boolean>> Subscribers = new WeakHashMap<>();
 
-    public void Subscribe(Function3<A, B, C, Boolean> function)
+    public void Subscribe(Object caller, Function4<Object /*context*/, A, B, C, Boolean> function)
     {
-        Subscribers.add(function);
+        Logger.log(caller + " Current Size " + Subscribers.size());
+        Subscribers.put(caller, function);
     }
 
     public void Fire(A var1, B var2, C var3)
     {
-        for(var func : Subscribers)
+        Logger.log(Subscribers.entrySet());
+        for(var pair : Subscribers.entrySet())
         {
-            func.apply(var1, var2, var3);
+            pair.getValue().apply(pair.getKey(), var1, var2, var3);
         }
     }
 }

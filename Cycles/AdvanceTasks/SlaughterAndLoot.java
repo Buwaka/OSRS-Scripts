@@ -1,8 +1,8 @@
 package Cycles.AdvanceTasks;
 
-import Cycles.SimpleTasks.LootKillsTask;
-import Cycles.SimpleTasks.MinimumHealthTask;
-import Cycles.SimpleTasks.SlaughterTask;
+import Cycles.SimpleTasks.Combat.LootKillsTask;
+import Cycles.SimpleTasks.Combat.MinimumHealthTask;
+import Cycles.SimpleTasks.Combat.SlaughterTask;
 import Cycles.SimpleTasks.TravelTask;
 import Database.OSRSDataBase;
 import Utilities.OSRSUtilities;

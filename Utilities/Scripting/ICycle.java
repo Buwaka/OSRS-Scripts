@@ -16,14 +16,16 @@ public interface ICycle
     /**
      * @return Cycle is completely done and should/will be terminated
      */
-    boolean IsFinished();
+    boolean isFinished();
+
+    boolean isStarted();
 
     /**
      * will onlu be called once there are no active tasks anymore, so implement this as an extra check
      *
      * @return Cycle completed, ready for a restart
      */
-    default boolean IsCycleComplete(tpircSScript Script) {return true;}
+    default boolean isCycleComplete(tpircSScript Script) {return true;}
 
     ;
 
@@ -32,7 +34,7 @@ public interface ICycle
      *
      * @return if cycle has successfully started
      */
-    default boolean onStart(tpircSScript Script) {return true;}
+    boolean onStart(tpircSScript Script);
 
     /**
      * End cycle after current cycle has finished

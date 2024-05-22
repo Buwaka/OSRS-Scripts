@@ -9,15 +9,6 @@ public class InventoryListener implements ItemContainerListener
 {
     public Delegate3<ItemAction, Item, Item> onInventoryAdded = new Delegate3<>();
 
-    public static void main(String[] args)
-    {
-        InventoryListener testt = new InventoryListener();
-        var               a     = 5;
-        a += 5;
-        testt.onInventoryAdded.Subscribe(((InventoryListener.ItemAction A, Item B, Item C) -> true));
-        testt.onInventoryAdded.Fire(ItemAction.Added, null, null);
-    }
-
     @Override
     public void onInventoryItemChanged(Item incoming, Item existing)
     {

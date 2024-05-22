@@ -1,4 +1,4 @@
-package Cycles.SimpleTasks;
+package Cycles.SimpleTasks.Misc;
 
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;

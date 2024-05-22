@@ -2,12 +2,15 @@ package Utilities.Patterns;
 
 import org.dreambot.api.utilities.Logger;
 
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameTickDelegate extends SimpleDelegate
 {
     ConcurrentLinkedQueue<Semaphore> Tickers = new ConcurrentLinkedQueue<>();
+    WeakHashMap<Object, AtomicInteger> UpdateTickers = new WeakHashMap<>();
 
     public void WaitTicks(int ticks)
     {
@@ -36,5 +39,14 @@ public class GameTickDelegate extends SimpleDelegate
             Logger.log(ticker.availablePermits() + " available permits left");
             ticker.release();
         }
+        for(var ticker : UpdateTickers.values())
+        {
+            ticker.decrementAndGet();
+        }
+    }
+
+    public void AddUpdateTicker(Object Caller, AtomicInteger Ticker)
+    {
+        UpdateTickers.put(Caller, Ticker);
     }
 }

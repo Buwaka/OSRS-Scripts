@@ -1,4 +1,4 @@
-package Cycles.SimpleTasks;
+package Cycles.SimpleTasks.ItemProcessing;
 
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
@@ -88,20 +88,21 @@ public class CombineTask extends SimpleTask
         }
     }
 
+    private static Boolean ResetInventoryTimer(Object context, tpircSScript.ItemAction action, Item item, Item item1)
+    {
+        Logger.log("ResetInventoryTimer");
+        ((CombineTask) context).lastInventoryChange.set(System.nanoTime());
+        return true;
+    }
+
     @Override
     public boolean onStartTask(tpircSScript Script)
     {
         lastInventoryChange.set(System.nanoTime());
-        Script.onInventory.Subscribe(this::ResetInventoryTimer);
+        Script.onInventory.Subscribe(this, CombineTask::ResetInventoryTimer);
 
         RefreshItems();
 
-        return true;
-    }
-
-    private Boolean ResetInventoryTimer(tpircSScript.ItemAction action, Item item, Item item1) {
-        Logger.log("ResetInventoryTimer");
-        lastInventoryChange.set(System.nanoTime());
         return true;
     }
 

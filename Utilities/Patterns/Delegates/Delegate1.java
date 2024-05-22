@@ -2,23 +2,29 @@ package Utilities.Patterns.Delegates;
 
 import io.vavr.Function1;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Delegate1<A>
 {
-    List<Function1<A, Void>> Subscribers = new ArrayList<Function1<A, Void>>();
+    List<WeakReference<Function1<A, Boolean>>> Subscribers = new ArrayList<>();
 
-    public boolean Subscribe(Function1<A, Void> function)
+    public void Subscribe(Function1<A, Boolean> function)
     {
-        return Subscribers.add(function);
+        Subscribers.add(new WeakReference<>(function));
     }
 
     public void Fire(A var1)
     {
+        Subscribers.removeIf(t -> t.get() == null);
+
         for(var func : Subscribers)
         {
-            func.apply(var1);
+            if(func.get() != null)
+            {
+                func.get().apply(var1);
+            }
         }
     }
 }

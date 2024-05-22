@@ -1,6 +1,6 @@
 package Database;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import org.dreambot.api.utilities.Logger;
@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +40,10 @@ public class OSRSDataBase
     final private static String                                  BattleFoodDB          = "battlefood.json";
     final private static ReentrantLock                           BattleFoodDBLock      = new ReentrantLock();
     final private static ConcurrentHashMap<Integer, Food>        BattleFoodDBCache     = new ConcurrentHashMap<>();
+    final private static String                                   ObjectsDB              = "objects-summary.json";
+    final private static ReentrantLock                            ObjectsDBLock          = new ReentrantLock();
+    final private static ConcurrentHashMap<Integer, EntityObject> ObjectsDBCache         = new ConcurrentHashMap<>();
+    final private static ConcurrentHashMap<String, int[]>         ObjectIDsByNameDBCache = new ConcurrentHashMap<>();
 
     private static InputStream GetInputStream(String DB)
     {
@@ -469,6 +474,55 @@ public class OSRSDataBase
         return out.toArray(out.toArray(new Food[0]));
     }
 
+    public static int[] GetObjectIDsByName(String Name)
+    {
+        if(ObjectIDsByNameDBCache.containsKey(Name))
+        {
+            return ObjectIDsByNameDBCache.get(Name);
+        }
+
+        List<Integer> IDs = new ArrayList<>();
+
+        try
+        {
+            ObjectsDBLock.lock();
+            InputStreamReader File   = new InputStreamReader(GetInputStream(ObjectsDB));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = new Gson();
+
+            Reader.setLenient(true);
+
+            Reader.beginObject();
+
+            while(Reader.hasNext())
+            {
+                int          ID   = Integer.parseInt(Reader.nextName());
+                EntityObject Data = gson.fromJson(Reader, EntityObject.class);
+
+                if(Data.name.equalsIgnoreCase(Name))
+                {
+                    IDs.add(ID);
+                }
+            }
+
+            Reader.endObject();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            if(ObjectsDBLock.isLocked() && ObjectsDBLock.isHeldByCurrentThread())
+            {
+                ObjectsDBLock.unlock();
+            }
+            throw new RuntimeException(e);
+        }
+        ObjectsDBLock.unlock();
+
+        int[] intIDs = IDs.stream().mapToInt(Integer::intValue).toArray();
+        ObjectIDsByNameDBCache.put(Name, intIDs);
+        return intIDs;
+    }
+
     private static String _toString(Object ths, Class klas)
     {
         Field[]       fields = klas.getFields();
@@ -586,6 +640,33 @@ public class OSRSDataBase
 
     }
 
+    public enum Skill
+    {
+        @SerializedName("attack") ATTACK,
+        @SerializedName("defence") DEFENCE,
+        @SerializedName("strength") STRENGTH,
+        @SerializedName("hitpoints") HITPOINTS,
+        @SerializedName("ranged") RANGED,
+        @SerializedName("prayer") PRAYER,
+        @SerializedName("magic") MAGIC,
+        @SerializedName("cooking") COOKING,
+        @SerializedName("woodcutting") WOODCUTTING,
+        @SerializedName("fletching") FLETCHING,
+        @SerializedName("fishing") FISHING,
+        @SerializedName("firemaking") FIREMAKING,
+        @SerializedName("crafting") CRAFTING,
+        @SerializedName("smithing") SMITHING,
+        @SerializedName("mining") MINING,
+        @SerializedName("herblore") HERBLORE,
+        @SerializedName("agility") AGILITY,
+        @SerializedName("thieving") THIEVING,
+        @SerializedName("slayer") SLAYER,
+        @SerializedName("farming") FARMING,
+        @SerializedName("runecrafting") RUNECRAFTING,
+        @SerializedName("hunter") HUNTER,
+        @SerializedName("construction") CONSTRUCTION;
+    }
+
     public static class Food implements Serializable
     {
         @SerializedName("id")
@@ -607,6 +688,34 @@ public class OSRSDataBase
         }
     }
 
+    public static class Requirement
+    {
+        public Skill skill;
+        public int   level;
+
+        private static class RequirementDeserializer implements JsonDeserializer<Requirement>
+        {
+            public Requirement deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws
+                                                                                                               JsonParseException
+            {
+                Requirement out = new Requirement();
+                for(var skill : json.getAsJsonObject().entrySet())
+                {
+                    out.skill = Skill.valueOf(skill.getKey());
+                    out.level = skill.getValue().getAsInt();
+                }
+                return out;
+            }
+        }
+
+    }
+
+    public static class EntityObject
+    {
+        public int    id;
+        public String name;
+    }
+
     public static class ItemData
     {
 
@@ -618,21 +727,21 @@ public class OSRSDataBase
         public           boolean       tradeable;
         public           boolean       tradeable_on_ge;
         public           boolean       stackable;
-        public @Nullable int           stacked;
+        public @Nullable Integer stacked;
         public           boolean       noted;
         public           boolean       noteable;
-        public @Nullable int           linked_id_item;
-        public @Nullable int           linked_id_noted;
-        public @Nullable int           linked_id_placeholder;
+        public @Nullable Integer linked_id_item;
+        public @Nullable Integer linked_id_noted;
+        public @Nullable Integer linked_id_placeholder;
         public           boolean       placeholder;
         public           boolean       equipable;
         public           boolean       equipable_by_player;
         public           boolean       equipable_weapon;
         public           int           cost;
-        public @Nullable int           highalch;
-        public @Nullable int           lowalch;
-        public @Nullable float         weight;
-        public @Nullable int           buy_limit;
+        public @Nullable Integer highalch;
+        public @Nullable Integer lowalch;
+        public @Nullable Float   weight;
+        public @Nullable Integer buy_limit;
         public           boolean       quest_item;
         public @Nullable String        release_date;
         public           boolean       duplicate;
@@ -666,7 +775,7 @@ public class OSRSDataBase
         public           int           magic_damage;
         public           int           prayer;
         public           EquipmentSlot slot;
-        public @Nullable JSONObject    requirements;
+        public @Nullable Requirement[] requirements;
 
         public String toString()
         {
@@ -687,6 +796,67 @@ public class OSRSDataBase
             feet,
             ring,
             arrows;
+        }
+    }
+
+    public static class ToolData
+    {
+        public           Type          type;
+        public           String        name;
+        public           boolean       equipable;
+        public @Nullable Integer       strength;
+        public @Nullable Requirement[] requirements;
+
+        public enum Type
+        {
+            Axe,
+            Chisel,
+            Hammer,
+            Knife,
+            Machete,
+            @SerializedName("Pestle and mortar") Pestle_and_mortar,
+            Pickaxe,
+            Saw,
+            Shears,
+            Tinderbox,
+            @SerializedName("Tool space") Tool_space,
+            @SerializedName("Tool store") Tool_store,
+            @SerializedName("Ammo mould") Ammo_mould,
+            @SerializedName("Amulet mould") Amulet_mould,
+            @SerializedName("Bolt mould") Bolt_mould,
+            @SerializedName("Bracelet mould") Bracelet_mould,
+            @SerializedName("Glassblowing pipe") Glassblowing_pipe,
+            @SerializedName("Holy mould") Holy_mould,
+            @SerializedName("Necklace mould") Necklace_mould,
+            Needle,
+            @SerializedName("Ring mould") Ring_mould,
+            @SerializedName("Sickle mould") Sickle_mould,
+            @SerializedName("Tiara mould") Tiara_mould,
+            @SerializedName("Unholy mould") Unholy_mould,
+            @SerializedName("Gardening trowel") Gardening_trowel,
+            Rake,
+            Secateurs,
+            @SerializedName("Seed dibber") Seed_dibber,
+            Spade,
+            Trowel,
+            @SerializedName("Watering can") Watering_can,
+            @SerializedName("Barbarian rod") Barbarian_rod,
+            @SerializedName("Big fishing net") Big_fishing_net,
+            @SerializedName("Fishing rod") Fishing_rod,
+            @SerializedName("Fly fishing rod") Fly_fishing_rod,
+            Harpoon,
+            @SerializedName("Karambwan vessel") Karambwan_vessel,
+            @SerializedName("Lobster pot") Lobster_pot,
+            @SerializedName("Oily fishing rod") Oily_fishing_rod,
+            @SerializedName("Small fishing net") Small_fishing_net,
+            @SerializedName("Bird snare") Bird_snare,
+            @SerializedName("Box trap") Box_trap,
+            @SerializedName("Butterfly net") Butterfly_net,
+            @SerializedName("Magic box") Magic_box,
+            @SerializedName("Noose wand") Noose_wand,
+            @SerializedName("Rabbit snare") Rabbit_snare,
+            @SerializedName("Teasing stick") Teasing_stick,
+            Torch
         }
     }
 
@@ -844,8 +1014,8 @@ public class OSRSDataBase
         public           MonsterAttribute[]      attributes;
         public           MonsterCategory[]       category; // make enum
         public           boolean                 slayer_monster;
-        public @Nullable int                     slayer_level;
-        public @Nullable float                   slayer_xp;
+        public @Nullable Integer slayer_level;
+        public @Nullable Float   slayer_xp;
         public           SlayerMaster[]          slayer_masters; // make enum
         public           boolean                 duplicate;
         public           String                  examine;

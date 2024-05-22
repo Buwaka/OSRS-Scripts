@@ -14,8 +14,12 @@ public class SimpleCycle implements ICycle, Serializable
     public transient  SimpleDelegate        onCycleEnd      = new SimpleDelegate();
     private transient CycleType             Type            = CycleType.Null;
     private transient int                   CycleCount      = 0;
+    /**
+     * If the task is complete AND has been cleaned up, check CanRestart for whether its just complete
+     */
     private transient boolean               Finished        = false;
     private           String                CycleName       = "";
+    private transient boolean               Started         = false;
 
     private SimpleCycle()
     {
@@ -56,9 +60,15 @@ public class SimpleCycle implements ICycle, Serializable
     }
 
     @Override
-    public boolean IsFinished()
+    public boolean isFinished()
     {
         return Finished;
+    }
+
+    @Override
+    public boolean isStarted()
+    {
+        return Started;
     }
 
     public void SetCycleLimit(int Limit)
@@ -68,7 +78,26 @@ public class SimpleCycle implements ICycle, Serializable
 
     protected final void CompleteCycle()
     {
-        Logger.log("Completed Cycle " + CycleCount);
+        switch(Type)
+        {
+            case byCount ->
+            {
+                Logger.log("Completed Cycle " + (CycleCount + 1) + " of " + Type.Count);
+            }
+            case byGoal ->
+            {
+                Logger.log("Completed Cycle, is goal met:  " + Type.Goal.get());
+            }
+            case Endless ->
+            {
+                Logger.log("Completed Cycle, Cycle is endless");
+            }
+            case Null ->
+            {
+                Logger.log("Completed Cycle, Cycle is null?");
+            }
+        }
+
         CycleCount++;
         onCompleteCycle.firePropertyChange("CompletedCycle", CycleCount - 1, CycleCount);
     }
@@ -79,6 +108,19 @@ public class SimpleCycle implements ICycle, Serializable
     }
 
     //protected boolean CanStart(tpircSScript Script) { return true;}
+
+
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    @Override
+    public boolean onStart(tpircSScript Script)
+    {
+        Started = true;
+        return true;
+    }
 
     protected final boolean Start(tpircSScript Script)
     {
@@ -100,7 +142,35 @@ public class SimpleCycle implements ICycle, Serializable
         onEndNow(Script);
     }
 
-    public boolean CanRestart(tpircSScript Script) {return true;}
+    public boolean CanRestart(tpircSScript Script)
+    {
+        switch(Type)
+        {
+            case byCount ->
+            {
+                if(CycleCount < Type.Count)
+                {
+                    return true;
+                }
+            }
+            case byGoal ->
+            {
+                if(Type.Goal != null && !Type.Goal.get())
+                {
+                    return true;
+                }
+            }
+            case Endless ->
+            {
+                return true;
+            }
+            case Null ->
+            {
+                Logger.log("Forgot to set Cycle type");
+            }
+        }
+        return false;
+    }
 
     public final boolean Restart(tpircSScript Script)
     {
@@ -110,32 +180,6 @@ public class SimpleCycle implements ICycle, Serializable
     protected final int Loop(tpircSScript Script)
     {
         int result = onLoop(Script);
-
-        switch(Type)
-        {
-            case byCount ->
-            {
-                if(CycleCount >= Type.Count && End(Script))
-                {
-                    EndNow(Script);
-                }
-            }
-            case byGoal ->
-            {
-                if(Type.Goal != null && Type.Goal.get() && End(Script))
-                {
-                    EndNow(Script);
-                }
-            }
-            case Endless ->
-            {
-
-            }
-            case Null ->
-            {
-                Logger.log("Forgot to set Cycle type");
-            }
-        }
         return result;
     }
 }

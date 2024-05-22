@@ -1,4 +1,4 @@
-package Cycles.SimpleTasks;
+package Cycles.SimpleTasks.Combat;
 
 import Database.OSRSDataBase;
 import Utilities.Combat.CombatManager;

@@ -55,6 +55,9 @@ public interface ITask
         RestorePrayer,
         Combine,
         OpenBank,
+        MineTask,
+        UseOnObjectTask,
+        EquipmentTask,
 
         //Advanced tasks
         SlaughterAndLoot

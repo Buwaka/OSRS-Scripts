@@ -2,9 +2,9 @@ package Cycles;
 
 
 import Cycles.AdvanceTasks.SlaughterAndLoot;
-import Cycles.SimpleTasks.BankItemsTask;
-import Cycles.SimpleTasks.GetCombatRationsTask;
-import Cycles.SimpleTasks.RestoreFullHealthTask;
+import Cycles.SimpleTasks.Bank.BankItemsTask;
+import Cycles.SimpleTasks.Bank.GetCombatRationsTask;
+import Cycles.SimpleTasks.Combat.RestoreFullHealthTask;
 import Cycles.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleCycle;
@@ -129,7 +129,7 @@ public class CombatLootBankCycle extends SimpleCycle
 
         TravelTask Travel2 = TravelToBank();
         Travel2.TaskPriority.set(2);
-        Travel2.AcceptCondition   = () -> !SALTask.IsAlive();
+        Travel2.AcceptCondition = () -> !SALTask.isActive();
         Travel2.CompleteCondition = OSRSUtilities::CanReachBank;
         Travel2.SetTaskName("Travel To Bank to drop loot");
         BankItemsTask BankTask = new BankItemsTask("Banking loot");
@@ -148,13 +148,13 @@ public class CombatLootBankCycle extends SimpleCycle
         }
 
         BankTask.TaskPriority.set(2);
-        BankTask.AcceptCondition = () -> !SALTask.IsAlive();
+        BankTask.AcceptCondition = () -> !SALTask.isActive();
 
         Script.addNodes(Travel1, Travel2, SALTask, BankTask);
     }
 
     @Override
-    public boolean IsCycleComplete(tpircSScript Script)
+    public boolean isCycleComplete(tpircSScript Script)
     {
         return !Script.IsActiveTaskLeft();
     }
@@ -170,6 +170,6 @@ public class CombatLootBankCycle extends SimpleCycle
     public boolean onStart(tpircSScript Script)
     {
         StartCycle(Script);
-        return true;
+        return super.onStart(Script);
     }
 }

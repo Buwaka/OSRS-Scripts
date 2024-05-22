@@ -1,4 +1,4 @@
-package Cycles.SimpleTasks;
+package Cycles.SimpleTasks.Bank;
 
 import Utilities.Scripting.SimpleTask;
 
