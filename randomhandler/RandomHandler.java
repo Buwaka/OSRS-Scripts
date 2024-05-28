@@ -248,7 +248,7 @@ public class RandomHandler
     {
         if(!getPrevStatus().equals(stat))
         {
-            Logger.log(new Color(93, 180, 82), "[" + solver + "] " + stat);
+            Logger.log(new Color(93, 180, 82), "[" + solver + "] uuuhm" + stat);
             setPrevStatus(stat);
         }
         status = stat;

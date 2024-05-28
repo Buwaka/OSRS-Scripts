@@ -1,18 +1,23 @@
 package Utilities.Scripting;
 
 
-import Utilities.Patterns.SimpleDelegate;
+import Utilities.Patterns.Delegates.Delegate;
+import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.utilities.Logger;
 
-import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.function.Supplier;
 
 
 public class SimpleCycle implements ICycle, Serializable
 {
-    public transient  PropertyChangeSupport onCompleteCycle = new PropertyChangeSupport(this);
-    public transient  SimpleDelegate        onCycleEnd      = new SimpleDelegate();
-    private transient CycleType             Type            = CycleType.Null;
+    /**
+     * returns true when goal is met
+     */
+    public transient  Supplier<Boolean> Goal            = null;
+    public transient  Delegate          onCompleteCycle = new Delegate();
+    public transient  Delegate          onCycleEnd      = new Delegate();
+    private transient CycleType         Type            = CycleType.Null;
     private transient int                   CycleCount      = 0;
     /**
      * If the task is complete AND has been cleaned up, check CanRestart for whether its just complete
@@ -20,11 +25,23 @@ public class SimpleCycle implements ICycle, Serializable
     private transient boolean               Finished        = false;
     private           String                CycleName       = "";
     private transient boolean               Started         = false;
+    private boolean          NeedsCachedBank = true;
+    public Supplier<Boolean> Requirement     = null;
 
     private SimpleCycle()
     {
-        onCompleteCycle = new PropertyChangeSupport(this);
-        onCycleEnd      = new SimpleDelegate();
+        onCompleteCycle = new Delegate();
+        onCycleEnd      = new Delegate();
+    }
+
+    public boolean isNeedsCachedBank()
+    {
+        return NeedsCachedBank;
+    }
+
+    public void setNeedsCachedBank(boolean needsCachedBank)
+    {
+        NeedsCachedBank = needsCachedBank;
     }
 
     public SimpleCycle(String name)
@@ -86,7 +103,7 @@ public class SimpleCycle implements ICycle, Serializable
             }
             case byGoal ->
             {
-                Logger.log("Completed Cycle, is goal met:  " + Type.Goal.get());
+                Logger.log("Completed Cycle, is goal met:  " + Goal.get());
             }
             case Endless ->
             {
@@ -99,7 +116,7 @@ public class SimpleCycle implements ICycle, Serializable
         }
 
         CycleCount++;
-        onCompleteCycle.firePropertyChange("CompletedCycle", CycleCount - 1, CycleCount);
+        onCompleteCycle.Fire();
     }
 
     protected final void ResetCycleCount()
@@ -118,12 +135,54 @@ public class SimpleCycle implements ICycle, Serializable
     @Override
     public boolean onStart(tpircSScript Script)
     {
-        Started = true;
         return true;
+    }
+
+    /**
+     * @return Whether the goal of this cycle has been met, based on CycleType
+     */
+    @Override
+    public boolean isGoalMet()
+    {
+        if(NeedsCachedBank && !Bank.isCached())
+        {
+            return false;
+        }
+
+        switch(GetCycleType())
+        {
+            case byCount ->
+            {
+                if(CycleCount >= Type.Count)
+                {
+                    Logger.log("SimpleCycle: isGoalMet: byCount true");
+                    return true;
+                }
+            }
+            case byGoal ->
+            {
+                if(Goal != null && Goal.get())
+                {
+                    Logger.log("SimpleCycle: isGoalMet: byGoal true");
+                    return true;
+                }
+            }
+            case Endless ->
+            {
+                Logger.log("SimpleCycle: isGoalMet: Endless false");
+                return false;
+            }
+            case Null ->
+            {
+                Logger.log("Forgot to set Cycle type");
+            }
+        }
+        return false;
     }
 
     protected final boolean Start(tpircSScript Script)
     {
+        Started = true;
         return onStart(Script);
     }
 
@@ -155,7 +214,7 @@ public class SimpleCycle implements ICycle, Serializable
             }
             case byGoal ->
             {
-                if(Type.Goal != null && !Type.Goal.get())
+                if(Goal != null && !Goal.get())
                 {
                     return true;
                 }
@@ -177,9 +236,27 @@ public class SimpleCycle implements ICycle, Serializable
         return onRestart(Script);
     }
 
+    public final void Reset(tpircSScript Script)
+    {
+        if(GetCycleType() == CycleType.byCount)
+        {
+            CycleCount = 0;
+        }
+        onReset(Script);
+    }
+
     protected final int Loop(tpircSScript Script)
     {
         int result = onLoop(Script);
         return result;
+    }
+
+    protected boolean Ready()
+    {
+        if(Requirement != null)
+        {
+            return Requirement.get();
+        }
+        return true;
     }
 }

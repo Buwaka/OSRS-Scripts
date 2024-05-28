@@ -27,8 +27,8 @@ public class OpenBankTask extends SimpleTask
 
     private BankLocation NearestThatIsntGE()
     {
-        var all = BankLocation.getSortedValidLocations(Players.getLocal().getTile());
-        return all.stream().filter(t -> t != BankLocation.GRAND_EXCHANGE).toList().getFirst();
+        var all = BankLocation.getValidLocations();
+        return all.stream().filter(t -> t != BankLocation.GRAND_EXCHANGE).sorted((x,y) -> (int) (y.distance(Players.getLocal().getTile()) - x.walkingDistance(Players.getLocal().getTile()) * 100)).toList().getFirst();
     }
 
     BankLocation GetBankLocation()
@@ -49,7 +49,9 @@ public class OpenBankTask extends SimpleTask
     {
         if(!OSRSUtilities.CanReachBank())
         {
-            travelToBank = new TravelTask("Travel to Bank", GetBankLocation().getCenter());
+            var BankLoc = GetBankLocation();
+            Logger.log("OpenBankTask, going to bank: " + BankLoc.name());
+            travelToBank = new TravelTask("Travel to Bank", BankLoc.getCenter());
             travelToBank.CompleteCondition = OSRSUtilities::CanReachBank;
         }
         return super.onStartTask(Script);

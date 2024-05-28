@@ -1,10 +1,16 @@
 package Cycles.SimpleTasks.ItemProcessing;
 
+import Cycles.SimpleTasks.TravelTask;
+import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.dialogues.Dialogues;
+import org.dreambot.api.methods.interactive.Players;
+import org.dreambot.api.methods.map.Tile;
+import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.methods.widget.helpers.ItemProcessing;
 import org.dreambot.api.utilities.Logger;
+import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.GameObject;
 import org.dreambot.api.wrappers.items.Item;
 
@@ -15,8 +21,9 @@ public class UseObjectTask extends SimpleTask
 {
     private final int           MaxAttempts            = 10;
     public        int           DefaultProcessTickTime = 7;
-    private       GameObject    ObjectToUeOn           = null;
-    private       String        InteractAction         = null;
+    private GameObject ObjectToUeOn   = null;
+    private Tile       BackupTile     = null;
+    private String     InteractAction = null;
     private       String        Choice                 = null;
     private       Integer       Count                  = null;
     private       AtomicInteger TimeoutTicker          = new AtomicInteger();
@@ -80,6 +87,11 @@ public class UseObjectTask extends SimpleTask
         InteractAction = Action;
     }
 
+    void SetBackupTile(Tile BackupTile)
+    {
+        this.BackupTile = BackupTile;
+    }
+
 
     private static Boolean CheckInventory(Object context, tpircSScript.ItemAction Action, Item item1, Item item2)
     {
@@ -127,13 +139,14 @@ public class UseObjectTask extends SimpleTask
     {
         if(Dialogues.inDialogue())
         {
-            Logger.log("UseObectTask: In Dialogue");
+            Logger.log("UseObjectTask: In Dialogue");
             StartedProcessing = false;
         }
 
         if(Attempts > MaxAttempts)
         {
-            Logger.log("UseObectTask: Too many failed attempts");
+            Logger.log("UseObjectTask: Too many failed attempts");
+            OSRSUtilities.ResetCameraRandom(100);
             return 0;
         }
 
@@ -142,7 +155,7 @@ public class UseObjectTask extends SimpleTask
             Logger.log("UseObjectTask: Ticker: " + TimeoutTicker.get());
             if(TimeoutTicker.get() < 0)
             {
-                Logger.log("UseObectTask: Timeout");
+                Logger.log("UseObjectTask: Timeout");
                 return 0;
             }
             return super.Loop();
@@ -150,7 +163,7 @@ public class UseObjectTask extends SimpleTask
 
         if(ItemProcessing.isOpen())
         {
-            Logger.log("UseObectTask: Process");
+            Logger.log("UseObjectTask: Process");
             if(Count == null)
             {
                 ItemProcessing.makeAll(Choice);
@@ -164,15 +177,32 @@ public class UseObjectTask extends SimpleTask
         }
         else
         {
-            Logger.log("UseObectTask: Interact");
+            Logger.log("UseObjectTask: Interact with " + ObjectToUeOn + ( InteractAction == null ? "" : " With Action " + InteractAction));
+            boolean result;
             if(InteractAction == null)
             {
-                ObjectToUeOn.interact();
+                result = ObjectToUeOn.interact();
             }
             else
             {
-                ObjectToUeOn.interact(InteractAction);
+                result = ObjectToUeOn.interact(InteractAction);
             }
+            if(!result)
+            {
+                if(BackupTile != null)
+                {
+                    Walking.walk(BackupTile);
+                }
+                else
+                {
+                    Walking.walk(ObjectToUeOn.getTile().getArea(3).getRandomTile());
+                }
+            }
+            else
+            {
+                Sleep.sleepUntil(() -> !Players.getLocal().isMoving(), 3000);
+            }
+            Logger.log("UseObjectTask: Interaction result: " + result);
             Attempts++;
             TimeoutTicker.set(DefaultProcessTickTime);
             GetScript().onGameTick.AddUpdateTicker(this, TimeoutTicker);

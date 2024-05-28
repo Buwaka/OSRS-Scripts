@@ -1,6 +1,6 @@
 package Cycles.SimpleTasks.Combat;
 
-import Database.OSRSDataBase;
+import OSRSDatabase.OSRSDataBase;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.Client;

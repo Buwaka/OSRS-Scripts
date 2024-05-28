@@ -1,10 +1,12 @@
 package Utilities.Scripting;
 
+import Cycles.AdvanceTasks.OpenBankTask;
 import Utilities.OSRSUtilities;
 import Utilities.Patterns.Delegates.Delegate3;
 import Utilities.Patterns.GameTickDelegate;
 import org.dreambot.api.Client;
 import org.dreambot.api.data.GameState;
+import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.script.TaskNode;
 import org.dreambot.api.script.impl.TaskScript;
 import org.dreambot.api.script.listener.GameStateListener;
@@ -41,7 +43,7 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
     private       int                               FailCount              = 0;
     private       int                               CycleCounter           = 0;
     private       Thread                            Randomizer;
-    private       Set<SimpleCycle>                  Cycles                 = new HashSet<>();
+    private List<SimpleCycle> Cycles = new ArrayList<>();
     private       WeakReference<SimpleCycle>        CurrentCycle           = null;
     private       AtomicBoolean                     isLooping              = new AtomicBoolean(false);
     private       AtomicBoolean                     isSolving              = new AtomicBoolean(false);
@@ -52,6 +54,7 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
     private        AtomicInteger PauseTime       = new AtomicInteger(
             GetRandom().nextInt(5000) + 5000); // is pause on the start
     private        long          StopTestTimeout = 10000;
+    private OpenBankTask CacheBank = null;
 
     public tpircSScript()
     {
@@ -140,16 +143,38 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             return;
         }
 
-        SimpleCycle next = Cycles.iterator().next();
-        if(next.Start(this))
+        if(CacheBank != null)
         {
-            CurrentCycle = new WeakReference<>(next);
+            return;
+        }
+
+        Logger.log("Start Cycle");
+        for(SimpleCycle next : Cycles)
+        {
+            if(next.isNeedsCachedBank() && !Bank.isCached())
+            {
+                Logger.log("Bank is not cached and needs to be, visiting bank");
+                CacheBank = new OpenBankTask();
+                CacheBank.onComplete.Subscribe(CacheBank, () -> CacheBank = null);
+                addNodes(CacheBank);
+                return;
+            }
+            if(next.Ready() && !next.isGoalMet())
+            {
+                Logger.log(next.GetName() + " goal hasn't been met, starting");
+                if(next.Start(this))
+                {
+                    CurrentCycle = new WeakReference<>(next);
+                }
+                break;
+            }
         }
     }
 
     public void StopCurrentCycle()
     {
-        Cycles.remove(CurrentCycle.get());
+        CurrentCycle.get().Reset(this);
+        Collections.rotate(Cycles, -1);
         CurrentCycle = null;
         _startCycle();
     }
@@ -182,6 +207,7 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
     public boolean IsActiveTaskLeft()
     {
         var tasks = GetSortedTasks();
+        Logger.log("tpircSScript: IsActiveTaskLeft: " + tasks.size());
         return !tasks.isEmpty();
     }
 
@@ -262,19 +288,19 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             {
                 SimpleTask Task = (SimpleTask) node;
                 TaskListLock.lock();
-                Logger.log("Removing task: " + Task.GetTaskName());
+                Logger.log("removeNodes: Removing task: " + Task.GetTaskName());
                 Tasks.remove(Task);
                 Task = null;
                 TaskListLock.unlock();
-                Logger.log(Tasks.size() + " Tasks left");
+                Logger.log("removeNodes:" + Tasks.size() + " Tasks left");
                 for(var task : Tasks)
                 {
-                    Logger.log(task.toString());
+                    Logger.log("removeNodes: " + task.toString());
                 }
             }
             else
             {
-                Logger.log("Trying to remove Tasknode instead of SimpleTask: " + node.getClass().getName());
+                Logger.log("removeNodes: Trying to remove Tasknode instead of SimpleTask: " + node.getClass().getName());
             }
         }
     }

@@ -1,7 +1,7 @@
 package Cycles.SimpleTasks;
 
 import Utilities.OSRSUtilities;
-import Utilities.Patterns.SimpleDelegate;
+import Utilities.Patterns.Delegates.Delegate;
 import Utilities.Scripting.Obstacles;
 import Utilities.Scripting.SimpleTask;
 import Utilities.Scripting.tpircSScript;
@@ -29,9 +29,9 @@ public class TravelTask extends SimpleTask
                                                                                            3,
                                                                                            OSRSUtilities.ScriptIntenity.Bot,
                                                                                            0);
-    private final Tile                                       Destination;
-    public        SimpleDelegate                             onReachedDestination = new SimpleDelegate();
-    private       Random                                     rand                 = new Random();
+    private final Tile     Destination;
+    public        Delegate onReachedDestination = new Delegate();
+    private       Random   rand                 = new Random();
 
     public TravelTask(String Name, Tile Destination)
     {

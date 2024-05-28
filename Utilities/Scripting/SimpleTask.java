@@ -1,8 +1,8 @@
 package Utilities.Scripting;
 
 import Utilities.OSRSUtilities;
+import Utilities.Patterns.Delegates.Delegate;
 import Utilities.Patterns.Delegates.Delegate1;
-import Utilities.Patterns.SimpleDelegate;
 import org.dreambot.api.script.TaskNode;
 
 import java.lang.ref.WeakReference;
@@ -17,16 +17,16 @@ public abstract class SimpleTask extends TaskNode implements ITask
             _scriptIntensity);
     public        AtomicInteger                                 TaskPriority      = new AtomicInteger(1);
     public        Supplier<Boolean>                             AcceptCondition   = () -> true;
-    public        Supplier<Boolean>                             CompleteCondition = null;
-    public        SimpleDelegate                                onComplete        = new SimpleDelegate();
-    public        Delegate1<SimpleTask>                         onReplaced        = new Delegate1<>();
-    public        SimpleDelegate                                onAccept          = new SimpleDelegate();
-    public        Delegate1<Integer>                            onExecute         = new Delegate1<>();
-    public        SimpleDelegate                                onStart           = new SimpleDelegate();
-    public        SimpleDelegate                                onStop            = new SimpleDelegate();
-    public        SimpleDelegate                                onPause           = new SimpleDelegate();
-    public  SimpleDelegate onUnPause = new SimpleDelegate();
-    private boolean        Active    = true;
+    public  Supplier<Boolean>     CompleteCondition = null;
+    public  Delegate              onComplete        = new Delegate();
+    public  Delegate1<SimpleTask> onReplaced        = new Delegate1<>();
+    public  Delegate              onAccept          = new Delegate();
+    public  Delegate1<Integer>    onExecute         = new Delegate1<>();
+    public  Delegate              onStart           = new Delegate();
+    public  Delegate              onStop            = new Delegate();
+    public  Delegate              onPause           = new Delegate();
+    public  Delegate              onUnPause         = new Delegate();
+    private boolean               Active            = true;
     private       boolean                                       Paused            = false;
     private       String                                        TaskName          = "";
     private       WeakReference<tpircSScript>                   ParentScript      = null;

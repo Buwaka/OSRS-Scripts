@@ -1,7 +1,5 @@
 package Utilities.Scripting;
 
-import java.util.function.Supplier;
-
 public interface ICycle
 {
     /**
@@ -21,8 +19,7 @@ public interface ICycle
     boolean isStarted();
 
     /**
-     * will onlu be called once there are no active tasks anymore, so implement this as an extra check
-     *
+     * will be called once there are no active tasks anymore, aka a single cycle has been completed
      * @return Cycle completed, ready for a restart
      */
     default boolean isCycleComplete(tpircSScript Script) {return true;}
@@ -50,9 +47,22 @@ public interface ICycle
      */
     default boolean onEndNow(tpircSScript Script) {return true;}
 
+    /**
+     * When a cycle has been completed, this will be called
+     */
     default boolean onRestart(tpircSScript Script) {return true;}
 
+    /**
+     * When all cycles have been completed and we want to do the cycle again, this is called
+     */
+    default void onReset(tpircSScript Script) {}
+
     default int onLoop(tpircSScript Script)        {return 0;}
+
+    /**
+     * @return Whether the goal of this cycle has been met, based on CycleType
+     */
+    boolean isGoalMet();
 
     enum CycleType
     {
@@ -61,10 +71,6 @@ public interface ICycle
         Endless,
         Null;
 
-        /**
-         * returns true when goal is met
-         */
-        public Supplier<Boolean> Goal  = null;
         public Integer           Count = null;
     }
 

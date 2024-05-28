@@ -1,7 +1,8 @@
 package Utilities;
 
-import Database.OSRSDataBase;
+import OSRSDatabase.OSRSDataBase;
 import Utilities.Combat.CombatManager;
+import Utilities.Patterns.GameTickDelegate;
 import Utilities.Scripting.tpircSScript;
 import Utilities.Serializers.AreaSerializer;
 import Utilities.Serializers.TileSerializer;
@@ -133,7 +134,7 @@ public class OSRSUtilities
                     {
                         Bank.openTab(withdraw.BankTab);
                     }
-                    if(withdraw.Amount == -1)
+                    if(withdraw.Amount > InventorySpace)
                     {
                         success = Bank.withdrawAll(withdraw.ItemID);
                     }
@@ -639,7 +640,7 @@ public class OSRSUtilities
 
         if(Destination.distance(Players.getLocal().getTile()) <= 1.0)
         {
-            Logger.log("Destination Reached");
+            Logger.log("OSRSUtilities: Destination Reached");
             return;
         }
 
@@ -656,12 +657,12 @@ public class OSRSUtilities
 
         LocalPath<Tile> Path = LocalPathFinder.getLocalPathFinder().calculate(Players.getLocal().getTile(),
                                                                               Destination);
-        Logger.log("Path: " + Path.toString());
+        Logger.log("OSRSUtilities: Path: " + Path.toString());
 
 
         if(Path == null || Path.isEmpty())
         {
-            Logger.log("No Path found");
+            Logger.log("OSRSUtilities: No Path found");
             while((Path == null || Path.isEmpty()) && Destination.distance(Players.getLocal().getTile()) > 1.0)
             {
                 SimpleWalkTo_(Destination);
@@ -670,16 +671,16 @@ public class OSRSUtilities
 
         }
 
-        Logger.log(Destination.canReach());
+        Logger.log("OSRSUtilities: " + Destination.canReach());
 
         Tile Next = Path.next();
         while(!Path.isEmpty() && Destination.canReach())
         {
             Tile NextNext = Path.getFurthestOnMM();
 
-            Logger.log(Destination.canReach());
-            Logger.log(Destination.distance(Players.getLocal().getTile()));
-            Logger.log("PlayerTile: " + Players.getLocal().getTile());
+            Logger.log("OSRSUtilities: " +Destination.canReach());
+            Logger.log("OSRSUtilities: " +Destination.distance(Players.getLocal().getTile()));
+            Logger.log("OSRSUtilities: PlayerTile: " + Players.getLocal().getTile());
 
             if(Next == Players.getLocal().getTile())
             {
@@ -695,15 +696,15 @@ public class OSRSUtilities
 
             if(Next != null && Path.isObstacleTile(Next))
             {
-                Logger.log("Obstacle");
-                Logger.log(Path.getObstacleForTile(Next).toString());
+                Logger.log("OSRSUtilities: Obstacle");
+                Logger.log("OSRSUtilities:" + Path.getObstacleForTile(Next).toString());
                 Path.getObstacleForTile(Next).traverse();
                 Sleep.sleep(rand.nextInt(2000) + 300);
             }
             else if(Next != null && Next.canReach())
             {
-                Logger.log("Clicking");
-                Logger.log(Next.distance(NextNext));
+                Logger.log("OSRSUtilities: Clicking");
+                Logger.log("OSRSUtilities:" + Next.distance(NextNext));
                 if(Map.isTileOnScreen(Next) && Math.abs(Next.distance(NextNext)) > 1.0)
                 {
 
@@ -736,7 +737,7 @@ public class OSRSUtilities
             }
             else
             {
-                Logger.log("Last resort walking");
+                Logger.log("OSRSUtilities:  Last resort walking");
                 Walking.walk(Destination);
                 Sleep.sleep(rand.nextInt(1000) + 100);
             }
@@ -758,7 +759,7 @@ public class OSRSUtilities
         {
             return child;
         }
-        Logger.log("Failed to get child item, " + child);
+        Logger.log("OSRSUtilities: Failed to get child item, " + child);
         return null;
     }
 
@@ -1106,6 +1107,24 @@ public class OSRSUtilities
         Logger.log("Changing to world " + Wlords.get(0).getWorld());
         boolean result = WorldHopper.hopWorld(Wlords.get(0));
         Wait();
+        return result;
+    }
+
+    public static boolean JumpToOtherWorld(GameTickDelegate GameTick)
+    {
+        List<World> Wlords = Worlds.all(t -> t.isF2P() && !t.isHighRisk() && !t.isPVP() && t.isNormal() &&
+                                             !t.getDescription().contains("skill total") && t != Worlds.getCurrent());
+        Wlords.sort(Comparator.comparingInt(t -> t.getPopulation()));
+
+        for(int i = 0; i < Wlords.size(); i++)
+        {
+            Logger.log("World " + i + " " + Wlords.get(i).getPopulation());
+        }
+
+        WorldHopper.openWorldHopper();
+        Logger.log("Changing to world " + Wlords.get(0).getWorld());
+        boolean result = WorldHopper.hopWorld(Wlords.get(0));
+        GameTick.WaitTicks(2);
         return result;
     }
 

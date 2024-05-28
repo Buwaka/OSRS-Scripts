@@ -4,10 +4,11 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Database/items" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/Database/monsters" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/Database/misc" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/Cycles/CycleDatabase" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/items" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/misc" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/monsters" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

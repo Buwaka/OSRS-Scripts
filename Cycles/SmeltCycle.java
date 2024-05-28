@@ -25,15 +25,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SmeltCycle extends SimpleCycle implements Serializable
 {
     private static final int                        ForgingRingID   = 2568;
-    private static       Tile                       BackupTile      = new Tile(3108, 3499, 0);
     private final        String                     SmeltAction     = "Smelt";
     public               AtomicInteger              FurnaceID       = new AtomicInteger(16469); // default furnace is the furnace in Edgeville
     public @Nullable     Boolean                    NeedForgingRing = null;
     private transient    GameObject                 Furnace         = null;
-    private transient    Integer                    Amount          = null;
     private              Tuple2<Integer, Integer>[] ItemIDRatio     = null;
-    private transient    TravelTask                 BackupTravel    = null;
-    private              String                     TargetName      = null;
+    private final     Tile       FurnaceBackupTile = new Tile(3108, 3498, 0);
+    private transient TravelTask BackupTravel      = null;
+    private           String     TargetName        = null;
     private              OpenBankTask               OpenBank        = null;
 
 
@@ -119,17 +118,6 @@ public class SmeltCycle extends SimpleCycle implements Serializable
     @Override
     public boolean onStart(tpircSScript Script)
     {
-        if(!Bank.isCached())
-        {
-            OpenBank = new OpenBankTask();
-            OpenBank.onComplete.Subscribe(() -> OpenBank = null);
-            Script.addNodes(OpenBank);
-        }
-        if(OpenBank != null)
-        {
-            return false;
-        }
-
         if(NeedForgingRing != null && NeedForgingRing.booleanValue() && !HasRingOfForging())
         {
             Logger.log("SmeltCycle: onStart: No ring of forging, doing nothing");
@@ -138,22 +126,31 @@ public class SmeltCycle extends SimpleCycle implements Serializable
 
         Furnace = GameObjects.closest(FurnaceID.get());
 
-        if(Furnace != null)
+        if(Furnace != null && Furnace.canReach())
         {
+            Logger.log("SmeltCycle: Can reach Furnace");
             StartCycle(Script);
-            BackupTile = Furnace.getTile();
-            return super.onStart(Script);
         }
-
-        if(BackupTravel != null)
+        else
         {
-            BackupTravel                   = new TravelTask("Travel to backup Furnace", BackupTile);
-            BackupTravel.CompleteCondition = () -> GameObjects.closest(FurnaceID.get()) != null;
-            Script.addNodes(BackupTravel);
-            return false;
-        }
+            Logger.log("SmeltCycle: Can't reach Furnace");
+            BackupTravel = new TravelTask("Travel to backup Furnace", FurnaceBackupTile);
+            BackupTravel.CompleteCondition = () -> GameObjects.closest(FurnaceID.get()) != null && GameObjects.closest(FurnaceID.get()).canReach();
+            BackupTravel.onComplete.Subscribe(this, () -> {
+                Furnace = GameObjects.closest(FurnaceID.get());
 
-        return false;
+                if(Furnace != null)
+                {
+                    StartCycle(Script);
+                }
+                else
+                {
+                    this.EndNow(Script);
+                }
+            });
+            Script.addNodes(BackupTravel);
+        }
+        return super.onStart(Script);
     }
 
     /**
@@ -167,5 +164,12 @@ public class SmeltCycle extends SimpleCycle implements Serializable
         // TODO check ring of forging
         StartCycle(Script);
         return true;
+    }
+
+    @Override
+    public void onReset(tpircSScript Script)
+    {
+        BackupTravel = null;
+        Furnace      = null;
     }
 }

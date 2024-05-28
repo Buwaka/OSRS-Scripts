@@ -55,7 +55,7 @@ public class BankItemsTask extends SimpleTask
 
     public boolean WithdrawAll(int ID)
     {
-        return Withdraws.add(new OSRSUtilities.BankEntry(ID, -1));
+        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Integer.MAX_VALUE));
     }
 
     public boolean FillInventory(int... IDRatios)
@@ -95,10 +95,20 @@ public class BankItemsTask extends SimpleTask
 
         int RatioTotal = Arrays.stream(IDRatios).mapToInt(t -> t._2).sum();
 
-        for(var item : IDRatios)
+        for(int i = 0; i < IDRatios.length; i++)
         {
-            int count = (int) Math.floor((OSRSUtilities.InventorySpace) / (double) (RatioTotal) * item._2);
-            AddWithdraw(item._1, count);
+            var item = IDRatios[i];
+
+            if(i + 1 == IDRatios.length)
+            {
+                WithdrawAll(item._1);
+            }
+            else
+            {
+                int count = (int) Math.floor((OSRSUtilities.InventorySpace) / (double) (RatioTotal) * item._2);
+                AddWithdraw(item._1, count);
+            }
+
         }
 
         return true;

@@ -1,5 +1,6 @@
 package Utilities.Patterns;
 
+import Utilities.Patterns.Delegates.Delegate;
 import org.dreambot.api.utilities.Logger;
 
 import java.util.WeakHashMap;
@@ -7,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class GameTickDelegate extends SimpleDelegate
+public class GameTickDelegate extends Delegate
 {
     ConcurrentLinkedQueue<Semaphore> Tickers = new ConcurrentLinkedQueue<>();
     WeakHashMap<Object, AtomicInteger> UpdateTickers = new WeakHashMap<>();

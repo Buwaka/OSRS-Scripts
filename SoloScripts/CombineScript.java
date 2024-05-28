@@ -28,7 +28,7 @@ public class CombineScript extends tpircSScript
         if(!Bank.isCached())
         {
             OpenBankTask openBank = new OpenBankTask();
-            openBank.onComplete.Subscribe(this::CheckCombineTasks);
+            openBank.onComplete.Subscribe(openBank, this::CheckCombineTasks);
             addNodes(openBank);
         }
         else

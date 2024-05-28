@@ -1,4 +1,4 @@
-package Database;
+package OSRSDatabase;
 
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;

@@ -3,7 +3,6 @@ package Cycles;
 import Cycles.AdvanceTasks.OpenBankTask;
 import Cycles.SimpleTasks.Bank.BankItemsTask;
 import Cycles.SimpleTasks.ItemProcessing.SmithTask;
-import Cycles.SimpleTasks.ItemProcessing.UseObjectTask;
 import Cycles.SimpleTasks.TravelTask;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
@@ -79,7 +78,7 @@ public class SmithCycle extends SimpleCycle
         if(!Bank.isCached())
         {
             OpenBank = new OpenBankTask();
-            OpenBank.onComplete.Subscribe(() -> OpenBank = null);
+            OpenBank.onComplete.Subscribe(this, () -> OpenBank = null);
             Script.addNodes(OpenBank);
         }
         if(OpenBank != null)

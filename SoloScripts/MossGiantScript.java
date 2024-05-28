@@ -1,7 +1,7 @@
 package SoloScripts;
 
 import Cycles.CombatLootBankCycle;
-import Database.OSRSDataBase;
+import OSRSDatabase.OSRSDataBase;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.ICycle;
 import Utilities.Scripting.tpircSScript;

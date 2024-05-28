@@ -4,7 +4,7 @@ import Cycles.SimpleTasks.Combat.LootKillsTask;
 import Cycles.SimpleTasks.Combat.MinimumHealthTask;
 import Cycles.SimpleTasks.Combat.SlaughterTask;
 import Cycles.SimpleTasks.TravelTask;
-import Database.OSRSDataBase;
+import OSRSDatabase.OSRSDataBase;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import Utilities.Scripting.tpircSScript;
@@ -173,7 +173,7 @@ public class SlaughterAndLoot extends SimpleTask
                 AttemptCount++;
                 Travel = new TravelTask("Travel to different spot in Killing Area",
                                         Arrays.stream(Areas).findAny().get().getRandomTile());
-                Travel.onReachedDestination.Subscribe(() -> Travel = null);
+                Travel.onReachedDestination.Subscribe(this, () -> Travel = null);
             }
         }
 

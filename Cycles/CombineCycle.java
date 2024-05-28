@@ -95,9 +95,8 @@ public class CombineCycle extends SimpleCycle implements Serializable
         {
             bankItemsTask.DepositAll();
         }
-        bankItemsTask.FillInventory(source, sourceRatio);
-        bankItemsTask.FillInventory(target, targetRatio);
 
+        bankItemsTask.FillInventory(source, sourceRatio, target, targetRatio);
 
         combineTask                 = new CombineTask("Combining items", source, target);
         combineTask.AcceptCondition = () -> !bankItemsTask.isActive();
@@ -120,7 +119,14 @@ public class CombineCycle extends SimpleCycle implements Serializable
         return super.onStart(Script);
     }
 
-//    public static void main(String[] args) throws IOException
+    @Override
+    public void onReset(tpircSScript Script)
+    {
+        bankItemsTask = null;
+        combineTask = null;
+    }
+
+    //    public static void main(String[] args) throws IOException
 //    {
 //        Gson      gson       = new Gson();
 ////        final int PieShellID = 2313;

@@ -1,5 +1,6 @@
 package Cycles.SimpleTasks.Skill;
 
+import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
@@ -23,6 +24,8 @@ public class MineTask extends SimpleTask
     int       MineTimeout         = 20000;
     Semaphore InventorySemaphore  = new Semaphore(1);
     private HashMap<Tile, Integer> Rocks = new HashMap<>();
+    private GameObject Target        = null;
+    private boolean    StartedMining = false;
 
     public MineTask(String Name, int... IDs)
     {
@@ -37,21 +40,43 @@ public class MineTask extends SimpleTask
         return true;
     }
 
+    private boolean RockAvailable()
+    {
+        for(var set : Rocks.entrySet())
+        {
+            var rock = GameObjects.getTopObjectOnTile(set.getKey());
+            if(rock != null && rock.getID() == set.getValue())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public GameObject GetTarget()
     {
-        var Rock = GameObjects.closest(t -> {
-            boolean MatchID = Arrays.stream(MineObjects).anyMatch(x -> x == t.getID());
-            boolean NoPlayersPossiblyMining = Players.all(x -> t.getTile().getArea(2).contains(x.getTile()) &&
-                                                               x.isAnimating() && x != Players.getLocal()).isEmpty();
-            boolean distance = t.getTile().distance() < 10.0;
-            return MatchID && NoPlayersPossiblyMining && distance;
-        });
-        if(Rock != null)
+        if(Target == null || OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 1000))
         {
-            Rocks.putIfAbsent(Rock.getTile(), Rock.getID());
+            var rocks = GameObjects.all(MineObjects);
+            rocks.sort((x, y) -> (int) (y.walkingDistance(Players.getLocal().getTile()) -
+                                        x.walkingDistance(Players.getLocal().getTile())));
+            for(var rock : rocks)
+            {
+                boolean NoPlayersPossiblyMining = Players.all(x -> rock.getTile().getArea(2).contains(x.getTile()) &&
+                                                               x.isAnimating() && x != Players.getLocal()).isEmpty();
+                boolean distance = rock.getTile().distance() < 10.0;
+                boolean canReach = rock.canReach();
+                if(distance && canReach)
+                {
+                    Rocks.putIfAbsent(rock.getTile(), rock.getID());
+                    if(NoPlayersPossiblyMining)
+                    {
+                        Target = rock;
+                    }
+                }
+            }
         }
-
-        return Rock;
+        return Target;
     }
 
     //TODO check for pickaxe in equipment slot or inventory
@@ -59,11 +84,6 @@ public class MineTask extends SimpleTask
     protected boolean Ready()
     {
         var target = GetTarget();
-//        if(target == null && !Rocks.isEmpty())
-//        {
-//            OSRSUtilities.JumpToOtherWorld();
-//            target = GetTarget();
-//        }
         return target != null && super.Ready();
     }
 
@@ -80,8 +100,13 @@ public class MineTask extends SimpleTask
             return super.Loop();
         }
 
+        if(StartedMining && !RockAvailable())
+        {
+            OSRSUtilities.JumpToOtherWorld(GetScript().onGameTick);
+        }
+
         var target = GetTarget();
-        if(Sleep.sleepUntil(() -> target.interact("Mine"), MineInteractTimeout))
+        if(target != null && Sleep.sleepUntil(() -> target.interact("Mine"), MineInteractTimeout))
         {
             Logger.log("Mine interact succesful");
             InventorySemaphore.tryAcquire();
@@ -89,6 +114,7 @@ public class MineTask extends SimpleTask
             //this.GetScript().onGameTick.WaitTicks(3);
             Sleep.sleepUntil(() -> InventorySemaphore.tryAcquire() || !target.exists(), MineTimeout);
             Logger.log("Acquired permit");
+            StartedMining = true;
         }
 
         return super.Loop();
