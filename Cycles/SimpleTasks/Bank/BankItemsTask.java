@@ -81,6 +81,7 @@ public class BankItemsTask extends SimpleTask
         }
 
         Tuple2<Integer, Integer>[] out = tuples.toArray(new Tuple2[tuples.size()]);
+        Logger.log("BankItemsTask: FillInventory: tuples: " + Arrays.toString(out));
         //Logger.log(Arrays.toString(out));
         return FillInventory(out);
     }
@@ -94,6 +95,7 @@ public class BankItemsTask extends SimpleTask
         }
 
         int RatioTotal = Arrays.stream(IDRatios).mapToInt(t -> t._2).sum();
+        Logger.log("BankItemsTask: FillInventory: RatioTotal " + RatioTotal);
 
         for(int i = 0; i < IDRatios.length; i++)
         {
@@ -101,11 +103,13 @@ public class BankItemsTask extends SimpleTask
 
             if(i + 1 == IDRatios.length)
             {
+                Logger.log("BankItemsTask: FillInventory: WithdrawAll  " + item._1);
                 WithdrawAll(item._1);
             }
             else
             {
                 int count = (int) Math.floor((OSRSUtilities.InventorySpace) / (double) (RatioTotal) * item._2);
+                Logger.log("BankItemsTask: FillInventory: AddWithdraw  " + item._1 + " " + count);
                 AddWithdraw(item._1, count);
             }
 

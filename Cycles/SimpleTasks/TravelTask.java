@@ -12,6 +12,7 @@ import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.methods.walking.pathfinding.impl.local.LocalPathFinder;
 import org.dreambot.api.methods.walking.pathfinding.impl.obstacle.impl.DestructableObstacle;
+import org.dreambot.api.methods.walking.web.node.impl.teleports.TeleportWebNode;
 import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nonnull;
@@ -103,6 +104,7 @@ public class TravelTask extends SimpleTask
     public int Loop()
     {
         OSRSUtilities.ScriptIntenity Intensity = ScriptIntensity.get();
+
 
 
         LocalPathFinder.getLocalPathFinder().addObstacle(new DestructableObstacle("Web", "Slash"));

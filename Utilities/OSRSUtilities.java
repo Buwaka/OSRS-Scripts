@@ -3,8 +3,10 @@ package Utilities;
 import OSRSDatabase.OSRSDataBase;
 import Utilities.Combat.CombatManager;
 import Utilities.Patterns.GameTickDelegate;
+import Utilities.Requirement.IRequirement;
 import Utilities.Scripting.tpircSScript;
 import Utilities.Serializers.AreaSerializer;
+import Utilities.Serializers.RequirementSerializer;
 import Utilities.Serializers.TileSerializer;
 import com.google.gson.GsonBuilder;
 import org.dreambot.api.Client;
@@ -66,6 +68,7 @@ public class OSRSUtilities
     {
         OSRSGsonBuilder.registerTypeAdapter(Area.class, new AreaSerializer());
         OSRSGsonBuilder.registerTypeAdapter(Tile.class, new TileSerializer());
+        OSRSGsonBuilder.registerTypeAdapter(IRequirement.class, new RequirementSerializer());
     }
 
 
@@ -91,6 +94,8 @@ public class OSRSUtilities
             Withdraws.sort((x,y) -> x.GetCount() - y.GetCount());
             ArrayList<BankEntry> Deposit  = Deposits == null ? new ArrayList<>() : new ArrayList<>(Deposits);
             ArrayList<BankEntry> Withdraw = Withdraws == null ? new ArrayList<>() : new ArrayList<>(Withdraws);
+            Logger.log("ProcessBankEntries: Deposits: " + Arrays.toString(Deposit.toArray()));
+            Logger.log("ProcessBankEntries: Withdraws: " + Arrays.toString(Withdraw.toArray()));
             while((!Deposit.isEmpty() || !Withdraw.isEmpty()))
             {
                 boolean success;
@@ -171,11 +176,11 @@ public class OSRSUtilities
             return true;
         }
 
-        if(!CanReachBank())
-        {
-            Logger.log("Can't reach bank");
-            return false;
-        }
+//        if(!CanReachBank())
+//        {
+//            Logger.log("Can't reach bank");
+//            return false;
+//        }
 
         while(!Bank.isOpen())
         {

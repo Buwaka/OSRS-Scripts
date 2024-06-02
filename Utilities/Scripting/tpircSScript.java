@@ -106,7 +106,7 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         Logger.log("onInventoryItemSwapped");
     }
 
-    public OSRSUtilities.ScriptIntenity GetScriptIntensity() {return OSRSUtilities.ScriptIntenity.Normal;}
+    public OSRSUtilities.ScriptIntenity GetScriptIntensity() {return OSRSUtilities.ScriptIntenity.Sweating;}
 
     private void KillRandomizer()
     {
@@ -173,10 +173,12 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
 
     public void StopCurrentCycle()
     {
-        CurrentCycle.get().Reset(this);
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.get().Reset(this);
+            CurrentCycle = null;
+        }
         Collections.rotate(Cycles, -1);
-        CurrentCycle = null;
-        _startCycle();
     }
 
     @Override

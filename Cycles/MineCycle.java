@@ -8,6 +8,7 @@ import OSRSDatabase.OSRSDataBase;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
+import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.interactive.Players;
@@ -54,21 +55,6 @@ public class MineCycle extends SimpleCycle implements Serializable
         TravelToMine.onReachedDestination.Subscribe(TravelToMine, () -> Script.addNodes(new TravelTask("Travel to different Minespot",
                                                                                          Arrays.stream(MiningArea).findAny().get().getRandomTile())));
 
-        if(Checkpoint != null)
-        {
-//            TravelTask TravelToLadder = new TravelTask("Travel to Ladder", Checkpoint);
-//            TravelToLadder.AcceptCondition = () -> !mineTask.isActive();
-//            TravelToLadder.TaskPriority.set(-1);
-//            TravelToLadder.CompleteCondition = () -> {
-//                if(!Players.getLocal().isMoving())
-//                {
-//                    return Sleep.sleepUntil(() -> GameObjects.closest("Ladder").interact(), 20000) && !Players.getLocal().isMoving();
-//                }
-//return false;
-//            };
-//            Script.addNodes(TravelToLadder);
-        }
-
 
         OpenBankTask OpenBank = new OpenBankTask();
         if(PreferredBank != null)
@@ -107,5 +93,15 @@ public class MineCycle extends SimpleCycle implements Serializable
     {
         StartCycle(Script);
         return true;
+    }
+
+    @Override
+    public boolean onEnd(tpircSScript Script)
+    {
+        if(Sleep.sleepUntil(()-> Bank.open(), 60000))
+        {
+            Bank.depositAllItems();
+        }
+        return super.onEnd(Script);
     }
 }

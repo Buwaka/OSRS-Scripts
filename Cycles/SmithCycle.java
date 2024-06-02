@@ -2,7 +2,7 @@ package Cycles;
 
 import Cycles.AdvanceTasks.OpenBankTask;
 import Cycles.SimpleTasks.Bank.BankItemsTask;
-import Cycles.SimpleTasks.ItemProcessing.SmithTask;
+import Cycles.SimpleTasks.Skill.SmithTask;
 import Cycles.SimpleTasks.TravelTask;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
@@ -11,6 +11,7 @@ import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.utilities.Logger;
+import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.GameObject;
 
 import java.util.Objects;
@@ -20,11 +21,12 @@ public class SmithCycle extends SimpleCycle
     final String SmithAction = "Smith";
     int        HammerID = 2347;
     int        AnvilID  = 2097;
-    GameObject Anvil    = null;
     String TargetName;
     int    BarID;
+    int MinimumBarCount = 1;
     private OpenBankTask OpenBank     = null;
     private TravelTask   BackupTravel = null;
+    private SmithTask Smithtask = null;
     private Tile         BackupTile   = new Tile(3187, 3424, 0);
 
     public SmithCycle(String name, String TargetName, int BarID)
@@ -34,12 +36,24 @@ public class SmithCycle extends SimpleCycle
         this.BarID      = BarID;
     }
 
+    public void setMinimumBarCount(int minimumBarCount)
+    {
+        MinimumBarCount = minimumBarCount;
+    }
+
     private void StartCycle(tpircSScript Script)
     {
+        if(Bank.count(BarID) < MinimumBarCount && Inventory.count(BarID) < MinimumBarCount)
+        {
+            Script.StopCurrentCycle();
+            return;
+        }
+
         OpenBankTask OpenBank = new OpenBankTask();
 
         BankItemsTask GetItems = new BankItemsTask("Get Bars");
-        GetItems.AcceptCondition = () -> !OpenBank.isActive();
+        GetItems.AcceptCondition = () -> Bank.isOpen();
+        GetItems.TaskPriority.set(0);
         if(!Inventory.isEmpty())
         {
             if(Inventory.contains(t -> t.getID() != HammerID && !Objects.equals(t.getName(), TargetName)))
@@ -47,7 +61,7 @@ public class SmithCycle extends SimpleCycle
                 GetItems.DepositAll();
                 GetItems.AddWithdraw(HammerID, 1);
             }
-            else
+            else if(Inventory.contains(TargetName))
             {
                 GetItems.DepositAll(Inventory.get(TargetName).getID());
             }
@@ -62,9 +76,9 @@ public class SmithCycle extends SimpleCycle
         GetItems.FillInventory(BarID, 1);
 
 
-        SmithTask Smith = new SmithTask("Smith stuff", Anvil, TargetName, SmithAction);
+        Smithtask = new SmithTask("Smith stuff", TargetName, SmithAction, AnvilID);
 
-        Script.addNodes(OpenBank, GetItems, Smith);
+        Script.addNodes(OpenBank, GetItems, Smithtask);
     }
 
     /**
@@ -86,24 +100,21 @@ public class SmithCycle extends SimpleCycle
             return false;
         }
 
-        Anvil = GameObjects.closest(AnvilID);
 
-        if(Anvil != null)
+        if(GameObjects.closest(AnvilID) != null)
         {
             StartCycle(Script);
-            BackupTile = Anvil.getTile();
             return super.onStart(Script);
         }
-
-        if(BackupTravel != null)
+        else
         {
             BackupTravel                   = new TravelTask("Travel to Anvil", BackupTile);
-            BackupTravel.CompleteCondition = () -> GameObjects.closest(AnvilID) != null;
+            BackupTravel.AcceptCondition = Bank::isCached;
+            BackupTravel.CompleteCondition = () -> SmithTask.GetObject(AnvilID) != null && SmithTask.GetObject(AnvilID).canReach();
+            BackupTravel.onComplete.Subscribe(this, () -> StartCycle(Script));
             Script.addNodes(BackupTravel);
-            return false;
+            return super.onStart(Script);
         }
-
-        return super.onStart(Script);
     }
 
     /**
@@ -116,5 +127,18 @@ public class SmithCycle extends SimpleCycle
     {
         StartCycle(Script);
         return super.onRestart(Script);
+    }
+
+    @Override
+    public boolean onEnd(tpircSScript Script)
+    {
+        Smithtask = null;
+        BackupTravel = null;
+
+        if(Sleep.sleepUntil(()->Bank.open(), 60000))
+        {
+            Bank.depositAllItems();
+        }
+        return super.onEnd(Script);
     }
 }

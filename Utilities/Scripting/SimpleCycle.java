@@ -190,7 +190,7 @@ public class SimpleCycle implements ICycle, Serializable
     {
         Finished = true;
         onCycleEnd.Fire();
-        return true;
+        return onEnd(Script);
     }
 
     /**
