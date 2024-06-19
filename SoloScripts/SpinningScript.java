@@ -49,28 +49,12 @@ public class SpinningScript extends tpircSScript
     State  CurrentState = State.WalkingToSpin;
     Random rand         = new Random();
 
-    public boolean IsInsideSpinningArea()
+    public enum State
     {
-        return SpinArea.contains(Players.getLocal().getTile()) && Players.getLocal().getTile().getZ() == 1;
-    }
-
-    public boolean IsSpinDoorOpen()
-    {
-        var Door = Arrays.stream(GameObjects.getObjectsOnTile(SpinDoor)).filter(x -> x.getID() ==
-                                                                                     SpinDoorID).findFirst();
-        Logger.log(Door);
-        return !Door.isPresent() || !Door.get().hasAction("Open");
-    }
-
-    public boolean OpenSpinDoor()
-    {
-        if(!IsSpinDoorOpen())
-        {
-            Logger.log("Opening Spin Door");
-            GameObject Door = GameObjects.closest(t -> t.getID() == SpinDoorID, SpinDoor);
-            return Door.interact("Open");
-        }
-        return false;
+        WalkingToSpin,
+        Spinning,
+        WalkingToBank,
+        Banking
     }
 
     @Override
@@ -283,13 +267,28 @@ public class SpinningScript extends tpircSScript
         return 0;
     }
 
-
-    public enum State
+    public boolean IsInsideSpinningArea()
     {
-        WalkingToSpin,
-        Spinning,
-        WalkingToBank,
-        Banking
+        return SpinArea.contains(Players.getLocal().getTile()) && Players.getLocal().getTile().getZ() == 1;
+    }
+
+    public boolean OpenSpinDoor()
+    {
+        if(!IsSpinDoorOpen())
+        {
+            Logger.log("Opening Spin Door");
+            GameObject Door = GameObjects.closest(t -> t.getID() == SpinDoorID, SpinDoor);
+            return Door.interact("Open");
+        }
+        return false;
+    }
+
+    public boolean IsSpinDoorOpen()
+    {
+        var Door = Arrays.stream(GameObjects.getObjectsOnTile(SpinDoor)).filter(x -> x.getID() ==
+                                                                                     SpinDoorID).findFirst();
+        Logger.log(Door);
+        return !Door.isPresent() || !Door.get().hasAction("Open");
     }
 
 }

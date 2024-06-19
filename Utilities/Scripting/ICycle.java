@@ -2,6 +2,14 @@ package Utilities.Scripting;
 
 public interface ICycle
 {
+    enum CycleType
+    {
+        byCount,
+        byGoal,
+        Endless,
+        Null
+    }
+
     /**
      * @return The amount of time this cycle has been performed
      */
@@ -18,13 +26,14 @@ public interface ICycle
 
     boolean isStarted();
 
+    ;
+
     /**
      * will be called once there are no active tasks anymore, aka a single cycle has been completed
+     *
      * @return Cycle completed, ready for a restart
      */
     default boolean isCycleComplete(tpircSScript Script) {return true;}
-
-    ;
 
     /**
      * @param Script
@@ -57,21 +66,11 @@ public interface ICycle
      */
     default void onReset(tpircSScript Script) {}
 
-    default int onLoop(tpircSScript Script)        {return 0;}
+    default int onLoop(tpircSScript Script) {return 0;}
 
     /**
      * @return Whether the goal of this cycle has been met, based on CycleType
      */
     boolean isGoalMet();
-
-    enum CycleType
-    {
-        byCount,
-        byGoal,
-        Endless,
-        Null;
-
-        public Integer           Count = null;
-    }
 
 }

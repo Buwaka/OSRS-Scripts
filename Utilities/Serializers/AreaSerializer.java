@@ -11,21 +11,6 @@ import java.lang.reflect.Type;
 
 public class AreaSerializer implements JsonSerializer<Area>, JsonDeserializer<Area>
 {
-    public JsonElement serialize(Area src, Type typeOfSrc, JsonSerializationContext context)
-    {
-        SerializedArea toSerialize = new SerializedArea(src);
-        return context.serialize(toSerialize);
-    }
-
-    public Area deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws
-                                                                                                JsonParseException
-    {
-        SerializedArea tempArea = context.deserialize(json, SerializedArea.class);
-        Area           area     = new Area(tempArea.tiles);
-        area.setZ(tempArea.z);
-        return area;
-    }
-
     private class SerializedArea implements Serializable
     {
         public @Nullable Tile[]    tiles;
@@ -66,6 +51,21 @@ public class AreaSerializer implements JsonSerializer<Area>, JsonDeserializer<Ar
 
             return null;
         }
+    }
+
+    public JsonElement serialize(Area src, Type typeOfSrc, JsonSerializationContext context)
+    {
+        SerializedArea toSerialize = new SerializedArea(src);
+        return context.serialize(toSerialize);
+    }
+
+    public Area deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws
+                                                                                                JsonParseException
+    {
+        SerializedArea tempArea = context.deserialize(json, SerializedArea.class);
+        Area           area     = new Area(tempArea.tiles);
+        area.setZ(tempArea.z);
+        return area;
     }
 
 

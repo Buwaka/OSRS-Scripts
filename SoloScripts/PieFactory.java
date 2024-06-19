@@ -18,6 +18,12 @@ public class PieFactory extends tpircSScript
     final int PastyDoughID = 1953;
     States CurrentState = States.Banking;
 
+    public enum States
+    {
+        Banking,
+        Combining
+    }
+
     @Override
     public void onStart()
     {
@@ -67,11 +73,5 @@ public class PieFactory extends tpircSScript
         }
 
         return 0;
-    }
-
-    public enum States
-    {
-        Banking,
-        Combining
     }
 }

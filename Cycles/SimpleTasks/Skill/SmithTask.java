@@ -21,38 +21,38 @@ public class SmithTask extends SimpleTask
 {
     private final int           MaxAttempts            = 10;
     public        int           DefaultProcessTickTime = 7;
-    private       int[]    ObjectID           = null;
+    private       int[]         ObjectID               = null;
     private       String        InteractAction         = null;
     private       String        Choice                 = null;
-        private Integer       Count             = null;
-    private AtomicInteger TimeoutTicker     = new AtomicInteger();
-    private boolean       StartedProcessing = false;
-    private int           Attempts          = 0;
-    private Tile          BackupTile        = null;
+    private       Integer       Count                  = null;
+    private       AtomicInteger TimeoutTicker          = new AtomicInteger();
+    private       boolean       StartedProcessing      = false;
+    private       int           Attempts               = 0;
+    private       Tile          BackupTile             = null;
 
 
     /**
-     * @param Name   Name of the task
+     * @param Name      Name of the task
      * @param ObjectIDs Object to interact with
-     * @param Choice Action to perform on object
+     * @param Choice    Action to perform on object
      */
     public SmithTask(String Name, String Choice, int... ObjectIDs)
     {
         super(Name);
-        ObjectID = ObjectIDs;
-        this.Choice  = Choice;
+        ObjectID    = ObjectIDs;
+        this.Choice = Choice;
     }
 
     /**
-     * @param Name   Name of the task
+     * @param Name      Name of the task
      * @param ObjectIDs Object to interact with
-     * @param Choice Action to perform on object
-     * @param Action What action to perform on object
+     * @param Choice    Action to perform on object
+     * @param Action    What action to perform on object
      */
     public SmithTask(String Name, String Choice, String Action, int... ObjectIDs)
     {
         super(Name);
-        ObjectID   = ObjectIDs;
+        ObjectID       = ObjectIDs;
         this.Choice    = Choice;
         InteractAction = Action;
     }
@@ -67,23 +67,9 @@ public class SmithTask extends SimpleTask
         Count = count;
     }
 
-
     void SetBackupTile(Tile BackupTile)
     {
         this.BackupTile = BackupTile;
-    }
-
-    @SafeVarargs
-    public static GameObject GetObject(int... ID)
-    {
-        return GameObjects.closest(new IdFilter<>(ID));
-    }
-
-
-    private static Boolean CheckInventory(Object context, tpircSScript.ItemAction Action, Item item1, Item item2)
-    {
-        ((SmithTask) context).TimeoutTicker.set(((SmithTask) context).DefaultProcessTickTime);
-        return true;
     }
 
     /**
@@ -96,26 +82,10 @@ public class SmithTask extends SimpleTask
         return Obj != null && Obj.canReach() && super.Ready();
     }
 
-    /**
-     * @return
-     */
-    @Nonnull
-    @Override
-    public TaskType GetTaskType()
+    @SafeVarargs
+    public static GameObject GetObject(int... ID)
     {
-        return TaskType.UseOnObjectTask;
-    }
-
-    /**
-     * @param Script
-     *
-     * @return return true if successful, false if we need more time, keep triggering start until it is ready
-     */
-    @Override
-    public boolean onStartTask(tpircSScript Script)
-    {
-        Script.onInventory.Subscribe(this, SmithTask::CheckInventory);
-        return super.onStartTask(Script);
+        return GameObjects.closest(new IdFilter<>(ID));
     }
 
     /**
@@ -171,7 +141,8 @@ public class SmithTask extends SimpleTask
         else
         {
             GameObject Obj = GetObject(ObjectID);
-            Logger.log("SmithTask: Interact with " + Obj + ( InteractAction == null ? "" : " With Action " + InteractAction));
+            Logger.log("SmithTask: Interact with " + Obj +
+                       (InteractAction == null ? "" : " With Action " + InteractAction));
             boolean result;
             if(InteractAction == null)
             {
@@ -179,7 +150,7 @@ public class SmithTask extends SimpleTask
             }
             else
             {
-                result = Sleep.sleepUntil( () ->  Obj.interact(InteractAction), 10000, 2000);
+                result = Sleep.sleepUntil(() -> Obj.interact(InteractAction), 10000, 2000);
             }
             if(!result)
             {
@@ -202,5 +173,33 @@ public class SmithTask extends SimpleTask
             GetScript().onGameTick.AddUpdateTicker(this, TimeoutTicker);
         }
         return super.Loop();
+    }
+
+    /**
+     * @return
+     */
+    @Nonnull
+    @Override
+    public TaskType GetTaskType()
+    {
+        return TaskType.UseOnObjectTask;
+    }
+
+    /**
+     * @param Script
+     *
+     * @return return true if successful, false if we need more time, keep triggering start until it is ready
+     */
+    @Override
+    public boolean onStartTask(tpircSScript Script)
+    {
+        Script.onInventory.Subscribe(this, SmithTask::CheckInventory);
+        return super.onStartTask(Script);
+    }
+
+    private static Boolean CheckInventory(Object context, tpircSScript.ItemAction Action, Item item1, Item item2)
+    {
+        ((SmithTask) context).TimeoutTicker.set(((SmithTask) context).DefaultProcessTickTime);
+        return true;
     }
 }

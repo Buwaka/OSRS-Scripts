@@ -79,6 +79,13 @@ public class CombineCycle extends SimpleCycle implements Serializable
                (OSRSUtilities.InventorySpace / (sourceRatio + targetRatio));
     }
 
+    @Override
+    public boolean onRestart(tpircSScript Script)
+    {
+        StartCycle(Script);
+        return true;
+    }
+
     private void StartCycle(tpircSScript script)
     {
         if(!OSRSUtilities.CanReachBank())
@@ -105,25 +112,17 @@ public class CombineCycle extends SimpleCycle implements Serializable
     }
 
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public void onReset(tpircSScript Script)
     {
-        StartCycle(Script);
-        return true;
+        bankItemsTask = null;
+        combineTask   = null;
     }
-
 
     @Override
     public boolean onStart(tpircSScript Script)
     {
         StartCycle(Script);
         return super.onStart(Script);
-    }
-
-    @Override
-    public void onReset(tpircSScript Script)
-    {
-        bankItemsTask = null;
-        combineTask = null;
     }
 
     //    public static void main(String[] args) throws IOException

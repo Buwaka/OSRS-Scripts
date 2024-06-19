@@ -14,24 +14,32 @@ public class SimpleCycle implements ICycle, Serializable
     /**
      * returns true when goal is met
      */
-    public transient  Supplier<Boolean> Goal            = null;
+    //TODO replace this with serializable Requirement
+    public            Supplier<Boolean> Goal            = null;
+    //TODO replace this with serializable Requirement
+    public            Supplier<Boolean> Requirement     = null;
     public transient  Delegate          onCompleteCycle = new Delegate();
     public transient  Delegate          onCycleEnd      = new Delegate();
+    private           String            CycleName       = "";
+    private           boolean           NeedsCachedBank = true;
     private transient CycleType         Type            = CycleType.Null;
-    private transient int                   CycleCount      = 0;
+    private transient int               CycleCount      = 0;
+    private           int     CycleCountLimit = -1;
     /**
      * If the task is complete AND has been cleaned up, check CanRestart for whether its just complete
      */
-    private transient boolean               Finished        = false;
-    private           String                CycleName       = "";
-    private transient boolean               Started         = false;
-    private boolean          NeedsCachedBank = true;
-    public Supplier<Boolean> Requirement     = null;
-
+    private transient boolean Finished        = false;
+    private transient boolean Started         = false;
     private SimpleCycle()
     {
         onCompleteCycle = new Delegate();
         onCycleEnd      = new Delegate();
+    }
+
+
+    public SimpleCycle(String name)
+    {
+        CycleName = name;
     }
 
     public boolean isNeedsCachedBank()
@@ -42,11 +50,6 @@ public class SimpleCycle implements ICycle, Serializable
     public void setNeedsCachedBank(boolean needsCachedBank)
     {
         NeedsCachedBank = needsCachedBank;
-    }
-
-    public SimpleCycle(String name)
-    {
-        CycleName = name;
     }
 
     public String GetName()          {return CycleName;}
@@ -88,45 +91,6 @@ public class SimpleCycle implements ICycle, Serializable
         return Started;
     }
 
-    public void SetCycleLimit(int Limit)
-    {
-        Type.Count = Limit;
-    }
-
-    protected final void CompleteCycle()
-    {
-        switch(Type)
-        {
-            case byCount ->
-            {
-                Logger.log("Completed Cycle " + (CycleCount + 1) + " of " + Type.Count);
-            }
-            case byGoal ->
-            {
-                Logger.log("Completed Cycle, is goal met:  " + Goal.get());
-            }
-            case Endless ->
-            {
-                Logger.log("Completed Cycle, Cycle is endless");
-            }
-            case Null ->
-            {
-                Logger.log("Completed Cycle, Cycle is null?");
-            }
-        }
-
-        CycleCount++;
-        onCompleteCycle.Fire();
-    }
-
-    protected final void ResetCycleCount()
-    {
-        CycleCount = 0;
-    }
-
-    //protected boolean CanStart(tpircSScript Script) { return true;}
-
-
     /**
      * @param Script
      *
@@ -153,7 +117,7 @@ public class SimpleCycle implements ICycle, Serializable
         {
             case byCount ->
             {
-                if(CycleCount >= Type.Count)
+                if(CycleCount >= CycleCountLimit)
                 {
                     Logger.log("SimpleCycle: isGoalMet: byCount true");
                     return true;
@@ -178,6 +142,49 @@ public class SimpleCycle implements ICycle, Serializable
             }
         }
         return false;
+    }
+
+    public void SetCycleLimit(int Limit)
+    {
+        CycleCountLimit = Limit;
+    }
+
+    public int GetCycleLimit()
+    {
+        return CycleCountLimit;
+    }
+
+    //protected boolean CanStart(tpircSScript Script) { return true;}
+
+    protected final void CompleteCycle()
+    {
+        switch(Type)
+        {
+            case byCount ->
+            {
+                Logger.log("Completed Cycle " + (CycleCount + 1) + " of " + CycleCountLimit);
+            }
+            case byGoal ->
+            {
+                Logger.log("Completed Cycle, is goal met:  " + Goal.get());
+            }
+            case Endless ->
+            {
+                Logger.log("Completed Cycle, Cycle is endless");
+            }
+            case Null ->
+            {
+                Logger.log("Completed Cycle, Cycle is null?");
+            }
+        }
+
+        CycleCount++;
+        onCompleteCycle.Fire();
+    }
+
+    protected final void ResetCycleCount()
+    {
+        CycleCount = 0;
     }
 
     protected final boolean Start(tpircSScript Script)
@@ -207,7 +214,7 @@ public class SimpleCycle implements ICycle, Serializable
         {
             case byCount ->
             {
-                if(CycleCount < Type.Count)
+                if(CycleCount < CycleCountLimit)
                 {
                     return true;
                 }

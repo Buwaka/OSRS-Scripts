@@ -12,16 +12,6 @@ import org.dreambot.api.utilities.Logger;
 public class CombineScript extends tpircSScript
 {
 
-    void CheckCombineTasks()
-    {
-        Logger.log("Travel to bank Complete, checking possible combinetasks");
-        var all = CycleUtilities.GetAllValidCombineCycles();
-        for(var cycle : all)
-        {
-            Logger.log(cycle);
-            AddCycle(cycle);
-        }
-    }
     @Override
     public void onStart()
     {
@@ -36,5 +26,16 @@ public class CombineScript extends tpircSScript
             CheckCombineTasks();
         }
         super.onStart();
+    }
+
+    void CheckCombineTasks()
+    {
+        Logger.log("Travel to bank Complete, checking possible combinetasks");
+        var all = CycleUtilities.GetAllValidCombineCycles();
+        for(var cycle : all)
+        {
+            Logger.log(cycle);
+            AddCycle(cycle);
+        }
     }
 }

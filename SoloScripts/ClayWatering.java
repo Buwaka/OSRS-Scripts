@@ -25,6 +25,12 @@ public class ClayWatering extends tpircSScript
     States CurrentState = States.Banking;
     Random rand         = new Random();
 
+    public enum States
+    {
+        Watering,
+        Banking
+    }
+
     @Override
     public void onStart()
     {
@@ -103,12 +109,6 @@ public class ClayWatering extends tpircSScript
         }
 
         return 0;
-    }
-
-    public enum States
-    {
-        Watering,
-        Banking
     }
 
 }

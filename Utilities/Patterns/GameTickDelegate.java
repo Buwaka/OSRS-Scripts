@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameTickDelegate extends Delegate
 {
-    ConcurrentLinkedQueue<Semaphore> Tickers = new ConcurrentLinkedQueue<>();
+    ConcurrentLinkedQueue<Semaphore>   Tickers       = new ConcurrentLinkedQueue<>();
     WeakHashMap<Object, AtomicInteger> UpdateTickers = new WeakHashMap<>();
 
     public void WaitTicks(int ticks)

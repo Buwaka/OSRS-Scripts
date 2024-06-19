@@ -14,7 +14,8 @@ import javax.annotation.Nonnull;
 public class OpenBankTask extends SimpleTask
 {
     TravelTask travelToBank = null;
-    private BankLocation                                    BankingLocation  = null;
+    private BankLocation BankingLocation = null;
+
     public OpenBankTask()
     {
         super("Opening Bank");
@@ -23,12 +24,6 @@ public class OpenBankTask extends SimpleTask
     public void SetBankLocation(BankLocation loc)
     {
         BankingLocation = loc;
-    }
-
-    private BankLocation NearestThatIsntGE()
-    {
-        var all = BankLocation.getValidLocations();
-        return all.stream().filter(t -> t != BankLocation.GRAND_EXCHANGE).sorted((x,y) -> (int) (y.distance(Players.getLocal().getTile()) - x.walkingDistance(Players.getLocal().getTile()) * 100)).toList().getFirst();
     }
 
     BankLocation GetBankLocation()
@@ -44,17 +39,12 @@ public class OpenBankTask extends SimpleTask
         return BankLocation.LUMBRIDGE;
     }
 
-    @Override
-    public boolean onStartTask(tpircSScript Script)
+    private BankLocation NearestThatIsntGE()
     {
-//        if(!OSRSUtilities.CanReachBank())
-//        {
-//            var BankLoc = GetBankLocation();
-//            Logger.log("OpenBankTask, going to bank: " + BankLoc.name());
-//            travelToBank = new TravelTask("Travel to Bank", BankLoc.getCenter());
-//            travelToBank.CompleteCondition = OSRSUtilities::CanReachBank;
-//        }
-        return super.onStartTask(Script);
+        var all = BankLocation.getValidLocations();
+        return all.stream().filter(t -> t != BankLocation.GRAND_EXCHANGE).sorted((x, y) -> (int) (
+                y.distance(Players.getLocal().getTile()) -
+                x.walkingDistance(Players.getLocal().getTile()) * 100)).toList().getFirst();
     }
 
     @Override
@@ -78,8 +68,8 @@ public class OpenBankTask extends SimpleTask
 //        }
 //        else
 //        {
-            Logger.log("OpenBankTask: Open Bank");
-            return OSRSUtilities.OpenBank() ? 0 : super.Loop();
+        Logger.log("OpenBankTask: Open Bank");
+        return OSRSUtilities.OpenBank() ? 0 : super.Loop();
 //        }
     }
 
@@ -91,5 +81,18 @@ public class OpenBankTask extends SimpleTask
     public TaskType GetTaskType()
     {
         return TaskType.OpenBank;
+    }
+
+    @Override
+    public boolean onStartTask(tpircSScript Script)
+    {
+//        if(!OSRSUtilities.CanReachBank())
+//        {
+//            var BankLoc = GetBankLocation();
+//            Logger.log("OpenBankTask, going to bank: " + BankLoc.name());
+//            travelToBank = new TravelTask("Travel to Bank", BankLoc.getCenter());
+//            travelToBank.CompleteCondition = OSRSUtilities::CanReachBank;
+//        }
+        return super.onStartTask(Script);
     }
 }

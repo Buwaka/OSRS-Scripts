@@ -76,86 +76,15 @@ public class HillGiantsScript extends tpircSScript
     NPC              _closestGiant = null;
     States           LastState     = States.TravelToHillGiants;
 
-    List<GroundItem> GetPickups()
+    enum States
     {
-//         caching
-//        if(OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 1, 1000))
-//        {
-//            _pickups = GroundItems.all(t -> Arrays.stream(PickupFocus).anyMatch(x -> x == t.getID()));
-//        }
-        return _pickups;
-    }
-
-    NPC GetNearestHillGiant()
-    {
-        if(OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 300))
-        {
-            _closestGiant = OSRSUtilities.GetClosestAttackableEnemy(HillGiantName);
-        }
-        return _closestGiant;
-    }
-
-    States GetState()
-    {
-        States out;
-
-        if(Players.getLocal().getHealthPercent() < MinimumHP)
-        {
-            if(!Inventory.contains(BakedSalmonID))
-            {
-                if(OSRSUtilities.CanReachBank())
-                {
-                    out = States.Banking;
-                }
-                else
-                {
-                    out = States.TravelToBank;
-                }
-            }
-            else
-            {
-                out = States.Healing;
-            }
-        }
-        else if(!GetPickups().isEmpty())
-        {
-            out = States.FocusPickup;
-        }
-        else if(Inventory.contains(BigBonesID) && PrayBones)
-        {
-            out = States.Praying;
-        }
-        else if(Inventory.isFull())
-        {
-            if(OSRSUtilities.CanReachBank())
-            {
-                out = States.Banking;
-            }
-            else
-            {
-                out = States.TravelToBank;
-            }
-        }
-        else
-        {
-            NPC Giant = GetNearestHillGiant();
-            if(Players.getLocal().isInCombat() || Giant != null)
-            {
-                out = States.Fighting;
-            }
-            else
-            {
-                out = States.TravelToHillGiants;
-            }
-        }
-
-        if(out != LastState)
-        {
-            Logger.log("Transitioning to state: " + out);
-            LastState = out;
-        }
-
-        return out;
+        TravelToHillGiants,
+        Fighting,
+        FocusPickup,
+        Praying,
+        Healing,
+        TravelToBank,
+        Banking
     }
 
     @Override
@@ -234,15 +163,86 @@ public class HillGiantsScript extends tpircSScript
         return 0;
     }
 
-    enum States
+    States GetState()
     {
-        TravelToHillGiants,
-        Fighting,
-        FocusPickup,
-        Praying,
-        Healing,
-        TravelToBank,
-        Banking
+        States out;
+
+        if(Players.getLocal().getHealthPercent() < MinimumHP)
+        {
+            if(!Inventory.contains(BakedSalmonID))
+            {
+                if(OSRSUtilities.CanReachBank())
+                {
+                    out = States.Banking;
+                }
+                else
+                {
+                    out = States.TravelToBank;
+                }
+            }
+            else
+            {
+                out = States.Healing;
+            }
+        }
+        else if(!GetPickups().isEmpty())
+        {
+            out = States.FocusPickup;
+        }
+        else if(Inventory.contains(BigBonesID) && PrayBones)
+        {
+            out = States.Praying;
+        }
+        else if(Inventory.isFull())
+        {
+            if(OSRSUtilities.CanReachBank())
+            {
+                out = States.Banking;
+            }
+            else
+            {
+                out = States.TravelToBank;
+            }
+        }
+        else
+        {
+            NPC Giant = GetNearestHillGiant();
+            if(Players.getLocal().isInCombat() || Giant != null)
+            {
+                out = States.Fighting;
+            }
+            else
+            {
+                out = States.TravelToHillGiants;
+            }
+        }
+
+        if(out != LastState)
+        {
+            Logger.log("Transitioning to state: " + out);
+            LastState = out;
+        }
+
+        return out;
+    }
+
+    List<GroundItem> GetPickups()
+    {
+//         caching
+//        if(OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 1, 1000))
+//        {
+//            _pickups = GroundItems.all(t -> Arrays.stream(PickupFocus).anyMatch(x -> x == t.getID()));
+//        }
+        return _pickups;
+    }
+
+    NPC GetNearestHillGiant()
+    {
+        if(OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 300))
+        {
+            _closestGiant = OSRSUtilities.GetClosestAttackableEnemy(HillGiantName);
+        }
+        return _closestGiant;
     }
 }
 

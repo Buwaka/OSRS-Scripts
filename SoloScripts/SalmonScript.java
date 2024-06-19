@@ -29,60 +29,13 @@ public class SalmonScript extends tpircSScript
     final String FishAction   = "Lure";
     States LastState = States.Banking;
 
-    NPC GetFishingSpot()
+    enum States
     {
-        return NPCs.closest(RodFishingID);
-    }
-
-    States GetState()
-    {
-        States out;
-        NPC    FishingSpot = GetFishingSpot();
-        if(!Inventory.contains(FeatherID) || !Inventory.contains(RodID))
-        {
-            if(OSRSUtilities.CanReachBank())
-            {
-                out = States.Banking;
-            }
-            else
-            {
-                out = States.TravelToBank;
-            }
-        }
-        else if(Inventory.isFull() && !Inventory.contains(RawSalmonID) && !Inventory.contains(RawTroutID))
-        {
-            if(OSRSUtilities.CanReachBank())
-            {
-                out = States.Banking;
-            }
-            else
-            {
-                out = States.TravelToBank;
-            }
-        }
-        else if(FishingSpot != null && FishingSpot.canReach())
-        {
-            if(Inventory.isFull())
-            {
-                out = States.Cooking;
-            }
-            else
-            {
-                out = States.Fishing;
-            }
-        }
-        else
-        {
-            out = States.TravelToFish;
-        }
-
-        if(LastState != out)
-        {
-            LastState = out;
-            Logger.log("Transitioning to state: " + out);
-        }
-
-        return out;
+        Fishing,
+        Cooking,
+        TravelToBank,
+        Banking,
+        TravelToFish
     }
 
     @Override
@@ -137,12 +90,59 @@ public class SalmonScript extends tpircSScript
         return 0;
     }
 
-    enum States
+    States GetState()
     {
-        Fishing,
-        Cooking,
-        TravelToBank,
-        Banking,
-        TravelToFish
+        States out;
+        NPC    FishingSpot = GetFishingSpot();
+        if(!Inventory.contains(FeatherID) || !Inventory.contains(RodID))
+        {
+            if(OSRSUtilities.CanReachBank())
+            {
+                out = States.Banking;
+            }
+            else
+            {
+                out = States.TravelToBank;
+            }
+        }
+        else if(Inventory.isFull() && !Inventory.contains(RawSalmonID) && !Inventory.contains(RawTroutID))
+        {
+            if(OSRSUtilities.CanReachBank())
+            {
+                out = States.Banking;
+            }
+            else
+            {
+                out = States.TravelToBank;
+            }
+        }
+        else if(FishingSpot != null && FishingSpot.canReach())
+        {
+            if(Inventory.isFull())
+            {
+                out = States.Cooking;
+            }
+            else
+            {
+                out = States.Fishing;
+            }
+        }
+        else
+        {
+            out = States.TravelToFish;
+        }
+
+        if(LastState != out)
+        {
+            LastState = out;
+            Logger.log("Transitioning to state: " + out);
+        }
+
+        return out;
+    }
+
+    NPC GetFishingSpot()
+    {
+        return NPCs.closest(RodFishingID);
     }
 }

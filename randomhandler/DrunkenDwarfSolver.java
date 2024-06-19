@@ -39,19 +39,6 @@ public class DrunkenDwarfSolver extends RandomSolver
     }
 
     @Override
-    public void onPaint(Graphics2D graphics)
-    {
-        Rectangle screen = Client.getCanvas().getBounds();
-        graphics.setFont(new Font("default", Font.BOLD, 16));
-        graphics.setColor(new Color(74, 255, 129, 161));
-        graphics.fillRect(0, 0, screen.width, screen.height);
-        graphics.setColor(Color.BLACK);
-        graphics.drawString("Drinking with our Homie", 301, 501);
-        graphics.setColor(Color.WHITE);
-        graphics.drawString("Drinking with our Homie", 300, 500);
-    }
-
-    @Override
     public int onLoop()
     {
         NPC dwarf = NPCs.closest(DWARF);//Just need to click ok
@@ -85,5 +72,18 @@ public class DrunkenDwarfSolver extends RandomSolver
         }
 
         return 1;
+    }
+
+    @Override
+    public void onPaint(Graphics2D graphics)
+    {
+        Rectangle screen = Client.getCanvas().getBounds();
+        graphics.setFont(new Font("default", Font.BOLD, 16));
+        graphics.setColor(new Color(74, 255, 129, 161));
+        graphics.fillRect(0, 0, screen.width, screen.height);
+        graphics.setColor(Color.BLACK);
+        graphics.drawString("Drinking with our Homie", 301, 501);
+        graphics.setColor(Color.WHITE);
+        graphics.drawString("Drinking with our Homie", 300, 500);
     }
 }

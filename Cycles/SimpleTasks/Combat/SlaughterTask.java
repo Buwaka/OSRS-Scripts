@@ -1,6 +1,6 @@
 package Cycles.SimpleTasks.Combat;
 
-import OSRSDatabase.OSRSDataBase;
+import OSRSDatabase.MonsterDB;
 import Utilities.Combat.CombatManager;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
@@ -37,7 +37,7 @@ public class SlaughterTask extends SimpleTask
     {
         super(Name);
         KillingAreas   = TargetAreas;
-        this.TargetIDs = OSRSDataBase.GetMonsterIDsByName(TargetName, Exact);
+        this.TargetIDs = MonsterDB.GetMonsterIDsByName(TargetName, Exact);
     }
 
     public SlaughterTask(String Name, Area[] TargetAreas, int[] TargetIDs)
@@ -47,13 +47,20 @@ public class SlaughterTask extends SimpleTask
         this.TargetIDs = TargetIDs;
     }
 
-    public NPC GetNearestTarget()
+    public Area GetCurrentArea()
     {
-        if(_closestTarget == null || OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), CacheTimeout.get()))
+        var result = Arrays.stream(KillingAreas).filter(t -> t.contains(Players.getLocal().getTile())).findAny();
+        if(result.isPresent())
         {
-            _closestTarget = OSRSUtilities.GetClosestAttackableEnemy(TargetIDs);
+            return result.get();
         }
-        return _closestTarget;
+        return null;
+    }
+
+    @Override
+    public boolean Ready()
+    {
+        return GetTarget() != null;
     }
 
     public Character GetTarget()
@@ -81,50 +88,13 @@ public class SlaughterTask extends SimpleTask
         }
     }
 
-    public Area GetCurrentArea()
+    public NPC GetNearestTarget()
     {
-        var result = Arrays.stream(KillingAreas).filter(t -> t.contains(Players.getLocal().getTile())).findAny();
-        if(result.isPresent())
+        if(_closestTarget == null || OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), CacheTimeout.get()))
         {
-            return result.get();
+            _closestTarget = OSRSUtilities.GetClosestAttackableEnemy(TargetIDs);
         }
-        return null;
-    }
-
-    @Override
-    public boolean Ready()
-    {
-        return GetTarget() != null;
-    }
-
-    private void onKill(int ID, Tile DeathTile)
-    {
-        onKill.firePropertyChange("Kill", ID, DeathTile);
-    }
-
-    private void TargetListener(Character Target)
-    {
-        Logger.log("Starting to listen to target: " + Target.toString() + " hashcode: " + Target.hashCode());
-        if(Sleep.sleepUntil(() -> !Target.exists(), Long.MAX_VALUE))
-        {
-            Logger.log("Target has ceased to exist or has been defeated, waiting for end of animation for loot");
-            Sleep.sleepUntil(() -> !Target.isAnimating(), 10000);
-            Sleep.sleepTicks(3);
-            onKill(Target.getID(), Target.getTile());
-        }
-        else
-        {
-            Logger.log("Target Timeout");
-        }
-        Logger.log("Stop listening to target: " + Target.toString() + " hashcode: " + Target.hashCode());
-        TargetListeners.remove(Target.hashCode());
-    }
-
-    @Override
-    public boolean onStopTask(tpircSScript Script)
-    {
-        TargetListeners.clear();
-        return super.onStopTask(Script);
+        return _closestTarget;
     }
 
     @Override
@@ -154,8 +124,30 @@ public class SlaughterTask extends SimpleTask
             CombatManager.GetInstance(Players.getLocal()).Fight(Target);
         }
 
-
         return super.Loop();
+    }
+
+    private void TargetListener(Character Target)
+    {
+        Logger.log("Starting to listen to target: " + Target.toString() + " hashcode: " + Target.hashCode());
+        if(Sleep.sleepUntil(() -> !Target.exists(), Long.MAX_VALUE))
+        {
+            Logger.log("Target has ceased to exist or has been defeated, waiting for end of animation for loot");
+            Sleep.sleepUntil(() -> !Target.isAnimating(), 10000);
+            Sleep.sleepTicks(3);
+            onKill(Target.getID(), Target.getTile());
+        }
+        else
+        {
+            Logger.log("Target Timeout");
+        }
+        Logger.log("Stop listening to target: " + Target.toString() + " hashcode: " + Target.hashCode());
+        TargetListeners.remove(Target.hashCode());
+    }
+
+    private void onKill(int ID, Tile DeathTile)
+    {
+        onKill.firePropertyChange("Kill", ID, DeathTile);
     }
 
     @Nonnull
@@ -163,5 +155,12 @@ public class SlaughterTask extends SimpleTask
     public TaskType GetTaskType()
     {
         return TaskType.Slaughter;
+    }
+
+    @Override
+    public boolean onStopTask(tpircSScript Script)
+    {
+        TargetListeners.clear();
+        return super.onStopTask(Script);
     }
 }

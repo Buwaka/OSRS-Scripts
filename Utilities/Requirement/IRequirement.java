@@ -9,6 +9,7 @@ public interface IRequirement extends Serializable
         Equipment,
         Favor,
         Item,
+        BankItem,
         Kill,
         Kudos,
         Level,

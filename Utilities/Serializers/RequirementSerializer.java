@@ -20,7 +20,8 @@ public class RequirementSerializer implements JsonSerializer<IRequirement>, Json
     public IRequirement deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws
                                                                                                                                JsonParseException
     {
-        //TODO
+        //TODO check what type is here
+        //jsonDeserializationContext.deserialize()
         return null;
     }
 
@@ -35,6 +36,10 @@ public class RequirementSerializer implements JsonSerializer<IRequirement>, Json
     public JsonElement serialize(IRequirement iRequirement, Type type, JsonSerializationContext jsonSerializationContext)
     {
         //TODO
-        return null;
+        var TypeJson = jsonSerializationContext.serialize(iRequirement.getClass());
+        var ObjJson  = jsonSerializationContext.serialize(iRequirement);
+        var out      = new JsonObject();
+        out.add(type.getTypeName(), ObjJson);
+        return out;
     }
 }

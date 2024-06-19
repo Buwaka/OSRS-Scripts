@@ -4,14 +4,12 @@ import Cycles.AdvanceTasks.OpenBankTask;
 import Cycles.SimpleTasks.Bank.BankItemsTask;
 import Cycles.SimpleTasks.Skill.MineTask;
 import Cycles.SimpleTasks.TravelTask;
-import OSRSDatabase.OSRSDataBase;
+import OSRSDatabase.ObjectDB;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
-import org.dreambot.api.methods.interactive.GameObjects;
-import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.utilities.Sleep;
@@ -22,24 +20,36 @@ import java.util.Arrays;
 public class MineCycle extends SimpleCycle implements Serializable
 {
 
-    public BankLocation PreferredBank = null;
-    private Area[] MiningArea;
-    private Tile   Checkpoint = null;
-    private int[]  Targets;
+    public  BankLocation PreferredBank = null;
+    private Area[]       MiningArea;
+    private Tile         Checkpoint    = null;
+    private int[]        Targets;
 
     public MineCycle(String name, Area[] TargetArea, String RockName)
     {
         super(name);
         MiningArea = TargetArea;
-        Targets    = OSRSDataBase.GetObjectIDsByName(RockName);
+        Targets    = ObjectDB.GetObjectIDsByName(RockName);
     }
 
     public MineCycle(String name, Area[] TargetArea, Tile Checkpoint, String RockName)
     {
         super(name);
-        MiningArea = TargetArea;
-        Targets    = OSRSDataBase.GetObjectIDsByName(RockName);
+        MiningArea      = TargetArea;
+        Targets         = ObjectDB.GetObjectIDsByName(RockName);
         this.Checkpoint = Checkpoint;
+    }
+
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    @Override
+    public boolean onStart(tpircSScript Script)
+    {
+        StartCycle(Script);
+        return super.onStart(Script);
     }
 
     private void StartCycle(tpircSScript Script)
@@ -52,7 +62,8 @@ public class MineCycle extends SimpleCycle implements Serializable
         TravelTask TravelToMine = new TravelTask("Travel to Mine",
                                                  Arrays.stream(MiningArea).findAny().get().getRandomTile());
         TravelToMine.CompleteCondition = Inventory::isFull;
-        TravelToMine.onReachedDestination.Subscribe(TravelToMine, () -> Script.addNodes(new TravelTask("Travel to different Minespot",
+        TravelToMine.onReachedDestination.Subscribe(TravelToMine,
+                                                    () -> Script.addNodes(new TravelTask("Travel to different Minespot",
                                                                                          Arrays.stream(MiningArea).findAny().get().getRandomTile())));
 
 
@@ -71,16 +82,14 @@ public class MineCycle extends SimpleCycle implements Serializable
         Script.addNodes(BankOres, OpenBank, TravelToMine, mineTask);
     }
 
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onEnd(tpircSScript Script)
     {
-        StartCycle(Script);
-        return super.onStart(Script);
+        if(Sleep.sleepUntil(() -> Bank.open(), 60000))
+        {
+            Bank.depositAllItems();
+        }
+        return super.onEnd(Script);
     }
 
     /**
@@ -93,15 +102,5 @@ public class MineCycle extends SimpleCycle implements Serializable
     {
         StartCycle(Script);
         return true;
-    }
-
-    @Override
-    public boolean onEnd(tpircSScript Script)
-    {
-        if(Sleep.sleepUntil(()-> Bank.open(), 60000))
-        {
-            Bank.depositAllItems();
-        }
-        return super.onEnd(Script);
     }
 }

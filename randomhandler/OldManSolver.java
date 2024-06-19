@@ -40,19 +40,6 @@ public class OldManSolver extends RandomSolver
     }
 
     @Override
-    public void onPaint(Graphics2D graphics)
-    {
-        Rectangle screen = Client.getCanvas().getBounds();
-        graphics.setFont(new Font("default", Font.BOLD, 16));
-        graphics.setColor(new Color(74, 255, 129, 161));
-        graphics.fillRect(0, 0, screen.width, screen.height);
-        graphics.setColor(Color.BLACK);
-        graphics.drawString("Robbing an Old Man", 301, 501);
-        graphics.setColor(Color.WHITE);
-        graphics.drawString("Robbing an Old Man", 300, 500);
-    }
-
-    @Override
     public int onLoop()
     {
         NPC oldMan = NPCs.closest(OLD_MAN);
@@ -118,5 +105,18 @@ public class OldManSolver extends RandomSolver
             }
         }
         return 1;
+    }
+
+    @Override
+    public void onPaint(Graphics2D graphics)
+    {
+        Rectangle screen = Client.getCanvas().getBounds();
+        graphics.setFont(new Font("default", Font.BOLD, 16));
+        graphics.setColor(new Color(74, 255, 129, 161));
+        graphics.fillRect(0, 0, screen.width, screen.height);
+        graphics.setColor(Color.BLACK);
+        graphics.drawString("Robbing an Old Man", 301, 501);
+        graphics.setColor(Color.WHITE);
+        graphics.drawString("Robbing an Old Man", 300, 500);
     }
 }

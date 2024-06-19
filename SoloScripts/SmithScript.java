@@ -3,18 +3,16 @@ package SoloScripts;
 import Cycles.SmithCycle;
 import Utilities.Scripting.ICycle;
 import Utilities.Scripting.tpircSScript;
-import org.dreambot.api.methods.skills.Skill;
-import org.dreambot.api.methods.skills.Skills;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
 
 @ScriptManifest(name = "SoloScripts.SmithScript", description = "Smith stuff", author = "Semanresu", version = 1.0, category = Category.SMITHING, image = "")
 public class SmithScript extends tpircSScript
 {
-    int        SteelBarID    = 2353;
-    int MithrilBar = 2359;
-    int AdamaniteBar = 2361;
-    SmithCycle SteelSmithing = new SmithCycle("Smith Steel nails", "Steel nails", SteelBarID);
+    int        SteelBarID        = 2353;
+    int        MithrilBar        = 2359;
+    int        AdamaniteBar      = 2361;
+    SmithCycle SteelSmithing     = new SmithCycle("Smith Steel nails", "Steel nails", SteelBarID);
     SmithCycle SmithMithrilSword = new SmithCycle("Smith Mithril Stuff", "Mithril sword", MithrilBar);
 
     @Override

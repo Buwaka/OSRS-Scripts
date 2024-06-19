@@ -1,7 +1,7 @@
 package SoloScripts;
 
 import Cycles.CombatLootBankCycle;
-import OSRSDatabase.OSRSDataBase;
+import OSRSDatabase.MonsterDB;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.ICycle;
 import Utilities.Scripting.tpircSScript;
@@ -22,22 +22,70 @@ public class MossGiantScript extends tpircSScript
                                                                                                             1,
                                                                                                             563,
                                                                                                             1);
-    CombatLootBankCycle                             Cycle            = new CombatLootBankCycle("Moss Giant slaughter", new Area[]{
-            new Area(new Tile[]{
-                    new Tile(3169, 9880, 0),
-                    new Tile(3165, 9876, 0),
-                    new Tile(3162, 9876, 0),
-                    new Tile(3162, 9879, 0),
-                    new Tile(3165, 9883, 0),
-                    new Tile(3169, 9883, 0)}), new Area(new Tile[]{
-            new Tile(3164, 9906, 0),
-            new Tile(3165, 9904, 0),
-            new Tile(3159, 9898, 0),
-            new Tile(3156, 9900, 0),
-            new Tile(3156, 9902, 0),
-            new Tile(3153, 9903, 0),
-            new Tile(3154, 9909, 0),
-            new Tile(3158, 9908, 0)})}, OSRSDataBase.GetMonsterIDsByName("Moss giant", false), ItemRequirements);
+    CombatLootBankCycle                             Cycle            = new CombatLootBankCycle("Moss Giant slaughter",
+                                                                                               new Area[]{
+                                                                                                       new Area(new Tile[]{
+                                                                                                               new Tile(
+                                                                                                                       3169,
+                                                                                                                       9880,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3165,
+                                                                                                                       9876,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3162,
+                                                                                                                       9876,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3162,
+                                                                                                                       9879,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3165,
+                                                                                                                       9883,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3169,
+                                                                                                                       9883,
+                                                                                                                       0)}),
+                                                                                                       new Area(new Tile[]{
+                                                                                                               new Tile(
+                                                                                                                       3164,
+                                                                                                                       9906,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3165,
+                                                                                                                       9904,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3159,
+                                                                                                                       9898,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3156,
+                                                                                                                       9900,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3156,
+                                                                                                                       9902,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3153,
+                                                                                                                       9903,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3154,
+                                                                                                                       9909,
+                                                                                                                       0),
+                                                                                                               new Tile(
+                                                                                                                       3158,
+                                                                                                                       9908,
+                                                                                                                       0)})},
+                                                                                               MonsterDB.GetMonsterIDsByName(
+                                                                                                       "Moss giant",
+                                                                                                       false),
+                                                                                               ItemRequirements);
 
     @Override
     public void onStart()

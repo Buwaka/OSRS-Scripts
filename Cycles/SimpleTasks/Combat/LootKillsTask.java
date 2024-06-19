@@ -1,6 +1,6 @@
 package Cycles.SimpleTasks.Combat;
 
-import OSRSDatabase.OSRSDataBase;
+import OSRSDatabase.MonsterDB;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.methods.input.Camera;
@@ -25,23 +25,6 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
         super("Loot items after kill");
     }
 
-    private void Cleanup()
-    {
-        for(var loot : LootItems)
-        {
-            if(!loot.exists())
-            {
-                LootItems.remove(loot);
-                Logger.log(loot.toString() + " removing from loot");
-            }
-            else
-            {
-                Logger.log(loot.toString() + " exists:" + loot.exists() + " isonscreen:" + loot.isOnScreen());
-            }
-
-        }
-    }
-
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
@@ -50,8 +33,8 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
 
         Logger.log("Loot found:" + ID + " " + lootTile);
 
-        var LootTable = OSRSDataBase.GetMonsterLootTable(ID);
-        var size      = OSRSDataBase.GetMonsterSize(ID);
+        var LootTable = MonsterDB.GetMonsterLootTable(ID);
+        var size      = MonsterDB.GetMonsterSize(ID);
         size = size == null ? 3 : size;
         if(LootTable != null && LootTable.length > 0)
         {
@@ -104,6 +87,23 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
         Item.interact();
 
         return super.Loop();
+    }
+
+    private void Cleanup()
+    {
+        for(var loot : LootItems)
+        {
+            if(!loot.exists())
+            {
+                LootItems.remove(loot);
+                Logger.log(loot.toString() + " removing from loot");
+            }
+            else
+            {
+                Logger.log(loot.toString() + " exists:" + loot.exists() + " isonscreen:" + loot.isOnScreen());
+            }
+
+        }
     }
 
     @Nonnull

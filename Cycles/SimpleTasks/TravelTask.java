@@ -12,7 +12,6 @@ import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.methods.walking.pathfinding.impl.local.LocalPathFinder;
 import org.dreambot.api.methods.walking.pathfinding.impl.obstacle.impl.DestructableObstacle;
-import org.dreambot.api.methods.walking.web.node.impl.teleports.TeleportWebNode;
 import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nonnull;
@@ -30,9 +29,9 @@ public class TravelTask extends SimpleTask
                                                                                            3,
                                                                                            OSRSUtilities.ScriptIntenity.Bot,
                                                                                            0);
-    private final Tile     Destination;
-    public        Delegate onReachedDestination = new Delegate();
-    private       Random   rand                 = new Random();
+    private final Tile                                       Destination;
+    public        Delegate                                   onReachedDestination = new Delegate();
+    private       Random                                     rand                 = new Random();
 
     public TravelTask(String Name, Tile Destination)
     {
@@ -101,10 +100,16 @@ public class TravelTask extends SimpleTask
     }
 
     @Override
+    public void onReplaced(tpircSScript Script, SimpleTask other)
+    {
+        super.onReplaced(Script, other);
+        Script.StopTaskNow(this);
+    }
+
+    @Override
     public int Loop()
     {
         OSRSUtilities.ScriptIntenity Intensity = ScriptIntensity.get();
-
 
 
         LocalPathFinder.getLocalPathFinder().addObstacle(new DestructableObstacle("Web", "Slash"));
@@ -219,12 +224,5 @@ public class TravelTask extends SimpleTask
             return 0;
         }
         return super.Loop();
-    }
-
-    @Override
-    public void onReplaced(tpircSScript Script, SimpleTask other)
-    {
-        super.onReplaced(Script, other);
-        Script.StopTaskNow(this);
     }
 }

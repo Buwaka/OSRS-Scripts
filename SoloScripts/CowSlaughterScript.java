@@ -45,110 +45,15 @@ public class CowSlaughterScript extends tpircSScript
     int[]  InventoryExcepts = {};
     States LastState        = States.TravelToCows;
 
-    public List<GroundItem> GetSurroundingPickups()
+    public enum States
     {
-        for(GroundItem item : GroundItems.all())
-        {
-            Logger.log(item);
-        }
-        List<GroundItem> Items = GroundItems.all(t -> {
-            boolean result = t.walkingDistance(Players.getLocal().getTile()) < PickupDistance;
-
-            if(PickupBones && t.getID() == BonesID)
-            {
-                return result;
-            }
-            else if(PickUpCowHide && t.getID() == CowHideID)
-            {
-                return result;
-            }
-            else if(PickupBeef && t.getID() == BeefID)
-            {
-                return result;
-            }
-
-            return false;
-        });
-
-        Items.sort(Comparator.comparingDouble(p -> {
-            double dist = p.walkingDistance(Players.getLocal().getTile());
-            return Math.abs(dist);
-        }));
-        for(GroundItem item : Items)
-        {
-            Logger.log(item);
-        }
-        return Items;
-    }
-
-    public States GetState()
-    {
-        States out = LastState;
-
-        if(Inventory.contains(BonesID) && PrayBones)
-        {
-            out = States.Pray;
-        }
-        else if(Players.getLocal().getHealthPercent() < MinHealthPercent || Inventory.isFull())
-        {
-            if(OSRSUtilities.CanReachBank())
-            {
-                if(!Inventory.onlyContains(InventoryExcepts))
-                {
-                    out = States.Banking;
-                }
-                else if(Players.getLocal().getHealthPercent() < MinHealthPercent)
-                {
-                    out = States.Healing;
-                }
-            }
-            else
-            {
-                out = States.TravelToBank;
-            }
-        }
-        else if(CowArea.contains(Players.getLocal().getTile()) || NPCs.closest(CowName) != null)
-        {
-            var Items = GetSurroundingPickups();
-            if(Items.size() > MinPickupAvailable && !FocusCombatEXP)
-            {
-                out = States.Pickup;
-            }
-            else
-            {
-                out = States.FightCows;
-            }
-        }
-        else
-        {
-            out = States.TravelToCows;
-        }
-
-        if(out != LastState)
-        {
-            Logger.log("Transitioning to state: " + out.toString());
-            LastState = out;
-        }
-
-        return out;
-    }
-
-    public int[] GetPickupList()
-    {
-        List<Integer> ToPickup = new ArrayList<>();
-        if(PickupBones)
-        {
-            ToPickup.add(BonesID);
-        }
-        if(PickupBeef)
-        {
-            ToPickup.add(BeefID);
-        }
-        if(PickUpCowHide)
-        {
-            ToPickup.add(CowHideID);
-        }
-        return ToPickup.stream().mapToInt(t -> t).toArray();
+        TravelToCows,
+        Pickup,
+        Pray,
+        FightCows,
+        TravelToBank,
+        Banking,
+        Healing
     }
 
     @Override
@@ -232,14 +137,109 @@ public class CowSlaughterScript extends tpircSScript
         return 0;
     }
 
-    public enum States
+    public States GetState()
     {
-        TravelToCows,
-        Pickup,
-        Pray,
-        FightCows,
-        TravelToBank,
-        Banking,
-        Healing
+        States out = LastState;
+
+        if(Inventory.contains(BonesID) && PrayBones)
+        {
+            out = States.Pray;
+        }
+        else if(Players.getLocal().getHealthPercent() < MinHealthPercent || Inventory.isFull())
+        {
+            if(OSRSUtilities.CanReachBank())
+            {
+                if(!Inventory.onlyContains(InventoryExcepts))
+                {
+                    out = States.Banking;
+                }
+                else if(Players.getLocal().getHealthPercent() < MinHealthPercent)
+                {
+                    out = States.Healing;
+                }
+            }
+            else
+            {
+                out = States.TravelToBank;
+            }
+        }
+        else if(CowArea.contains(Players.getLocal().getTile()) || NPCs.closest(CowName) != null)
+        {
+            var Items = GetSurroundingPickups();
+            if(Items.size() > MinPickupAvailable && !FocusCombatEXP)
+            {
+                out = States.Pickup;
+            }
+            else
+            {
+                out = States.FightCows;
+            }
+        }
+        else
+        {
+            out = States.TravelToCows;
+        }
+
+        if(out != LastState)
+        {
+            Logger.log("Transitioning to state: " + out.toString());
+            LastState = out;
+        }
+
+        return out;
+    }
+
+    public List<GroundItem> GetSurroundingPickups()
+    {
+        for(GroundItem item : GroundItems.all())
+        {
+            Logger.log(item);
+        }
+        List<GroundItem> Items = GroundItems.all(t -> {
+            boolean result = t.walkingDistance(Players.getLocal().getTile()) < PickupDistance;
+
+            if(PickupBones && t.getID() == BonesID)
+            {
+                return result;
+            }
+            else if(PickUpCowHide && t.getID() == CowHideID)
+            {
+                return result;
+            }
+            else if(PickupBeef && t.getID() == BeefID)
+            {
+                return result;
+            }
+
+            return false;
+        });
+
+        Items.sort(Comparator.comparingDouble(p -> {
+            double dist = p.walkingDistance(Players.getLocal().getTile());
+            return Math.abs(dist);
+        }));
+        for(GroundItem item : Items)
+        {
+            Logger.log(item);
+        }
+        return Items;
+    }
+
+    public int[] GetPickupList()
+    {
+        List<Integer> ToPickup = new ArrayList<>();
+        if(PickupBones)
+        {
+            ToPickup.add(BonesID);
+        }
+        if(PickupBeef)
+        {
+            ToPickup.add(BeefID);
+        }
+        if(PickUpCowHide)
+        {
+            ToPickup.add(CowHideID);
+        }
+        return ToPickup.stream().mapToInt(t -> t).toArray();
     }
 }

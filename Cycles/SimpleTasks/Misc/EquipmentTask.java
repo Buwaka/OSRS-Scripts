@@ -46,28 +46,12 @@ public class EquipmentTask extends SimpleTask
 //        ToEquip.put(EquipmentSlot.forOriginalSlotId(slot), id);
 //    }
 
-    public void Equip(EquipmentSlot Slot, int id)
-    {
-        ToEquip.put(Slot, id);
-    }
-
-    public void UnEquip(EquipmentSlot Slot)
-    {
-        ToUnEquip.add(Slot);
-    }
-
-    public void UnEquipAll()
-    {
-        UnEquipAll = true;
-    }
-
     /**
      * @return
      */
     @Override
     protected int Loop()
     {
-        // TODO do swaps instead of unequip then equip
         if(Fails > Retries)
         {
             Logger.log("EquipmentTask: Loop: Failed too many times, exiting");
@@ -119,6 +103,25 @@ public class EquipmentTask extends SimpleTask
         }
 
         return super.Loop();
+    }
+
+    public void Equip(EquipmentSlot Slot, int id)
+    {
+        ToEquip.put(Slot, id);
+        ToUnEquip.remove(Slot);
+    }
+
+    public void UnEquip(EquipmentSlot Slot)
+    {
+        if(ToEquip.get(Slot) == null)
+        {
+            ToUnEquip.add(Slot);
+        }
+    }
+
+    public void UnEquipAll()
+    {
+        UnEquipAll = true;
     }
 
     /**

@@ -34,8 +34,7 @@ public class FleeOvercrowdTask extends SimpleTask
     public boolean Ready()
     {
         boolean IsNotInteracting = !Players.getLocal().isInteractedWith() && WaitForEndInteract.get();
-        return IsNotInteracting && OSRSUtilities.IsAreaBusy(MaxPlayers.get(), OnlyActivePlayers.get()) &&
-               super.Ready();
+        return IsNotInteracting && OSRSUtilities.IsAreaBusy(MaxPlayers.get(), OnlyActivePlayers.get()) && super.Ready();
     }
 
     @Override

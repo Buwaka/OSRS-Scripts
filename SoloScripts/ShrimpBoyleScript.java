@@ -36,55 +36,14 @@ public class ShrimpBoyleScript extends tpircSScript
     final boolean CookShrimp   = false;
     States LastState = States.TravelToFishSpot;
 
-    public States GetState()
+    public enum States
     {
-        States out;
-        if(Inventory.isFull() &&
-           ((Inventory.contains(ShrimpID) && CookShrimp) || (Inventory.contains(AnchoviesID) && CookAncho)))
-        {
-            GameObject Fire = GameObjects.closest(FireID);
-            if(Fire.isOnScreen())
-            {
-                out = States.Bake;
-            }
-            else
-            {
-                out = States.TravelToFire;
-            }
-        }
-        else if(Inventory.isFull() || !Inventory.contains(NetID))
-        {
-            if(OSRSUtilities.CanReachBank())
-            {
-                out = States.Bank;
-            }
-            else
-            {
-                out = States.TravelToBank;
-            }
-        }
-        else
-        {
-            NPC FishSpot = NPCs.closest(FishSpotID);
-            Logger.log(FishSpot);
-            Logger.log(FishSpot.isOnScreen());
-            if(FishSpot != null && FishSpot.isOnScreen())
-            {
-                out = States.Fish;
-            }
-            else
-            {
-                out = States.TravelToFishSpot;
-            }
-        }
-
-        if(LastState != out)
-        {
-            LastState = out;
-            Logger.log("Transitioning to state: " + out);
-        }
-
-        return out;
+        TravelToFishSpot,
+        Fish,
+        TravelToFire,
+        Bake,
+        TravelToBank,
+        Bank
     }
 
     @Override
@@ -164,14 +123,54 @@ public class ShrimpBoyleScript extends tpircSScript
         return 0;
     }
 
-
-    public enum States
+    public States GetState()
     {
-        TravelToFishSpot,
-        Fish,
-        TravelToFire,
-        Bake,
-        TravelToBank,
-        Bank
+        States out;
+        if(Inventory.isFull() &&
+           ((Inventory.contains(ShrimpID) && CookShrimp) || (Inventory.contains(AnchoviesID) && CookAncho)))
+        {
+            GameObject Fire = GameObjects.closest(FireID);
+            if(Fire.isOnScreen())
+            {
+                out = States.Bake;
+            }
+            else
+            {
+                out = States.TravelToFire;
+            }
+        }
+        else if(Inventory.isFull() || !Inventory.contains(NetID))
+        {
+            if(OSRSUtilities.CanReachBank())
+            {
+                out = States.Bank;
+            }
+            else
+            {
+                out = States.TravelToBank;
+            }
+        }
+        else
+        {
+            NPC FishSpot = NPCs.closest(FishSpotID);
+            Logger.log(FishSpot);
+            Logger.log(FishSpot.isOnScreen());
+            if(FishSpot != null && FishSpot.isOnScreen())
+            {
+                out = States.Fish;
+            }
+            else
+            {
+                out = States.TravelToFishSpot;
+            }
+        }
+
+        if(LastState != out)
+        {
+            LastState = out;
+            Logger.log("Transitioning to state: " + out);
+        }
+
+        return out;
     }
 }

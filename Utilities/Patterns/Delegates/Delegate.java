@@ -23,7 +23,8 @@ public class Delegate
         }
     }
 
-    public int SubscribeCount() {
+    public int SubscribeCount()
+    {
         return Subscribers.size();
     }
 }

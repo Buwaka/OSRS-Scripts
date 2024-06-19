@@ -36,19 +36,6 @@ public class RickyTurpentineSolver extends RandomSolver
     }
 
     @Override
-    public void onPaint(Graphics2D graphics)
-    {
-        Rectangle screen = Client.getCanvas().getBounds();
-        graphics.setFont(new Font("default", Font.BOLD, 16));
-        graphics.setColor(new Color(74, 255, 129, 161));
-        graphics.fillRect(0, 0, screen.width, screen.height);
-        graphics.setColor(Color.BLACK);
-        graphics.drawString("Ugh, Ricky is back", 301, 501);
-        graphics.setColor(Color.WHITE);
-        graphics.drawString("Ugh, Ricky is back", 300, 500);
-    }
-
-    @Override
     public int onLoop()
     {
         int ran       = Calculations.random(1, 6);
@@ -85,5 +72,18 @@ public class RickyTurpentineSolver extends RandomSolver
             return -1;
         }
         return 1;
+    }
+
+    @Override
+    public void onPaint(Graphics2D graphics)
+    {
+        Rectangle screen = Client.getCanvas().getBounds();
+        graphics.setFont(new Font("default", Font.BOLD, 16));
+        graphics.setColor(new Color(74, 255, 129, 161));
+        graphics.fillRect(0, 0, screen.width, screen.height);
+        graphics.setColor(Color.BLACK);
+        graphics.drawString("Ugh, Ricky is back", 301, 501);
+        graphics.setColor(Color.WHITE);
+        graphics.drawString("Ugh, Ricky is back", 300, 500);
     }
 }

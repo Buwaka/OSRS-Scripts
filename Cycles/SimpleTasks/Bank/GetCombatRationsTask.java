@@ -63,7 +63,10 @@ public class GetCombatRationsTask extends SimpleTask
         }
         else
         {
-            OSRSUtilities.ProcessBankEntries(GetScript(), null, ItemsToPickup, OSRSUtilities.WaitTime(ScriptIntensity.get()));
+            OSRSUtilities.ProcessBankEntries(GetScript(),
+                                             null,
+                                             ItemsToPickup,
+                                             OSRSUtilities.WaitTime(ScriptIntensity.get()));
         }
 
         return 0;

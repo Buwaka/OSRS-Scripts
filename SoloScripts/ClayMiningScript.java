@@ -23,39 +23,12 @@ public class ClayMiningScript extends tpircSScript
     final int  ClayID       = 434;
     States LastState = States.TravelToRocks;
 
-    public boolean IsAtMinePosition()
+    public enum States
     {
-        var dist = Players.getLocal().getTile().distance(MinePosition);
-        return dist < 1;
-    }
-
-    public States GetState()
-    {
-        States State;
-        if(Bank.isOpen())
-        {
-            State = States.Banking;
-        }
-        else if(Inventory.isFull())
-        {
-            State = States.TravelToBank;
-        }
-        else if(IsAtMinePosition())
-        {
-            State = States.Mining;
-        }
-        else
-        {
-            State = States.TravelToRocks;
-        }
-
-        if(State != LastState)
-        {
-            Logger.log(State.toString());
-            LastState = State;
-        }
-
-        return State;
+        TravelToRocks,
+        Mining,
+        TravelToBank,
+        Banking
     }
 
     public int onLoop()
@@ -96,12 +69,38 @@ public class ClayMiningScript extends tpircSScript
         return 0;
     }
 
-
-    public enum States
+    public States GetState()
     {
-        TravelToRocks,
-        Mining,
-        TravelToBank,
-        Banking
+        States State;
+        if(Bank.isOpen())
+        {
+            State = States.Banking;
+        }
+        else if(Inventory.isFull())
+        {
+            State = States.TravelToBank;
+        }
+        else if(IsAtMinePosition())
+        {
+            State = States.Mining;
+        }
+        else
+        {
+            State = States.TravelToRocks;
+        }
+
+        if(State != LastState)
+        {
+            Logger.log(State.toString());
+            LastState = State;
+        }
+
+        return State;
+    }
+
+    public boolean IsAtMinePosition()
+    {
+        var dist = Players.getLocal().getTile().distance(MinePosition);
+        return dist < 1;
     }
 }

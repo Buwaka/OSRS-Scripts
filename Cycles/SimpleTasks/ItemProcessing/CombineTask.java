@@ -23,8 +23,8 @@ public class CombineTask extends SimpleTask
     Item       source              = null;
     Item       target              = null;
     int        counter             = 0;
-    int     SkillingMenuIndex   = 1;
-    int     timeout             = OSRSUtilities.Tick * 6;
+    int        SkillingMenuIndex   = 1;
+    int        timeout             = OSRSUtilities.Tick * 6;
     boolean    isCombining         = false;
     AtomicLong lastInventoryChange = new AtomicLong(System.nanoTime());
 
@@ -51,65 +51,16 @@ public class CombineTask extends SimpleTask
         SkillingMenuIndex = index;
     }
 
-    private int RetryCheck(int Super)
+    @Override
+    public boolean Ready()
     {
-        counter++;
-        if(counter > retries)
-        {
-            Logger.log("CombineTask: RetryCheck: Failed all retries, exiting");
-            return 0;
-        }
-        return Super;
+        return InventoryCheck() && super.Ready();
     }
 
     private boolean InventoryCheck()
     {
         Logger.log(Inventory.count(sourceID) + " " + Inventory.count(targetID));
         return Inventory.count(sourceID) > sourceRatio && Inventory.count(targetID) > targetRatio;
-    }
-
-    private boolean TimeoutCheck()
-    {
-        boolean result = System.nanoTime() - lastInventoryChange.get() > TimeUnit.MILLISECONDS.toNanos(timeout);
-        Logger.log("Timeoutcheck: " + System.nanoTime() + " - " + lastInventoryChange.get() + " > " + TimeUnit.MILLISECONDS.toNanos(timeout) + " = " + result);
-        return result;
-    }
-
-    private void RefreshItems()
-    {
-        if(source == null)
-        {
-            source = Inventory.get(sourceID);
-        }
-
-        if(target == null)
-        {
-            target = Inventory.get(targetID);
-        }
-    }
-
-    private static Boolean ResetInventoryTimer(Object context, tpircSScript.ItemAction action, Item item, Item item1)
-    {
-        Logger.log("ResetInventoryTimer");
-        ((CombineTask) context).lastInventoryChange.set(System.nanoTime());
-        return true;
-    }
-
-    @Override
-    public boolean onStartTask(tpircSScript Script)
-    {
-        lastInventoryChange.set(System.nanoTime());
-        Script.onInventory.Subscribe(this, CombineTask::ResetInventoryTimer);
-
-        RefreshItems();
-
-        return true;
-    }
-
-    @Override
-    public boolean Ready()
-    {
-        return InventoryCheck() && super.Ready();
     }
 
     @Override
@@ -152,10 +103,60 @@ public class CombineTask extends SimpleTask
         return RetryCheck(super.Loop());
     }
 
+    private boolean TimeoutCheck()
+    {
+        boolean result = System.nanoTime() - lastInventoryChange.get() > TimeUnit.MILLISECONDS.toNanos(timeout);
+        Logger.log("Timeoutcheck: " + System.nanoTime() + " - " + lastInventoryChange.get() + " > " +
+                   TimeUnit.MILLISECONDS.toNanos(timeout) + " = " + result);
+        return result;
+    }
+
+    private void RefreshItems()
+    {
+        if(source == null)
+        {
+            source = Inventory.get(sourceID);
+        }
+
+        if(target == null)
+        {
+            target = Inventory.get(targetID);
+        }
+    }
+
+    private int RetryCheck(int Super)
+    {
+        counter++;
+        if(counter > retries)
+        {
+            Logger.log("CombineTask: RetryCheck: Failed all retries, exiting");
+            return 0;
+        }
+        return Super;
+    }
+
     @Nonnull
     @Override
     public TaskType GetTaskType()
     {
         return TaskType.Combine;
+    }
+
+    @Override
+    public boolean onStartTask(tpircSScript Script)
+    {
+        lastInventoryChange.set(System.nanoTime());
+        Script.onInventory.Subscribe(this, CombineTask::ResetInventoryTimer);
+
+        RefreshItems();
+
+        return true;
+    }
+
+    private static Boolean ResetInventoryTimer(Object context, tpircSScript.ItemAction action, Item item, Item item1)
+    {
+        Logger.log("ResetInventoryTimer");
+        ((CombineTask) context).lastInventoryChange.set(System.nanoTime());
+        return true;
     }
 }

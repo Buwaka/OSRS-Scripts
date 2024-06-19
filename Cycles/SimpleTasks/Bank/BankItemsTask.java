@@ -48,16 +48,6 @@ public class BankItemsTask extends SimpleTask
         return Withdraws.add(new OSRSUtilities.BankEntry(ID, Amount, Tab));
     }
 
-    public boolean AddWithdraw(int ID, int Amount)
-    {
-        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Amount));
-    }
-
-    public boolean WithdrawAll(int ID)
-    {
-        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Integer.MAX_VALUE));
-    }
-
     public boolean FillInventory(int... IDRatios)
     {
         if(IDRatios == null || IDRatios.length == 0)
@@ -118,6 +108,16 @@ public class BankItemsTask extends SimpleTask
         return true;
     }
 
+    public boolean WithdrawAll(int ID)
+    {
+        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Integer.MAX_VALUE));
+    }
+
+    public boolean AddWithdraw(int ID, int Amount)
+    {
+        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Amount));
+    }
+
     @Override
     public boolean Ready()
     {
@@ -128,7 +128,10 @@ public class BankItemsTask extends SimpleTask
     public int Loop()
     {
         Withdraws.sort((x, y) -> Integer.compare(y.GetCount(), x.GetCount()));
-        OSRSUtilities.ProcessBankEntries(GetScript(), Deposits, Withdraws, OSRSUtilities.WaitTime(ScriptIntensity.get()));
+        OSRSUtilities.ProcessBankEntries(GetScript(),
+                                         Deposits,
+                                         Withdraws,
+                                         OSRSUtilities.WaitTime(ScriptIntensity.get()));
         OSRSUtilities.BankClose();
         return 0;
     }

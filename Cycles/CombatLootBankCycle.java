@@ -65,17 +65,17 @@ public class CombatLootBankCycle extends SimpleCycle
         this.BankingLocation = BankLoc;
     }
 
-    public TravelTask TravelToBank()
+    @Override
+    public boolean isCycleComplete(tpircSScript Script)
     {
-        if(BankingLocation != null)
-        {
-            return new TravelTask("", BankingLocation.getTile());
-        }
-        else if(BankLocation.getNearest() != null)
-        {
-            return new TravelTask("", BankLocation.getNearest().getTile());
-        }
-        return new TravelTask("", new Tile());
+        return !Script.IsActiveTaskLeft();
+    }
+
+    @Override
+    public boolean onRestart(tpircSScript Script)
+    {
+        StartCycle(Script);
+        return true;
     }
 
     void StartCycle(tpircSScript Script)
@@ -129,7 +129,7 @@ public class CombatLootBankCycle extends SimpleCycle
 
         TravelTask Travel2 = TravelToBank();
         Travel2.TaskPriority.set(2);
-        Travel2.AcceptCondition = () -> !SALTask.isActive();
+        Travel2.AcceptCondition   = () -> !SALTask.isActive();
         Travel2.CompleteCondition = OSRSUtilities::CanReachBank;
         Travel2.SetTaskName("Travel To Bank to drop loot");
         BankItemsTask BankTask = new BankItemsTask("Banking loot");
@@ -153,17 +153,17 @@ public class CombatLootBankCycle extends SimpleCycle
         Script.addNodes(Travel1, Travel2, SALTask, BankTask);
     }
 
-    @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public TravelTask TravelToBank()
     {
-        return !Script.IsActiveTaskLeft();
-    }
-
-    @Override
-    public boolean onRestart(tpircSScript Script)
-    {
-        StartCycle(Script);
-        return true;
+        if(BankingLocation != null)
+        {
+            return new TravelTask("", BankingLocation.getTile());
+        }
+        else if(BankLocation.getNearest() != null)
+        {
+            return new TravelTask("", BankLocation.getNearest().getTile());
+        }
+        return new TravelTask("", new Tile());
     }
 
     @Override

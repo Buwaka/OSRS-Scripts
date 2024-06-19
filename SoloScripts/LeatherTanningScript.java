@@ -32,45 +32,12 @@ public class LeatherTanningScript extends tpircSScript
     final int    LeatherWidgetID = 100;
     States LastState = States.TraveltoTan;
 
-    NPC GetTanner()
+    enum States
     {
-        return NPCs.closest(TannerID);
-    }
-
-    States GetState()
-    {
-        States result = LastState;
-        if(Inventory.contains(CowHideID) && Inventory.contains(CoinID))
-        {
-            NPC Tanner = GetTanner();
-            if(Tanner != null)
-            {
-                result = States.Tan;
-            }
-            else
-            {
-                result = States.TraveltoTan;
-            }
-        }
-        else
-        {
-            if(OSRSUtilities.CanReachBank())
-            {
-                result = States.Banking;
-            }
-            else
-            {
-                result = States.TravelToBank;
-            }
-        }
-
-        if(result != LastState)
-        {
-            Logger.log("Transitioning to state: " + result);
-            LastState = result;
-        }
-
-        return result;
+        TraveltoTan,
+        Tan,
+        TravelToBank,
+        Banking
     }
 
     @Override
@@ -136,11 +103,44 @@ public class LeatherTanningScript extends tpircSScript
         return 0;
     }
 
-    enum States
+    States GetState()
     {
-        TraveltoTan,
-        Tan,
-        TravelToBank,
-        Banking
+        States result = LastState;
+        if(Inventory.contains(CowHideID) && Inventory.contains(CoinID))
+        {
+            NPC Tanner = GetTanner();
+            if(Tanner != null)
+            {
+                result = States.Tan;
+            }
+            else
+            {
+                result = States.TraveltoTan;
+            }
+        }
+        else
+        {
+            if(OSRSUtilities.CanReachBank())
+            {
+                result = States.Banking;
+            }
+            else
+            {
+                result = States.TravelToBank;
+            }
+        }
+
+        if(result != LastState)
+        {
+            Logger.log("Transitioning to state: " + result);
+            LastState = result;
+        }
+
+        return result;
+    }
+
+    NPC GetTanner()
+    {
+        return NPCs.closest(TannerID);
     }
 }

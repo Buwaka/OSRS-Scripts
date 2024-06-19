@@ -26,19 +26,19 @@ public class LootAreaTask extends SimpleTask
         LootAreas.add(area);
     }
 
+    @Override
+    public boolean Ready()
+    {
+        CheckAreas();
+        return !LootItems.isEmpty() && super.Ready();
+    }
+
     private void CheckAreas()
     {
         for(var area : LootAreas)
         {
             LootItems.addAll(OSRSUtilities.GetLootItems(area));
         }
-    }
-
-    @Override
-    public boolean Ready()
-    {
-        CheckAreas();
-        return !LootItems.isEmpty() && super.Ready();
     }
 
     @Override

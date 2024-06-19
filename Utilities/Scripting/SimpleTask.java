@@ -12,24 +12,26 @@ import java.util.function.Supplier;
 
 public abstract class SimpleTask extends TaskNode implements ITask
 {
-    private final OSRSUtilities.ScriptIntenity                  _scriptIntensity  = OSRSUtilities.ScriptIntenity.Lax;
-    public        AtomicReference<OSRSUtilities.ScriptIntenity> ScriptIntensity   = new AtomicReference<>(
+    private final     OSRSUtilities.ScriptIntenity                  _scriptIntensity  = OSRSUtilities.ScriptIntenity.Lax;
+    // TODO replace with serializable Requirement
+    public            Supplier<Boolean>                             AcceptCondition   = () -> true;
+    public            Supplier<Boolean>                             CompleteCondition = null;
+    public            SimpleTask[]                                  ChildTasks        = null; // TODO, basically start these tasks when this task is complete
+    public transient  AtomicReference<OSRSUtilities.ScriptIntenity> ScriptIntensity   = new AtomicReference<>(
             _scriptIntensity);
-    public        AtomicInteger                                 TaskPriority      = new AtomicInteger(1);
-    public        Supplier<Boolean>                             AcceptCondition   = () -> true;
-    public  Supplier<Boolean>     CompleteCondition = null;
-    public  Delegate              onComplete        = new Delegate();
-    public  Delegate1<SimpleTask> onReplaced        = new Delegate1<>();
-    public  Delegate              onAccept          = new Delegate();
-    public  Delegate1<Integer>    onExecute         = new Delegate1<>();
-    public  Delegate              onStart           = new Delegate();
-    public  Delegate              onStop            = new Delegate();
-    public  Delegate              onPause           = new Delegate();
-    public  Delegate              onUnPause         = new Delegate();
-    private boolean               Active            = true;
-    private       boolean                                       Paused            = false;
-    private       String                                        TaskName          = "";
-    private       WeakReference<tpircSScript>                   ParentScript      = null;
+    public transient  AtomicInteger                                 TaskPriority      = new AtomicInteger(1);
+    public transient  Delegate                                      onComplete        = new Delegate();
+    public transient  Delegate1<SimpleTask>                         onReplaced        = new Delegate1<>();
+    public transient  Delegate                                      onAccept          = new Delegate();
+    public transient  Delegate1<Integer>                            onExecute         = new Delegate1<>();
+    public transient  Delegate                                      onStart           = new Delegate();
+    public transient  Delegate                                      onStop            = new Delegate();
+    public transient  Delegate                                      onPause           = new Delegate();
+    public transient  Delegate                                      onUnPause         = new Delegate();
+    private           String                                        TaskName          = "";
+    private transient boolean                                       Active            = true;
+    private transient boolean                                       Paused            = false;
+    private transient WeakReference<tpircSScript>                   ParentScript      = null;
 
     public SimpleTask(String Name)
     {

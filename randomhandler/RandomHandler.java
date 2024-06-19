@@ -32,6 +32,18 @@ public class RandomHandler
     private static       String status            = "";
     private static       String prevStatus        = "";
 
+    enum Event
+    {
+        DISMISS,
+        GENIE,
+        RICKY_TURPENTINE,
+        FREAKY_FORESTER,
+        OLD_MAN,
+        DRUNKEN_DWARF,
+        FROG,
+        BEEKEEPER
+    }
+
     public static void loadRandoms()
     {
         Client.getInstance().getRandomManager().disableSolver(RandomEvent.DISMISS);
@@ -217,31 +229,14 @@ public class RandomHandler
         return false;
     }
 
-    public static void powerThroughDialogue()
+    public static void log(String msg)
     {
-        if(Dialogues.inDialogue())
-        {
-            while(Dialogues.canContinue() || Dialogues.isProcessing())
-            {
-                if(Dialogues.continueDialogue())
-                {
-                    log("Continuing dialogue");
-                    Sleep.sleep(800, 3500);
-                }
-                if(Dialogues.areOptionsAvailable())
-                {return;}
-            }
-        }
+        log(msg, "RandomHandler");
     }
 
     public static void increaseSolvedCount()
     {
         solvedCount++;
-    }
-
-    public static int getSolvedCount()
-    {
-        return solvedCount;
     }
 
     public static void log(String stat, String solver)
@@ -264,20 +259,25 @@ public class RandomHandler
         prevStatus = prevStat;
     }
 
-    public static void log(String msg)
+    public static void powerThroughDialogue()
     {
-        log(msg, "RandomHandler");
+        if(Dialogues.inDialogue())
+        {
+            while(Dialogues.canContinue() || Dialogues.isProcessing())
+            {
+                if(Dialogues.continueDialogue())
+                {
+                    log("Continuing dialogue");
+                    Sleep.sleep(800, 3500);
+                }
+                if(Dialogues.areOptionsAvailable())
+                {return;}
+            }
+        }
     }
 
-    enum Event
+    public static int getSolvedCount()
     {
-        DISMISS,
-        GENIE,
-        RICKY_TURPENTINE,
-        FREAKY_FORESTER,
-        OLD_MAN,
-        DRUNKEN_DWARF,
-        FROG,
-        BEEKEEPER
+        return solvedCount;
     }
 }

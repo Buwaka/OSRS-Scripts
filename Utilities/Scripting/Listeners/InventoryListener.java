@@ -9,6 +9,14 @@ public class InventoryListener implements ItemContainerListener
 {
     public Delegate3<ItemAction, Item, Item> onInventoryAdded = new Delegate3<>();
 
+    public enum ItemAction
+    {
+        Added,
+        Removed,
+        Changed,
+        Swapped
+    }
+
     @Override
     public void onInventoryItemChanged(Item incoming, Item existing)
     {
@@ -90,13 +98,5 @@ public class InventoryListener implements ItemContainerListener
     @Override
     public void onLootBagItemUpdated(Item incoming, Item existing)
     {
-    }
-
-    public enum ItemAction
-    {
-        Added,
-        Removed,
-        Changed,
-        Swapped
     }
 }

@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +14,25 @@ public class CycleUtilities
 {
     static final String CombineDB = "CombineCycles.json";
 
+    public static List<CombineCycle> GetAllValidCombineCycles()
+    {
+        var all      = GetAllCombineCycles();
+        var allValid = all.stream().filter(CombineCycle::isValid).toList();
+        for(var valid : allValid)
+        {
+            valid.SetCycleType(ICycle.CycleType.byCount);
+            valid.SetCycleLimit(valid.GetPossibleCycleCount());
+        }
+        return allValid;
+    }
+
     public static List<CombineCycle> GetAllCombineCycles()
     {
-        var               input  = new BufferedInputStream(Objects.requireNonNull(CycleUtilities.class.getClassLoader().getResourceAsStream(CombineDB)));
+        var input = new BufferedInputStream(Objects.requireNonNull(CycleUtilities.class.getClassLoader().getResourceAsStream(
+                CombineDB)));
         InputStreamReader File   = new InputStreamReader(input);
         JsonReader        Reader = new JsonReader(File);
-        Gson gson = new Gson();
+        Gson              gson   = new Gson();
 
         List<CombineCycle> result = new ArrayList<>();
 
@@ -44,17 +56,5 @@ public class CycleUtilities
         }
 
         return result;
-    }
-
-    public static List<CombineCycle> GetAllValidCombineCycles()
-    {
-        var all = GetAllCombineCycles();
-        var allValid =  all.stream().filter(CombineCycle::isValid).toList();
-        for(var valid : allValid)
-        {
-            valid.SetCycleType(ICycle.CycleType.byCount);
-            valid.SetCycleLimit(valid.GetPossibleCycleCount());
-        }
-        return allValid;
     }
 }

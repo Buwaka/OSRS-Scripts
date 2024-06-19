@@ -1,6 +1,6 @@
 package Cycles.SimpleTasks.Combat;
 
-import OSRSDatabase.OSRSDataBase;
+import OSRSDatabase.FoodDB;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.Client;
@@ -35,7 +35,7 @@ public class MinimumHealthTask extends SimpleTask
     @Override
     public boolean Ready()
     {
-        var foods = OSRSDataBase.GetCommonFoods(Client.isMembers());
+        var foods = FoodDB.GetCommonFoods(Client.isMembers());
         var min   = OSRSUtilities.HPtoPercent(MinimumHealth);
         Logger.log("Player Healthpercent: " + Players.getLocal().getHealthPercent() + " Minimum Healthpercent: " + min +
                    " MinimumHealth " + MinimumHealth);

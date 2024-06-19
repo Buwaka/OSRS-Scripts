@@ -23,9 +23,9 @@ public class MineTask extends SimpleTask
     int       MineInteractTimeout = 10000;
     int       MineTimeout         = 20000;
     Semaphore InventorySemaphore  = new Semaphore(1);
-    private HashMap<Tile, Integer> Rocks = new HashMap<>();
-    private GameObject Target        = null;
-    private boolean    StartedMining = false;
+    private HashMap<Tile, Integer> Rocks         = new HashMap<>();
+    private GameObject             Target        = null;
+    private boolean                StartedMining = false;
 
     public MineTask(String Name, int... IDs)
     {
@@ -33,24 +33,12 @@ public class MineTask extends SimpleTask
         MineObjects = Arrays.stream(IDs).boxed().toArray(Integer[]::new);
     }
 
-    private static Boolean onMine(Object context, tpircSScript.ItemAction action, Item item, Item item1)
+    //TODO check for pickaxe in equipment slot or inventory
+    @Override
+    protected boolean Ready()
     {
-        ((MineTask) context).InventorySemaphore.release();
-        Logger.log("released permit");
-        return true;
-    }
-
-    private boolean RockAvailable()
-    {
-        for(var set : Rocks.entrySet())
-        {
-            var rock = GameObjects.getTopObjectOnTile(set.getKey());
-            if(rock != null && rock.getID() == set.getValue())
-            {
-                return true;
-            }
-        }
-        return false;
+        var target = GetTarget();
+        return target != null && super.Ready();
     }
 
     public GameObject GetTarget()
@@ -63,7 +51,8 @@ public class MineTask extends SimpleTask
             for(var rock : rocks)
             {
                 boolean NoPlayersPossiblyMining = Players.all(x -> rock.getTile().getArea(2).contains(x.getTile()) &&
-                                                               x.isAnimating() && x != Players.getLocal()).isEmpty();
+                                                                   x.isAnimating() &&
+                                                                   x != Players.getLocal()).isEmpty();
                 boolean distance = rock.getTile().distance() < 10.0;
                 boolean canReach = rock.canReach();
                 if(distance && canReach)
@@ -77,14 +66,6 @@ public class MineTask extends SimpleTask
             }
         }
         return Target;
-    }
-
-    //TODO check for pickaxe in equipment slot or inventory
-    @Override
-    protected boolean Ready()
-    {
-        var target = GetTarget();
-        return target != null && super.Ready();
     }
 
     @Override
@@ -120,6 +101,19 @@ public class MineTask extends SimpleTask
         return super.Loop();
     }
 
+    private boolean RockAvailable()
+    {
+        for(var set : Rocks.entrySet())
+        {
+            var rock = GameObjects.getTopObjectOnTile(set.getKey());
+            if(rock != null && rock.getID() == set.getValue())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Nonnull
     @Override
     public TaskType GetTaskType()
@@ -137,5 +131,12 @@ public class MineTask extends SimpleTask
     {
         Script.onInventory.Subscribe(this, MineTask::onMine);
         return super.onStartTask(Script);
+    }
+
+    private static Boolean onMine(Object context, tpircSScript.ItemAction action, Item item, Item item1)
+    {
+        ((MineTask) context).InventorySemaphore.release();
+        Logger.log("released permit");
+        return true;
     }
 }

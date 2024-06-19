@@ -15,9 +15,9 @@ public class SmeltScript extends tpircSScript
 {
 
 
-    SmeltCycle SmeltBronze = new SmeltCycle("Smelt Bronze", "Bronze bar", new Tuple2<>(436, 1), new Tuple2<>(438, 1));
-    SmeltCycle SmeltIron   = new SmeltCycle("Smelt Iron", "Iron bar", new Tuple2<>(440, 1));
-    SmeltCycle SmeltSteel  = new SmeltCycle("Smelt Steel", "Steel bar", new Tuple2<>(440, 1), new Tuple2<>(453, 2));
+    SmeltCycle SmeltBronze  = new SmeltCycle("Smelt Bronze", "Bronze bar", new Tuple2<>(436, 1), new Tuple2<>(438, 1));
+    SmeltCycle SmeltIron    = new SmeltCycle("Smelt Iron", "Iron bar", new Tuple2<>(440, 1));
+    SmeltCycle SmeltSteel   = new SmeltCycle("Smelt Steel", "Steel bar", new Tuple2<>(440, 1), new Tuple2<>(453, 2));
     SmeltCycle SmeltMithril = new SmeltCycle("Smelt Mithril",
                                              "Mithril bar",
                                              new Tuple2<>(447, 1),

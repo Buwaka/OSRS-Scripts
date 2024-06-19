@@ -4,7 +4,7 @@ import Cycles.SimpleTasks.Combat.LootKillsTask;
 import Cycles.SimpleTasks.Combat.MinimumHealthTask;
 import Cycles.SimpleTasks.Combat.SlaughterTask;
 import Cycles.SimpleTasks.TravelTask;
-import OSRSDatabase.OSRSDataBase;
+import OSRSDatabase.MonsterDB;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import Utilities.Scripting.tpircSScript;
@@ -42,9 +42,9 @@ public class SlaughterAndLoot extends SimpleTask
         this.ItemRequirements = ItemRequirements;
     }
 
-    void SetTarget(String target)
+    void SetAreas(Area... Areas)
     {
-        TargetIDs = OSRSDataBase.GetMonsterIDsByName(target, false);
+        this.Areas = Areas;
     }
 
     void SetTarget(int... target)
@@ -52,74 +52,15 @@ public class SlaughterAndLoot extends SimpleTask
         TargetIDs = target;
     }
 
-    void SetAreas(Area... Areas)
+    void SetTarget(String target)
     {
-        this.Areas = Areas;
+        TargetIDs = MonsterDB.GetMonsterIDsByName(target, false);
     }
 
     @Override
     public boolean Ready()
     {
         return OSRSUtilities.GetClosestAttackableEnemy(TargetIDs) != null && super.Ready();
-    }
-
-    public int GetMaxHit()
-    {
-        int HighestHit = 0;
-        for(int i : TargetIDs)
-        {
-            var monster = OSRSDataBase.GetMonsterData(i);
-            if(monster != null && monster.max_hit > HighestHit)
-            {
-                HighestHit = monster.max_hit;
-            }
-        }
-
-        return HighestHit;
-    }
-
-    @Nonnull
-    @Override
-    public TaskType GetTaskType()
-    {
-        return TaskType.SlaughterAndLoot;
-    }
-
-    @Override
-    public boolean onStartTask(tpircSScript Script)
-    {
-        Logger.log("StartSlaughterLoot task");
-        // Loot
-        var possibleLootTask = Script.getPersistentNodes().stream().filter(t -> t.GetTaskType() ==
-                                                                                TaskType.LootKills).findAny();
-        if(possibleLootTask.isPresent())
-        {
-            LootTask = (LootKillsTask) possibleLootTask.get();
-        }
-        else
-        {
-            LootTask = new LootKillsTask();
-            LootTask.TaskPriority.set(TaskPriority.get() - 1);
-            LootTask.Init(Script);
-            //Script.addPersistentNodes(LootTask);
-        }
-
-        // Slaughter
-        SlaughterTask = new SlaughterTask("Slaughter", Areas, TargetIDs);
-        SlaughterTask.TaskPriority.set(TaskPriority.get());
-        SlaughterTask.onKill.addPropertyChangeListener(LootTask);
-        SlaughterTask.Init(Script);
-
-        MinimumHealth = new MinimumHealthTask("Prevent dying", GetMaxHit() + 2);
-
-        return true;
-    }
-
-    @Override
-    public boolean onStopTask(tpircSScript Script)
-    {
-        Script.removePersistentNodes(LootTask);
-        return super.onStopTask(Script);
     }
 
     @Override
@@ -178,5 +119,64 @@ public class SlaughterAndLoot extends SimpleTask
         }
 
         return super.Loop();
+    }
+
+    @Nonnull
+    @Override
+    public TaskType GetTaskType()
+    {
+        return TaskType.SlaughterAndLoot;
+    }
+
+    @Override
+    public boolean onStartTask(tpircSScript Script)
+    {
+        Logger.log("StartSlaughterLoot task");
+        // Loot
+        var possibleLootTask = Script.getPersistentNodes().stream().filter(t -> t.GetTaskType() ==
+                                                                                TaskType.LootKills).findAny();
+        if(possibleLootTask.isPresent())
+        {
+            LootTask = (LootKillsTask) possibleLootTask.get();
+        }
+        else
+        {
+            LootTask = new LootKillsTask();
+            LootTask.TaskPriority.set(TaskPriority.get() - 1);
+            LootTask.Init(Script);
+            //Script.addPersistentNodes(LootTask);
+        }
+
+        // Slaughter
+        SlaughterTask = new SlaughterTask("Slaughter", Areas, TargetIDs);
+        SlaughterTask.TaskPriority.set(TaskPriority.get());
+        SlaughterTask.onKill.addPropertyChangeListener(LootTask);
+        SlaughterTask.Init(Script);
+
+        MinimumHealth = new MinimumHealthTask("Prevent dying", GetMaxHit() + 2);
+
+        return true;
+    }
+
+    public int GetMaxHit()
+    {
+        int HighestHit = 0;
+        for(int i : TargetIDs)
+        {
+            var monster = MonsterDB.GetMonsterData(i);
+            if(monster != null && monster.max_hit > HighestHit)
+            {
+                HighestHit = monster.max_hit;
+            }
+        }
+
+        return HighestHit;
+    }
+
+    @Override
+    public boolean onStopTask(tpircSScript Script)
+    {
+        Script.removePersistentNodes(LootTask);
+        return super.onStopTask(Script);
     }
 }

@@ -2,22 +2,21 @@ package Cycles;
 
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
-import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.ScriptManager;
 
 public class ExternalScriptCycle extends SimpleCycle
 {
     // WILL RESTART THE SCRIPT, SO INSTANCE VALUES WILL BE LOST!!!
 
-    private String scriptName;
-    private String[]       args = null;
-    private String CurrentScriptName;
+    private String   scriptName;
+    private String[] args = null;
+    private String   CurrentScriptName;
 
     public ExternalScriptCycle(String name, String ScriptName, String... Args)
     {
         super(name);
-        scriptName = ScriptName;
-        args = Args;
+        scriptName        = ScriptName;
+        args              = Args;
         CurrentScriptName = ScriptManager.getScriptManager().getCurrentScript().getSDNName();
     }
 
