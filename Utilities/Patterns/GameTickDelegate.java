@@ -1,5 +1,6 @@
 package Utilities.Patterns;
 
+import Utilities.OSRSUtilities;
 import Utilities.Patterns.Delegates.Delegate;
 import org.dreambot.api.utilities.Logger;
 
@@ -12,6 +13,11 @@ public class GameTickDelegate extends Delegate
 {
     ConcurrentLinkedQueue<Semaphore>   Tickers       = new ConcurrentLinkedQueue<>();
     WeakHashMap<Object, AtomicInteger> UpdateTickers = new WeakHashMap<>();
+
+    public void WaitRandomTicks(int max)
+    {
+        WaitTicks(OSRSUtilities.rand.nextInt(Math.max(1, max - 1)) + 1);
+    }
 
     public void WaitTicks(int ticks)
     {

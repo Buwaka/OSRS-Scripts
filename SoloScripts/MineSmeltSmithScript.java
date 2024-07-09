@@ -48,14 +48,14 @@ public class MineSmeltSmithScript extends tpircSScript
                                              "Mithril bar",
                                              new Tuple2<>(447, 1),
                                              new Tuple2<>(453, 4));
-    SmeltCycle SmeltAdamanite = new SmeltCycle("Smelt Adamanite",
-                                             "Adamanite bar",
+    SmeltCycle SmeltAdamanite = new SmeltCycle("Smelt Adamantite",
+                                             "Adamantite bar",
                                              new Tuple2<>(449, 1),
                                              new Tuple2<>(453, 6));
 
     SmithCycle SmithMithrilSword       = new SmithCycle("Smith Mithril Stuff", "Mithril sword", MithrilBar);
-    SmithCycle SmithAdamaniteHelm      = new SmithCycle("Smith Adamanite Stuff", "Adamant med helm", AdamaniteBar);
-    SmithCycle SmithAdamanitePlateBody = new SmithCycle("Smith Adamanite Stuff", "Adamant platebody", AdamaniteBar);
+    SmithCycle SmithAdamaniteHelm      = new SmithCycle("Smith Adamantite Stuff", "Adamant med helm", AdamaniteBar);
+    SmithCycle SmithAdamanitePlateBody = new SmithCycle("Smith Adamantite Stuff", "Adamant platebody", AdamaniteBar);
 
 
     public static void main(String[] args)

@@ -62,7 +62,7 @@ public class OSRSUtilities
             Modifier.TRANSIENT,
             Modifier.PROTECTED);
     // TODO make function to equip best combat gear, perhaps even splitting it up into combat/magic/ranged
-    static               Random                        rand                = new Random();
+    public static               Random                        rand                = new Random();
 
     static
     {

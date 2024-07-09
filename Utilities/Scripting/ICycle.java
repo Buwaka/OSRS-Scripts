@@ -26,14 +26,12 @@ public interface ICycle
 
     boolean isStarted();
 
-    ;
-
     /**
      * will be called once there are no active tasks anymore, aka a single cycle has been completed
      *
      * @return Cycle completed, ready for a restart
      */
-    default boolean isCycleComplete(tpircSScript Script) {return true;}
+    default boolean isCycleComplete(tpircSScript Script) {return this.isGoalMet();}
 
     /**
      * @param Script
