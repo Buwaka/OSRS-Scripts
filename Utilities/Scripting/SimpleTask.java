@@ -30,6 +30,7 @@ public abstract class SimpleTask extends TaskNode implements ITask
     public transient  Delegate                                      onUnPause         = new Delegate();
     private           String                                        TaskName          = "";
     private transient boolean                                       Active            = true;
+    private transient boolean                                       Finished          = false;
     private transient boolean                                       Paused            = false;
     private transient WeakReference<tpircSScript>                   ParentScript      = null;
 
@@ -61,6 +62,8 @@ public abstract class SimpleTask extends TaskNode implements ITask
 
     public final boolean isPaused() {return Paused;}
 
+    public boolean isFinished()     {return Finished;}
+
     public void SetTaskName(String Name)
     {
         TaskName = Name;
@@ -76,23 +79,6 @@ public abstract class SimpleTask extends TaskNode implements ITask
     public String toString()
     {
         return GetTaskType().name() + ": " + TaskName;
-    }
-
-    /**
-     * @param Script Caller script, this basically
-     *
-     * @return return true if successful, false if we need more time, keep triggering start until it is ready
-     */
-    protected final boolean StartTask(tpircSScript Script)
-    {
-        Active = true;
-        ScriptIntensity.set(Script.GetScriptIntensity());
-        boolean result = onStartTask(Script);
-        if(result)
-        {
-            onStart.Fire();
-        }
-        return result;
     }
 
     /**
@@ -120,43 +106,6 @@ public abstract class SimpleTask extends TaskNode implements ITask
         onUnPause.Fire(); // see if we need to enclose this by a if check as well
         return result;
     }
-
-    /**
-     * @param Script Caller script, this basically
-     *
-     * @return return true if successful, false if we need more time, keep triggering start until it is ready
-     */
-    protected final boolean StopTask(tpircSScript Script)
-    {
-        boolean result = onStopTask(Script);
-        if(result)
-        {
-            Active = false;
-            onStop.Fire();
-        }
-        return result;
-    }
-
-    protected final void StopTaskNOW(tpircSScript Script)
-    {
-        onStopTask(Script);
-        Active = false;
-        onStop.Fire();
-    }
-
-    protected final void ReplaceTask(tpircSScript Script, SimpleTask other)
-    {
-        onReplaced(Script, other);
-        onReplaced.Fire(other);
-    }
-
-    /**
-     * @param Script caller script
-     * @param other  Task that is replacing this one
-     *               Is called after the task has been stopped
-     */
-    public void onReplaced(tpircSScript Script, SimpleTask other) {}
-
 
     @Override
     public int priority()
@@ -196,4 +145,59 @@ public abstract class SimpleTask extends TaskNode implements ITask
     {
         return CompleteCondition != null && CompleteCondition.get() ? 0 : OSRSUtilities.WaitTime(ScriptIntensity.get());
     }
+
+    /**
+     * @param Script Caller script, this basically
+     *
+     * @return return true if successful, false if we need more time, keep triggering start until it is ready
+     */
+    protected final boolean StartTask(tpircSScript Script)
+    {
+        Active = true;
+        ScriptIntensity.set(Script.GetScriptIntensity());
+        boolean result = onStartTask(Script);
+        if(result)
+        {
+            onStart.Fire();
+        }
+        return result;
+    }
+
+    /**
+     * @param Script Caller script, this basically
+     *
+     * @return return true if successful, false if we need more time, keep triggering start until it is ready
+     */
+    protected final boolean StopTask(tpircSScript Script)
+    {
+        boolean result = onStopTask(Script);
+        if(result)
+        {
+            Active   = false;
+            Finished = true;
+            onStop.Fire();
+        }
+        return result;
+    }
+
+    protected final void StopTaskNOW(tpircSScript Script)
+    {
+        onStopTask(Script);
+        Active   = false;
+        Finished = true;
+        onStop.Fire();
+    }
+
+    protected final void ReplaceTask(tpircSScript Script, SimpleTask other)
+    {
+        onReplaced(Script, other);
+        onReplaced.Fire(other);
+    }
+
+    /**
+     * @param Script caller script
+     * @param other  Task that is replacing this one
+     *               Is called after the task has been stopped
+     */
+    public void onReplaced(tpircSScript Script, SimpleTask other) {}
 }

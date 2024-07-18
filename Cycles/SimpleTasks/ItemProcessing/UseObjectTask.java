@@ -68,9 +68,32 @@ public class UseObjectTask extends SimpleTask
         Count = count;
     }
 
-    void SetBackupTile(Tile BackupTile)
+    /**
+     * @return
+     */
+    @Nonnull
+    @Override
+    public TaskType GetTaskType()
     {
-        this.BackupTile = BackupTile;
+        return TaskType.UseOnObjectTask;
+    }
+
+    /**
+     * @param Script
+     *
+     * @return return true if successful, false if we need more time, keep triggering start until it is ready
+     */
+    @Override
+    public boolean onStartTask(tpircSScript Script)
+    {
+        Script.onInventory.Subscribe(this, UseObjectTask::CheckInventory);
+        return super.onStartTask(Script);
+    }
+
+    private static Boolean CheckInventory(Object context, tpircSScript.ItemAction Action, Item item1, Item item2)
+    {
+        ((UseObjectTask) context).TimeoutTicker.set(((UseObjectTask) context).DefaultProcessTickTime);
+        return true;
     }
 
     /**
@@ -210,31 +233,8 @@ public class UseObjectTask extends SimpleTask
         return super.Loop();
     }
 
-    /**
-     * @return
-     */
-    @Nonnull
-    @Override
-    public TaskType GetTaskType()
+    void SetBackupTile(Tile BackupTile)
     {
-        return TaskType.UseOnObjectTask;
-    }
-
-    /**
-     * @param Script
-     *
-     * @return return true if successful, false if we need more time, keep triggering start until it is ready
-     */
-    @Override
-    public boolean onStartTask(tpircSScript Script)
-    {
-        Script.onInventory.Subscribe(this, UseObjectTask::CheckInventory);
-        return super.onStartTask(Script);
-    }
-
-    private static Boolean CheckInventory(Object context, tpircSScript.ItemAction Action, Item item1, Item item2)
-    {
-        ((UseObjectTask) context).TimeoutTicker.set(((UseObjectTask) context).DefaultProcessTickTime);
-        return true;
+        this.BackupTile = BackupTile;
     }
 }

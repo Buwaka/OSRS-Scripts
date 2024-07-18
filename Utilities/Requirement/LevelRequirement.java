@@ -1,10 +1,25 @@
 package Utilities.Requirement;
 
+import org.dreambot.api.methods.skills.Skill;
+import org.dreambot.api.methods.skills.Skills;
+
 public class LevelRequirement implements IRequirement
 {
-    public LevelRequirement()
+    Skill   skill;
+    int     level;
+    Integer maxLevel = null;
+
+    public LevelRequirement(Skill skill, int level)
     {
-        //TODO
+        this.skill = skill;
+        this.level = level;
+    }
+
+    public LevelRequirement(Skill skill, int level, int MaxLevel)
+    {
+        this.skill = skill;
+        this.level = level;
+        maxLevel   = MaxLevel;
     }
 
     /**
@@ -13,7 +28,11 @@ public class LevelRequirement implements IRequirement
     @Override
     public boolean isRequirementMet()
     {
-        return false;
+        if(maxLevel != null)
+        {
+            return Skills.getRealLevel(skill) >= level && Skills.getRealLevel(skill) < maxLevel;
+        }
+        return Skills.getRealLevel(skill) >= level;
     }
 
     /**

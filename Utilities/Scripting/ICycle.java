@@ -7,7 +7,7 @@ public interface ICycle
         byCount,
         byGoal,
         Endless,
-        Null
+        NaturalEnd
     }
 
     /**
@@ -31,7 +31,12 @@ public interface ICycle
      *
      * @return Cycle completed, ready for a restart
      */
-    default boolean isCycleComplete(tpircSScript Script) {return this.isGoalMet();}
+    boolean isCycleComplete(tpircSScript Script);
+
+    /**
+     * @return Whether the goal of this cycle has been met, based on CycleType
+     */
+    boolean isGoalMet();
 
     /**
      * @param Script
@@ -64,11 +69,6 @@ public interface ICycle
      */
     default void onReset(tpircSScript Script) {}
 
-    default int onLoop(tpircSScript Script) {return 0;}
-
-    /**
-     * @return Whether the goal of this cycle has been met, based on CycleType
-     */
-    boolean isGoalMet();
+    default int onLoop(tpircSScript Script) {return 1;}
 
 }

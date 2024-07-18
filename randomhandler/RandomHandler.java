@@ -234,11 +234,6 @@ public class RandomHandler
         log(msg, "RandomHandler");
     }
 
-    public static void increaseSolvedCount()
-    {
-        solvedCount++;
-    }
-
     public static void log(String stat, String solver)
     {
         if(!getPrevStatus().equals(stat))
@@ -257,6 +252,11 @@ public class RandomHandler
     public static void setPrevStatus(String prevStat)
     {
         prevStatus = prevStat;
+    }
+
+    public static void increaseSolvedCount()
+    {
+        solvedCount++;
     }
 
     public static void powerThroughDialogue()

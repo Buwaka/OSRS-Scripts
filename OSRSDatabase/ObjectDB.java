@@ -5,7 +5,9 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -15,22 +17,32 @@ public class ObjectDB extends OSRSDataBase
     final private static String                                   ObjectsDB              = "objects-summary.json";
     final private static ReentrantLock                            ObjectsDBLock          = new ReentrantLock();
     final private static ConcurrentHashMap<Integer, EntityObject> ObjectsDBCache         = new ConcurrentHashMap<>();
-    final private static ConcurrentHashMap<String, int[]>         ObjectIDsByNameDBCache = new ConcurrentHashMap<>();
+    final private static ConcurrentHashMap<String, Set<Integer>>  ObjectIDsByNameDBCache = new ConcurrentHashMap<>();
 
     public static class EntityObject
     {
         public int    id;
         public String name;
+
+        public String toString()
+        {
+            return _toString(this, this.getClass());
+        }
     }
 
-    public static int[] GetObjectIDsByName(String Name)
+    public static int[] GetObjectIDsByName(String... Names)
     {
-        if(ObjectIDsByNameDBCache.containsKey(Name))
-        {
-            return ObjectIDsByNameDBCache.get(Name);
-        }
+        List<String>  names = new ArrayList<>(List.of(Names));
+        List<Integer> IDs   = new ArrayList<>();
 
-        List<Integer> IDs = new ArrayList<>();
+        for(var name : Names)
+        {
+            if(ObjectIDsByNameDBCache.containsKey(name))
+            {
+                IDs.addAll(ObjectIDsByNameDBCache.get(name));
+                names.remove(name);
+            }
+        }
 
         try
         {
@@ -48,9 +60,14 @@ public class ObjectDB extends OSRSDataBase
                 int          ID   = Integer.parseInt(Reader.nextName());
                 EntityObject Data = gson.fromJson(Reader, EntityObject.class);
 
-                if(Data.name.equalsIgnoreCase(Name))
+                for(var name : names)
                 {
-                    IDs.add(ID);
+                    if(Data.name.equalsIgnoreCase(name))
+                    {
+                        IDs.add(ID);
+                        ObjectIDsByNameDBCache.getOrDefault(name, new HashSet<>()).add(ID);
+                        break;
+                    }
                 }
             }
 
@@ -68,7 +85,6 @@ public class ObjectDB extends OSRSDataBase
         ObjectsDBLock.unlock();
 
         int[] intIDs = IDs.stream().mapToInt(Integer::intValue).toArray();
-        ObjectIDsByNameDBCache.put(Name, intIDs);
         return intIDs;
     }
 }

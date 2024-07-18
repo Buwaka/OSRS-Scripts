@@ -47,18 +47,6 @@ public class CombatManager
         Magic
     }
 
-    public static CombatManager GetInstance(Player player)
-    {
-        if(Managers.containsKey(player.hashCode()))
-        {
-            return Managers.get(player.hashCode());
-        }
-
-        var manager = new CombatManager();
-        Managers.put(player.hashCode(), manager);
-        return manager;
-    }
-
     public void Init(CombatStyle style, MonsterDB.MonsterData... targets)
     {
         Style = style;
@@ -202,5 +190,17 @@ public class CombatManager
             Foe.interact(AttackAction);
         }
         return Sleep.sleepUntil(() -> Players.getLocal().isInCombat(), Timeout);
+    }
+
+    public static CombatManager GetInstance(Player player)
+    {
+        if(Managers.containsKey(player.hashCode()))
+        {
+            return Managers.get(player.hashCode());
+        }
+
+        var manager = new CombatManager();
+        Managers.put(player.hashCode(), manager);
+        return manager;
     }
 }

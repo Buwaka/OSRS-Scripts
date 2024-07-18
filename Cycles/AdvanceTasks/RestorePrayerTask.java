@@ -46,6 +46,13 @@ public class RestorePrayerTask extends SimpleTask
                  LocalPathFinder.getLocalPathFinder().getWalkingDistance(playerpos, x.Location)) * 100)).get();
     }
 
+    @Nonnull
+    @Override
+    public TaskType GetTaskType()
+    {
+        return TaskType.RestorePrayer;
+    }
+
     /**
      * @return
      */
@@ -63,12 +70,5 @@ public class RestorePrayerTask extends SimpleTask
     protected int Loop()
     {
         return super.Loop();
-    }
-
-    @Nonnull
-    @Override
-    public TaskType GetTaskType()
-    {
-        return TaskType.RestorePrayer;
     }
 }

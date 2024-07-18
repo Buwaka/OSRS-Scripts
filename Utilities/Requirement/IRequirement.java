@@ -14,7 +14,8 @@ public interface IRequirement extends Serializable
         Kudos,
         Level,
         QuestPoint,
-        Quest
+        Quest,
+        Lambda
     }
 
     boolean isRequirementMet();

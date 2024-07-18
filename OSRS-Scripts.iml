@@ -6,9 +6,11 @@
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Cycles/CycleDatabase" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/items" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/misc" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/monsters" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database/Items" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database/misc" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database/Processing" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database/Skilling" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database/monsters" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -16,5 +18,7 @@
     <orderEntry type="library" exported="" name="io.vavr" level="application" />
     <orderEntry type="library" name="fasterxml.jackson.core.databind" level="application" />
     <orderEntry type="library" name="json" level="application" />
+    <orderEntry type="library" name="apache.commons.text" level="application" />
+    <orderEntry type="library" name="apache.httpcomponents.client5.httpclient5" level="application" />
   </component>
 </module>

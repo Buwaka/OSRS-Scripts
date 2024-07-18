@@ -6,6 +6,7 @@ import Cycles.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
@@ -14,6 +15,7 @@ import org.dreambot.api.utilities.Logger;
 import javax.annotation.Nullable;
 import java.io.Serializable;
 
+@JsonTypeName("CombineCycle")
 public class CombineCycle extends SimpleCycle implements Serializable
 {
     int source;
@@ -48,6 +50,83 @@ public class CombineCycle extends SimpleCycle implements Serializable
         sourceRatio = RatioSource;
         target      = Target;
         targetRatio = RatioTarget;
+    }
+
+    /**
+     * will be called once there are no active tasks anymore, aka a single cycle has been completed
+     *
+     * @param Script
+     *
+     * @return Cycle completed, ready for a restart
+     */
+    @Override
+    public boolean isCycleComplete(tpircSScript Script)
+    {
+        boolean result = Inventory.count(source) < sourceRatio || Inventory.count(target) < targetRatio;
+        Logger.log("CombineCycle: isCycleComplete: " + result);
+        return result;
+    }
+
+    /**
+     * @return Whether the goal of this cycle has been met, based on CycleType
+     */
+    @Override
+    public boolean isGoalMet()
+    {
+        boolean result = Inventory.count(source) < sourceRatio || Inventory.count(target) < targetRatio;
+        Logger.log("CombineCycle: isGoalMet: " + result);
+        return result && super.isGoalMet();
+    }
+
+    @Override
+    public boolean onStart(tpircSScript Script)
+    {
+        StartCycle(Script);
+        return super.onStart(Script);
+    }
+
+    /**
+     * @param Script
+     *
+     * @return
+     */
+    @Override
+    public boolean CanRestart(tpircSScript Script)
+    {
+        if(GetCycleType() == CycleType.NaturalEnd)
+        {
+            if(Bank.count(source) > sourceRatio && Bank.count(target) > targetRatio)
+            {
+                return true;
+            }
+        }
+
+        return super.CanRestart(Script);
+    }
+
+    private void StartCycle(tpircSScript script)
+    {
+        if(!OSRSUtilities.CanReachBank())
+        {
+            TravelTask Travel = new TravelTask("", BankLocation.getNearest().getTile());
+            Travel.SetTaskName("Travel To Bank For ItemRequirements");
+            Travel.TaskPriority.set(0);
+            Travel.CompleteCondition = OSRSUtilities::CanReachBank;
+            script.addNodes(Travel);
+        }
+
+        bankItemsTask = new BankItemsTask("Grabbing items to combine");
+        if(!Inventory.isEmpty())
+        {
+            bankItemsTask.DepositAll();
+        }
+
+        bankItemsTask.FillInventory(source, sourceRatio, target, targetRatio);
+
+        combineTask                 = new CombineTask("Combining items", source, target);
+        combineTask.AcceptCondition = () -> !bankItemsTask.isActive();
+
+        script.addNodes(bankItemsTask, combineTask);
     }
 
     /**
@@ -86,43 +165,11 @@ public class CombineCycle extends SimpleCycle implements Serializable
         return true;
     }
 
-    private void StartCycle(tpircSScript script)
-    {
-        if(!OSRSUtilities.CanReachBank())
-        {
-            TravelTask Travel = new TravelTask("", BankLocation.getNearest().getTile());
-            Travel.SetTaskName("Travel To Bank For ItemRequirements");
-            Travel.TaskPriority.set(0);
-            Travel.CompleteCondition = OSRSUtilities::CanReachBank;
-            script.addNodes(Travel);
-        }
-
-        bankItemsTask = new BankItemsTask("Grabbing items to combine");
-        if(!Inventory.isEmpty())
-        {
-            bankItemsTask.DepositAll();
-        }
-
-        bankItemsTask.FillInventory(source, sourceRatio, target, targetRatio);
-
-        combineTask                 = new CombineTask("Combining items", source, target);
-        combineTask.AcceptCondition = () -> !bankItemsTask.isActive();
-
-        script.addNodes(bankItemsTask, combineTask);
-    }
-
     @Override
     public void onReset(tpircSScript Script)
     {
         bankItemsTask = null;
         combineTask   = null;
-    }
-
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        StartCycle(Script);
-        return super.onStart(Script);
     }
 
     //    public static void main(String[] args) throws IOException

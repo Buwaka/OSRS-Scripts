@@ -15,6 +15,7 @@ import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
+import org.dreambot.api.methods.container.impl.bank.BankMode;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.input.Camera;
 import org.dreambot.api.methods.input.mouse.MouseSettings;
@@ -62,7 +63,7 @@ public class OSRSUtilities
             Modifier.TRANSIENT,
             Modifier.PROTECTED);
     // TODO make function to equip best combat gear, perhaps even splitting it up into combat/magic/ranged
-    public static               Random                        rand                = new Random();
+    public static        Random                        rand                = new Random();
 
     static
     {
@@ -85,15 +86,16 @@ public class OSRSUtilities
         /**
          * -1 for whole inventory, only valid for deposit
          */
-        int ItemID;
+        int     ItemID;
         /**
          * -1 for all instances of ID
          */
-        int Amount;
+        int     Amount;
         /**
          * 0 for general dump
          */
-        int BankTab;
+        int     BankTab;
+        boolean Noted = false;
 
         public BankEntry(int ID, int Amount, int Tab)
         {
@@ -114,6 +116,30 @@ public class OSRSUtilities
             ItemID      = entry.getKey();
             this.Amount = entry.getValue();
             BankTab     = 0;
+        }
+
+        public BankEntry(int ID, int Amount, int Tab, boolean noted)
+        {
+            ItemID      = ID;
+            this.Amount = Amount;
+            BankTab     = Tab;
+            Noted       = noted;
+        }
+
+        public BankEntry(int ID, int Amount, boolean noted)
+        {
+            ItemID      = ID;
+            this.Amount = Amount;
+            BankTab     = 0;
+            Noted       = noted;
+        }
+
+        public BankEntry(AbstractMap.SimpleEntry<Integer, Integer> entry, boolean noted)
+        {
+            ItemID      = entry.getKey();
+            this.Amount = entry.getValue();
+            BankTab     = 0;
+            Noted       = noted;
         }
 
         public int GetCount() {return Amount;}
@@ -188,6 +214,16 @@ public class OSRSUtilities
                 else if(!Withdraw.isEmpty())
                 {
                     var withdraw = Withdraw.getFirst();
+
+                    if(withdraw.Noted && Bank.getWithdrawMode() != BankMode.NOTE)
+                    {
+                        Bank.setWithdrawMode(BankMode.NOTE);
+                    }
+                    else if(Bank.getWithdrawMode() != BankMode.SWAP)
+                    {
+                        Bank.setWithdrawMode(BankMode.SWAP);
+                    }
+
                     if(Bank.getCurrentTab() != withdraw.BankTab)
                     {
                         Bank.openTab(withdraw.BankTab);
@@ -200,7 +236,7 @@ public class OSRSUtilities
                     {
                         success = Bank.withdraw(withdraw.ItemID, withdraw.Amount);
                     }
-                    Logger.log("Withdrawal complete" + success);
+                    Logger.log("Withdrawal complete " + success);
                     if(!success)
                     {
                         tries++;
@@ -1011,6 +1047,20 @@ public class OSRSUtilities
         return PickupItems(GetLootItemsExclude(area, ExceptIDs));
     }
 
+    public static List<GroundItem> GetLootItemsExclude(Area area, int... ExceptIDs)
+    {
+        var Items = GroundItems.all(t -> area.contains(t.getTile()) &&
+                                         (Arrays.stream(ExceptIDs).anyMatch(x -> x != t.getID()) ||
+                                          Arrays.stream(ItemsToAlwaysPickUp).anyMatch(x -> x.contains(t.getName())))); // Always pickup clue scrolls lol
+        Items.sort(Comparator.comparingDouble(p -> {
+            double dist = p.walkingDistance(Players.getLocal().getTile());
+
+            return Math.abs(dist);
+        }));
+
+        return Items;
+    }
+
     public static Area GetLootArea(Entity Foe)
     {
         double x = Foe.getModel().calculateModelArea().getBounds2D().getX();
@@ -1026,20 +1076,6 @@ public class OSRSUtilities
         Logger.log("Calculated Area: " + Foe.getModel().calculateModelArea().toString());
 
         return FoeTile.getArea(3);
-    }
-
-    public static List<GroundItem> GetLootItemsExclude(Area area, int... ExceptIDs)
-    {
-        var Items = GroundItems.all(t -> area.contains(t.getTile()) &&
-                                         (Arrays.stream(ExceptIDs).anyMatch(x -> x != t.getID()) ||
-                                          Arrays.stream(ItemsToAlwaysPickUp).anyMatch(x -> x.contains(t.getName())))); // Always pickup clue scrolls lol
-        Items.sort(Comparator.comparingDouble(p -> {
-            double dist = p.walkingDistance(Players.getLocal().getTile());
-
-            return Math.abs(dist);
-        }));
-
-        return Items;
     }
 
     public static boolean CheckInventory(List<AbstractMap.SimpleEntry<Integer, Integer>> Requirements, boolean OnlyRequirements)
@@ -1105,8 +1141,10 @@ public class OSRSUtilities
 
     public static boolean CanReachBank()
     {
-        BankLocation near = BankLocation.getNearest();
-        return near.canReach();
+        BankLocation near = Bank.getClosestBankLocation();
+        Logger.log("Nearest Bank: " + near.name() + " dist: " + near.walkingDistance(Players.getLocal().getTile()));
+        return near.canReach() ||
+               (near == BankLocation.GRAND_EXCHANGE && near.walkingDistance(Players.getLocal().getTile()) < 25);
     }
 
     public static Boolean PrayAll(int Timeout, int... IDs)

@@ -1,10 +1,16 @@
 package Utilities.Requirement;
 
+import org.dreambot.api.methods.favour.House;
+
 public class FavorRequirement implements IRequirement
 {
-    public FavorRequirement()
+    House house;
+    int   favour;
+
+    public FavorRequirement(House house, int favour)
     {
-        //TODO
+        this.house  = house;
+        this.favour = favour;
     }
 
     /**
@@ -13,7 +19,7 @@ public class FavorRequirement implements IRequirement
     @Override
     public boolean isRequirementMet()
     {
-        return false;
+        return favour >= house.getValue();
     }
 
     /**

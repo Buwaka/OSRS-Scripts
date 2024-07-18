@@ -118,9 +118,20 @@ public class BankItemsTask extends SimpleTask
         return Withdraws.add(new OSRSUtilities.BankEntry(ID, Amount));
     }
 
+    public boolean WithdrawAllNoted(int ID)
+    {
+        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Integer.MAX_VALUE, true));
+    }
+
+    public boolean AddWithdrawNoted(int ID, int Amount)
+    {
+        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Amount, true));
+    }
+
     @Override
     public boolean Ready()
     {
+        //Logger.log("BankTask: " + Arrays.toString(Withdraws.toArray()) + Arrays.toString(Deposits.toArray()) + OSRSUtilities.CanReachBank(Location));
         return OSRSUtilities.CanReachBank(Location) && (!Withdraws.isEmpty() || !Deposits.isEmpty()) && super.Ready();
     }
 

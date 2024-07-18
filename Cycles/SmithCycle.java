@@ -6,6 +6,7 @@ import Cycles.SimpleTasks.Skill.SmithTask;
 import Cycles.SimpleTasks.TravelTask;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.interactive.Players;
@@ -16,19 +17,20 @@ import org.dreambot.api.utilities.Sleep;
 
 import java.util.Objects;
 
+@JsonTypeName("SmithCycle")
 public class SmithCycle extends SimpleCycle
 {
-    private final String       SmithAction     = "Smith";
-    private       int          HammerID        = 2347;
-    private       int          AnvilID         = 2097;
-    private       String       TargetName;
-    private       int          BarID;
-    private       int          MinimumBarCount = 1;
-    private       OpenBankTask OpenBank        = null;
-    private       TravelTask   BackupTravel    = null;
-    private       SmithTask    Smithtask       = null;
-    private       Tile         BackupTile      = new Tile(3187, 3424, 0);
-    private       Area         TargetArea      = new Area(3179, 3438, 3190, 3424);
+    private static final String       SmithAction     = "Smith";
+    private static final int          HammerID        = 2347;
+    private static final int          AnvilID         = 2097;
+    private              String       TargetName;
+    private              int          BarID;
+    private              int          MinimumBarCount = 1;
+    private transient    OpenBankTask OpenBank        = null;
+    private transient    TravelTask   BackupTravel    = null;
+    private transient    SmithTask    Smithtask       = null;
+    private              Tile         BackupTile      = new Tile(3187, 3424, 0);
+    private              Area         TargetArea      = new Area(3179, 3438, 3190, 3424);
 
     public SmithCycle(String name, String TargetName, int BarID)
     {

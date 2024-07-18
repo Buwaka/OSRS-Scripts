@@ -7,6 +7,7 @@ import Cycles.SimpleTasks.Misc.EquipmentTask;
 import Cycles.SimpleTasks.TravelTask;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -22,17 +23,18 @@ import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Arrays;
 
+@JsonTypeName("SmeltCycle")
 public class SmeltCycle extends SimpleCycle implements Serializable
 {
     private static final int                        ForgingRingID     = 2568;
-    private final        String                     SmeltAction       = "Smelt";
-    private final        Tile                       FurnaceBackupTile = new Tile(3108, 3498, 0);
+    private static final String                     SmeltAction       = "Smelt";
+    private static final Tile                       FurnaceBackupTile = new Tile(3108, 3498, 0);
     public @Nullable     Boolean                    NeedForgingRing   = null;
     private              int                        FurnaceID         = 16469; // default furnace is the furnace in Edgeville
     private              Tuple2<Integer, Integer>[] ItemIDRatio       = null;
     private transient    TravelTask                 BackupTravel      = null;
     private              String                     TargetName        = null;
-    private              UseObjectTask              SmeltTask         = null;
+    private transient    UseObjectTask              SmeltTask         = null;
 
 
     @SafeVarargs

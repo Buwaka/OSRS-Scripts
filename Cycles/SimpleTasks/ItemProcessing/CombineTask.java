@@ -59,7 +59,7 @@ public class CombineTask extends SimpleTask
 
     private boolean InventoryCheck()
     {
-        Logger.log(Inventory.count(sourceID) + " " + Inventory.count(targetID));
+        Logger.log("CombineTask: InventoryCheck: " + Inventory.count(sourceID) + " " + Inventory.count(targetID));
         return Inventory.count(sourceID) > sourceRatio && Inventory.count(targetID) > targetRatio;
     }
 

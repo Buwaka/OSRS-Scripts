@@ -15,13 +15,13 @@ import java.util.concurrent.locks.ReentrantLock;
 public class FoodDB extends OSRSDataBase
 {
 
-    final private static String                           FoodDB            = "foodID.json";
+    final private static String                           FoodDB            = "foodDB.json";
     final private static ReentrantLock                    FoodDBLock        = new ReentrantLock();
     final private static ConcurrentHashMap<Integer, Food> FoodDBCache       = new ConcurrentHashMap<>();
-    final private static String                           CommonFoodDB      = "commonfood.json";
+    final private static String                           CommonFoodDB      = "commonfoodDB.json";
     final private static ReentrantLock                    CommonFoodDBLock  = new ReentrantLock();
     final private static ConcurrentHashMap<Integer, Food> CommonFoodDBCache = new ConcurrentHashMap<>();
-    final private static String                           BattleFoodDB      = "battlefood.json";
+    final private static String                           BattleFoodDB      = "battlefoodDB.json";
     final private static ReentrantLock                    BattleFoodDBLock  = new ReentrantLock();
     final private static ConcurrentHashMap<Integer, Food> BattleFoodDBCache = new ConcurrentHashMap<>();
 

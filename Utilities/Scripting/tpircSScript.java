@@ -1,7 +1,9 @@
 package Utilities.Scripting;
 
 import Cycles.AdvanceTasks.OpenBankTask;
+import Utilities.GrandExchange.GEInstance;
 import Utilities.OSRSUtilities;
+import Utilities.Patterns.Delegates.Delegate;
 import Utilities.Patterns.Delegates.Delegate3;
 import Utilities.Patterns.GameTickDelegate;
 import org.dreambot.api.Client;
@@ -41,6 +43,8 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
     public         AtomicInteger                     FailLimit              = new AtomicInteger(-1);
     public         Delegate3<ItemAction, Item, Item> onInventory            = new Delegate3<>();
     public         GameTickDelegate                  onGameTick             = new GameTickDelegate();
+    public Delegate onTaskRemoved = new Delegate();
+    public Delegate onTaskAdded = new Delegate();
     private        int                               FailCount              = 0;
     private        int                               CycleCounter           = 0;
     private        Thread                            Randomizer;
@@ -55,6 +59,7 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             GetRandom().nextInt(5000) + 5000); // is pause on the start
     private        long                              StopTestTimeout        = 10000;
     private        OpenBankTask                      CacheBank              = null;
+    private        GEInstance                        GrandExchangeInstance  = null;
 
     public enum ItemAction
     {
@@ -74,11 +79,6 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             Logger.log(A.name() + B + C);
             return true;
         });
-    }
-
-    static Random GetRandom()
-    {
-        return rand;
     }
 
     public void Delay(int ms)
@@ -170,7 +170,7 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         Logger.log("Start Cycle");
         for(SimpleCycle next : Cycles)
         {
-            if(next.isNeedsCachedBank() && !Bank.isCached())
+            if(next.isNeedsCachedBank() && !Bank.isCached() && !Bank.isOpen())
             {
                 Logger.log("Bank is not cached and needs to be, visiting bank");
                 CacheBank = new OpenBankTask();
@@ -207,6 +207,7 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
                 TaskListLock.lock();
                 Tasks.add(Task);
                 TaskListLock.unlock();
+                onTaskAdded.Fire();
             }
             else
             {
@@ -231,6 +232,7 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
                 Tasks.remove(Task);
                 Task = null;
                 TaskListLock.unlock();
+                onTaskRemoved.Fire();
                 Logger.log("removeNodes:" + Tasks.size() + " Tasks left");
                 for(var task : Tasks)
                 {
@@ -269,23 +271,31 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         {
             if(FailCount > FailLimit.get())
             {
-                Logger.log("Fail limit exceeded, exiting, " + this.getClass().getName());
+                Logger.log("tpircSScript: onLoop: Fail limit exceeded, exiting, " + this.getClass().getName());
                 return -1;
             }
         }
 
-        Logger.log("Starting loop");
+        Logger.log("tpircSScript: onLoop: Starting loop");
         isLooping.set(true);
         GameTicked.set(false);
 
+        int CycleResult = 0;
         if(CurrentCycle != null && CurrentCycle.get() != null)
         {
-            CurrentCycle.get().Loop(this);
+            CycleResult = CurrentCycle.get().Loop(this);
         }
 
+        Logger.log("tpircSScript: onLoop: CycleNullCheck: " + (CurrentCycle != null));
+        if(CurrentCycle != null && (CurrentCycle.get() != null))
+        {
+            Logger.log(
+                    "tpircSScript: onLoop: CycleIsStarted Check: " + CurrentCycle.get().isStarted() + " CycleResult: " +
+                    CycleResult + " CycleIsComplete: " + CurrentCycle.get().isCycleComplete(this));
+        }
         if(IsActiveTaskLeft())
         {
-            Logger.log("Task Loop");
+            Logger.log("tpircSScript: onLoop: Task Loop");
             var sorted = GetSortedTasks();
             var task   = sorted.getFirst();
             if(CurrentTask.get() != task)
@@ -301,7 +311,9 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
                 // Notifying task if they've been replaced
                 if(CurrentTask.get() != null && !CurrentTask.get().equals(task))
                 {
-                    Logger.log("Replacing old task (" + CurrentTask.toString() + " with new task(" + task + ")");
+                    Logger.log(
+                            "tpircSScript: onLoop: Replacing old task (" + CurrentTask.toString() + " with new task(" +
+                            task + ")");
                     CurrentTask.get().ReplaceTask(this, task);
                 }
                 CurrentTask.set(task);
@@ -312,14 +324,16 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
                 FailCount = 0;
 
                 // Executing task
-                Logger.log("Executing task: " + CurrentTask.get().GetTaskName() + " (" +
+                Logger.log("tpircSScript: onLoop: Executing task: " + CurrentTask.get().GetTaskName() + " (" +
                            CurrentTask.get().getClass().getName() + ")");
+
                 int result = CurrentTask.get().execute();
                 //Logger.log("Task result is: " + result);
                 if(result <= 0)
                 {
                     // Stopping task
-                    Logger.log(CurrentTask.get().toString() + " return " + result + ", stopping task");
+                    Logger.log("tpircSScript: onLoop: " + CurrentTask.get().toString() + " return " + result +
+                               ", stopping task");
                     if(!Sleep.sleepUntil(() -> StopTask(CurrentTask.get()), StopTestTimeout))
                     {
                         StopTaskNow(CurrentTask.get());
@@ -335,9 +349,9 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             }
         }
         else if(CurrentCycle != null && CurrentCycle.get() != null && CurrentCycle.get().isStarted() &&
-                CurrentCycle.get().isCycleComplete(this))
+                (CycleResult <= 0 || CurrentCycle.get().isCycleComplete(this)))
         {
-            Logger.log("Cycle Complete check Loop");
+            Logger.log("tpircSScript: onLoop: Cycle Complete check Loop");
             CurrentCycle.get().CompleteCycle();
             CleanUpCycle();
             if(CurrentCycle.get().CanRestart(this))
@@ -356,7 +370,7 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         }
         else if(CurrentCycle == null && !Cycles.isEmpty())
         {
-            Logger.log("Starting cuz cycle is empty");
+            Logger.log("tpircSScript: onLoop: Starting cuz cycle is empty");
             _startCycle();
         }
         else
@@ -429,9 +443,27 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         }
     }
 
+    /**
+     * @return Returns current GE instance, creates one if none exists, do make sure to cleanup afterwards
+     */
+    public GEInstance GetGEInstance()
+    {
+        if(GrandExchangeInstance == null)
+        {
+            GrandExchangeInstance = new GEInstance();
+        }
+
+        return GrandExchangeInstance;
+    }
+
     public List<SimpleTask> getSimpleTasks()
     {
         return Tasks;
+    }
+
+    public List<SimpleTask> getPersistentNodes()
+    {
+        return PersistentTasks;
     }
 
 //    @Override
@@ -455,11 +487,6 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
 //        Logger.log("Completing Solver Condition");
 //        isSolving.set(false);
 //    }
-
-    public List<SimpleTask> getPersistentNodes()
-    {
-        return PersistentTasks;
-    }
 
     public final void addPersistentNodes(TaskNode... nodes)
     {
@@ -532,5 +559,10 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         {
             GameTicked.set(true);
         }
+    }
+
+    static Random GetRandom()
+    {
+        return rand;
     }
 }

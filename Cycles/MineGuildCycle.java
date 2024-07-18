@@ -3,8 +3,10 @@ package Cycles;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
+import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Tile;
@@ -16,23 +18,30 @@ import org.dreambot.api.utilities.Sleep;
 import java.util.Arrays;
 import java.util.Scanner;
 
+@JsonTypeName("MineGuildCycle")
 public class MineGuildCycle extends SimpleCycle
 {
-    final int    MineHopperID       = 26674;
-    final int    PayDirtID          = 12011;
-    final int    BrokenStrutID      = 26670;
-    final int    SackID             = 26688;
-    final int    CrateID            = 357;
-    final int    HammerID           = 2347;
-    final Tile   SackTile           = new Tile(3750, 5659, 0);
-    final Tile   HopperTile         = new Tile(3749, 5672, 0);
-    final Tile   MineBackupTile     = new Tile(3737, 5652, 0);
-    final Tile   CrateTile          = new Tile(3752, 5674, 0);
-    final String OreVeinName        = "Ore vein";
-    final int[]  SackSpaceWidgetIDs = {382, 6};
-    final int[]  SackOreWidgetIDs   = {382, 5};
-    MGState CurrentState = MGState.Mining;
-    boolean Complete     = false;
+    static final int     MineHopperID       = 26674;
+    static final int     PayDirtID          = 12011;
+    static final int     BrokenStrutID      = 26670;
+    static final int     SackID             = 26688;
+    static final int     CrateID            = 357;
+    static final int     HammerID           = 2347;
+    static final int     CoalBagID          = 12019;
+    static final int     GemBagID           = 12020;
+    static final int     CoalID             = 453;
+    final        String  BagEmptyAction     = "Empty";
+    final        Tile    SackTile           = new Tile(3750, 5659, 0);
+    final        Tile    HopperTile         = new Tile(3749, 5672, 0);
+    final        Tile    MineBackupTile     = new Tile(3737, 5652, 0);
+    final        Tile    CrateTile          = new Tile(3752, 5674, 0);
+    final        String  OreVeinName        = "Ore vein";
+    final        int[]   SackSpaceWidgetIDs = {382, 6};
+    final        int[]   SackOreWidgetIDs   = {382, 5};
+    final        int     MaxHopperAttempts  = 3;
+    transient    MGState CurrentState       = MGState.Mining;
+    transient    boolean Complete           = false;
+    int HopperAttempts = 0;
 
     enum MGState
     {
@@ -45,6 +54,28 @@ public class MineGuildCycle extends SimpleCycle
     public MineGuildCycle(String name)
     {
         super(name);
+    }
+
+    /**
+     * will be called once there are no active tasks anymore, aka a single cycle has been completed
+     *
+     * @param Script
+     *
+     * @return Cycle completed, ready for a restart
+     */
+    @Override
+    public boolean isCycleComplete(tpircSScript Script)
+    {
+        return Complete;
+    }
+
+    /**
+     * @return Whether the goal of this cycle has been met, based on CycleType
+     */
+    @Override
+    public boolean isGoalMet()
+    {
+        return Complete;
     }
 
     /**
@@ -64,10 +95,6 @@ public class MineGuildCycle extends SimpleCycle
     {
         Logger.log("MineGuildCycle: Init: ");
         //TODO make sure we have a pickaxe
-        if(!Inventory.isEmpty())
-        {
-            DropInventoryAtBank(Script);
-        }
 
         if(GetSackSpace() <= OSRSUtilities.InventorySpace)
         {
@@ -77,19 +104,13 @@ public class MineGuildCycle extends SimpleCycle
         {
             CurrentState = MGState.Mining;
         }
-        Complete = false;
-    }
 
-    private static void DropInventoryAtBank(tpircSScript Script)
-    {
-        while(!Bank.isOpen())
+        if(!Inventory.isEmpty())
         {
-            Bank.open();
-            Sleep.sleepTick();
+            DropInventoryAtBank(Script);
         }
-        Bank.depositAllItems();
-        Script.onGameTick.WaitRandomTicks(6);
-        Bank.close();
+
+        Complete = false;
     }
 
     public int GetSackSpace()
@@ -104,26 +125,42 @@ public class MineGuildCycle extends SimpleCycle
         return scan.nextInt();
     }
 
-    /**
-     * @return Whether the goal of this cycle has been met, based on CycleType
-     */
-    @Override
-    public boolean isGoalMet()
+    private void DropInventoryAtBank(tpircSScript Script)
     {
-        return Complete;
-    }
+        while(!Bank.isOpen())
+        {
+            Bank.open();
+            Sleep.sleepTick();
+        }
 
-    /**
-     * will be called once there are no active tasks anymore, aka a single cycle has been completed
-     *
-     * @param Script
-     *
-     * @return Cycle completed, ready for a restart
-     */
-    @Override
-    public boolean isCycleComplete(tpircSScript Script)
-    {
-        return Complete;
+        if(Inventory.contains(GemBagID))
+        {
+            Inventory.get(GemBagID).interact(BagEmptyAction);
+            Script.onGameTick.WaitRandomTicks(2);
+        }
+
+        if(Inventory.contains(CoalBagID))
+        {
+            Inventory.get(CoalBagID).interact(BagEmptyAction);
+            Script.onGameTick.WaitRandomTicks(2);
+        }
+
+        Bank.depositAllItems();
+        Script.onGameTick.WaitRandomTicks(3);
+
+        if(Bank.contains(GemBagID) && CurrentState != MGState.Deposit)
+        {
+            Bank.withdraw(GemBagID);
+            Script.onGameTick.WaitRandomTicks(2);
+        }
+
+        if(Bank.contains(CoalBagID) && CurrentState == MGState.Deposit)
+        {
+            Bank.withdraw(CoalBagID);
+            Script.onGameTick.WaitRandomTicks(2);
+        }
+
+        Bank.close();
     }
 
     /**
@@ -184,6 +221,12 @@ public class MineGuildCycle extends SimpleCycle
                             Script.onGameTick.WaitTicks(3);
                         }
                     }
+
+                    if(!Inventory.all(t -> t.getName().toLowerCase().contains("uncut")).isEmpty() &&
+                       Inventory.contains(GemBagID))
+                    {
+                        Inventory.get(GemBagID).interact();
+                    }
                 }
                 CurrentState = MGState.Hopper;
             }
@@ -193,7 +236,19 @@ public class MineGuildCycle extends SimpleCycle
                                                       t.getID() == MineHopperID);
                 if(Inventory.contains(PayDirtID))
                 {
-                    if(Hopper != null)
+                    Logger.log("MineGuildCycle: OnLoop: InDialogue + Dialogue " + Dialogues.inDialogue() +
+                               Dialogues.getNPCDialogue());
+                    if(Dialogues.inDialogue() && Hopper != null && Hopper.distance(Players.getLocal()) < 4)
+                    { // Dialogues.getNPCDialogue().toLowerCase().contains("you can put more in once") bad, language specific
+                        if(HopperAttempts > MaxHopperAttempts)
+                        {
+                            HopperAttempts = 0;
+                            CurrentState   = MGState.Repair;
+                            return super.onLoop(Script);
+                        }
+                        HopperAttempts++;
+                    }
+                    else if(Hopper != null)
                     {
                         if(!Players.getLocal().isMoving())
                         {
@@ -209,7 +264,8 @@ public class MineGuildCycle extends SimpleCycle
                             {
                                 if(!Hopper.exists())
                                 {
-                                    Hopper = GameObjects.closest(t -> t.canReach() && t.distance(Players.getLocal().getTile()) < 10 &&
+                                    Hopper = GameObjects.closest(t -> t.canReach() &&
+                                                                      t.distance(Players.getLocal().getTile()) < 10 &&
                                                                       t.getID() == MineHopperID);
                                     if(Hopper == null)
                                     {
@@ -249,7 +305,8 @@ public class MineGuildCycle extends SimpleCycle
                         CurrentState = MGState.Repair;
                     }
                 }
-                if(!Inventory.all(t -> t.getID() != PayDirtID).isEmpty())
+                if(!Inventory.all(t -> t.getID() != PayDirtID && t.getID() != GemBagID &&
+                                       t.getID() != CoalBagID).isEmpty())
                 {
                     DropInventoryAtBank(Script);
                 }
@@ -258,20 +315,19 @@ public class MineGuildCycle extends SimpleCycle
             {
                 if(Inventory.isFull())
                 {
-                    if(Inventory.contains(PayDirtID) && GetSackSpace() > 0)
+                    if(Inventory.onlyContains(PayDirtID))
+                    {
+                        Inventory.drop(PayDirtID);
+                    }
+                    else if(Inventory.contains(PayDirtID) && GetSackSpace() > 0)
                     {
                         CurrentState = MGState.Hopper;
+                        return super.onLoop(Script);
                     }
                     else
                     {
-                        if(Inventory.onlyContains(PayDirtID))
-                        {
-                            Inventory.drop(PayDirtID);
-                        }
-                        else
-                        {
-                            CurrentState = MGState.Deposit;
-                        }
+                        CurrentState = MGState.Deposit;
+                        return super.onLoop(Script);
                     }
                 }
 
@@ -330,7 +386,12 @@ public class MineGuildCycle extends SimpleCycle
                             return super.onLoop(Script);
                         }
                         Sack.interact();
-                        Script.onGameTick.WaitRandomTicks(6);
+                        Script.onGameTick.WaitRandomTicks(5);
+                        if(Inventory.contains(CoalBagID) && Inventory.contains(CoalID))
+                        {
+                            Inventory.get(CoalBagID).interact();
+                            Script.onGameTick.WaitRandomTicks(2);
+                        }
                     }
                     DropInventoryAtBank(Script);
                 }

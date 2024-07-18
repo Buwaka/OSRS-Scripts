@@ -9,6 +9,7 @@ import Cycles.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.interactive.Players;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@JsonTypeName("CombatLootBankCycle")
 public class CombatLootBankCycle extends SimpleCycle
 {
 
@@ -72,10 +74,10 @@ public class CombatLootBankCycle extends SimpleCycle
     }
 
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onStart(tpircSScript Script)
     {
         StartCycle(Script);
-        return true;
+        return super.onStart(Script);
     }
 
     void StartCycle(tpircSScript Script)
@@ -167,9 +169,9 @@ public class CombatLootBankCycle extends SimpleCycle
     }
 
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onRestart(tpircSScript Script)
     {
         StartCycle(Script);
-        return super.onStart(Script);
+        return true;
     }
 }

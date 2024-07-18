@@ -1,91 +1,38 @@
 package Cycles;
 
+import Cycles.SimpleTasks.Bank.BankItemsTask;
 import Cycles.SimpleTasks.ItemProcessing.AlchTask;
 import OSRSDatabase.ItemDB;
-import OSRSDatabase.OSRSDataBase;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
+import org.dreambot.api.methods.container.impl.equipment.Equipment;
+import org.dreambot.api.methods.container.impl.equipment.EquipmentSlot;
 import org.dreambot.api.methods.grandexchange.LivePrices;
+import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonTypeName("AlchCycle")
 public class AlchCycle extends SimpleCycle
 {
-    private final int NatureRuneID = 561;
-    private Instant StartTime = null;
-    public int ProfitMargin = 50;
+    private final     int            NatureRuneID   = 561;
+    private final     int            FireStaffID    = 1387;
+    public            int            ProfitMargin   = 50;
+    public            int[]          TabsToConsider = {1};
+    private           Instant        StartTime      = null;
+    private           Item[]         ItemsToAlch    = null;
+    private transient boolean        Started        = false;
+    private transient List<AlchTask> Alchs          = new ArrayList<>();
+
     public AlchCycle(String name)
     {
         super(name);
-    }
-
-    public Item[] GetProfitableAlchs()
-    {
-        List<Item> ItemsToAlch = new ArrayList<>();
-        int RunePrice = LivePrices.get(NatureRuneID);
-        for(var item : Bank.all())
-        {
-            if(ItemDB.IsAlchable(item.getID()))
-            {
-                ItemDB.ItemData itemData = ItemDB.GetItemData(item.getID());
-                int GEPrice = LivePrices.get(item.getID());
-                int AlchPrice = itemData.highalch;
-                int profit = (AlchPrice - RunePrice) - GEPrice;
-
-                if(profit >= ProfitMargin)
-                {
-                    ItemsToAlch.add(item);
-                }
-            }
-        }
-
-        return ItemsToAlch.toArray(new Item[0]);
-    }
-
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        var alchs = GetProfitableAlchs();
-
-        for(var task : alchs)
-        {
-            Script.addNodes(new AlchTask("Alching " + task.getName() ,task));
-        }
-
-        StartTime = Instant.now();
-
-        return super.onStart(Script);
-    }
-
-    /**
-     * @return Whether the goal of this cycle has been met, based on CycleType
-     */
-    @Override
-    public boolean isGoalMet()
-    {
-        var alchs = GetProfitableAlchs();
-        return alchs == null || alchs.length == 0;
-    }
-
-    /**
-     * @param Script
-     *
-     * @return
-     */
-    @Override
-    public boolean CanRestart(tpircSScript Script)
-    {
-        return false;
     }
 
     /**
@@ -98,12 +45,120 @@ public class AlchCycle extends SimpleCycle
     @Override
     public boolean isCycleComplete(tpircSScript Script)
     {
-        if(GetCycleLimit() == -1)
+        return isDoneAlching();
+    }
+
+    public boolean isDoneAlching()
+    {
+        for(var task : Alchs)
         {
-            return true;
+            if(!task.isFinished())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @return Whether the cycle needs to be restarted, aka goal hasn't been met yet
+     */
+    @Override
+    public boolean isGoalMet()
+    {
+        return isDoneAlching() || super.isGoalMet();
+    }
+
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    @Override
+    public boolean onStart(tpircSScript Script)
+    {
+        ItemsToAlch = GetProfitableAlchs();
+
+        BankItemsTask BankTask = new BankItemsTask("AlchCycle: onStart: Grabbing items to combine");
+        if(!Inventory.isEmpty())
+        {
+            BankTask.DepositAll();
+        }
+        boolean FirestaffToEquip;
+        var     CurrentEquip = Equipment.getItemInSlot(EquipmentSlot.WEAPON);
+        if(CurrentEquip == null || CurrentEquip.getID() != FireStaffID)
+        {
+            if(CurrentEquip != null)
+            {
+                Equipment.unequip(EquipmentSlot.WEAPON);
+                BankTask.AddDeposit(CurrentEquip.getID(), 1);
+            }
+            BankTask.AddWithdraw(FireStaffID, 1);
+            FirestaffToEquip = true;
+        }
+        else {FirestaffToEquip = false;}
+
+        BankTask.WithdrawAll(NatureRuneID);
+        for(var item : ItemsToAlch)
+        {
+            BankTask.WithdrawAllNoted(item.getID());
+        }
+        BankTask.onComplete.Subscribe(this, () -> {
+            if(FirestaffToEquip)
+            {
+                Inventory.get(FireStaffID).interact();
+            }
+            Started = true;
+        });
+        BankTask.TaskPriority.set(0);
+        Script.addNodes(BankTask);
+
+        for(var task : ItemsToAlch)
+        {
+            Logger.log("Alching " + task.getName());
+            Script.addNodes(new AlchTask("Alching " + task.getName(), task.getNotedItemID()));
         }
 
-        return (Instant.now().getEpochSecond() - StartTime.getEpochSecond()) > (long) GetCycleLimit();
+        StartTime = Instant.now();
+
+        return super.onStart(Script);
+    }
+
+    public Item[] GetProfitableAlchs()
+    {
+        List<Item> ItemsToAlch = new ArrayList<>();
+        int        RunePrice   = LivePrices.get(NatureRuneID);
+        for(var item : Bank.all())
+        {
+            if(item != null && ItemDB.isAlchable(item.getID()) && item.getAmount() > 3)
+            {
+                Logger.log("AlchCycle: GetProfitableAlchs: Checking price for " + item.getName());
+                ItemDB.ItemData itemData  = ItemDB.GetItemData(item.getID());
+                int             GEPrice   = LivePrices.get(item.getID());
+                int             AlchPrice = itemData.highalch;
+                int             profit    = (AlchPrice - RunePrice) - GEPrice;
+
+                if(profit >= ProfitMargin)
+                {
+                    Logger.log("AlchCycle: GetProfitableAlchs: Alching " + item.getName() + "(GE: " + GEPrice +
+                               ", AlchPrice: " + AlchPrice + ") with profit: " + profit);
+                    ItemsToAlch.add(item);
+                }
+            }
+        }
+
+        return ItemsToAlch.toArray(new Item[0]);
+    }
+
+    /**
+     * @param Script
+     *
+     * @return
+     */
+    @Override
+    public boolean CanRestart(tpircSScript Script)
+    {
+        return false;
     }
 
     /**

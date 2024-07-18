@@ -11,6 +11,7 @@ import org.dreambot.api.script.ScriptManifest;
 public class MineGuildScript extends tpircSScript
 {
     MineGuildCycle MGCycle = new MineGuildCycle("MineGuildCycle");
+
     /**
      *
      */

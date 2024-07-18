@@ -1,12 +1,14 @@
 package Utilities.Requirement;
 
+import org.dreambot.api.methods.quest.book.Quest;
+
 public class QuestRequirement implements IRequirement
 {
-    private String QuestName;
+    private Quest quest;
 
-    public QuestRequirement(String Name)
+    public QuestRequirement(Quest quest)
     {
-        QuestName = Name;
+        this.quest = quest;
     }
 
     /**
@@ -15,7 +17,7 @@ public class QuestRequirement implements IRequirement
     @Override
     public boolean isRequirementMet()
     {
-        return false;
+        return quest.isFinished();
     }
 
     /**

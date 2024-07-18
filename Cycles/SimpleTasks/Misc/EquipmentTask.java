@@ -25,6 +25,41 @@ public class EquipmentTask extends SimpleTask
         super(Name);
     }
 
+    public void Equip(EquipmentSlot Slot, int id)
+    {
+        ToEquip.put(Slot, id);
+        ToUnEquip.remove(Slot);
+    }
+
+//    public void Equip(int id)
+//    {
+//        var slot = Equipment.slot(id);
+//        ToEquip.put(EquipmentSlot.forOriginalSlotId(slot), id);
+//    }
+
+    public void UnEquip(EquipmentSlot Slot)
+    {
+        if(ToEquip.get(Slot) == null)
+        {
+            ToUnEquip.add(Slot);
+        }
+    }
+
+    public void UnEquipAll()
+    {
+        UnEquipAll = true;
+    }
+
+    /**
+     * @return
+     */
+    @Nonnull
+    @Override
+    public TaskType GetTaskType()
+    {
+        return TaskType.EquipmentTask;
+    }
+
     /**
      * @return
      */
@@ -39,12 +74,6 @@ public class EquipmentTask extends SimpleTask
 
         return result && super.Ready();
     }
-
-//    public void Equip(int id)
-//    {
-//        var slot = Equipment.slot(id);
-//        ToEquip.put(EquipmentSlot.forOriginalSlotId(slot), id);
-//    }
 
     /**
      * @return
@@ -103,34 +132,5 @@ public class EquipmentTask extends SimpleTask
         }
 
         return super.Loop();
-    }
-
-    public void Equip(EquipmentSlot Slot, int id)
-    {
-        ToEquip.put(Slot, id);
-        ToUnEquip.remove(Slot);
-    }
-
-    public void UnEquip(EquipmentSlot Slot)
-    {
-        if(ToEquip.get(Slot) == null)
-        {
-            ToUnEquip.add(Slot);
-        }
-    }
-
-    public void UnEquipAll()
-    {
-        UnEquipAll = true;
-    }
-
-    /**
-     * @return
-     */
-    @Nonnull
-    @Override
-    public TaskType GetTaskType()
-    {
-        return TaskType.EquipmentTask;
     }
 }

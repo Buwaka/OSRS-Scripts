@@ -1,17 +1,33 @@
 package Cycles.SimpleTasks.ItemProcessing;
 
 import Utilities.Scripting.SimpleTask;
+import Utilities.Scripting.tpircSScript;
+import org.dreambot.api.methods.container.impl.Inventory;
+import org.dreambot.api.methods.magic.Magic;
+import org.dreambot.api.methods.magic.Normal;
+import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
 
 import javax.annotation.Nonnull;
 
 public class AlchTask extends SimpleTask
 {
-    private Item AlchItem;
-    public AlchTask(String Name, Item ToAlch)
+    private int     AlchItemID;
+    private Item    AlchItem;
+    private int     TotalToAlch = -1;
+    private boolean Ready       = true;
+
+    public AlchTask(String Name, int ToAlch, int count)
     {
         super(Name);
-        AlchItem = ToAlch;
+        AlchItemID  = ToAlch;
+        TotalToAlch = count;
+    }
+
+    public AlchTask(String Name, int ToAlch)
+    {
+        super(Name);
+        AlchItemID = ToAlch;
     }
 
     /**
@@ -22,6 +38,52 @@ public class AlchTask extends SimpleTask
     public TaskType GetTaskType()
     {
         return TaskType.AlchTask;
+    }
+
+    /**
+     * @param Script
+     *
+     * @return return true if successful, false if we need more time, keep triggering start until it is ready
+     */
+    @Override
+    public boolean onStartTask(tpircSScript Script)
+    {
+        AlchItem = Inventory.get(AlchItemID);
+        Script.onInventory.Subscribe(this, (a, b, c, d) -> Ready = true);
+        Logger.log("AlchTask: onStartTask: Starting Alch of item " + AlchItem);
+        return super.onStartTask(Script);
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    protected boolean Ready()
+    {
+        return Magic.canCast(Normal.HIGH_LEVEL_ALCHEMY) && super.Ready();
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    protected int Loop()
+    {
+        Logger.log("AlchTask: Loop: Alching now");
+        if(!Inventory.contains(AlchItemID))
+        {
+            return 0;
+        }
+
+        if(Ready)
+        {
+            if(Magic.castSpellOn(Normal.HIGH_LEVEL_ALCHEMY, AlchItem))
+            {
+                Ready = false;
+            }
+        }
+
+        return super.Loop();
     }
     //TODO
 }

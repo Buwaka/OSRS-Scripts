@@ -20,11 +20,12 @@ public interface ITask
         BankEquipment,
         GetCombatRations,
         Combine,
-        MineTask,
+        InteractTask,
         UseOnObjectTask,
         EquipmentTask,
         BossTask,
         AlchTask,
+        InteractInventoryTask,
 
         //Advanced tasks
         SlaughterAndLoot,

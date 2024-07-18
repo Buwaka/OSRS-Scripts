@@ -183,6 +183,16 @@ public class ShearScript extends tpircSScript
         }
     }
 
+    public boolean IsInsideBankArea()
+    {
+        return BankArea.contains(Players.getLocal().getTile());
+    }
+
+    public boolean IsInsideSheepArea()
+    {
+        return SheepArea.contains(Players.getLocal().getTile());
+    }
+
     public Optional<GameObject> GetClosedGate()
     {
         var Door = Arrays.stream(GameObjects.getObjectsOnTile(GateLocation)).filter(x -> x.getID() ==
@@ -198,15 +208,5 @@ public class ShearScript extends tpircSScript
     {
         return NPCs.closest(t -> t.getName().equalsIgnoreCase(SheepName) && t.getID() != FalseSheepID &&
                                  SheepArea.contains(t.getTile()) && t.hasAction(ShearAction) && !t.isMoving());
-    }
-
-    public boolean IsInsideBankArea()
-    {
-        return BankArea.contains(Players.getLocal().getTile());
-    }
-
-    public boolean IsInsideSheepArea()
-    {
-        return SheepArea.contains(Players.getLocal().getTile());
     }
 }

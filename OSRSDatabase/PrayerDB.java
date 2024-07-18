@@ -27,6 +27,11 @@ public class PrayerDB extends OSRSDataBase
         {
             Location = loc;
         }
+
+        public String toString()
+        {
+            return _toString(this, this.getClass());
+        }
     }
 
     public static Altar[] GetAltars()

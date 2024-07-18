@@ -3,6 +3,8 @@ package OSRSDatabase;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
+import io.vavr.Tuple2;
+import org.dreambot.api.methods.grandexchange.LivePrices;
 import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nullable;
@@ -49,8 +51,7 @@ public class ItemDB extends OSRSDataBase
 
     public static class Requirement
     {
-        public Skill skill;
-        public int   level;
+        public List<Tuple2<Skill, Integer>> SkillLevelPair = new ArrayList<>();
 
         private static class RequirementDeserializer implements JsonDeserializer<Requirement>
         {
@@ -60,8 +61,9 @@ public class ItemDB extends OSRSDataBase
                 Requirement out = new Requirement();
                 for(var skill : json.getAsJsonObject().entrySet())
                 {
-                    out.skill = Skill.valueOf(skill.getKey());
-                    out.level = skill.getValue().getAsInt();
+
+                    out.SkillLevelPair.add(new Tuple2<Skill, Integer>(Skill.valueOf(skill.getKey()),
+                                                                      skill.getValue().getAsInt()));
                 }
                 return out;
             }
@@ -128,7 +130,7 @@ public class ItemDB extends OSRSDataBase
         public           int           magic_damage;
         public           int           prayer;
         public           EquipmentSlot slot;
-        public @Nullable Requirement[] requirements;
+        public @Nullable Requirement   requirements;
 
         public enum EquipmentSlot
         {
@@ -153,11 +155,11 @@ public class ItemDB extends OSRSDataBase
 
     public static class ToolData
     {
-        public           Type          type;
-        public           String        name;
-        public           boolean       equipable;
-        public @Nullable Integer       strength;
-        public @Nullable Requirement[] requirements;
+        public           Type        type;
+        public           String      name;
+        public           boolean     equipable;
+        public @Nullable Integer     strength;
+        public @Nullable Requirement requirements;
 
         public enum Type
         {
@@ -343,6 +345,92 @@ public class ItemDB extends OSRSDataBase
         }
     }
 
+    public static boolean isAlchable(String Name)
+    {
+        var item = GetItemDataByName(Name);
+        if(item.length > 0)
+        {
+            return item[0].highalch != null;
+        }
+        Logger.log("ItemDB: IsAlchable: Item with name: " + Name + " not found, returning false");
+        return false;
+    }
+
+    public static ItemData[] GetItemDataByName(String Name)
+    {
+        List<ItemData> out = new ArrayList<>();
+        try
+        {
+            ItemDBLock.lock();
+            InputStreamReader File   = new InputStreamReader(GetInputStream(ItemDB));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = new Gson();
+            Reader.setLenient(true);
+
+            Reader.beginObject();
+
+            while(Reader.hasNext())
+            {
+                int      ID  = Integer.parseInt(Reader.nextName());
+                ItemData Obj = gson.fromJson(Reader, ItemData.class);
+                if(Obj.name.equals(Name) && !Obj.placeholder && !Obj.noted)
+                {
+                    out.add(Obj);
+                }
+            }
+
+            Reader.endObject();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            Logger.log("Tried to find ID: " + Name);
+            if(ItemDBLock.isLocked() && ItemDBLock.isHeldByCurrentThread())
+            {
+                ItemDBLock.unlock();
+            }
+            throw new RuntimeException(e);
+        }
+
+        ItemDBLock.unlock();
+        return out.toArray(out.toArray(new ItemData[0]));
+    }
+
+    public static boolean isProfitableItem(String Name)
+    {
+        var item = GetItemDataByName(Name);
+        if(item.length > 0)
+        {
+            return _isProfitableItem(item[0]);
+        }
+        Logger.log("ItemDB: isProfitable: Item with Name " + Name + " not found");
+        return false;
+    }
+
+    private static boolean _isProfitableItem(ItemData data)
+    {
+        if(data != null)
+        {
+            boolean AlchCheck  = data.highalch != null;
+            boolean QuestCheck = !data.quest_item;
+            boolean TradeAble  = data.tradeable_on_ge;
+            return AlchCheck && QuestCheck && TradeAble;
+        }
+        Logger.log("ItemDB: _isProfitable: Item dats is null");
+        return false;
+    }
+
+    public static boolean isProfitableItem(int ID)
+    {
+        var item = GetItemData(ID);
+        if(item != null)
+        {
+            return _isProfitableItem(item);
+        }
+        Logger.log("ItemDB: isProfitable: Item with ID " + ID + " not found");
+        return false;
+    }
+
     public static ItemData GetItemData(int ItemID)
     {
         if(ItemDBCache.containsKey(ItemID))
@@ -393,7 +481,88 @@ public class ItemDB extends OSRSDataBase
         return null;
     }
 
-    public static ItemData[] GetItemDataByName(String Name)
+    public static int GetProfitAlch(int ID)
+    {
+        var item = GetItemData(ID);
+        if(item != null)
+        {
+            return _GetProfitAlch(item);
+        }
+        Logger.log("ItemDB: GetProfitAlch: Item with ID " + ID + " not found");
+        return Integer.MIN_VALUE;
+    }
+
+    private static int _GetProfitAlch(ItemData data)
+    {
+        if(data.highalch == null)
+        {
+            Logger.log("ItemDB: _GetProfitAlch: item with name " + data.name + " is not alchable");
+            return Integer.MIN_VALUE;
+        }
+
+        final int NatureRuneID = 561;
+        int       RunePrice    = LivePrices.get(NatureRuneID);
+        int       AlchPrice    = data.highalch;
+        return (AlchPrice - RunePrice) - data.cost;
+    }
+
+    public static int GetProfitAlch(String Name)
+    {
+        var item = GetItemDataByName(Name);
+        if(item.length > 0)
+        {
+            return _GetProfitAlch(item[0]);
+        }
+        Logger.log("ItemDB: GetProfitAlch: Item with ID " + Name + " not found");
+        return Integer.MIN_VALUE;
+    }
+
+    public static int GetProfitGE(int ID)
+    {
+        var item = GetItemData(ID);
+        if(item != null)
+        {
+            return _GetProfitGE(item);
+        }
+        Logger.log("ItemDB: GetProfitGE: Item with ID " + ID + " not found");
+        return Integer.MIN_VALUE;
+    }
+
+    private static int _GetProfitGE(ItemData data)
+    {
+        if(!data.tradeable_on_ge)
+        {
+            Logger.log("ItemDB: _GetProfitGE: item with name " + data.name + " is not tradable on the GE");
+            return Integer.MIN_VALUE;
+        }
+
+        int GEPrice = LivePrices.get(data.id);
+        return GEPrice - data.cost;
+    }
+
+    public static int GetProfitGE(String Name)
+    {
+        var item = GetItemDataByName(Name);
+        if(item.length > 0)
+        {
+            return _GetProfitGE(item[0]);
+        }
+        Logger.log("ItemDB: GetProfitGE: Item with ID " + Name + " not found");
+        return Integer.MIN_VALUE;
+    }
+
+    public static boolean isAlchable(int ID)
+    {
+        var item = GetItemData(ID);
+        if(item != null)
+        {
+            return item.highalch != null;
+        }
+        Logger.log("IsAlchable: Item with ID: " + ID + " not found, returning false");
+        return false;
+    }
+
+    public static ItemData[] GetAllItemKeywordMatch(String keyword)
     {
         List<ItemData> out = new ArrayList<>();
         try
@@ -410,7 +579,7 @@ public class ItemDB extends OSRSDataBase
             {
                 int      ID  = Integer.parseInt(Reader.nextName());
                 ItemData Obj = gson.fromJson(Reader, ItemData.class);
-                if(Obj.name.equals(Name) && !Obj.placeholder && !Obj.noted)
+                if(Obj.name.toLowerCase().contains(keyword.toLowerCase()))
                 {
                     out.add(Obj);
                 }
@@ -421,7 +590,7 @@ public class ItemDB extends OSRSDataBase
 
         } catch(Exception e)
         {
-            Logger.log("Tried to find ID: " + Name);
+            Logger.log("Tried to find keyword: " + keyword);
             if(ItemDBLock.isLocked() && ItemDBLock.isHeldByCurrentThread())
             {
                 ItemDBLock.unlock();
@@ -430,28 +599,8 @@ public class ItemDB extends OSRSDataBase
         }
 
         ItemDBLock.unlock();
-        return out.toArray(out.toArray(new ItemData[0]));
+        return out.toArray(new ItemData[0]);
     }
 
-    public static boolean IsAlchable(String Name)
-    {
-        var item = GetItemDataByName(Name);
-        if(item.length > 0)
-        {
-            return item[0].highalch != null;
-        }
-        Logger.log("IsAlchable: Item with name: " + Name + " not found, returning false");
-        return false;
-    }
 
-    public static boolean IsAlchable(int ID)
-    {
-        var item = GetItemData(ID);
-        if(item != null)
-        {
-            return item.highalch != null;
-        }
-        Logger.log("IsAlchable: Item with ID: " + ID + " not found, returning false");
-        return false;
-    }
 }

@@ -52,11 +52,6 @@ public class SlaughterAndLoot extends SimpleTask
         TargetIDs = target;
     }
 
-    void SetTarget(String target)
-    {
-        TargetIDs = MonsterDB.GetMonsterIDsByName(target, false);
-    }
-
     @Override
     public boolean Ready()
     {
@@ -178,5 +173,10 @@ public class SlaughterAndLoot extends SimpleTask
     {
         Script.removePersistentNodes(LootTask);
         return super.onStopTask(Script);
+    }
+
+    void SetTarget(String target)
+    {
+        TargetIDs = MonsterDB.GetMonsterIDsByName(target, false);
     }
 }

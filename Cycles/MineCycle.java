@@ -2,27 +2,28 @@ package Cycles;
 
 import Cycles.AdvanceTasks.OpenBankTask;
 import Cycles.SimpleTasks.Bank.BankItemsTask;
-import Cycles.SimpleTasks.Skill.MineTask;
+import Cycles.SimpleTasks.ItemProcessing.InteractTask;
 import Cycles.SimpleTasks.TravelTask;
 import OSRSDatabase.ObjectDB;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.map.Area;
-import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.utilities.Sleep;
 
 import java.io.Serializable;
 import java.util.Arrays;
 
+
+@JsonTypeName("MineCycle")
 public class MineCycle extends SimpleCycle implements Serializable
 {
 
     public  BankLocation PreferredBank = null;
     private Area[]       MiningArea;
-    private Tile         Checkpoint    = null;
     private int[]        Targets;
 
     public MineCycle(String name, Area[] TargetArea, String RockName)
@@ -32,13 +33,6 @@ public class MineCycle extends SimpleCycle implements Serializable
         Targets    = ObjectDB.GetObjectIDsByName(RockName);
     }
 
-    public MineCycle(String name, Area[] TargetArea, Tile Checkpoint, String RockName)
-    {
-        super(name);
-        MiningArea      = TargetArea;
-        Targets         = ObjectDB.GetObjectIDsByName(RockName);
-        this.Checkpoint = Checkpoint;
-    }
 
     /**
      * @param Script
@@ -56,8 +50,8 @@ public class MineCycle extends SimpleCycle implements Serializable
     {
         //TODO check if we have a pickaxe, if not, pick one from the bank
 
-        MineTask mineTask = new MineTask(GetName(), Targets);
-        mineTask.TaskPriority.set(0);
+        InteractTask interactTask = new InteractTask(GetName(), Targets);
+        interactTask.TaskPriority.set(0);
 
         TravelTask TravelToMine = new TravelTask("Travel to Mine",
                                                  Arrays.stream(MiningArea).findAny().get().getRandomTile());
@@ -73,13 +67,13 @@ public class MineCycle extends SimpleCycle implements Serializable
             OpenBank.SetBankLocation(PreferredBank);
         }
 
-        OpenBank.AcceptCondition = () -> !mineTask.isActive();
+        OpenBank.AcceptCondition = () -> !interactTask.isActive();
 
         BankItemsTask BankOres = new BankItemsTask("Bank Ores");
         BankOres.DepositAll();
         BankOres.AcceptCondition = () -> !OpenBank.isActive();
 
-        Script.addNodes(BankOres, OpenBank, TravelToMine, mineTask);
+        Script.addNodes(BankOres, OpenBank, TravelToMine, interactTask);
     }
 
     @Override

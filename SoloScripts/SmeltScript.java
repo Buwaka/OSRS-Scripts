@@ -5,10 +5,8 @@ import Cycles.SmeltCycle;
 import Utilities.Scripting.ICycle;
 import Utilities.Scripting.tpircSScript;
 import io.vavr.Tuple2;
-import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
-import org.dreambot.api.utilities.Logger;
 
 @ScriptManifest(name = "SoloScripts.SmeltScript", description = "Smelt stuff", author = "Semanresu", version = 1.0, category = Category.SMITHING, image = "")
 public class SmeltScript extends tpircSScript
@@ -38,10 +36,10 @@ public class SmeltScript extends tpircSScript
 //        SmeltSteel.GetCycleType().Goal = () -> Bank.count(453) <= 2;
 
         SmeltMithril.SetCycleType(ICycle.CycleType.byGoal);
-        SmeltMithril.Goal = () -> {
-            Logger.log("SmeltMithril count: " + Bank.count(453) + " " + Bank.count(447));
-            return Bank.isCached() && (Bank.count(447) == 0 || Bank.count(453) < 4);
-        };
+//        SmeltMithril.Goal = () -> {
+//            Logger.log("SmeltMithril count: " + Bank.count(453) + " " + Bank.count(447));
+//            return Bank.isCached() && (Bank.count(447) == 0 || Bank.count(453) < 4);
+//        };
         AddCycle(SmeltMithril);
         super.onStart();
     }

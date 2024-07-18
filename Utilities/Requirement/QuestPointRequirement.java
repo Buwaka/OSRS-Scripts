@@ -1,10 +1,14 @@
 package Utilities.Requirement;
 
+import org.dreambot.api.methods.quest.Quests;
+
 public class QuestPointRequirement implements IRequirement
 {
-    public QuestPointRequirement()
+    int ReqQuestPoints;
+
+    public QuestPointRequirement(int QuestPoints)
     {
-        //TODO
+        ReqQuestPoints = QuestPoints;
     }
 
     /**
@@ -13,7 +17,7 @@ public class QuestPointRequirement implements IRequirement
     @Override
     public boolean isRequirementMet()
     {
-        return false;
+        return Quests.getQuestPoints() >= ReqQuestPoints;
     }
 
     /**

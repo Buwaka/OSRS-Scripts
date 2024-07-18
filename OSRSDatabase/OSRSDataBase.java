@@ -1,8 +1,5 @@
 package OSRSDatabase;
 
-import Utilities.OSRSUtilities;
-import Utilities.Requirement.IRequirement;
-import Utilities.Requirement.QuestRequirement;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import org.json.JSONException;
@@ -146,12 +143,10 @@ public class OSRSDataBase
 //        path.add(new Altar(new Tile(3052, 3497, 1)));
 //        path.add(new Altar(new Tile(3027, 3512, 1)));
 
-        IRequirement Req = new QuestRequirement("Test");
 
-
-        var gson = OSRSUtilities.OSRSGsonBuilder.create();
-
-        System.out.println(gson.toJson(Req));
+//        var gson = OSRSUtilities.OSRSGsonBuilder.create();
+//
+//        System.out.println(gson.toJson(Req));
 
 
     }

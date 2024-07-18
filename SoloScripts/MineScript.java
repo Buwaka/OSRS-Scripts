@@ -30,17 +30,6 @@ public class MineScript extends tpircSScript
     static MineCycle CoalCycle    = new MineCycle("Coal", MineArea3, CoalName);
     static MineCycle MithrilCycle = new MineCycle("Mithril", MineArea4, MithrilName);
 
-    public static void main(String[] args)
-    {
-        Gson   gson = OSRSUtilities.OSRSGsonBuilder.create();
-        String json = gson.toJson(CoalCycle) + ",";
-        json += gson.toJson(IronCycle) + ",";
-        json += gson.toJson(CopperCycle) + ",";
-        json += gson.toJson(TinCycle);
-
-        System.out.println(json);
-    }
-
     @Override
     public void onStart()
     {
@@ -68,5 +57,16 @@ public class MineScript extends tpircSScript
 //        Logger.log(json);
 
         super.onStart();
+    }
+
+    public static void main(String[] args)
+    {
+        Gson   gson = OSRSUtilities.OSRSGsonBuilder.create();
+        String json = gson.toJson(CoalCycle) + ",";
+        json += gson.toJson(IronCycle) + ",";
+        json += gson.toJson(CopperCycle) + ",";
+        json += gson.toJson(TinCycle);
+
+        System.out.println(json);
     }
 }
