@@ -10,12 +10,10 @@ import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.function.Supplier;
 
 public class MinimumHealthTask extends SimpleTask
 {
-    private int               MinimumHealth;
-    private Supplier<Boolean> CompleteCondition;
+    private int MinimumHealth;
 
     public MinimumHealthTask(String Name, int MinHealth)
     {
@@ -37,16 +35,18 @@ public class MinimumHealthTask extends SimpleTask
     {
         var foods = FoodDB.GetCommonFoods(Client.isMembers());
         var min   = OSRSUtilities.HPtoPercent(MinimumHealth);
-        Logger.log("Player Healthpercent: " + Players.getLocal().getHealthPercent() + " Minimum Healthpercent: " + min +
-                   " MinimumHealth " + MinimumHealth);
+        Logger.log("Player Healthpercent: " + Players.getLocal().getHealthPercent() +
+                   " Minimum Healthpercent: " + min + " MinimumHealth " + MinimumHealth);
         return Players.getLocal().getHealthPercent() < min &&
-               OSRSUtilities.InventoryContainsAny(Arrays.stream(foods).mapToInt(t -> t.id).toArray()) && super.Ready();
+               OSRSUtilities.InventoryContainsAny(Arrays.stream(foods)
+                                                        .mapToInt(t -> t.id)
+                                                        .toArray()) && super.Ready();
     }
 
     @Override
     public int Loop()
     {
-        OSRSUtilities.ScriptIntenity Intensity = ScriptIntensity.get();
+        OSRSUtilities.ScriptIntenity Intensity = GetScriptIntensity();
 
         Food.eat(OSRSUtilities.HPtoPercent(MinimumHealth), true);
         return OSRSUtilities.WaitTime(Intensity);

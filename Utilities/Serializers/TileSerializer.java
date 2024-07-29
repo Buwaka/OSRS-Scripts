@@ -32,7 +32,7 @@ public class TileSerializer implements JsonSerializer<Tile>, JsonDeserializer<Ti
     }
 
     public Tile deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws
-                                                                                                JsonParseException
+            JsonParseException
     {
         SerializedTile tempTile = context.deserialize(json, SerializedTile.class);
         return new Tile(tempTile.x, tempTile.y, tempTile.z);

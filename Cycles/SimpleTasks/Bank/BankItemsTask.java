@@ -1,32 +1,26 @@
 package Cycles.SimpleTasks.Bank;
 
+import Utilities.Combat.MeleeCombat;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import io.vavr.Tuple2;
+import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class BankItemsTask extends SimpleTask
 {
-    private final List<OSRSUtilities.BankEntry> Withdraws = new ArrayList<>();
-    private final List<OSRSUtilities.BankEntry> Deposits  = new ArrayList<>();
-    private       BankLocation                  Location  = null;
-    private       Supplier<Boolean>             CompleteCondition;
+    protected final ArrayList<OSRSUtilities.BankEntry> Withdraws = new ArrayList<>();
+    protected final ArrayList<OSRSUtilities.BankEntry> Deposits  = new ArrayList<>();
+    private         BankLocation                       Location  = null;
 
     public BankItemsTask(String Name)
     {
         super(Name);
-    }
-
-    public void SetSpecificBank(BankLocation Location)
-    {
-        this.Location = Location;
     }
 
     public boolean AddDeposit(int ID, int Amount, int Tab)
@@ -39,13 +33,81 @@ public class BankItemsTask extends SimpleTask
         return Deposits.add(new OSRSUtilities.BankEntry(ID, Amount));
     }
 
-    public boolean DepositAll(int ID) {return Deposits.add(new OSRSUtilities.BankEntry(ID, -1));}
+    public boolean AddDepositAll(int ID) {return Deposits.add(new OSRSUtilities.BankEntry(ID, -1));}
 
-    public boolean DepositAll()       {return Deposits.add(new OSRSUtilities.BankEntry(-1, -1));}
+    public boolean AddDepositAll() {return Deposits.add(new OSRSUtilities.BankEntry(-1, -1));}
+
+    public void AddEquipment(MeleeCombat.Equipment equipment)
+    {
+        for(var equip : equipment.equip.entrySet())
+        {
+            if(!Bank.contains(equip.getValue().id))
+            {
+                continue;
+            }
+
+            AddWithdraw(equip.getValue().id, equip.getValue().stackable ? -1 : 1);
+        }
+    }
+
+    public boolean AddWithdraw(int ID, int Amount)
+    {
+        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Amount));
+    }
 
     public boolean AddWithdraw(int ID, int Amount, int Tab)
     {
         return Withdraws.add(new OSRSUtilities.BankEntry(ID, Amount, Tab));
+    }
+
+    public boolean AddWithdraw(int... IDs)
+    {
+        boolean result = true;
+        for(var ID : IDs)
+        {
+            result &= AddWithdraw(ID);
+        }
+        return result;
+    }
+
+    public boolean AddWithdraw(int ID)
+    {
+        return Withdraws.add(new OSRSUtilities.BankEntry(ID, 1));
+    }
+
+    public boolean AddWithdrawAll(int ID)
+    {
+        return Withdraws.add(new OSRSUtilities.BankEntry(ID, -1));
+    }
+
+    public boolean AddWithdrawAll(int... IDs)
+    {
+        boolean result = true;
+        for(var ID : IDs)
+        {
+            result &= AddWithdrawAll(ID);
+        }
+        return result;
+    }
+
+    public boolean AddWithdrawAllNoted(int... IDs)
+    {
+        boolean result = true;
+        for(var ID : IDs)
+        {
+            result &= AddWithdrawAllNoted(ID);
+        }
+        return result;
+    }
+
+    public boolean AddWithdrawAllNoted(int ID)
+    {
+        return Withdraws.add(new OSRSUtilities.BankEntry(ID, -1, true));
+    }
+
+    public boolean AddWithdrawNoted(int ID, int Amount)
+    {
+        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Amount, true));
     }
 
     public boolean FillInventory(int... IDRatios)
@@ -94,11 +156,12 @@ public class BankItemsTask extends SimpleTask
             if(i + 1 == IDRatios.length)
             {
                 Logger.log("BankItemsTask: FillInventory: WithdrawAll  " + item._1);
-                WithdrawAll(item._1);
+                AddWithdrawAll(item._1);
             }
             else
             {
-                int count = (int) Math.floor((OSRSUtilities.InventorySpace) / (double) (RatioTotal) * item._2);
+                int count = (int) Math.floor(
+                        (OSRSUtilities.InventorySpace) / (double) (RatioTotal) * item._2);
                 Logger.log("BankItemsTask: FillInventory: AddWithdraw  " + item._1 + " " + count);
                 AddWithdraw(item._1, count);
             }
@@ -108,43 +171,72 @@ public class BankItemsTask extends SimpleTask
         return true;
     }
 
-    public boolean WithdrawAll(int ID)
+    public void SetSpecificBank(BankLocation Location)
     {
-        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Integer.MAX_VALUE));
+        this.Location = Location;
     }
 
-    public boolean AddWithdraw(int ID, int Amount)
+    public static BankItemsTask FullDepositInventory()
     {
-        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Amount));
+        BankItemsTask out = new BankItemsTask("Deposit Inventory");
+        out.AddDepositAll();
+        return out;
     }
 
-    public boolean WithdrawAllNoted(int ID)
+    public static BankItemsTask FullDepositInventory(int... except)
     {
-        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Integer.MAX_VALUE, true));
+        Tuple2<Integer, Integer>[] out = new Tuple2[except.length];
+        for(int i = 0; i < except.length; i++)
+        {
+            out[i] = new Tuple2<>(except[i], 1);
+        }
+        return FullDepositInventory(out);
     }
 
-    public boolean AddWithdrawNoted(int ID, int Amount)
+    public static BankItemsTask FullDepositInventory(Tuple2<Integer, Integer>[] except)
     {
-        return Withdraws.add(new OSRSUtilities.BankEntry(ID, Amount, true));
+        BankItemsTask out = new BankItemsTask(
+                "Deposit Inventory, except " + Arrays.toString(except));
+
+        out.AddDepositAll();
+        for(var item : except)
+        {
+            out.AddWithdraw(item._1, item._2);
+        }
+
+        return out;
+    }
+
+    public static BankItemsTask SimpleWithdraw(int... IDs)
+    {
+        BankItemsTask out = new BankItemsTask("Deposit Inventory");
+        out.AddWithdraw(IDs);
+        return out;
     }
 
     @Override
     public boolean Ready()
     {
         //Logger.log("BankTask: " + Arrays.toString(Withdraws.toArray()) + Arrays.toString(Deposits.toArray()) + OSRSUtilities.CanReachBank(Location));
-        return OSRSUtilities.CanReachBank(Location) && (!Withdraws.isEmpty() || !Deposits.isEmpty()) && super.Ready();
+        return (!Withdraws.isEmpty() || !Deposits.isEmpty()) && super.Ready();
     }
 
     @Override
     public int Loop()
     {
-        Withdraws.sort((x, y) -> Integer.compare(y.GetCount(), x.GetCount()));
-        OSRSUtilities.ProcessBankEntries(GetScript(),
-                                         Deposits,
-                                         Withdraws,
-                                         OSRSUtilities.WaitTime(ScriptIntensity.get()));
-        OSRSUtilities.BankClose();
-        return 0;
+        Bank.open();
+        if(Bank.isOpen())
+        {
+            Withdraws.sort((x, y) -> Integer.compare(y.GetCount(), x.GetCount()));
+            OSRSUtilities.ProcessBankEntries(GetScript(),
+                                             Deposits,
+                                             Withdraws,
+                                             OSRSUtilities.WaitTime(GetScriptIntensity()));
+            OSRSUtilities.BankClose();
+            return 0;
+        }
+
+        return super.Loop();
     }
 
     @Nonnull
@@ -153,5 +245,4 @@ public class BankItemsTask extends SimpleTask
     {
         return TaskType.BankItems;
     }
-
 }

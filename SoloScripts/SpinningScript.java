@@ -57,6 +57,32 @@ public class SpinningScript extends tpircSScript
         Banking
     }
 
+    public boolean IsInsideSpinningArea()
+    {
+        return SpinArea.contains(Players.getLocal().getTile()) &&
+               Players.getLocal().getTile().getZ() == 1;
+    }
+
+    public boolean IsSpinDoorOpen()
+    {
+        var Door = Arrays.stream(GameObjects.getObjectsOnTile(SpinDoor))
+                         .filter(x -> x.getID() == SpinDoorID)
+                         .findFirst();
+        Logger.log(Door);
+        return !Door.isPresent() || !Door.get().hasAction("Open");
+    }
+
+    public boolean OpenSpinDoor()
+    {
+        if(!IsSpinDoorOpen())
+        {
+            Logger.log("Opening Spin Door");
+            GameObject Door = GameObjects.closest(t -> t.getID() == SpinDoorID, SpinDoor);
+            return Door.interact("Open");
+        }
+        return false;
+    }
+
     @Override
     public int onLoop()
     {
@@ -71,10 +97,12 @@ public class SpinningScript extends tpircSScript
         int  Floor           = CurrentPosition.getZ();
 
 
-        Optional<GameObject> Stair1 = Arrays.stream(GameObjects.getObjectsOnTile(StairLocation1)).filter(x -> x.getID() ==
-                                                                                                              Stair1ID).findFirst();
-        Optional<GameObject> Stair2 = Arrays.stream(GameObjects.getObjectsOnTile(StairLocation2)).filter(x -> x.getID() ==
-                                                                                                              Stair2ID).findFirst();
+        Optional<GameObject> Stair1 = Arrays.stream(GameObjects.getObjectsOnTile(StairLocation1))
+                                            .filter(x -> x.getID() == Stair1ID)
+                                            .findFirst();
+        Optional<GameObject> Stair2 = Arrays.stream(GameObjects.getObjectsOnTile(StairLocation2))
+                                            .filter(x -> x.getID() == Stair2ID)
+                                            .findFirst();
 
         Logger.log(CurrentState.toString());
 
@@ -88,7 +116,8 @@ public class SpinningScript extends tpircSScript
 
                         Logger.log("Travel to stairs, to spin");
 
-                        if(Stair2.isPresent() && Players.getLocal().canReach(Stair2.get().getTile()))
+                        if(Stair2.isPresent() &&
+                           Players.getLocal().canReach(Stair2.get().getTile()))
                         {
                             Logger.log("Down the stairs");
                             if(Stair2.get().interact(StairDownAction))
@@ -107,7 +136,8 @@ public class SpinningScript extends tpircSScript
                         Logger.log("Travel to spin");
 
 
-                        GameObject Spin = GameObjects.closest(t -> t.getID() == SpinID, SpinLocation);
+                        GameObject Spin = GameObjects.closest(t -> t.getID() == SpinID,
+                                                              SpinLocation);
 
                         if(!IsInsideSpinningArea())
                         {
@@ -265,30 +295,6 @@ public class SpinningScript extends tpircSScript
 
         Sleep.sleep(rand.nextInt(3000) + 1000);
         return 0;
-    }
-
-    public boolean IsInsideSpinningArea()
-    {
-        return SpinArea.contains(Players.getLocal().getTile()) && Players.getLocal().getTile().getZ() == 1;
-    }
-
-    public boolean OpenSpinDoor()
-    {
-        if(!IsSpinDoorOpen())
-        {
-            Logger.log("Opening Spin Door");
-            GameObject Door = GameObjects.closest(t -> t.getID() == SpinDoorID, SpinDoor);
-            return Door.interact("Open");
-        }
-        return false;
-    }
-
-    public boolean IsSpinDoorOpen()
-    {
-        var Door = Arrays.stream(GameObjects.getObjectsOnTile(SpinDoor)).filter(x -> x.getID() ==
-                                                                                     SpinDoorID).findFirst();
-        Logger.log(Door);
-        return !Door.isPresent() || !Door.get().hasAction("Open");
     }
 
 }

@@ -164,18 +164,23 @@ public class BeekeeperSolver extends RandomSolver
                                     place);
                             if(widgetChildrenContainingText.size() == 1)
                             {
-                                RandomHandler.log("Attempting to move part " + part + " to piece " + place,
-                                                  "BeekeeperSolver");
+                                RandomHandler.log(
+                                        "Attempting to move part " + part + " to piece " + place,
+                                        "BeekeeperSolver");
                                 if(Mouse.move(object.getRectangle()))
                                 {
-                                    RandomHandler.log("Moving part " + part + " to piece " + place, "BeekeeperSolver");
+                                    RandomHandler.log("Moving part " + part + " to piece " + place,
+                                                      "BeekeeperSolver");
                                     Sleep.sleep(350, 850);
-                                    if(Mouse.drag(widgetChildrenContainingText.get(0).getRectangle()))
+                                    if(Mouse.drag(widgetChildrenContainingText.get(0)
+                                                                              .getRectangle()))
                                     {Sleep.sleep(350, 850);}
-                                    widgetChildrenContainingText = Widgets.getWidgetChildrenContainingText(place);
+                                    widgetChildrenContainingText = Widgets.getWidgetChildrenContainingText(
+                                            place);
                                     if(widgetChildrenContainingText.isEmpty())
                                     {
-                                        RandomHandler.log("Successfully move " + place, "BeekeeperSolver");
+                                        RandomHandler.log("Successfully move " + place,
+                                                          "BeekeeperSolver");
                                         successCount++;
                                     }
                                 }

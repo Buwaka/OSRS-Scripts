@@ -5,7 +5,8 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
-public class RequirementSerializer implements JsonSerializer<IRequirement>, JsonDeserializer<IRequirement>
+public class RequirementSerializer
+        implements JsonSerializer<IRequirement>, JsonDeserializer<IRequirement>
 {
     /**
      * @param jsonElement
@@ -18,7 +19,7 @@ public class RequirementSerializer implements JsonSerializer<IRequirement>, Json
      */
     @Override
     public IRequirement deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws
-                                                                                                                               JsonParseException
+            JsonParseException
     {
         //TODO check what type is here
         //jsonDeserializationContext.deserialize()
@@ -36,9 +37,9 @@ public class RequirementSerializer implements JsonSerializer<IRequirement>, Json
     public JsonElement serialize(IRequirement iRequirement, Type type, JsonSerializationContext jsonSerializationContext)
     {
         //TODO
-        var TypeJson = jsonSerializationContext.serialize(iRequirement.getClass());
-        var ObjJson  = jsonSerializationContext.serialize(iRequirement);
-        var out      = new JsonObject();
+        //var TypeJson = jsonSerializationContext.serialize(iRequirement.getClass());
+        var ObjJson = jsonSerializationContext.serialize(iRequirement);
+        var out     = new JsonObject();
         out.add(type.getTypeName(), ObjJson);
         return out;
     }

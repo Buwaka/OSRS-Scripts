@@ -56,61 +56,16 @@ public class MineGuildCycle extends SimpleCycle
         super(name);
     }
 
-    /**
-     * will be called once there are no active tasks anymore, aka a single cycle has been completed
-     *
-     * @param Script
-     *
-     * @return Cycle completed, ready for a restart
-     */
-    @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public int GetSackOres()
     {
-        return Complete;
-    }
-
-    /**
-     * @return Whether the goal of this cycle has been met, based on CycleType
-     */
-    @Override
-    public boolean isGoalMet()
-    {
-        return Complete;
-    }
-
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        Init(Script);
-
-        return super.onStart(Script);
-    }
-
-    private void Init(tpircSScript Script)
-    {
-        Logger.log("MineGuildCycle: Init: ");
-        //TODO make sure we have a pickaxe
-
-        if(GetSackSpace() <= OSRSUtilities.InventorySpace)
+        var SackOreWidget = Widgets.get(SackOreWidgetIDs);
+        if(SackOreWidget == null)
         {
-            CurrentState = MGState.Deposit;
+            return 0;
         }
-        else
-        {
-            CurrentState = MGState.Mining;
-        }
-
-        if(!Inventory.isEmpty())
-        {
-            DropInventoryAtBank(Script);
-        }
-
-        Complete = false;
+        Logger.log("MineGuildCycle: GetSackOres: " + SackOreWidget.getText());
+        Scanner scan = new Scanner(SackOreWidget.getText()).useDelimiter("[^0-9]+");
+        return scan.nextInt();
     }
 
     public int GetSackSpace()
@@ -163,28 +118,52 @@ public class MineGuildCycle extends SimpleCycle
         Bank.close();
     }
 
-    /**
-     * When a cycle has been completed, this will be called
-     *
-     * @param Script
-     */
-    @Override
-    public boolean onRestart(tpircSScript Script)
+    private void Init(tpircSScript Script)
     {
-        Init(Script);
-        return super.onRestart(Script);
+        Logger.log("MineGuildCycle: Init: ");
+        //TODO make sure we have a pickaxe
+
+        if(GetSackSpace() <= OSRSUtilities.InventorySpace)
+        {
+            CurrentState = MGState.Deposit;
+        }
+        else
+        {
+            CurrentState = MGState.Mining;
+        }
+
+        if(!Inventory.isEmpty())
+        {
+            DropInventoryAtBank(Script);
+        }
+
+        Complete = false;
     }
 
     /**
-     * When all cycles have been completed and we want to do the cycle again, this is called
+     * will be called once there are no active tasks anymore, aka a single cycle has been completed
      *
      * @param Script
+     *
+     * @return Cycle completed, ready for a restart
      */
     @Override
-    public void onReset(tpircSScript Script)
+    public boolean isCycleComplete(tpircSScript Script)
+    {
+        return Complete;
+    }
+
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    @Override
+    public boolean onStart(tpircSScript Script)
     {
         Init(Script);
-        super.onReset(Script);
+
+        return super.onStart(Script);
     }
 
     /**
@@ -202,8 +181,10 @@ public class MineGuildCycle extends SimpleCycle
             {
                 while(!Inventory.isFull())
                 {
-                    var target = GameObjects.closest(t -> t.getName().equals(OreVeinName) && t.canReach() &&
-                                                          t.distance(Players.getLocal().getTile()) < 10);
+                    var target = GameObjects.closest(t -> t.getName().equals(OreVeinName) &&
+                                                          t.canReach() &&
+                                                          t.distance(Players.getLocal().getTile()) <
+                                                          10);
                     if(target == null)
                     {
                         Walking.walk(MineBackupTile);
@@ -232,13 +213,15 @@ public class MineGuildCycle extends SimpleCycle
             }
             case Hopper ->
             {
-                var Hopper = GameObjects.closest(t -> t.canReach() && t.distance(Players.getLocal().getTile()) < 10 &&
-                                                      t.getID() == MineHopperID);
+                var Hopper = GameObjects.closest(t -> t.canReach() &&
+                                                      t.distance(Players.getLocal().getTile()) <
+                                                      10 && t.getID() == MineHopperID);
                 if(Inventory.contains(PayDirtID))
                 {
-                    Logger.log("MineGuildCycle: OnLoop: InDialogue + Dialogue " + Dialogues.inDialogue() +
-                               Dialogues.getNPCDialogue());
-                    if(Dialogues.inDialogue() && Hopper != null && Hopper.distance(Players.getLocal()) < 4)
+                    Logger.log("MineGuildCycle: OnLoop: InDialogue + Dialogue " +
+                               Dialogues.inDialogue() + Dialogues.getNPCDialogue());
+                    if(Dialogues.inDialogue() && Hopper != null &&
+                       Hopper.distance(Players.getLocal()) < 4)
                     { // Dialogues.getNPCDialogue().toLowerCase().contains("you can put more in once") bad, language specific
                         if(HopperAttempts > MaxHopperAttempts)
                         {
@@ -265,7 +248,9 @@ public class MineGuildCycle extends SimpleCycle
                                 if(!Hopper.exists())
                                 {
                                     Hopper = GameObjects.closest(t -> t.canReach() &&
-                                                                      t.distance(Players.getLocal().getTile()) < 10 &&
+                                                                      t.distance(Players.getLocal()
+                                                                                        .getTile()) <
+                                                                      10 &&
                                                                       t.getID() == MineHopperID);
                                     if(Hopper == null)
                                     {
@@ -331,8 +316,9 @@ public class MineGuildCycle extends SimpleCycle
                     }
                 }
 
-                var Crate = Arrays.stream(GameObjects.getObjectsOnTile(CrateTile)).filter(t -> t.getID() ==
-                                                                                               CrateID).findFirst();
+                var Crate = Arrays.stream(GameObjects.getObjectsOnTile(CrateTile))
+                                  .filter(t -> t.getID() == CrateID)
+                                  .findFirst();
                 if(!Inventory.contains(HammerID))
                 {
                     if(Crate.isPresent())
@@ -406,15 +392,27 @@ public class MineGuildCycle extends SimpleCycle
         return super.onLoop(Script);
     }
 
-    public int GetSackOres()
+    /**
+     * When all cycles have been completed and we want to do the cycle again, this is called
+     *
+     * @param Script
+     */
+    @Override
+    public void onReset(tpircSScript Script)
     {
-        var SackOreWidget = Widgets.get(SackOreWidgetIDs);
-        if(SackOreWidget == null)
-        {
-            return 0;
-        }
-        Logger.log("MineGuildCycle: GetSackOres: " + SackOreWidget.getText());
-        Scanner scan = new Scanner(SackOreWidget.getText()).useDelimiter("[^0-9]+");
-        return scan.nextInt();
+        Init(Script);
+        super.onReset(Script);
+    }
+
+    /**
+     * When a cycle has been completed, this will be called
+     *
+     * @param Script
+     */
+    @Override
+    public boolean onRestart(tpircSScript Script)
+    {
+        Init(Script);
+        return super.onRestart(Script);
     }
 }

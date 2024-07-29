@@ -34,6 +34,8 @@ public class CombatLootBankCycle extends SimpleCycle
     private int[]                                           Targets;
     private BankLocation                                    BankingLocation  = null;
     private List<AbstractMap.SimpleEntry<Integer, Integer>> ItemRequirements = null;
+    private int[]                                           IgnoreLoot       = null;
+    private boolean                                         PrayBones        = false;
 
     public CombatLootBankCycle(String Name, Area[] KillingArea, int[] Targets, List<AbstractMap.SimpleEntry<Integer, Integer>> ItemRequirements, BankLocation BankLoc)
     {
@@ -67,10 +69,27 @@ public class CombatLootBankCycle extends SimpleCycle
         this.BankingLocation = BankLoc;
     }
 
-    @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public void SetPray(boolean Pray)
     {
-        return !Script.IsActiveTaskLeft();
+        PrayBones = Pray;
+    }
+
+    public TravelTask TravelToBank()
+    {
+        if(BankingLocation != null)
+        {
+            return new TravelTask("", BankingLocation.getTile());
+        }
+        else if(BankLocation.getNearest() != null)
+        {
+            return new TravelTask("", BankLocation.getNearest().getTile());
+        }
+        return new TravelTask("", new Tile());
+    }
+
+    public void setIgnoreLoot(int... ignoreLoot)
+    {
+        IgnoreLoot = ignoreLoot;
     }
 
     @Override
@@ -80,27 +99,44 @@ public class CombatLootBankCycle extends SimpleCycle
         return super.onStart(Script);
     }
 
+    @Override
+    public boolean onRestart(tpircSScript Script)
+    {
+        StartCycle(Script);
+        return true;
+    }
+
     void StartCycle(tpircSScript Script)
     {
         TravelTask Travel1 = new TravelTask("Travel To Killing Area",
-                                            Arrays.stream(KillingArea).findAny().get().getRandomTile());
-        Travel1.TaskPriority.set(2);
-        Travel1.CompleteCondition = () -> Arrays.stream(KillingArea).anyMatch(t -> t.contains(Players.getLocal().getTile()));
-        SlaughterAndLoot SALTask = new SlaughterAndLoot("Killing and Looting", KillingArea, Targets, ItemRequirements);
+                                            Arrays.stream(KillingArea)
+                                                  .findAny()
+                                                  .get()
+                                                  .getRandomTile());
+        Travel1.SetTaskPriority(2);
+        Travel1.CompleteCondition = () -> Arrays.stream(KillingArea)
+                                                .anyMatch(t -> t.contains(Players.getLocal()
+                                                                                 .getTile()));
+        SlaughterAndLoot SALTask = new SlaughterAndLoot("Killing and Looting",
+                                                        KillingArea,
+                                                        Targets,
+                                                        ItemRequirements);
+        SALTask.setIgnoreLoot(IgnoreLoot);
+        SALTask.setPrayBones(PrayBones);
 
         if(!OSRSUtilities.CheckInventory(ItemRequirements, false))
         {
             Logger.log("NotReady for combat, first go to bank");
             TravelTask Travel3 = TravelToBank();
-            Travel3.SetTaskName("Travel To Bank For ItemRequirements");
-            Travel3.TaskPriority.set(0);
+            Travel3.SetTaskName("CLBCTravel To Bank For ItemRequirements");
+            Travel3.SetTaskPriority(0);
             Travel3.CompleteCondition = OSRSUtilities::CanReachBank;
             Script.addNodes(Travel3);
 
             BankItemsTask Setup = new BankItemsTask("Banking ItemRequirements");
             if(!Inventory.isEmpty())
             {
-                Setup.DepositAll();
+                Setup.AddDepositAll();
             }
             for(var item : ItemRequirements)
             {
@@ -110,7 +146,7 @@ public class CombatLootBankCycle extends SimpleCycle
             {
                 Setup.SetSpecificBank(BankingLocation);
             }
-            Setup.TaskPriority.set(-1);
+            Setup.SetTaskPriority(-1);
             Script.addNodes(Setup);
         }
 
@@ -118,19 +154,19 @@ public class CombatLootBankCycle extends SimpleCycle
         if(OSRSUtilities.InventoryHPCount() < HPtoCarry.get())
         {
             GetCombatRationsTask Rations = new GetCombatRationsTask("Get Rations", HPtoCarry.get());
-            Rations.TaskPriority.set(-1);
+            Rations.SetTaskPriority(-1);
             Script.addNodes(Rations);
         }
 
         if(Players.getLocal().getHealthPercent() < (Skills.getRealLevel(Skill.HITPOINTS) / 2))
         {
             RestoreFullHealthTask Healup = new RestoreFullHealthTask("FullHeal");
-            Healup.TaskPriority.set(-2);
+            Healup.SetTaskPriority(-2);
             Script.addNodes(Healup);
         }
 
         TravelTask Travel2 = TravelToBank();
-        Travel2.TaskPriority.set(2);
+        Travel2.SetTaskPriority(2);
         Travel2.AcceptCondition   = () -> !SALTask.isActive();
         Travel2.CompleteCondition = OSRSUtilities::CanReachBank;
         Travel2.SetTaskName("Travel To Bank to drop loot");
@@ -149,29 +185,9 @@ public class CombatLootBankCycle extends SimpleCycle
             BankTask.SetSpecificBank(BankingLocation);
         }
 
-        BankTask.TaskPriority.set(2);
+        BankTask.SetTaskPriority(2);
         BankTask.AcceptCondition = () -> !SALTask.isActive();
 
         Script.addNodes(Travel1, Travel2, SALTask, BankTask);
-    }
-
-    public TravelTask TravelToBank()
-    {
-        if(BankingLocation != null)
-        {
-            return new TravelTask("", BankingLocation.getTile());
-        }
-        else if(BankLocation.getNearest() != null)
-        {
-            return new TravelTask("", BankLocation.getNearest().getTile());
-        }
-        return new TravelTask("", new Tile());
-    }
-
-    @Override
-    public boolean onRestart(tpircSScript Script)
-    {
-        StartCycle(Script);
-        return true;
     }
 }

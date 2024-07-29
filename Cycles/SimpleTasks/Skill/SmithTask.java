@@ -67,6 +67,18 @@ public class SmithTask extends SimpleTask
         Count = count;
     }
 
+    @SafeVarargs
+    public static GameObject GetObject(int... ID)
+    {
+        return GameObjects.closest(new IdFilter<>(ID));
+    }
+
+    private static Boolean CheckInventory(Object context, tpircSScript.ItemAction Action, Item item1, Item item2)
+    {
+        ((SmithTask) context).TimeoutTicker.set(((SmithTask) context).DefaultProcessTickTime);
+        return true;
+    }
+
     /**
      * @return
      */
@@ -89,12 +101,6 @@ public class SmithTask extends SimpleTask
         return super.onStartTask(Script);
     }
 
-    private static Boolean CheckInventory(Object context, tpircSScript.ItemAction Action, Item item1, Item item2)
-    {
-        ((SmithTask) context).TimeoutTicker.set(((SmithTask) context).DefaultProcessTickTime);
-        return true;
-    }
-
     /**
      * @return
      */
@@ -103,12 +109,6 @@ public class SmithTask extends SimpleTask
     {
         var Obj = GetObject(ObjectID);
         return Obj != null && Obj.canReach() && super.Ready();
-    }
-
-    @SafeVarargs
-    public static GameObject GetObject(int... ID)
-    {
-        return GameObjects.closest(new IdFilter<>(ID));
     }
 
     /**

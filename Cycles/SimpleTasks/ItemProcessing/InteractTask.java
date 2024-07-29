@@ -4,30 +4,47 @@ import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
-import org.dreambot.api.methods.container.impl.bank.Bank;
+import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.interactive.GameObjects;
+import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
-import org.dreambot.api.methods.map.Tile;
+import org.dreambot.api.methods.item.GroundItems;
+import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
-import org.dreambot.api.wrappers.interactive.GameObject;
+import org.dreambot.api.wrappers.interactive.Entity;
 import org.dreambot.api.wrappers.items.Item;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class InteractTask extends SimpleTask
 {
     Integer[] ObjectIDs          = null;
+    String    Action             = null;
     int       InteractTimeout    = 20000;
     int       Timeout            = 30000;
-    Semaphore InventorySemaphore = new Semaphore(1);
-    private HashMap<Tile, Integer> Objects            = new HashMap<>();
-    private GameObject             Target             = null;
-    private boolean                StartedInteracting = false;
-    private boolean WaitForInventory = true;
+    long      TargetTimout       = 1000;
+    long      TargetTimeStamp    = 0;
+    Semaphore InventorySemaphore = new Semaphore(0);
+    private EnumSet<InteractableFilter> TargetFilter       = EnumSet.of(InteractableFilter.GameObjects);
+    private Entity                      Target             = null;
+    private boolean                     StartedInteracting = false;
+    private boolean                     WaitForInventory   = true;
+
+
+    public enum InteractableFilter
+    {
+        GameObjects,
+        NPCs,
+        GroundItems,
+        Players
+    }
+
 
     public InteractTask(String Name, int... IDs)
     {
@@ -35,8 +52,103 @@ public class InteractTask extends SimpleTask
         ObjectIDs = Arrays.stream(IDs).boxed().toArray(Integer[]::new);
     }
 
-    public void SetWaitForInventory(boolean wait) {
+    public InteractTask(String Name, String Action, int... IDs)
+    {
+        super(Name);
+        this.Action = Action;
+        ObjectIDs   = Arrays.stream(IDs).boxed().toArray(Integer[]::new);
+    }
+
+    public void AddFilter(InteractableFilter... Filter)
+    {
+        TargetFilter.addAll(List.of(Filter));
+    }
+
+    public Entity GetTarget()
+    {
+        return GetTarget(false);
+    }
+
+    public Entity GetTarget(boolean Regenerate)
+    {
+        if(Target != null && Target.exists() && !Regenerate &&
+           System.nanoTime() - TargetTimeStamp < TargetTimout)
+        {
+            return Target;
+        }
+
+        List<Entity> toFilter = new ArrayList<>();
+
+        if(TargetFilter.contains(InteractableFilter.GameObjects))
+        {
+            toFilter.addAll(GameObjects.all(ObjectIDs));
+        }
+        if(TargetFilter.contains(InteractableFilter.NPCs))
+        {
+            toFilter.addAll(NPCs.all(ObjectIDs));
+        }
+        if(TargetFilter.contains(InteractableFilter.GroundItems))
+        {
+            toFilter.addAll(GroundItems.all(ObjectIDs));
+        }
+        if(TargetFilter.contains(InteractableFilter.Players))
+        {
+            toFilter.addAll(Players.all(ObjectIDs));
+        }
+
+
+        Logger.log(toFilter);
+        var first = toFilter.stream()
+                            .filter(t -> t.canReach() && (Action == null || t.hasAction(Action)) &&
+                                         t.distance() < 10)
+                            .sorted((x, y) -> (int) (
+                                    x.walkingDistance(Players.getLocal().getTile()) -
+                                    y.walkingDistance(Players.getLocal().getTile())))
+                            .findFirst();
+        Logger.log(first);
+        if(first.isPresent())
+        {
+            Target = first.get();
+            return first.get();
+        }
+        //        for(var rock : ObjectsWithID)
+        //        {
+        //            //Logger.log("InteractTask: GetTarget: Possible Target: " + rock);
+        //            //                boolean NoPlayersPossiblyMining = Players.all(x -> rock.getTile().getArea(2).contains(x.getTile()) &&
+        //            //                                                                   x.isAnimating() &&
+        //            //                                                                   x != Players.getLocal()).isEmpty();
+        //            boolean distance = rock.getTile().distance() < 10.0;
+        //            boolean canReach = rock.canReach();
+        //            if(distance && canReach)
+        //            {
+        //                return rock;
+        //            }
+        //        }
+
+        return null;
+    }
+
+    public void SetFilter(InteractableFilter... Filter)
+    {
+        TargetFilter = EnumSet.noneOf(InteractableFilter.class);
+        TargetFilter.addAll(Arrays.asList(Filter));
+    }
+
+    public void SetFilter(EnumSet<InteractableFilter> Filter)
+    {
+        TargetFilter = Filter;
+    }
+
+    public void SetWaitForInventory(boolean wait)
+    {
         WaitForInventory = wait;
+    }
+
+    private static Boolean onItem(Object context, tpircSScript.ItemAction action, Item item, Item item1)
+    {
+        ((InteractTask) context).InventorySemaphore.release();
+        Logger.log("InteractTask: onItem: released permit");
+        return true;
     }
 
     @Nonnull
@@ -54,15 +166,8 @@ public class InteractTask extends SimpleTask
     @Override
     public boolean onStartTask(tpircSScript Script)
     {
-        Script.onInventory.Subscribe(this, InteractTask::onMine);
+        Script.onInventory.Subscribe(this, InteractTask::onItem);
         return super.onStartTask(Script);
-    }
-
-    private static Boolean onMine(Object context, tpircSScript.ItemAction action, Item item, Item item1)
-    {
-        ((InteractTask) context).InventorySemaphore.release();
-        Logger.log("released permit");
-        return true;
     }
 
     //TODO check for pickaxe in equipment slot or inventory
@@ -74,83 +179,51 @@ public class InteractTask extends SimpleTask
         return target != null && super.Ready();
     }
 
-    public GameObject GetTarget()
-    {
-        if(Target == null || OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 1000))
-        {
-            var rocks = GameObjects.all(ObjectIDs);
-            rocks.sort((x, y) -> (int) (y.walkingDistance(Players.getLocal().getTile()) -
-                                        x.walkingDistance(Players.getLocal().getTile())));
-            for(var rock : rocks)
-            {
-                Logger.log("InteractTask: GetTarget: Possible Target: " + rock);
-//                boolean NoPlayersPossiblyMining = Players.all(x -> rock.getTile().getArea(2).contains(x.getTile()) &&
-//                                                                   x.isAnimating() &&
-//                                                                   x != Players.getLocal()).isEmpty();
-                boolean distance = rock.getTile().distance() < 10.0;
-                boolean canReach = rock.canReach();
-                if(distance && canReach)
-                {
-                    Objects.putIfAbsent(rock.getTile(), rock.getID());
-                    Target = rock;
-//                    if(NoPlayersPossiblyMining)
-//                    {
-//                        Target = rock;
-//                    }
-                }
-            }
-        }
-        return Target;
-    }
-
     @Override
     protected int Loop()
     {
         if(Inventory.isFull())
         {
-            if(Sleep.sleepUntil(() -> Bank.open(), 60000))
-            {
-                Bank.depositAllItems();
-            }
+            return 0;
         }
 
-        if(Players.getLocal().isAnimating())
+        if(Players.getLocal().isAnimating() && !Dialogues.inDialogue())
         {
             return super.Loop();
         }
 
-        if(StartedInteracting && !ObjectsAvailable())
+        // only hop world when we are in the right place and circumstances, aka after a successful interact
+        if(StartedInteracting && GetTarget() == null)
         {
             OSRSUtilities.JumpToOtherWorld(GetScript().onGameTick);
         }
 
         var target = GetTarget();
-        if(target != null && Sleep.sleepUntil(target::interact, InteractTimeout))
+
+        if(target != null)
         {
-            Logger.log("InteractTask: Loop: interact successful");
-            StartedInteracting = true;
-            InventorySemaphore.tryAcquire();
-            Logger.log("Acquired permit");
-            if(WaitForInventory)
+            if(target.distance() > 10)
             {
-                Sleep.sleepUntil(() -> InventorySemaphore.tryAcquire() || !target.exists(), Timeout);
+                Walking.walk(target.getTile().getArea(5).getRandomTile());
+                return super.Loop();
             }
 
+            if(Sleep.sleepUntil(target::interact, InteractTimeout))
+            {
+                Logger.log("InteractTask: Loop: interact successful");
+                StartedInteracting = true;
+                Logger.log("InteractTask: Loop: Acquired permit");
+                Sleep.sleepUntil(() -> (!WaitForInventory || InventorySemaphore.tryAcquire()) ||
+                                       !target.exists() || Arrays.stream(ObjectIDs)
+                                                                 .noneMatch(t -> t ==
+                                                                                 target.getID()) ||
+                                       Dialogues.inDialogue(), Timeout);
+
+
+            }
         }
+
 
         return super.Loop();
-    }
-
-    private boolean ObjectsAvailable()
-    {
-        for(var set : Objects.entrySet())
-        {
-            var rock = GameObjects.getTopObjectOnTile(set.getKey());
-            if(rock != null && rock.getID() == set.getValue())
-            {
-                return true;
-            }
-        }
-        return false;
     }
 }

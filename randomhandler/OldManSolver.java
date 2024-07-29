@@ -48,7 +48,8 @@ public class OldManSolver extends RandomSolver
         {
             if(Dialogues.inDialogue())
             {
-                if(!Dialogues.getNPCDialogue().contains("mime") && !Dialogues.getNPCDialogue().contains("maze"))
+                if(!Dialogues.getNPCDialogue().contains("mime") &&
+                   !Dialogues.getNPCDialogue().contains("maze"))
                 {
                     RandomHandler.powerThroughDialogue();
                     Sleep.sleep(550, 2500);
@@ -80,11 +81,13 @@ public class OldManSolver extends RandomSolver
 
             if(!Dialogues.inDialogue())
             {
-                RandomHandler.log("Old Man! Old Man! We've got Old Man here! See? Nobody cares", "OldManSolver");
+                RandomHandler.log("Old Man! Old Man! We've got Old Man here! See? Nobody cares",
+                                  "OldManSolver");
                 if(Calculations.random(2) == 1)
                 {
                     int ran = Calculations.random(2, 6);
-                    RandomHandler.log("Delaying speaking to Old Man by " + ran + " seconds", "OldManSolver");
+                    RandomHandler.log("Delaying speaking to Old Man by " + ran + " seconds",
+                                      "OldManSolver");
                     Sleep.sleep(ran * 1000L);
                 }
                 Sleep.sleep(350, 850);

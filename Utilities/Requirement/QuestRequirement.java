@@ -15,17 +15,17 @@ public class QuestRequirement implements IRequirement
      * @return
      */
     @Override
-    public boolean isRequirementMet()
+    public RequirementType GetRequirementType()
     {
-        return quest.isFinished();
+        return RequirementType.Quest;
     }
 
     /**
      * @return
      */
     @Override
-    public RequirementType GetRequirementType()
+    public boolean isRequirementMet()
     {
-        return RequirementType.Quest;
+        return quest.isFinished();
     }
 }

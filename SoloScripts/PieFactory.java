@@ -45,8 +45,11 @@ public class PieFactory extends tpircSScript
             case Banking ->
             {
                 OSRSUtilities.BankDepositAll();
-                OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(PieShellID, 14),
-                                           new AbstractMap.SimpleEntry<Integer, Integer>(PastyDoughID, 14));
+                OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(PieShellID,
+                                                                                         14),
+                                           new AbstractMap.SimpleEntry<Integer, Integer>(
+                                                   PastyDoughID,
+                                                   14));
                 OSRSUtilities.BankClose();
 
                 OSRSUtilities.Wait(300, 1500);

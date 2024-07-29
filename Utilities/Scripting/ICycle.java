@@ -1,5 +1,7 @@
 package Utilities.Scripting;
 
+import java.awt.*;
+
 public interface ICycle
 {
     enum CycleType
@@ -15,35 +17,27 @@ public interface ICycle
      */
     int GetCycleCount();
 
-    void SetCycleType(CycleType Type);
-
     CycleType GetCycleType();
 
-    /**
-     * @return Cycle is completely done and should/will be terminated
-     */
-    boolean isFinished();
-
-    boolean isStarted();
+    void SetCycleType(CycleType Type);
 
     /**
      * will be called once there are no active tasks anymore, aka a single cycle has been completed
      *
-     * @return Cycle completed, ready for a restart
+     * @return true when Cycle is completed, ready for a restart
      */
     boolean isCycleComplete(tpircSScript Script);
 
     /**
-     * @return Whether the goal of this cycle has been met, based on CycleType
+     * @return true when Cycle is completely done and should/will be terminated, typically the same as isCycleComplete
      */
-    boolean isGoalMet();
+    boolean isCycleFinished(tpircSScript Script);
 
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
-    boolean onStart(tpircSScript Script);
+    boolean isStarted();
+
+    default void onDebugPaint(Graphics graphics)   {}
+
+    default void onDebugPaint(Graphics2D graphics) {}
 
     /**
      * End cycle after current cycle has finished
@@ -59,16 +53,27 @@ public interface ICycle
      */
     default boolean onEndNow(tpircSScript Script) {return true;}
 
-    /**
-     * When a cycle has been completed, this will be called
-     */
-    default boolean onRestart(tpircSScript Script) {return true;}
+    default int onLoop(tpircSScript Script)   {return 1;}
+
+    default void onPaint(Graphics graphics)   {}
+
+    default void onPaint(Graphics2D graphics) {}
 
     /**
      * When all cycles have been completed and we want to do the cycle again, this is called
      */
     default void onReset(tpircSScript Script) {}
 
-    default int onLoop(tpircSScript Script) {return 1;}
+    /**
+     * When a cycle has been completed, this will be called
+     */
+    default boolean onRestart(tpircSScript Script) {return true;}
+
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    boolean onStart(tpircSScript Script);
 
 }

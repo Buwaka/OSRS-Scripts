@@ -9,6 +9,7 @@ import Utilities.Serializers.AreaSerializer;
 import Utilities.Serializers.RequirementSerializer;
 import Utilities.Serializers.TileSerializer;
 import com.google.gson.GsonBuilder;
+import io.vavr.Tuple2;
 import org.dreambot.api.Client;
 import org.dreambot.api.data.consumables.Food;
 import org.dreambot.api.input.Mouse;
@@ -43,6 +44,8 @@ import org.dreambot.api.wrappers.items.GroundItem;
 import org.dreambot.api.wrappers.widgets.WidgetChild;
 
 import java.awt.*;
+import java.io.Serial;
+import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -56,12 +59,15 @@ public class OSRSUtilities
     public static final  int                           Tick                = 600;
     public static final  int                           InventorySpace      = 28;
     static final         String                        AttackAction        = "Attack";
-    static final         String[]                      ItemsToAlwaysPickUp = {"Clue scroll", "Coins"};
+    static final         String[]                      ItemsToAlwaysPickUp = {
+            "Clue scroll", "Coins"};
     private static final ConcurrentHashMap<Long, Long> TimeStamps          = new ConcurrentHashMap<Long, Long>();
-    public static        GsonBuilder                   OSRSGsonBuilder     = new GsonBuilder().setPrettyPrinting().setLenient().excludeFieldsWithModifiers(
-            Modifier.STATIC,
-            Modifier.TRANSIENT,
-            Modifier.PROTECTED);
+    public static        GsonBuilder                   OSRSGsonBuilder     = new GsonBuilder().setPrettyPrinting()
+                                                                                              .setLenient()
+                                                                                              .disableHtmlEscaping()
+                                                                                              .excludeFieldsWithModifiers(
+                                                                                                      Modifier.STATIC,
+                                                                                                      Modifier.TRANSIENT);
     // TODO make function to equip best combat gear, perhaps even splitting it up into combat/magic/ranged
     public static        Random                        rand                = new Random();
 
@@ -81,8 +87,10 @@ public class OSRSUtilities
         Bot
     }
 
-    public static class BankEntry
+    public static class BankEntry implements Serializable
     {
+        @Serial
+        private static final long serialVersionUID = -110662990986422439L;
         /**
          * -1 for whole inventory, only valid for deposit
          */
@@ -118,6 +126,13 @@ public class OSRSUtilities
             BankTab     = 0;
         }
 
+        public BankEntry(Tuple2<Integer, Integer> entry)
+        {
+            ItemID      = entry._1;
+            this.Amount = entry._2;
+            BankTab     = 0;
+        }
+
         public BankEntry(int ID, int Amount, int Tab, boolean noted)
         {
             ItemID      = ID;
@@ -144,6 +159,26 @@ public class OSRSUtilities
 
         public int GetCount() {return Amount;}
 
+        public static ArrayList<BankEntry> CreateBankEntries(List<Tuple2<Integer, Integer>> Entries)
+        {
+            ArrayList<BankEntry> out = new ArrayList<>();
+            for(var entry : Entries)
+            {
+                out.add(new BankEntry(entry));
+            }
+            return out;
+        }
+
+        public static ArrayList<BankEntry> CreateBankEntries(Tuple2<Integer, Integer>... Entries)
+        {
+            ArrayList<BankEntry> out = new ArrayList<>();
+            for(var entry : Entries)
+            {
+                out.add(new BankEntry(entry));
+            }
+            return out;
+        }
+
         @Override
         public String toString()
         {
@@ -151,181 +186,56 @@ public class OSRSUtilities
         }
     }
 
-    public static BankLocation GetValidBank()
+    public static boolean Bake(int... IngredientIDs)
     {
-        // TODO ask pandemic if getnearest also cares about the bank being valid
-        return null;
-    }
-
-    /**
-     * @param Deposits
-     * @param Withdraws
-     * @param sleepdelay how many ms to wait inbetween each action
-     *
-     * @return true if successful, false if failed
-     */
-    public static boolean ProcessBankEntries(tpircSScript Script, List<BankEntry> Deposits, List<BankEntry> Withdraws, int sleepdelay)
-    {
-        final int retries = 5;
-        int       tries   = 0;
-        if(OSRSUtilities.OpenBank())
+        final String CookAction = "Cook";
+        int          i          = 0;
+        while(Inventory.contains(IngredientIDs) && i < IngredientIDs.length)
         {
-            Withdraws.sort((x, y) -> x.GetCount() - y.GetCount());
-            ArrayList<BankEntry> Deposit  = Deposits == null ? new ArrayList<>() : new ArrayList<>(Deposits);
-            ArrayList<BankEntry> Withdraw = Withdraws == null ? new ArrayList<>() : new ArrayList<>(Withdraws);
-            Logger.log("ProcessBankEntries: Deposits: " + Arrays.toString(Deposit.toArray()));
-            Logger.log("ProcessBankEntries: Withdraws: " + Arrays.toString(Withdraw.toArray()));
-            while((!Deposit.isEmpty() || !Withdraw.isEmpty()))
+            GameObject Fire = GameObjects.closest(t -> t.hasAction(CookAction));
+
+            if(Fire == null || !Fire.canReach())
             {
-                boolean success;
-                // Deposits first
-                if(!Deposit.isEmpty())
-                {
-                    var deposit = Deposit.getFirst();
-                    if(Bank.getCurrentTab() != deposit.BankTab)
-                    {
-                        Bank.openTab(deposit.BankTab);
-                    }
-                    if(deposit.ItemID == -1)
-                    {
-                        success = Bank.depositAllItems();
-                    }
-                    else if(deposit.Amount == -1)
-                    {
-                        success = Bank.depositAll(deposit.ItemID);
-                    }
-                    else
-                    {
-                        success = Bank.deposit(deposit.ItemID, deposit.Amount);
-                    }
-                    Logger.log("Deposit complete: " + success);
-                    if(!success)
-                    {
-                        tries++;
-                        if(tries > retries)
-                        {
-                            return false;
-                        }
-                        continue;
-                    }
-                    tries = 0;
-                    Deposit.removeFirst();
-                }
-                else if(!Withdraw.isEmpty())
-                {
-                    var withdraw = Withdraw.getFirst();
-
-                    if(withdraw.Noted && Bank.getWithdrawMode() != BankMode.NOTE)
-                    {
-                        Bank.setWithdrawMode(BankMode.NOTE);
-                    }
-                    else if(Bank.getWithdrawMode() != BankMode.SWAP)
-                    {
-                        Bank.setWithdrawMode(BankMode.SWAP);
-                    }
-
-                    if(Bank.getCurrentTab() != withdraw.BankTab)
-                    {
-                        Bank.openTab(withdraw.BankTab);
-                    }
-                    if(withdraw.Amount > InventorySpace)
-                    {
-                        success = Bank.withdrawAll(withdraw.ItemID);
-                    }
-                    else
-                    {
-                        success = Bank.withdraw(withdraw.ItemID, withdraw.Amount);
-                    }
-                    Logger.log("Withdrawal complete " + success);
-                    if(!success)
-                    {
-                        tries++;
-                        if(tries > retries)
-                        {
-                            return false;
-                        }
-                        continue;
-                    }
-                    tries = 0;
-                    Withdraw.removeFirst();
-                }
-                Script.onGameTick.WaitTicks(1);
+                Logger.log("No Cook object found found or can't reach it");
+                return false;
             }
-            return true;
-        }
 
-        return Deposits.isEmpty() && Withdraws.isEmpty();
-    }
+            if(Fire.isOnScreen())
+            {
+                if(Inventory.contains(IngredientIDs[i]))
+                {
+                    Inventory.use(IngredientIDs[i]);
+                }
 
-    public static boolean OpenBank()
-    {
-        if(Bank.isOpen())
-        {
-            Logger.log("OpenBank: Bank is open");
-            return true;
-        }
+                Point pt = Fire.getClickablePoint();
+                OSRSUtilities.RandomizeClick(pt, 2, 2);
+                Mouse.click(pt);
+                OSRSUtilities.Wait();
+                if(GetSkillingMenu() == null)
+                {
+                    ResetCameraRandom(5000);
+                }
+                else
+                {
+                    OSRSUtilities.PickSkillingMenuItem(1);
+                    OSRSUtilities.Wait();
+                    OSRSUtilities.WaitForEndAnimationLoop(1500, 10000);
+                }
+            }
+            else
+            {
+                OSRSUtilities.SimpleWalkTo(Fire.getTile());
+                OSRSUtilities.Wait();
+                Sleep.sleepUntil(() -> !Players.getLocal().isMoving(), 20000);
+            }
 
-//        if(!CanReachBank())
-//        {
-//            Logger.log("Can't reach bank");
-//            return false;
-//        }
-
-        while(!Bank.isOpen())
-        {
-            Bank.open();
-            Sleep.sleepUntil(() -> Bank.isOpen(), 5000);
+            if(!Inventory.contains(Inventory.contains(IngredientIDs[i])))
+            {
+                i++;
+            }
         }
 
         return true;
-    }
-
-    public static boolean BankDepositAll(int... Except)
-    {
-        if(Inventory.isEmpty())
-        {
-            return true;
-        }
-
-        boolean result = true;
-        result &= OpenBank();
-        if(Except.length > 0)
-        {
-            Logger.log("Except " + Arrays.toString(Except));
-            var items = Inventory.all(t -> Arrays.stream(Except).anyMatch(x -> {
-                Logger.log(x + " != " + t.getID());
-                return x != t.getID();
-            }));
-            for(var item : items)
-            {
-                Logger.log("Item ID: " + item.getID());
-                result &= Bank.depositAll(item);
-            }
-            return result;
-        }
-        else
-        {
-            return Bank.depositAllItems();
-        }
-    }
-
-    public static boolean BankWithdraw(AbstractMap.SimpleEntry<Integer, Integer>... WithdrawIDs)
-    {
-        boolean result = true;
-        if(WithdrawIDs.length > 0)
-        {
-            result &= OpenBank();
-            for(var item : Arrays.stream(WithdrawIDs).toList())
-            {
-                result &= Bank.withdraw(item.getKey(), item.getValue());
-            }
-        }
-        return result;
-    }
-
-    public static boolean BankWithdrawAll(int WithdrawID)
-    {
-        return OpenBank() && Bank.withdrawAll(WithdrawID);
     }
 
     public static boolean BankClose()
@@ -352,6 +262,299 @@ public class OSRSUtilities
         return true;
     }
 
+    public static boolean BankContainsHeals()
+    {
+        return true;
+    }
+
+    public static boolean BankDepositAll(int... Except)
+    {
+        if(Inventory.isEmpty())
+        {
+            return true;
+        }
+
+        boolean result = true;
+        result &= Sleep.sleepUntil(() -> Bank.open(), 60000);
+        int Attempts    = 0;
+        int MaxAttempts = 5;
+        while(!Sleep.sleepUntil(() -> Bank.open(), 60000) && Attempts < MaxAttempts)
+        {
+            Attempts++;
+        }
+        if(Attempts > MaxAttempts)
+        {
+            return false;
+        }
+
+        if(Except.length > 0)
+        {
+            Logger.log("Except " + Arrays.toString(Except));
+            var items = Inventory.all(t -> Arrays.stream(Except).anyMatch(x -> {
+                Logger.log(x + " != " + t.getID());
+                return x != t.getID();
+            }));
+            for(var item : items)
+            {
+                Logger.log("Item ID: " + item.getID());
+                result &= Bank.depositAll(item);
+            }
+            return result;
+        }
+        else
+        {
+            return Bank.depositAllItems();
+        }
+    }
+
+    public static boolean BankHeal()
+    {
+        if(OpenBank())
+        {
+            int FoodID = GetBestHealChoice();
+            Bank.withdrawAll(FoodID);
+            while(!Healup() && BankContainsHeals())
+            {
+                FoodID = GetBestHealChoice();
+                Bank.withdrawAll(FoodID);
+            }
+            return Players.getLocal().getHealthPercent() >= 100;
+        }
+        return false;
+    }
+
+    public static boolean BankWithdraw(AbstractMap.SimpleEntry<Integer, Integer>... WithdrawIDs)
+    {
+        boolean result = true;
+        if(WithdrawIDs.length > 0)
+        {
+            result &= OpenBank();
+            for(var item : Arrays.stream(WithdrawIDs).toList())
+            {
+                result &= Bank.withdraw(item.getKey(), item.getValue());
+            }
+        }
+        return result;
+    }
+
+    public static boolean BankWithdrawAll(int WithdrawID)
+    {
+        return OpenBank() && Bank.withdrawAll(WithdrawID);
+    }
+
+    public static boolean CanReachBank(BankLocation location)
+    {
+        if(location == null)
+        {
+            return CanReachBank();
+        }
+        return location.canReach();
+    }
+
+    public static boolean CanReachBank()
+    {
+        BankLocation near = Bank.getClosestBankLocation();
+        Logger.log("Nearest Bank: " + near.name() + " dist: " +
+                   near.walkingDistance(Players.getLocal().getTile()));
+        return near.canReach() || (near == BankLocation.GRAND_EXCHANGE &&
+                                   near.walkingDistance(Players.getLocal().getTile()) < 25);
+    }
+
+    public static boolean CheckInventory(List<AbstractMap.SimpleEntry<Integer, Integer>> Requirements, boolean OnlyRequirements)
+    {
+        if(Requirements == null)
+        {
+            return true;
+        }
+
+        for(var item : Requirements)
+        {
+            int ID    = item.getKey();
+            int Count = item.getValue();
+            if(Inventory.count(ID) < Count)
+            {
+                return false;
+            }
+        }
+
+        if(OnlyRequirements)
+        {
+            var Inv = Inventory.all(t -> Requirements.stream()
+                                                     .noneMatch(x -> x.getKey() != t.getID()));
+            Logger.log(Inv.size() + " unnecessary items (CheckInventory)");
+            return Inv.isEmpty();
+        }
+
+        return true;
+    }
+
+    public static boolean ClickCombine(int ID1, int ID2)
+    {
+        var   Box1   = Inventory.itemBounds(Inventory.get(ID1));
+        var   Box2   = Inventory.itemBounds(Inventory.get(ID2));
+        Point Click1 = new Point((int) Box1.getCenterX(), (int) Box1.getCenterY());
+        Click1.translate(rand.nextInt(8) - 4, rand.nextInt(8) - 4);
+        Point Click2 = new Point((int) Box2.getCenterX(), (int) Box2.getCenterY());
+        Click2.translate(rand.nextInt(2) - 1, rand.nextInt(2) - 1);
+
+        if(Box1.isEmpty() || Box2.isEmpty())
+        {
+            Logger.log("Couldn't find points to click, box1: " + Box1 + " box2: " + Box2);
+            return false;
+        }
+
+        while(!Inventory.isItemSelected())
+        {
+            Mouse.click(Click1);
+            Sleep.sleep(100);
+            Click1 = new Point((int) Box1.getCenterX(), (int) Box1.getCenterY());
+            Click1.translate(rand.nextInt(6) - 3, rand.nextInt(6) - 3);
+        }
+
+        return Mouse.click(Click2);
+    }
+
+    public static List<AbstractMap.SimpleEntry<Integer, Integer>> CreateItemRequirements(int... IDAmountPair)
+    {
+        if(IDAmountPair.length == 0)
+        {
+            Logger.log("ID Amount pair is empty");
+            return null;
+        }
+        if(IDAmountPair.length % 2 > 0)
+        {
+            Logger.log("Uneven ID Amount pair, exiting");
+            return null;
+        }
+
+
+        List<AbstractMap.SimpleEntry<Integer, Integer>> Requirements = new ArrayList<>(
+                IDAmountPair.length / 2);
+        for(int i = 0; i < IDAmountPair.length; i += 2)
+        {
+            int ID     = IDAmountPair[i];
+            int amount = IDAmountPair[i + 1];
+            Requirements.add(new AbstractMap.SimpleEntry<>(ID, amount));
+        }
+
+        return Requirements;
+    }
+
+    public static boolean ExamineInventoryItem(int ID, int timeout)
+    {
+        Inventory.interact(ID, "Examine");
+        return Sleep.sleepUntil(() -> !Mouse.isMouseDragging(), timeout);
+    }
+
+    public static boolean ExamineInventoryItemBySlot(int slot, int timeout)
+    {
+        Inventory.slotInteract(slot, "Examine");
+        return Sleep.sleepUntil(() -> !Mouse.isMouseDragging(), timeout);
+    }
+
+    public static void ExamineRandomInventoryItem()
+    {
+        if(Inventory.isEmpty())
+        {
+            return;
+        }
+
+        int Count = Inventory.all().size();
+        int Slot  = Inventory.all().get(rand.nextInt(Count - 1)).getSlot();
+        ExamineInventoryItemBySlot(Slot, 3000);
+    }
+
+    public static boolean Fish(String Action, int ID)
+    {
+        NPC ClosestSpot = NPCs.closest(t -> t.getID() == ID && t.hasAction(Action));
+
+        if(ClosestSpot == null)
+        {
+            Logger.log("No Spot with ID " + ID + " or action " + Action + " nearby");
+            return false;
+        }
+
+        while(!Inventory.isFull())
+        {
+            ClosestSpot.interact(Action);
+            Wait(2000, 3000);
+            Mouse.moveOutsideScreen();
+            Sleep.sleepUntil(() -> (Players.getLocal().getAnimation() == -1 &&
+                                    !Players.getLocal().isMoving()) || Dialogues.inDialogue(),
+                             120000);
+
+            while(Dialogues.inDialogue())
+            {
+                Dialogues.continueDialogue();
+                Wait(300, 500);
+            }
+
+            if(!ClosestSpot.exists())
+            {
+                ClosestSpot = null;
+                ClosestSpot = NPCs.closest(t -> t.getID() == ID && t.hasAction(Action));
+                if(ClosestSpot == null)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public static List<Character> GetAllCharactersInteractingWith(Character Target)
+    {
+        List<Character> result = new ArrayList<>();
+        var             all    = NPCs.all();
+        for(Character npc : all)
+        {
+            if(npc.isInteracting(Target))
+            {
+                result.add(npc);
+            }
+        }
+
+        return result;
+    }
+
+    public static List<AbstractMap.SimpleEntry<Integer, Integer>> GetBestFoodChoice(int TotalHP)
+    {
+        if(Bank.isCached())
+        {
+            var CommonFood = FoodDB.GetCommonFoods(Client.isMembers());
+            Logger.log(CommonFood);
+            SortedMap<Integer, FoodDB.Food> Choice = new TreeMap<>();// score // ID
+            for(var food : CommonFood)
+            {
+                var count = Bank.count(food.id);
+                Choice.put(count * food.hitpoints, food);
+            }
+            Logger.log(Arrays.toString(Choice.entrySet().toArray()));
+
+            var                                             reversed = Choice.reversed();
+            List<AbstractMap.SimpleEntry<Integer, Integer>> out      = new ArrayList<>();
+            for(var food : reversed.entrySet())
+            {
+                Integer count = (int) Math.min(Math.ceil(
+                                                       (double) TotalHP / food.getValue().hitpoints),
+                                               Bank.count(food.getValue().id));
+                out.add(new AbstractMap.SimpleEntry<>(food.getValue().id, count));
+                Logger.log(count * food.getValue().hitpoints + " >= " + TotalHP);
+                if(count * food.getValue().hitpoints >= TotalHP)
+                {
+                    return out;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static int GetBestHealChoice()
+    {
+        return 315;
+    }
+
     public static Point GetCenterPointRectangle(Rectangle rect, boolean randomize)
     {
         Point point = new Point((int) rect.getCenterX(), (int) rect.getCenterY());
@@ -359,20 +562,88 @@ public class OSRSUtilities
         return point;
     }
 
-    public static Point RandomizeClick(Point Click)
+    public static NPC GetClosestAttackableEnemy(String... Names)
     {
-        return RandomizeClick(Click, 5, 5);
+
+        return NPCs.closest(t -> Arrays.stream(Names)
+                                       .anyMatch(x -> Objects.equals(x, t.getName())) &&
+                                 t.hasAction(AttackAction) && !t.isInteractedWith() &&
+                                 t.canAttack() && t.canReach());
     }
 
-    public static Point RandomizeClick(Point Click, int VarianceX, int VarianceY)
+    public static NPC GetClosestAttackableEnemy(int... IDs)
     {
-        Click.translate(rand.nextInt(VarianceX / 2) - (VarianceX / 2), rand.nextInt(VarianceY / 2) - (VarianceY / 2));
-        return Click;
+        //Logger.log("Searching for IDs " + Arrays.toString(IDs));
+        return NPCs.closest(t -> Arrays.stream(IDs).anyMatch(x -> x == t.getID()) &&
+                                 t.hasAction(AttackAction) && !t.isInteractedWith() &&
+                                 t.canAttack() && t.canReach());
     }
 
-    public static int HPtoPercent(int HP)
+    public static int[] GetFoodIDs()
     {
-        return (int) (((float) HP / (float) Skills.getRealLevel(Skill.HITPOINTS)) * 100);
+        return new int[]{315};
+    }
+
+    public static Area GetLootArea(Entity Foe)
+    {
+        double x = Foe.getModel().calculateModelArea().getBounds2D().getX();
+        double y = Foe.getModel().calculateModelArea().getBounds2D().getY();
+
+        Tile FoeTile = Foe.getTile();
+
+        Tile TopRight   = FoeTile.translate((int) Math.ceil(x), (int) Math.ceil(y));
+        Tile BottomLeft = FoeTile.translate((int) -Math.floor(x), (int) -Math.floor(y));
+
+        Logger.log("FoeTile: " + FoeTile + " GridX: " + x + " GridY: " + y);
+        Logger.log("LootArea: " + TopRight + " " + BottomLeft);
+        Logger.log("Calculated Area: " + Foe.getModel().calculateModelArea().toString());
+
+        return FoeTile.getArea(3);
+    }
+
+    public static List<GroundItem> GetLootItems(Area area)
+    {
+        var Items = GroundItems.all(t -> area.contains(t.getTile()) ||
+                                         Arrays.stream(ItemsToAlwaysPickUp)
+                                               .anyMatch(x -> x.contains(t.getName())));
+        ; // Always pickup clue scrolls lol
+        Items.sort(Comparator.comparingDouble(p -> {
+            double dist = p.walkingDistance(Players.getLocal().getTile());
+
+            return Math.abs(dist);
+        }));
+
+        return Items;
+    }
+
+    public static List<GroundItem> GetLootItemsExclude(Area area, int... ExceptIDs)
+    {
+        var Items = GroundItems.all(t -> area.contains(t.getTile()) &&
+                                         (Arrays.stream(ExceptIDs).anyMatch(x -> x != t.getID()) ||
+                                          Arrays.stream(ItemsToAlwaysPickUp)
+                                                .anyMatch(x -> x.contains(t.getName())))); // Always pickup clue scrolls lol
+        Items.sort(Comparator.comparingDouble(p -> {
+            double dist = p.walkingDistance(Players.getLocal().getTile());
+
+            return Math.abs(dist);
+        }));
+
+        return Items;
+    }
+
+    public static List<GroundItem> GetLootItemsInclude(Area area, int... IncludeIDs)
+    {
+        var Items = GroundItems.all(t -> area.contains(t.getTile()) &&
+                                         (Arrays.stream(IncludeIDs).anyMatch(x -> x == t.getID()) ||
+                                          Arrays.stream(ItemsToAlwaysPickUp)
+                                                .anyMatch(x -> x.contains(t.getName())))); // Always pickup clue scrolls lol
+        Items.sort(Comparator.comparingDouble(p -> {
+            double dist = p.walkingDistance(Players.getLocal().getTile());
+
+            return Math.abs(dist);
+        }));
+
+        return Items;
     }
 
     public static int GetMissingHP()
@@ -380,17 +651,79 @@ public class OSRSUtilities
         return (Skills.getRealLevel(Skill.HITPOINTS) - Skills.getBoostedLevel(Skill.HITPOINTS));
     }
 
-    public static int InventoryHPCount()
+    public static WidgetChild GetSkillingMenu()
     {
-        var AllFood = Inventory.all(t -> FoodDB.isFood(t.getID()));
-
-        int TotalHP = 0;
-        for(var food : AllFood)
+        WidgetChild child = Widgets.get(270, 0);
+        if(child != null && child.isVisible())
         {
-            TotalHP += FoodDB.GetFood(food.getID()).hitpoints;
+            return child;
+        }
+        Logger.log("OSRSUtilities: Failed to get child item, " + child);
+        return null;
+    }
+
+
+    //    public static void ShiftCameraToDirection(Direction direction)
+    //    {
+    //        switch (direction)
+    //        {
+    //            case NULL -> {
+    //            }
+    //            case NORTH -> { 0
+    //            }
+    //            case EAST -> { 1536
+    //            }
+    //            case SOUTH -> { 1024
+    //            }
+    //            case WEST -> { 512
+    //            }
+    //        }
+    //    }
+
+    public static BankLocation GetValidBank()
+    {
+        // TODO ask pandemic if getnearest also cares about the bank being valid
+        return null;
+    }
+
+    public static int HPtoPercent(int HP)
+    {
+        return (int) (((float) HP / (float) Skills.getRealLevel(Skill.HITPOINTS)) * 100);
+    }
+
+    // Heal once
+    public static boolean Heal()
+    {
+        int FoodID = Food.getBestOnHand(true).getFromInventory().getID();
+        Inventory.interact(FoodID);
+        Sleep.sleepTicks(3);
+        return Sleep.sleepUntil(() -> Players.getLocal().getAnimation() == -1, 5000);
+    }
+
+    //Heal up completely
+    public static boolean Healup()
+    {
+        Food food = Food.getBestOnHand(true);
+        if(food == null)
+        {
+            return false;
         }
 
-        return TotalHP;
+        int FoodID = food.getFromInventory().getID();
+        while(Players.getLocal().getHealthPercent() < 100 && Inventory.contains(FoodID) &&
+              food != null)
+        {
+            Inventory.interact(FoodID);
+            Sleep.sleepTicks(3);
+            Sleep.sleepUntil(() -> Players.getLocal().getAnimation() == -1, 5000);
+            food = Food.getBestOnHand(true);
+            if(food != null)
+            {
+                FoodID = food.getFromInventory().getID();
+            }
+        }
+
+        return Players.getLocal().getHealthPercent() >= 100;
     }
 
     public static boolean InventoryContainsAny(int... IDs)
@@ -418,18 +751,110 @@ public class OSRSUtilities
         return false;
     }
 
-    public static List<Character> GetAllCharactersInteractingWith(Character Target)
+    public static int InventoryHPCount()
     {
-        List<Character> result = new ArrayList<>();
-        var             all    = NPCs.all();
-        for(Character npc : all)
+        var AllFood = Inventory.all(t -> FoodDB.isFood(t.getID()));
+
+        int TotalHP = 0;
+        for(var food : AllFood)
         {
-            if(npc.isInteracting(Target))
-            {
-                result.add(npc);
-            }
+            TotalHP += FoodDB.GetFood(food.getID()).hitpoints;
         }
 
+        return TotalHP;
+    }
+
+    public static boolean IsAreaBusy(int max, boolean OnlyActive)
+    {
+        List<Player> players = null;
+        if(OnlyActive)
+        {
+            players = Players.all(t -> t.isInCombat() || t.isInteractedWith());
+        }
+        else
+        {
+            players = Players.all();
+        }
+        return players.size() > max;
+    }
+
+    public static boolean IsLootLeft(Area LootArea, int... LootExcepts)
+    {
+        Tile[] Tiles = LootArea.getTiles();
+        for(Tile tile : Tiles)
+        {
+            if(GroundItems.getForTile(tile)
+                          .stream()
+                          .anyMatch(t -> Arrays.stream(LootExcepts).anyMatch(x -> t.getID() == x)))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static Boolean IsTimeElapsed(long UID, int ms)
+    {
+        int ThreadID   = Thread.currentThread().hashCode();
+        int FunctionID = Thread.currentThread().getStackTrace()[1].hashCode();
+
+        CRC32 CRC = new CRC32();
+        CRC.update(ThreadID);
+        CRC.update(FunctionID);
+        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+        buffer.putLong(UID);
+        CRC.update(buffer.position(0));
+        long hash = CRC.getValue();
+        if(TimeStamps.containsKey(hash))
+        {
+            long TimeStamp = TimeStamps.get(hash);
+
+            if(System.nanoTime() - TimeStamp > TimeUnit.MICROSECONDS.toNanos(ms))
+            {
+                return true;
+            }
+        }
+        TimeStamps.put(hash, System.nanoTime());
+        return false;
+    }
+
+    public static boolean JumpToOtherWorld()
+    {
+        List<World> Wlords = Worlds.all(t -> t.isF2P() && !t.isHighRisk() && !t.isPVP() &&
+                                             t.isNormal() &&
+                                             !t.getDescription().contains("skill total") &&
+                                             t != Worlds.getCurrent());
+        Wlords.sort(Comparator.comparingInt(t -> t.getPopulation()));
+
+        for(int i = 0; i < Wlords.size(); i++)
+        {
+            Logger.log("World " + i + " " + Wlords.get(i).getPopulation());
+        }
+
+        WorldHopper.openWorldHopper();
+        Logger.log("Changing to world " + Wlords.get(0).getWorld());
+        boolean result = WorldHopper.hopWorld(Wlords.get(0));
+        Wait();
+        return result;
+    }
+
+    public static boolean JumpToOtherWorld(GameTickDelegate GameTick)
+    {
+        List<World> Wlords = Worlds.all(t -> t.isF2P() && !t.isHighRisk() && !t.isPVP() &&
+                                             t.isNormal() &&
+                                             !t.getDescription().contains("skill total") &&
+                                             t != Worlds.getCurrent());
+        Wlords.sort(Comparator.comparingInt(t -> t.getPopulation()));
+
+        for(int i = 0; i < Wlords.size(); i++)
+        {
+            Logger.log("World " + i + " " + Wlords.get(i).getPopulation());
+        }
+
+        WorldHopper.openWorldHopper();
+        Logger.log("Changing to world " + Wlords.get(0).getWorld());
+        boolean result = WorldHopper.hopWorld(Wlords.get(0));
+        GameTick.WaitTicks(2);
         return result;
     }
 
@@ -454,60 +879,38 @@ public class OSRSUtilities
         }
     }
 
-    public static boolean Fish(String Action, int ID)
+    public static boolean OpenBank()
     {
-        NPC ClosestSpot = NPCs.closest(t -> t.getID() == ID && t.hasAction(Action));
-
-        if(ClosestSpot == null)
+        if(Bank.isOpen())
         {
-            Logger.log("No Spot with ID " + ID + " or action " + Action + " nearby");
-            return false;
+            Logger.log("OpenBank: Bank is open");
+            return true;
         }
 
-        while(!Inventory.isFull())
+        //        if(!CanReachBank())
+        //        {
+        //            Logger.log("Can't reach bank");
+        //            return false;
+        //        }
+
+        while(!Bank.isOpen())
         {
-            ClosestSpot.interact(Action);
-            Wait(2000, 3000);
-            Mouse.moveOutsideScreen();
-            Sleep.sleepUntil(() -> (Players.getLocal().getAnimation() == -1 && !Players.getLocal().isMoving()) ||
-                                   Dialogues.inDialogue(), 120000);
-
-            while(Dialogues.inDialogue())
-            {
-                Dialogues.continueDialogue();
-                Wait(300, 500);
-            }
-
-            if(!ClosestSpot.exists())
-            {
-                ClosestSpot = null;
-                ClosestSpot = NPCs.closest(t -> t.getID() == ID && t.hasAction(Action));
-                if(ClosestSpot == null)
-                {
-                    return false;
-                }
-            }
+            Bank.open();
+            Sleep.sleepUntil(() -> Bank.isOpen(), 5000);
         }
 
         return true;
     }
 
-    public static void Wait(int MinimumMs, int VarianceMs)
+    public static boolean PickSkillingMenuItem(int index)
     {
-        Sleep.sleep(rand.nextInt(VarianceMs) + MinimumMs);
-    }
-
-    public static boolean PickupOnTile(Tile tile, List<Integer> IDs)
-    {
-
-        var Items = GroundItems.all(t -> t.getTile() == tile && (IDs.contains(t.getID()) ||
-                                                                 Arrays.stream(ItemsToAlwaysPickUp).anyMatch(x -> x.contains(
-                                                                         t.getName()))));// Always pickup clue scrolls lol
-        Items.sort(Comparator.comparingDouble(p -> {
-            double dist = p.walkingDistance(Players.getLocal().getTile());
-            return Math.abs(dist);
-        }));
-        return PickupItems(Items);
+        var child = Widgets.get(270, 13 + index);
+        if(child != null && child.isVisible())
+        {
+            return child.interact();
+        }
+        Logger.log("PickSkillingMenuItem: Failed to get child item, " + child);
+        return false;
     }
 
     public static boolean PickupItems(List<GroundItem> Items)
@@ -521,7 +924,8 @@ public class OSRSUtilities
                 boolean tempresult = Item.interact();
                 if(tempresult)
                 {
-                    result &= Sleep.sleepUntil(() -> !Players.getLocal().isMoving() && !Item.exists(), 15000);
+                    result &= Sleep.sleepUntil(() -> !Players.getLocal().isMoving() &&
+                                                     !Item.exists(), 15000);
                     Sleep.sleepTicks(1);
                 }
                 else
@@ -548,7 +952,8 @@ public class OSRSUtilities
     {
         var Items = GroundItems.all(t -> area.contains(t.getTile()) &&
                                          (Arrays.stream(IDs).anyMatch(x -> x != t.getID()) ||
-                                          Arrays.stream(ItemsToAlwaysPickUp).anyMatch(x -> x.contains(t.getName())))); // Always pickup clue scrolls lol
+                                          Arrays.stream(ItemsToAlwaysPickUp)
+                                                .anyMatch(x -> x.contains(t.getName())))); // Always pickup clue scrolls lol
         Items.sort(Comparator.comparingDouble(p -> {
             double dist = p.walkingDistance(Players.getLocal().getTile());
             return Math.abs(dist);
@@ -557,115 +962,205 @@ public class OSRSUtilities
         return PickupItems(Items);
     }
 
-    public static List<GroundItem> GetLootItems(Area area)
+    public static boolean PickupOnAreaExcepts(Area area, int... ExceptIDs)
     {
-        var Items = GroundItems.all(t -> area.contains(t.getTile()) ||
-                                         Arrays.stream(ItemsToAlwaysPickUp).anyMatch(x -> x.contains(t.getName())));
-        ; // Always pickup clue scrolls lol
+        return PickupItems(GetLootItemsExclude(area, ExceptIDs));
+    }
+
+    public static boolean PickupOnTile(Tile tile, List<Integer> IDs)
+    {
+
+        var Items = GroundItems.all(t -> t.getTile() == tile && (IDs.contains(t.getID()) ||
+                                                                 Arrays.stream(ItemsToAlwaysPickUp)
+                                                                       .anyMatch(x -> x.contains(t.getName()))));// Always pickup clue scrolls lol
         Items.sort(Comparator.comparingDouble(p -> {
             double dist = p.walkingDistance(Players.getLocal().getTile());
-
             return Math.abs(dist);
         }));
-
-        return Items;
+        return PickupItems(Items);
     }
 
-    public static List<GroundItem> GetLootItemsInclude(Area area, int... IncludeIDs)
+    public static Boolean PrayAll(int Timeout, int... IDs)
     {
-        var Items = GroundItems.all(t -> area.contains(t.getTile()) &&
-                                         (Arrays.stream(IncludeIDs).anyMatch(x -> x == t.getID()) ||
-                                          Arrays.stream(ItemsToAlwaysPickUp).anyMatch(x -> x.contains(t.getName())))); // Always pickup clue scrolls lol
-        Items.sort(Comparator.comparingDouble(p -> {
-            double dist = p.walkingDistance(Players.getLocal().getTile());
+        final String BonesAction = "Bury";
+        boolean      result      = true;
+        long         start       = System.nanoTime();
 
-            return Math.abs(dist);
-        }));
-
-        return Items;
-    }
-
-    public static int[] GetFoodIDs()
-    {
-        return new int[]{315};
-    }
-
-    // Heal once
-    public static boolean Heal()
-    {
-        int FoodID = Food.getBestOnHand(true).getFromInventory().getID();
-        Inventory.interact(FoodID);
-        Sleep.sleepTicks(3);
-        return Sleep.sleepUntil(() -> Players.getLocal().getAnimation() == -1, 5000);
-    }
-
-    public static boolean BankHeal()
-    {
-        if(OpenBank())
+        while(Inventory.contains(IDs) ||
+              (start - System.nanoTime()) > TimeUnit.MICROSECONDS.toNanos(Timeout))
         {
-            int FoodID = GetBestHealChoice();
-            Bank.withdrawAll(FoodID);
-            while(!Healup() && BankContainsHeals())
+            result &= Inventory.get(t -> Arrays.stream(IDs).anyMatch(x -> x == t.getID()))
+                               .interact(BonesAction);
+            OSRSUtilities.Wait(500, 200);
+
+        }
+
+        return result;
+    }
+
+    /**
+     * @param Deposits
+     * @param Withdraws
+     * @param sleepdelay how many ms to wait inbetween each action
+     *
+     * @return true if successful, false if failed
+     */
+    public static boolean ProcessBankEntries(tpircSScript Script, List<BankEntry> Deposits, List<BankEntry> Withdraws, int sleepdelay)
+    {
+        final int retries = 5;
+        int       tries   = 0;
+        if(OSRSUtilities.OpenBank())
+        {
+            ArrayList<BankEntry> _deposits =
+                    Deposits == null ? new ArrayList<>() : new ArrayList<>(Deposits);
+            ArrayList<BankEntry> _withdraws =
+                    Withdraws == null ? new ArrayList<>() : new ArrayList<>(Withdraws);
+            if(!_withdraws.isEmpty())
             {
-                FoodID = GetBestHealChoice();
-                Bank.withdrawAll(FoodID);
+                _withdraws.sort((x, y) -> x.GetCount() - y.GetCount());
             }
-            return Players.getLocal().getHealthPercent() >= 100;
+
+
+            Logger.log("ProcessBankEntries: Deposits: " + Arrays.toString(_deposits.toArray()));
+            Logger.log("ProcessBankEntries: Withdraws: " + Arrays.toString(_withdraws.toArray()));
+            while((!_deposits.isEmpty() || !_withdraws.isEmpty()))
+            {
+                boolean success;
+                // Deposits first
+                if(!_deposits.isEmpty())
+                {
+                    var deposit = _deposits.getFirst();
+                    if(Bank.getCurrentTab() != deposit.BankTab)
+                    {
+                        Bank.openTab(deposit.BankTab);
+                    }
+                    if(deposit.ItemID == -1)
+                    {
+                        success = Bank.depositAllItems();
+                    }
+                    else if(deposit.Amount == -1)
+                    {
+                        success = Bank.depositAll(deposit.ItemID);
+                    }
+                    else
+                    {
+                        success = Bank.deposit(deposit.ItemID, deposit.Amount);
+                    }
+                    Logger.log("_deposits complete: " + success);
+                    if(!success)
+                    {
+                        tries++;
+                        if(tries > retries)
+                        {
+                            return false;
+                        }
+                        continue;
+                    }
+                    tries = 0;
+                    _deposits.removeFirst();
+                }
+                else if(!_withdraws.isEmpty())
+                {
+                    var withdraw = _withdraws.getFirst();
+
+                    if(withdraw.Noted && Bank.getWithdrawMode() != BankMode.NOTE)
+                    {
+                        Bank.setWithdrawMode(BankMode.NOTE);
+                    }
+                    else if(Bank.getWithdrawMode() != BankMode.SWAP)
+                    {
+                        Bank.setWithdrawMode(BankMode.SWAP);
+                    }
+
+                    if(Bank.getCurrentTab() != withdraw.BankTab)
+                    {
+                        Bank.openTab(withdraw.BankTab);
+                    }
+                    if(withdraw.Amount == -1 || withdraw.Amount > InventorySpace)
+                    {
+                        success = Bank.withdrawAll(withdraw.ItemID);
+                    }
+                    else
+                    {
+                        success = Bank.withdraw(withdraw.ItemID, withdraw.Amount);
+                    }
+                    Logger.log("Withdrawal complete " + success);
+                    if(!success)
+                    {
+                        tries++;
+                        if(tries > retries)
+                        {
+                            return false;
+                        }
+                        continue;
+                    }
+                    tries = 0;
+                    _withdraws.removeFirst();
+                }
+                Script.onGameTick.WaitTicks(1);
+            }
+            return true;
         }
-        return false;
+
+        return Deposits.isEmpty() && Withdraws.isEmpty();
     }
 
-    public static int GetBestHealChoice()
+    public static boolean ProcessItems(int index, int ID1, int ID2, int timeout)
     {
-        return 315;
-    }
-
-    //Heal up completely
-    public static boolean Healup()
-    {
-        Food food = Food.getBestOnHand(true);
-        if(food == null)
+        while(Inventory.contains(ID1) && Inventory.contains(ID2))
         {
-            return false;
-        }
+            while(Dialogues.inDialogue())
+            {
+                Dialogues.continueDialogue();
+                Wait(1000, 300);
+            }
 
-        int FoodID = food.getFromInventory().getID();
-        while(Players.getLocal().getHealthPercent() < 100 && Inventory.contains(FoodID) && food != null)
-        {
-            Inventory.interact(FoodID);
+            if(!ClickCombine(ID1, ID2))
+            {
+                Logger.log("Failed to click combine");
+                return false;
+            }
             Sleep.sleepTicks(3);
-            Sleep.sleepUntil(() -> Players.getLocal().getAnimation() == -1, 5000);
-            food = Food.getBestOnHand(true);
-            if(food != null)
+            Wait(100, 500);
+
+            if(!PickSkillingMenuItem(index))
             {
-                FoodID = food.getFromInventory().getID();
+                Logger.log("Failed to pick menu item");
+                return false;
             }
+
+            Sleep.sleep(rand.nextInt(2000) + 1000);
+
+            Mouse.moveOutsideScreen();
+
+            Sleep.sleepUntil(() -> {
+                return !Inventory.contains(ID1) || !Inventory.contains(ID2) ||
+                       Dialogues.inDialogue();
+            }, timeout);
+
+            Sleep.sleep(rand.nextInt(2000) + 1000);
         }
 
-        return Players.getLocal().getHealthPercent() >= 100;
+        return true;
     }
 
-
-//    public static void ShiftCameraToDirection(Direction direction)
-//    {
-//        switch (direction)
-//        {
-//            case NULL -> {
-//            }
-//            case NORTH -> { 0
-//            }
-//            case EAST -> { 1536
-//            }
-//            case SOUTH -> { 1024
-//            }
-//            case WEST -> { 512
-//            }
-//        }
-//    }
-
-    public static boolean BankContainsHeals()
+    public static Point RandomizeClick(Point Click)
     {
-        return true;
+        return RandomizeClick(Click, 5, 5);
+    }
+
+    public static Point RandomizeClick(Point Click, int VarianceX, int VarianceY)
+    {
+        Click.translate(rand.nextInt(VarianceX / 2) - (VarianceX / 2),
+                        rand.nextInt(VarianceY / 2) - (VarianceY / 2));
+        return Click;
+    }
+
+    public static void ResetCameraRandom(int timeout)
+    {
+        Camera.mouseRotateTo(Camera.getYaw() + rand.nextInt(450) + 150, 380);
+        Camera.setZoom(rand.nextInt(20) + 181);
+        Sleep.sleepUntil(() -> !Mouse.isMouseDragging(), timeout);
     }
 
     public static void SimpleWalkTo(Tile Destination)
@@ -683,6 +1178,193 @@ public class OSRSUtilities
 
             isMoving = Players.getLocal().isMoving();
         }
+    }
+
+    //return: whether we're fighting
+    public static Character Slaughter(int Timeout, String... Names)
+    {
+        Set<String> seen = new HashSet<>();
+        int[] IDs = NPCs.all(Names)
+                        .stream()
+                        .filter(t -> seen.add(t.getName()))
+                        .mapToInt(NPC::getID)
+                        .toArray();
+        return Slaughter(Timeout, IDs);
+    }
+
+    //return: whether we're fighting
+    public static Character Slaughter(int Timeout, int... IDs)
+    {
+        Player    player = Players.getLocal();
+        Character Foe    = player.getCharacterInteractingWithMe();
+        if(!CombatManager.GetInstance(player).FightInteractingCharacter(Timeout))
+        {
+            Logger.log("Not interacting with anyone, looking for new target");
+            Foe = PickNewTarget(IDs);
+        }
+
+        if(Foe == null)
+        {
+            return null;
+        }
+
+        Character finalFoe = Foe;
+        if(rand.nextInt(10) < 5)
+        {
+            Wait();
+            Mouse.moveOutsideScreen();
+        }
+
+        return Foe;
+    }
+
+    public static boolean SlaughterAndLoot(int Timeout, int LootTimeout, int[] LootExcepts, String... Names)
+    {
+        Set<Integer> seen = new HashSet<>();
+        int[] IDs = NPCs.all(Names)
+                        .stream()
+                        .filter(t -> seen.add(t.getID()))
+                        .mapToInt(NPC::getID)
+                        .toArray();
+        return SlaughterAndLoot(Timeout, LootTimeout, LootExcepts, IDs);
+    }
+
+    public static boolean SlaughterAndLoot(int Timeout, int LootTimeout, int[] LootExcepts, int... IDs)
+    {
+        Character Foe = Slaughter(Timeout, IDs);
+        if(Foe != null)
+        {
+            if(!Sleep.sleepUntil(() -> !Foe.exists(), LootTimeout))
+            {
+                Logger.log("Failed to loot");
+                return false;
+            }
+            // loot
+            Logger.log("Looting Foe " + Foe.toString());
+            ExecutorService Executor = Executors.newSingleThreadExecutor();
+            Future<Boolean> result = Executor.submit(() -> PickupOnAreaExcepts(GetLootArea(Foe),
+                                                                               LootExcepts));
+            try
+            {
+                return result.get(LootTimeout, TimeUnit.MILLISECONDS);
+            } catch(Exception e)
+            {
+                Logger.log("Exception: " + e);
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public static Thread StartRandomizerThread(int minSpeed, float SpeedMultiplier, int Variance)
+    {
+        Logger.log("Thread started");
+        Thread thr = new Thread(() -> Randomize(minSpeed, SpeedMultiplier, Variance));
+        thr.start();
+        return thr;
+    }
+
+    public static Thread StartRandomizerThread()
+    {
+        Logger.log("Thread started");
+        Thread thr = new Thread(() -> Randomize(10, 1.0f, 30));
+        thr.start();
+        return thr;
+    }
+
+    public static void Wait(int MinimumMs, int VarianceMs)
+    {
+        Sleep.sleep(rand.nextInt(VarianceMs) + MinimumMs);
+    }
+
+    public static void Wait(ScriptIntenity Intensity)
+    {
+        Wait(Intensity, 1.0f);
+    }
+
+    public static void Wait(ScriptIntenity Intensity, float Multiplier)
+    {
+        switch(Intensity)
+        {
+            case Lax ->
+            {
+                Wait(2000, 10000);
+            }
+            case Normal ->
+            {
+                Wait(1000, 5000);
+            }
+            case Sweating ->
+            {
+                Wait(300, 1000);
+            }
+            case Bot ->
+            {
+                Wait(100, 500);
+            }
+        }
+    }
+
+    public static void Wait()
+    {
+        Wait(500, 2000);
+    }
+
+    public static void WaitForEndAnimationLoop(int WaitPerAnimation, int timeout)
+    {
+        Mouse.moveOutsideScreen(true);
+        boolean end = false;
+        while(!end)
+        {
+            if(Sleep.sleepUntil(() -> Players.getLocal().getAnimation() == -1, timeout))
+            {
+                if(!Sleep.sleepUntil(() -> Players.getLocal().getAnimation() != -1,
+                                     WaitPerAnimation))
+                {
+                    end = true;
+                }
+                else if(Dialogues.inDialogue())
+                {
+                    while(Dialogues.inDialogue())
+                    {
+                        Dialogues.continueDialogue();
+                        Wait(300, 500);
+                    }
+                }
+            }
+            else
+            {
+                //timeout
+                end = true;
+            }
+        }
+    }
+
+    public static int WaitTime(ScriptIntenity Intensity)
+    {
+        switch(Intensity)
+        {
+            case Lax ->
+            {
+                return rand.nextInt(1500) + 1500;
+            }
+            case Normal ->
+            {
+                return rand.nextInt(1000) + 1000;
+            }
+            case Sweating ->
+            {
+                return rand.nextInt(1000) + 300;
+            }
+            case Bot ->
+            {
+                return rand.nextInt(500) + 100;
+            }
+        }
+        Logger.log(
+                "public static int WaitTime(ScriptIntenity Intensity): Something went wrong, not supposed to reach this");
+        return 500;
     }
 
     public static void WalkTo(Tile Destination)
@@ -706,18 +1388,20 @@ public class OSRSUtilities
             }
         }
 
-        LocalPath<Tile> Path = LocalPathFinder.getLocalPathFinder().calculate(Players.getLocal().getTile(),
-                                                                              Destination);
+        LocalPath<Tile> Path = LocalPathFinder.getLocalPathFinder()
+                                              .calculate(Players.getLocal().getTile(), Destination);
         Logger.log("OSRSUtilities: Path: " + Path.toString());
 
 
         if(Path == null || Path.isEmpty())
         {
             Logger.log("OSRSUtilities: No Path found");
-            while((Path == null || Path.isEmpty()) && Destination.distance(Players.getLocal().getTile()) > 1.0)
+            while((Path == null || Path.isEmpty()) &&
+                  Destination.distance(Players.getLocal().getTile()) > 1.0)
             {
                 SimpleWalkTo_(Destination);
-                Path = LocalPathFinder.getLocalPathFinder().calculate(Players.getLocal().getTile(), Destination);
+                Path = LocalPathFinder.getLocalPathFinder()
+                                      .calculate(Players.getLocal().getTile(), Destination);
             }
 
         }
@@ -796,184 +1480,6 @@ public class OSRSUtilities
         }
     }
 
-    private static void SimpleWalkTo_(Tile Destination)
-    {
-        Walking.walk(Destination);
-        Wait();
-        Sleep.sleepUntil(() -> {
-            Tile ShortDestination = Client.getDestination();
-            if(ShortDestination != null)
-            {
-                return ShortDestination.distance(Players.getLocal().getTile()) < 8;
-            }
-            return !Players.getLocal().isMoving();
-        }, 10000);
-    }
-
-    public static void Wait()
-    {
-        Wait(500, 2000);
-    }
-
-    public static void ResetCameraRandom(int timeout)
-    {
-        Camera.mouseRotateTo(Camera.getYaw() + rand.nextInt(450) + 150, 380);
-        Camera.setZoom(rand.nextInt(20) + 181);
-        Sleep.sleepUntil(() -> !Mouse.isMouseDragging(), timeout);
-    }
-
-    public static WidgetChild GetSkillingMenu()
-    {
-        WidgetChild child = Widgets.get(270, 0);
-        if(child != null && child.isVisible())
-        {
-            return child;
-        }
-        Logger.log("OSRSUtilities: Failed to get child item, " + child);
-        return null;
-    }
-
-    public static boolean ProcessItems(int index, int ID1, int ID2, int timeout)
-    {
-        while(Inventory.contains(ID1) && Inventory.contains(ID2))
-        {
-            while(Dialogues.inDialogue())
-            {
-                Dialogues.continueDialogue();
-                Wait(1000, 300);
-            }
-
-            if(!ClickCombine(ID1, ID2))
-            {
-                Logger.log("Failed to click combine");
-                return false;
-            }
-            Sleep.sleepTicks(3);
-            Wait(100, 500);
-
-            if(!PickSkillingMenuItem(index))
-            {
-                Logger.log("Failed to pick menu item");
-                return false;
-            }
-
-            Sleep.sleep(rand.nextInt(2000) + 1000);
-
-            Mouse.moveOutsideScreen();
-
-            Sleep.sleepUntil(() -> {
-                return !Inventory.contains(ID1) || !Inventory.contains(ID2) || Dialogues.inDialogue();
-            }, timeout);
-
-            Sleep.sleep(rand.nextInt(2000) + 1000);
-        }
-
-        return true;
-    }
-
-    public static boolean ClickCombine(int ID1, int ID2)
-    {
-        var   Box1   = Inventory.itemBounds(Inventory.get(ID1));
-        var   Box2   = Inventory.itemBounds(Inventory.get(ID2));
-        Point Click1 = new Point((int) Box1.getCenterX(), (int) Box1.getCenterY());
-        Click1.translate(rand.nextInt(8) - 4, rand.nextInt(8) - 4);
-        Point Click2 = new Point((int) Box2.getCenterX(), (int) Box2.getCenterY());
-        Click2.translate(rand.nextInt(2) - 1, rand.nextInt(2) - 1);
-
-        if(Box1.isEmpty() || Box2.isEmpty())
-        {
-            Logger.log("Couldn't find points to click, box1: " + Box1 + " box2: " + Box2);
-            return false;
-        }
-
-        while(!Inventory.isItemSelected())
-        {
-            Mouse.click(Click1);
-            Sleep.sleep(100);
-            Click1 = new Point((int) Box1.getCenterX(), (int) Box1.getCenterY());
-            Click1.translate(rand.nextInt(6) - 3, rand.nextInt(6) - 3);
-        }
-
-        return Mouse.click(Click2);
-    }
-
-    public static boolean PickSkillingMenuItem(int index)
-    {
-        var child = Widgets.get(270, 13 + index);
-        if(child != null && child.isVisible())
-        {
-            return child.interact();
-        }
-        Logger.log("Failed to get child item, " + child);
-        return false;
-    }
-
-    public static List<AbstractMap.SimpleEntry<Integer, Integer>> CreateItemRequirements(int... IDAmountPair)
-    {
-        if(IDAmountPair.length == 0)
-        {
-            Logger.log("ID Amount pair is empty");
-            return null;
-        }
-        if(IDAmountPair.length % 2 > 0)
-        {
-            Logger.log("Uneven ID Amount pair, exiting");
-            return null;
-        }
-
-
-        List<AbstractMap.SimpleEntry<Integer, Integer>> Requirements = new ArrayList<>(IDAmountPair.length / 2);
-        for(int i = 0; i < IDAmountPair.length; i += 2)
-        {
-            int ID     = IDAmountPair[i];
-            int amount = IDAmountPair[i + 1];
-            Requirements.add(new AbstractMap.SimpleEntry<>(ID, amount));
-        }
-
-        return Requirements;
-    }
-
-    public static NPC GetClosestAttackableEnemy(String... Names)
-    {
-
-        return NPCs.closest(t -> Arrays.stream(Names).anyMatch(x -> Objects.equals(x, t.getName())) &&
-                                 t.hasAction(AttackAction) && !t.isInteractedWith() && t.canAttack() && t.canReach());
-    }
-
-    //return: whether we're fighting
-    public static Character Slaughter(int Timeout, String... Names)
-    {
-        Set<String> seen = new HashSet<>();
-        int[]       IDs  = NPCs.all(Names).stream().filter(t -> seen.add(t.getName())).mapToInt(NPC::getID).toArray();
-        return Slaughter(Timeout, IDs);
-    }
-
-    //return: whether we're fighting
-    public static Character Slaughter(int Timeout, int... IDs)
-    {
-        Player    player = Players.getLocal();
-        Character Foe    = player.getCharacterInteractingWithMe();
-        if(!CombatManager.GetInstance(player).FightInteractingCharacter(Timeout))
-        {
-            Logger.log("Not interacting with anyone, looking for new target");
-            Foe = PickNewTarget(IDs);
-        }
-
-        if(Foe == null)
-        {
-            return null;
-        }
-
-        Character finalFoe = Foe;
-        if(rand.nextInt(10) < 5)
-        {
-            Wait();
-            Mouse.moveOutsideScreen();
-        }
-
-        return Foe;
-    }
-
     private static Character PickNewTarget(int... IDs)
     {
         Player    player = Players.getLocal();
@@ -987,448 +1493,28 @@ public class OSRSUtilities
         return CombatManager.GetInstance(player).Fight(Foe);
     }
 
-    public static NPC GetClosestAttackableEnemy(int... IDs)
-    {
-        //Logger.log("Searching for IDs " + Arrays.toString(IDs));
-        return NPCs.closest(t -> Arrays.stream(IDs).anyMatch(x -> x == t.getID()) && t.hasAction(AttackAction) &&
-                                 !t.isInteractedWith() && t.canAttack() && t.canReach());
-    }
-
-    public static boolean IsLootLeft(Area LootArea, int... LootExcepts)
-    {
-        Tile[] Tiles = LootArea.getTiles();
-        for(Tile tile : Tiles)
-        {
-            if(GroundItems.getForTile(tile).stream().anyMatch(t -> Arrays.stream(LootExcepts).anyMatch(x -> t.getID() ==
-                                                                                                            x)))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean SlaughterAndLoot(int Timeout, int LootTimeout, int[] LootExcepts, String... Names)
-    {
-        Set<Integer> seen = new HashSet<>();
-        int[]        IDs  = NPCs.all(Names).stream().filter(t -> seen.add(t.getID())).mapToInt(NPC::getID).toArray();
-        return SlaughterAndLoot(Timeout, LootTimeout, LootExcepts, IDs);
-    }
-
-    public static boolean SlaughterAndLoot(int Timeout, int LootTimeout, int[] LootExcepts, int... IDs)
-    {
-        Character Foe = Slaughter(Timeout, IDs);
-        if(Foe != null)
-        {
-            if(!Sleep.sleepUntil(() -> !Foe.exists(), LootTimeout))
-            {
-                Logger.log("Failed to loot");
-                return false;
-            }
-            // loot
-            Logger.log("Looting Foe " + Foe.toString());
-            ExecutorService Executor = Executors.newSingleThreadExecutor();
-            Future<Boolean> result   = Executor.submit(() -> PickupOnAreaExcepts(GetLootArea(Foe), LootExcepts));
-            try
-            {
-                return result.get(LootTimeout, TimeUnit.MILLISECONDS);
-            } catch(Exception e)
-            {
-                Logger.log("Exception: " + e);
-                return false;
-            }
-        }
-
-        return false;
-    }
-
-    public static boolean PickupOnAreaExcepts(Area area, int... ExceptIDs)
-    {
-        return PickupItems(GetLootItemsExclude(area, ExceptIDs));
-    }
-
-    public static List<GroundItem> GetLootItemsExclude(Area area, int... ExceptIDs)
-    {
-        var Items = GroundItems.all(t -> area.contains(t.getTile()) &&
-                                         (Arrays.stream(ExceptIDs).anyMatch(x -> x != t.getID()) ||
-                                          Arrays.stream(ItemsToAlwaysPickUp).anyMatch(x -> x.contains(t.getName())))); // Always pickup clue scrolls lol
-        Items.sort(Comparator.comparingDouble(p -> {
-            double dist = p.walkingDistance(Players.getLocal().getTile());
-
-            return Math.abs(dist);
-        }));
-
-        return Items;
-    }
-
-    public static Area GetLootArea(Entity Foe)
-    {
-        double x = Foe.getModel().calculateModelArea().getBounds2D().getX();
-        double y = Foe.getModel().calculateModelArea().getBounds2D().getY();
-
-        Tile FoeTile = Foe.getTile();
-
-        Tile TopRight   = FoeTile.translate((int) Math.ceil(x), (int) Math.ceil(y));
-        Tile BottomLeft = FoeTile.translate((int) -Math.floor(x), (int) -Math.floor(y));
-
-        Logger.log("FoeTile: " + FoeTile + " GridX: " + x + " GridY: " + y);
-        Logger.log("LootArea: " + TopRight + " " + BottomLeft);
-        Logger.log("Calculated Area: " + Foe.getModel().calculateModelArea().toString());
-
-        return FoeTile.getArea(3);
-    }
-
-    public static boolean CheckInventory(List<AbstractMap.SimpleEntry<Integer, Integer>> Requirements, boolean OnlyRequirements)
-    {
-        if(Requirements == null)
-        {
-            return true;
-        }
-
-        for(var item : Requirements)
-        {
-            int ID    = item.getKey();
-            int Count = item.getValue();
-            if(Inventory.count(ID) < Count)
-            {
-                return false;
-            }
-        }
-
-        if(OnlyRequirements)
-        {
-            var Inv = Inventory.all(t -> Requirements.stream().noneMatch(x -> x.getKey() != t.getID()));
-            Logger.log(Inv.size() + " unnecessary items (CheckInventory)");
-            return Inv.isEmpty();
-        }
-
-        return true;
-    }
-
-    public static List<AbstractMap.SimpleEntry<Integer, Integer>> GetBestFoodChoice(int TotalHP)
-    {
-        if(!CanReachBank())
-        {
-            Logger.log("Can't reach bank to check possible food items");
-            return null;
-        }
-
-        if(OpenBank())
-        {
-            var                             CommonFood = FoodDB.GetCommonFoods(Client.isMembers());
-            SortedMap<Integer, FoodDB.Food> Choice     = new TreeMap<>();// score // ID
-            for(var food : CommonFood)
-            {
-                var count = Bank.count(food.id);
-                Choice.put(count * food.hitpoints, food);
-            }
-
-            var                                             reversed = Choice.reversed();
-            List<AbstractMap.SimpleEntry<Integer, Integer>> out      = new ArrayList<>();
-            for(var food : reversed.entrySet())
-            {
-                Integer count = (int) Math.min(Math.ceil((double) TotalHP / food.getValue().hitpoints),
-                                               Bank.count(food.getValue().id));
-                out.add(new AbstractMap.SimpleEntry<>(food.getValue().id, count));
-                if(count * food.getValue().hitpoints >= TotalHP)
-                {
-                    return out;
-                }
-            }
-        }
-        return null;
-    }
-
-    public static boolean CanReachBank()
-    {
-        BankLocation near = Bank.getClosestBankLocation();
-        Logger.log("Nearest Bank: " + near.name() + " dist: " + near.walkingDistance(Players.getLocal().getTile()));
-        return near.canReach() ||
-               (near == BankLocation.GRAND_EXCHANGE && near.walkingDistance(Players.getLocal().getTile()) < 25);
-    }
-
-    public static Boolean PrayAll(int Timeout, int... IDs)
-    {
-        final String BonesAction = "Bury";
-        boolean      result      = true;
-        long         start       = System.nanoTime();
-
-        while(Inventory.contains(IDs) || (start - System.nanoTime()) > TimeUnit.MICROSECONDS.toNanos(Timeout))
-        {
-            result &= Inventory.get(t -> Arrays.stream(IDs).anyMatch(x -> x == t.getID())).interact(BonesAction);
-            OSRSUtilities.Wait(500, 200);
-
-        }
-
-        return result;
-    }
-
-    public static boolean Bake(int... IngredientIDs)
-    {
-        final String CookAction = "Cook";
-        int          i          = 0;
-        while(Inventory.contains(IngredientIDs) && i < IngredientIDs.length)
-        {
-            GameObject Fire = GameObjects.closest(t -> t.hasAction(CookAction));
-
-            if(Fire == null || !Fire.canReach())
-            {
-                Logger.log("No Cook object found found or can't reach it");
-                return false;
-            }
-
-            if(Fire.isOnScreen())
-            {
-                if(Inventory.contains(IngredientIDs[i]))
-                {
-                    Inventory.use(IngredientIDs[i]);
-                }
-
-                Point pt = Fire.getClickablePoint();
-                OSRSUtilities.RandomizeClick(pt, 2, 2);
-                Mouse.click(pt);
-                OSRSUtilities.Wait();
-                if(GetSkillingMenu() == null)
-                {
-                    ResetCameraRandom(5000);
-                }
-                else
-                {
-                    OSRSUtilities.PickSkillingMenuItem(1);
-                    OSRSUtilities.Wait();
-                    OSRSUtilities.WaitForEndAnimationLoop(1500, 10000);
-                }
-            }
-            else
-            {
-                OSRSUtilities.SimpleWalkTo(Fire.getTile());
-                OSRSUtilities.Wait();
-                Sleep.sleepUntil(() -> !Players.getLocal().isMoving(), 20000);
-            }
-
-            if(!Inventory.contains(Inventory.contains(IngredientIDs[i])))
-            {
-                i++;
-            }
-        }
-
-        return true;
-    }
-
-    public static boolean JumpToOtherWorld()
-    {
-        List<World> Wlords = Worlds.all(t -> t.isF2P() && !t.isHighRisk() && !t.isPVP() && t.isNormal() &&
-                                             !t.getDescription().contains("skill total") && t != Worlds.getCurrent());
-        Wlords.sort(Comparator.comparingInt(t -> t.getPopulation()));
-
-        for(int i = 0; i < Wlords.size(); i++)
-        {
-            Logger.log("World " + i + " " + Wlords.get(i).getPopulation());
-        }
-
-        WorldHopper.openWorldHopper();
-        Logger.log("Changing to world " + Wlords.get(0).getWorld());
-        boolean result = WorldHopper.hopWorld(Wlords.get(0));
-        Wait();
-        return result;
-    }
-
-    public static boolean JumpToOtherWorld(GameTickDelegate GameTick)
-    {
-        List<World> Wlords = Worlds.all(t -> t.isF2P() && !t.isHighRisk() && !t.isPVP() && t.isNormal() &&
-                                             !t.getDescription().contains("skill total") && t != Worlds.getCurrent());
-        Wlords.sort(Comparator.comparingInt(t -> t.getPopulation()));
-
-        for(int i = 0; i < Wlords.size(); i++)
-        {
-            Logger.log("World " + i + " " + Wlords.get(i).getPopulation());
-        }
-
-        WorldHopper.openWorldHopper();
-        Logger.log("Changing to world " + Wlords.get(0).getWorld());
-        boolean result = WorldHopper.hopWorld(Wlords.get(0));
-        GameTick.WaitTicks(2);
-        return result;
-    }
-
-    public static boolean IsAreaBusy(int max, boolean OnlyActive)
-    {
-        List<Player> players = null;
-        if(OnlyActive)
-        {
-            players = Players.all(t -> t.isInCombat() || t.isInteractedWith());
-        }
-        else
-        {
-            players = Players.all();
-        }
-        return players.size() > max;
-    }
-
-    public static boolean ExamineInventoryItem(int ID, int timeout)
-    {
-        Inventory.interact(ID, "Examine");
-        return Sleep.sleepUntil(() -> !Mouse.isMouseDragging(), timeout);
-    }
-
-    public static void ExamineRandomInventoryItem()
-    {
-        if(Inventory.isEmpty())
-        {
-            return;
-        }
-
-        int Count = Inventory.all().size();
-        int Slot  = Inventory.all().get(rand.nextInt(Count - 1)).getSlot();
-        ExamineInventoryItemBySlot(Slot, 3000);
-    }
-
-    public static boolean ExamineInventoryItemBySlot(int slot, int timeout)
-    {
-        Inventory.slotInteract(slot, "Examine");
-        return Sleep.sleepUntil(() -> !Mouse.isMouseDragging(), timeout);
-    }
-
-    public static boolean CanReachBank(BankLocation location)
-    {
-        if(location == null)
-        {
-            return CanReachBank();
-        }
-        return location.canReach();
-    }
-
-    public static Thread StartRandomizerThread(int minSpeed, float SpeedMultiplier, int Variance)
-    {
-        Logger.log("Thread started");
-        Thread thr = new Thread(() -> Randomize(minSpeed, SpeedMultiplier, Variance));
-        thr.start();
-        return thr;
-    }
-
     private static void Randomize(int minSpeed, float SpeedMultiplier, int Variance)
     {
         while(true)
         {
-            MouseSettings.setSpeed(Math.round((rand.nextInt(Variance) + minSpeed) * SpeedMultiplier));
+            MouseSettings.setSpeed(Math.round(
+                    (rand.nextInt(Variance) + minSpeed) * SpeedMultiplier));
             Sleep.sleep(rand.nextInt(10000) + 1000);
         }
     }
 
-    public static Thread StartRandomizerThread()
+    private static void SimpleWalkTo_(Tile Destination)
     {
-        Logger.log("Thread started");
-        Thread thr = new Thread(() -> Randomize(10, 1.0f, 30));
-        thr.start();
-        return thr;
-    }
-
-    public static void Wait(ScriptIntenity Intensity)
-    {
-        Wait(Intensity, 1.0f);
-    }
-
-    public static void Wait(ScriptIntenity Intensity, float Multiplier)
-    {
-        switch(Intensity)
-        {
-            case Lax ->
+        Walking.walk(Destination);
+        Wait();
+        Sleep.sleepUntil(() -> {
+            Tile ShortDestination = Client.getDestination();
+            if(ShortDestination != null)
             {
-                Wait(2000, 10000);
+                return ShortDestination.distance(Players.getLocal().getTile()) < 8;
             }
-            case Normal ->
-            {
-                Wait(1000, 5000);
-            }
-            case Sweating ->
-            {
-                Wait(300, 1000);
-            }
-            case Bot ->
-            {
-                Wait(100, 500);
-            }
-        }
-    }
-
-    public static int WaitTime(ScriptIntenity Intensity)
-    {
-        switch(Intensity)
-        {
-            case Lax ->
-            {
-                return rand.nextInt(1500) + 1500;
-            }
-            case Normal ->
-            {
-                return rand.nextInt(1000) + 1000;
-            }
-            case Sweating ->
-            {
-                return rand.nextInt(1000) + 300;
-            }
-            case Bot ->
-            {
-                return rand.nextInt(500) + 100;
-            }
-        }
-        Logger.log(
-                "public static int WaitTime(ScriptIntenity Intensity): Something went wrong, not supposed to reach this");
-        return 500;
-    }
-
-    public static void WaitForEndAnimationLoop(int WaitPerAnimation, int timeout)
-    {
-        Mouse.moveOutsideScreen(true);
-        boolean end = false;
-        while(!end)
-        {
-            if(Sleep.sleepUntil(() -> Players.getLocal().getAnimation() == -1, timeout))
-            {
-                if(!Sleep.sleepUntil(() -> Players.getLocal().getAnimation() != -1, WaitPerAnimation))
-                {
-                    end = true;
-                }
-                else if(Dialogues.inDialogue())
-                {
-                    while(Dialogues.inDialogue())
-                    {
-                        Dialogues.continueDialogue();
-                        Wait(300, 500);
-                    }
-                }
-            }
-            else
-            {
-                //timeout
-                end = true;
-            }
-        }
-    }
-
-    public static Boolean IsTimeElapsed(long UID, int ms)
-    {
-        int ThreadID   = Thread.currentThread().hashCode();
-        int FunctionID = Thread.currentThread().getStackTrace()[1].hashCode();
-
-        CRC32 CRC = new CRC32();
-        CRC.update(ThreadID);
-        CRC.update(FunctionID);
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.putLong(UID);
-        CRC.update(buffer.position(0));
-        long hash = CRC.getValue();
-        if(TimeStamps.containsKey(hash))
-        {
-            long TimeStamp = TimeStamps.get(hash);
-
-            if(System.nanoTime() - TimeStamp > TimeUnit.MICROSECONDS.toNanos(ms))
-            {
-                return true;
-            }
-        }
-        TimeStamps.put(hash, System.nanoTime());
-        return false;
+            return !Players.getLocal().isMoving();
+        }, 10000);
     }
 
 }

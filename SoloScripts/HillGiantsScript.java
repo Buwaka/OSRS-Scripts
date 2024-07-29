@@ -153,8 +153,9 @@ public class HillGiantsScript extends tpircSScript
                 OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<>(BrassKeyID, 1));
                 if(Inventory.count(BakedSalmonID) < MinimumSalmonCount)
                 {
-                    OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(BakedSalmonID,
-                                                                                             MinimumSalmonCount));
+                    OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(
+                            BakedSalmonID,
+                            MinimumSalmonCount));
                 }
                 OSRSUtilities.BankClose();
             }
@@ -228,11 +229,11 @@ public class HillGiantsScript extends tpircSScript
 
     List<GroundItem> GetPickups()
     {
-//         caching
-//        if(OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 1, 1000))
-//        {
-//            _pickups = GroundItems.all(t -> Arrays.stream(PickupFocus).anyMatch(x -> x == t.getID()));
-//        }
+        //         caching
+        //        if(OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), 1, 1000))
+        //        {
+        //            _pickups = GroundItems.all(t -> Arrays.stream(PickupFocus).anyMatch(x -> x == t.getID()));
+        //        }
         return _pickups;
     }
 

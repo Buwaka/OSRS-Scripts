@@ -21,14 +21,15 @@ import java.util.Random;
 public class TravelTask extends SimpleTask
 {
     // percentage chance
-    final private Map<OSRSUtilities.ScriptIntenity, Integer> LoseFocusChance      = Map.of(OSRSUtilities.ScriptIntenity.Lax,
-                                                                                           20,
-                                                                                           OSRSUtilities.ScriptIntenity.Normal,
-                                                                                           10,
-                                                                                           OSRSUtilities.ScriptIntenity.Sweating,
-                                                                                           3,
-                                                                                           OSRSUtilities.ScriptIntenity.Bot,
-                                                                                           0);
+    final private Map<OSRSUtilities.ScriptIntenity, Integer> LoseFocusChance      = Map.of(
+            OSRSUtilities.ScriptIntenity.Lax,
+            20,
+            OSRSUtilities.ScriptIntenity.Normal,
+            10,
+            OSRSUtilities.ScriptIntenity.Sweating,
+            3,
+            OSRSUtilities.ScriptIntenity.Bot,
+            0);
     private final Tile                                       Destination;
     public        Delegate                                   onReachedDestination = new Delegate();
     private       Random                                     rand                 = new Random();
@@ -51,10 +52,10 @@ public class TravelTask extends SimpleTask
     {
         super.onStartTask(Script);
         MouseSettings                Setting   = Mouse.getMouseSettings();
-        OSRSUtilities.ScriptIntenity Intensity = ScriptIntensity.get();
+        OSRSUtilities.ScriptIntenity Intensity = GetScriptIntensity();
         Obstacles.InitCustomObstacles();
 
-        switch(ScriptIntensity.get())
+        switch(Intensity)
         {
             case Lax ->
             {
@@ -109,109 +110,109 @@ public class TravelTask extends SimpleTask
     @Override
     public int Loop()
     {
-        OSRSUtilities.ScriptIntenity Intensity = ScriptIntensity.get();
+        OSRSUtilities.ScriptIntenity Intensity = GetScriptIntensity();
 
 
         LocalPathFinder.getLocalPathFinder().addObstacle(new DestructableObstacle("Web", "Slash"));
 
         Walking.walk(Destination);
-//        LocalPathFinder.getLocalPathFinder().addObstacle(new PassableObstacle("Web",
-//                                                                              "Slash"));
-//
-//        var Path = LocalPathFinder.getLocalPathFinder().calculate(Players.getLocal().getTile(), Destination);
-//        var Web = WebFinder.getWebFinder().calculate(Players.getLocal().getTile(), Destination);
-//
-//        Tile WebObstacleTile = new Tile(3210, 9898, 0);
-//
-//        Web.add( new EntranceWebNode(WebObstacleTile, "Web", "Slash"));
-//        //WebFinder.getWebFinder().addWebNode();
-//        if(!Path.isEmpty())
-//        {
-//            Logger.log("Path");
-//            Path.walk();
-//        }
-//        else if(Web.next().getTile().canReach())
-//        {
-//            Logger.log("Web");
-//            Web.walk();
-//        }
-//        else
-//        {
-//            Logger.log("Path Else");
-//            Path.walk();
-//        }
+        //        LocalPathFinder.getLocalPathFinder().addObstacle(new PassableObstacle("Web",
+        //                                                                              "Slash"));
+        //
+        //        var Path = LocalPathFinder.getLocalPathFinder().calculate(Players.getLocal().getTile(), Destination);
+        //        var Web = WebFinder.getWebFinder().calculate(Players.getLocal().getTile(), Destination);
+        //
+        //        Tile WebObstacleTile = new Tile(3210, 9898, 0);
+        //
+        //        Web.add( new EntranceWebNode(WebObstacleTile, "Web", "Slash"));
+        //        //WebFinder.getWebFinder().addWebNode();
+        //        if(!Path.isEmpty())
+        //        {
+        //            Logger.log("Path");
+        //            Path.walk();
+        //        }
+        //        else if(Web.next().getTile().canReach())
+        //        {
+        //            Logger.log("Web");
+        //            Web.walk();
+        //        }
+        //        else
+        //        {
+        //            Logger.log("Path Else");
+        //            Path.walk();
+        //        }
 
 
-//        if(rand.nextInt(100) < LoseFocusChance.get(Intensity))
-//        {
-//            switch(rand.nextInt(7))
-//            {
-//                case 0:
-//                    // Move outside screen
-//                    Mouse.moveOutsideScreen();
-//                    OSRSUtilities.Wait(Intensity, 1.0f);
-//                    break;
-//                case 1:
-//                    // Examine random item
-//                    OSRSUtilities.ExamineRandomInventoryItem();
-//                    OSRSUtilities.Wait(Intensity, 1.0f);
-//                    break;
-//                case 2:
-//                {
-//                    // hover over random object
-//                    var all = GameObjects.all();
-//                    var obj = all.get(rand.nextInt(all.size() - 1));
-//                    OSRSUtilities.RandomizeClick(obj.getCenterPoint(), 20, 20);
-//                    OSRSUtilities.Wait(Intensity, 1.0f);
-//                }
-//                break;
-//                case 3:
-//                {
-//                    // follow random object
-//                    var  all       = GameObjects.all();
-//                    var  obj       = all.get(rand.nextInt(all.size() - 1));
-//                    long startTime = System.nanoTime();
-//                    long HoverTime = rand.nextLong(TimeUnit.MILLISECONDS.toNanos(5000));
-//                    while(System.nanoTime() - startTime < HoverTime)
-//                    {
-//                        Mouse.move(OSRSUtilities.RandomizeClick(obj.getCenterPoint(), 3, 3));
-//                        OSRSUtilities.Wait(Intensity, 5.0f);
-//                    }
-//                    OSRSUtilities.Wait(Intensity, 1.0f);
-//                }
-//                break;
-//                case 4:
-//                    // switch tab
-//                    if(Intensity == OSRSUtilities.ScriptIntenity.Sweating ||
-//                       Intensity == OSRSUtilities.ScriptIntenity.Bot)
-//                    {
-//                        break;
-//                    }
-//                    Tab OpenTab = Tabs.getOpen();
-//                    var allTabs = Tab.values();
-//                    Tabs.open(allTabs[rand.nextInt(allTabs.length - 1)]);
-//                    OSRSUtilities.Wait(Intensity, 1.0f);
-//                    Tabs.open(OpenTab);
-//                    break;
-//                case 5:
-//                    //just wait
-//                    OSRSUtilities.Wait(Intensity, 10.0f);
-//                    break;
-//                case 6:
-//                    // reset camera
-//                    OSRSUtilities.ResetCameraRandom(3000);
-//                    OSRSUtilities.Wait(Intensity, 3.0f);
-//                    break;
-//                case 7:
-//                    // TODO Open minimap and wait
-//                    break;
-//            }
-//        }
+        //        if(rand.nextInt(100) < LoseFocusChance.get(Intensity))
+        //        {
+        //            switch(rand.nextInt(7))
+        //            {
+        //                case 0:
+        //                    // Move outside screen
+        //                    Mouse.moveOutsideScreen();
+        //                    OSRSUtilities.Wait(Intensity, 1.0f);
+        //                    break;
+        //                case 1:
+        //                    // Examine random item
+        //                    OSRSUtilities.ExamineRandomInventoryItem();
+        //                    OSRSUtilities.Wait(Intensity, 1.0f);
+        //                    break;
+        //                case 2:
+        //                {
+        //                    // hover over random object
+        //                    var all = GameObjects.all();
+        //                    var obj = all.get(rand.nextInt(all.size() - 1));
+        //                    OSRSUtilities.RandomizeClick(obj.getCenterPoint(), 20, 20);
+        //                    OSRSUtilities.Wait(Intensity, 1.0f);
+        //                }
+        //                break;
+        //                case 3:
+        //                {
+        //                    // follow random object
+        //                    var  all       = GameObjects.all();
+        //                    var  obj       = all.get(rand.nextInt(all.size() - 1));
+        //                    long startTime = System.nanoTime();
+        //                    long HoverTime = rand.nextLong(TimeUnit.MILLISECONDS.toNanos(5000));
+        //                    while(System.nanoTime() - startTime < HoverTime)
+        //                    {
+        //                        Mouse.move(OSRSUtilities.RandomizeClick(obj.getCenterPoint(), 3, 3));
+        //                        OSRSUtilities.Wait(Intensity, 5.0f);
+        //                    }
+        //                    OSRSUtilities.Wait(Intensity, 1.0f);
+        //                }
+        //                break;
+        //                case 4:
+        //                    // switch tab
+        //                    if(Intensity == OSRSUtilities.ScriptIntenity.Sweating ||
+        //                       Intensity == OSRSUtilities.ScriptIntenity.Bot)
+        //                    {
+        //                        break;
+        //                    }
+        //                    Tab OpenTab = Tabs.getOpen();
+        //                    var allTabs = Tab.values();
+        //                    Tabs.open(allTabs[rand.nextInt(allTabs.length - 1)]);
+        //                    OSRSUtilities.Wait(Intensity, 1.0f);
+        //                    Tabs.open(OpenTab);
+        //                    break;
+        //                case 5:
+        //                    //just wait
+        //                    OSRSUtilities.Wait(Intensity, 10.0f);
+        //                    break;
+        //                case 6:
+        //                    // reset camera
+        //                    OSRSUtilities.ResetCameraRandom(3000);
+        //                    OSRSUtilities.Wait(Intensity, 3.0f);
+        //                    break;
+        //                case 7:
+        //                    // TODO Open minimap and wait
+        //                    break;
+        //            }
+        //        }
 
-//        if(CompleteCondition != null)
-//        {
-//            Logger.log("CompleteCondition result: " + CompleteCondition.get());
-//        }
+        //        if(CompleteCondition != null)
+        //        {
+        //            Logger.log("CompleteCondition result: " + CompleteCondition.get());
+        //        }
         if(Destination.getArea(5).contains(Players.getLocal().getServerTile()))
         {
             Logger.log("Reached Destination");

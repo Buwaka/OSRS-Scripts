@@ -9,6 +9,7 @@ import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
+import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.Character;
@@ -49,7 +50,9 @@ public class SlaughterTask extends SimpleTask
 
     public Area GetCurrentArea()
     {
-        var result = Arrays.stream(KillingAreas).filter(t -> t.contains(Players.getLocal().getTile())).findAny();
+        var result = Arrays.stream(KillingAreas)
+                           .filter(t -> t.contains(Players.getLocal().getTile()))
+                           .findAny();
         if(result.isPresent())
         {
             return result.get();
@@ -57,17 +60,21 @@ public class SlaughterTask extends SimpleTask
         return null;
     }
 
-    @Override
-    public boolean Ready()
+    public NPC GetNearestTarget()
     {
-        return GetTarget() != null;
+        //        if(_closestTarget == null)
+        //             // ||OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), CacheTimeout.get()))
+        //        {
+        //            _closestTarget = OSRSUtilities.GetClosestAttackableEnemy(TargetIDs);
+        //        }
+        return OSRSUtilities.GetClosestAttackableEnemy(TargetIDs);
     }
 
     public Character GetTarget()
     {
         if(!TargetListeners.isEmpty())
         {
-            Character    weakest    = null;
+            Character    weakest    = GetNearestTarget();
             int          healthperc = 100;
             Set<Integer> keys       = TargetListeners.keySet();
             var          Targets    = NPCs.all(y -> keys.contains(y.hashCode()));
@@ -88,13 +95,37 @@ public class SlaughterTask extends SimpleTask
         }
     }
 
-    public NPC GetNearestTarget()
+    private void TargetListener(int TargetHash)
     {
-        if(_closestTarget == null || OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), CacheTimeout.get()))
+        Character Target = NPCs.closest(t -> t.hashCode() == TargetHash);
+        Logger.log("SlaughterTask: TargetListener: Starting to listen to target: " +
+                   Target.toString() + " hashcode: " + Target.hashCode());
+        if(Sleep.sleepUntil(() -> !Target.exists(), Long.MAX_VALUE))
         {
-            _closestTarget = OSRSUtilities.GetClosestAttackableEnemy(TargetIDs);
+            Logger.log(
+                    "SlaughterTask: TargetListener: Target has ceased to exist or has been defeated, waiting for end of animation for loot");
+            Sleep.sleepUntil(() -> !Target.isAnimating(), 10000);
+            Sleep.sleepTicks(3);
+            onKill(Target.getID(), Target.getTile());
         }
-        return _closestTarget;
+        else
+        {
+            Logger.log("SlaughterTask: TargetListener: Target Timeout");
+        }
+        Logger.log("SlaughterTask: TargetListener: Stop listening to target: " + Target.toString() +
+                   " hashcode: " + Target.hashCode());
+        TargetListeners.remove(Target.hashCode());
+    }
+
+    private void onKill(int ID, Tile DeathTile)
+    {
+        onKill.firePropertyChange("Kill", ID, DeathTile);
+    }
+
+    @Override
+    public boolean Ready()
+    {
+        return GetTarget() != null;
     }
 
     @Override
@@ -108,46 +139,30 @@ public class SlaughterTask extends SimpleTask
             {
                 //TODO for some reason, the map gets reset after every update
                 Logger.log("New Enemy found, listening, UID: " + hashcode);
-                Thread TargetListener = new Thread(() -> TargetListener(target));
+                Thread TargetListener = new Thread(() -> TargetListener(hashcode));
                 TargetListener.start();
                 Thread th = new Thread(TargetListener);
                 TargetListeners.put(hashcode, th);
             }
-            Logger.log("EnemyCount " + TargetListeners.size());
+            Logger.log("SlaughterTask: Loop: EnemyCount " + TargetListeners.size());
         }
 
         var Target = GetTarget();
 
-        if(Target != null &&
-           (Players.getLocal().getInteractingCharacter() != Target || !Players.getLocal().isHealthBarVisible()))
+        if(Target != null && (Players.getLocal().getInteractingCharacter() != Target ||
+                              !Players.getLocal().isHealthBarVisible()))
         {
-            CombatManager.GetInstance(Players.getLocal()).Fight(Target);
+            if(Target.distance() > 10)
+            {
+                Walking.walk(Target.getTile());
+            }
+            else
+            {
+                CombatManager.GetInstance(Players.getLocal()).Fight(Target);
+            }
         }
 
         return super.Loop();
-    }
-
-    private void TargetListener(Character Target)
-    {
-        Logger.log("Starting to listen to target: " + Target.toString() + " hashcode: " + Target.hashCode());
-        if(Sleep.sleepUntil(() -> !Target.exists(), Long.MAX_VALUE))
-        {
-            Logger.log("Target has ceased to exist or has been defeated, waiting for end of animation for loot");
-            Sleep.sleepUntil(() -> !Target.isAnimating(), 10000);
-            Sleep.sleepTicks(3);
-            onKill(Target.getID(), Target.getTile());
-        }
-        else
-        {
-            Logger.log("Target Timeout");
-        }
-        Logger.log("Stop listening to target: " + Target.toString() + " hashcode: " + Target.hashCode());
-        TargetListeners.remove(Target.hashCode());
-    }
-
-    private void onKill(int ID, Tile DeathTile)
-    {
-        onKill.firePropertyChange("Kill", ID, DeathTile);
     }
 
     @Nonnull

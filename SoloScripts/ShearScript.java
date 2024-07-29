@@ -52,6 +52,67 @@ public class ShearScript extends tpircSScript
         Banking
     }
 
+    public Optional<GameObject> GetClosedGate()
+    {
+        var Door = Arrays.stream(GameObjects.getObjectsOnTile(GateLocation))
+                         .filter(x -> x.getID() == GateID)
+                         .findFirst();
+        if(Door.isPresent() && Door.get().hasAction("Open"))
+        {
+            return Door;
+        }
+        return Optional.empty();
+    }
+
+    public NPC GetClosestSheep()
+    {
+        return NPCs.closest(t -> t.getName().equalsIgnoreCase(SheepName) &&
+                                 t.getID() != FalseSheepID && SheepArea.contains(t.getTile()) &&
+                                 t.hasAction(ShearAction) && !t.isMoving());
+    }
+
+    public States GetState()
+    {
+
+        if(Inventory.isFull())
+        {
+            if(IsInsideBankArea())
+            {
+                return States.Banking;
+            }
+            else
+            {
+                return States.TravelToBank;
+            }
+        }
+        if(IsInsideSheepArea())
+        {
+            return States.Shearing;
+        }
+        else
+        {
+            return States.TravelToSheep;
+        }
+    }
+
+    public boolean IsInsideBankArea()
+    {
+        return BankArea.contains(Players.getLocal().getTile());
+    }
+
+    public boolean IsInsideSheepArea()
+    {
+        return SheepArea.contains(Players.getLocal().getTile());
+    }
+
+    public void RandomizeTile()
+    {
+        Logger.log("Randomize");
+        SheepLocationRTile = SheepArea.getRandomTile();
+        BankLocationRTile  = BankArea.getRandomTile();
+        MouseSettings.setSpeed(rand.nextInt(5) + 5);
+    }
+
     @Override
     public int onLoop()
     {
@@ -149,64 +210,5 @@ public class ShearScript extends tpircSScript
 
         LastState = State;
         return 0;
-    }
-
-    public void RandomizeTile()
-    {
-        Logger.log("Randomize");
-        SheepLocationRTile = SheepArea.getRandomTile();
-        BankLocationRTile  = BankArea.getRandomTile();
-        MouseSettings.setSpeed(rand.nextInt(5) + 5);
-    }
-
-    public States GetState()
-    {
-
-        if(Inventory.isFull())
-        {
-            if(IsInsideBankArea())
-            {
-                return States.Banking;
-            }
-            else
-            {
-                return States.TravelToBank;
-            }
-        }
-        if(IsInsideSheepArea())
-        {
-            return States.Shearing;
-        }
-        else
-        {
-            return States.TravelToSheep;
-        }
-    }
-
-    public boolean IsInsideBankArea()
-    {
-        return BankArea.contains(Players.getLocal().getTile());
-    }
-
-    public boolean IsInsideSheepArea()
-    {
-        return SheepArea.contains(Players.getLocal().getTile());
-    }
-
-    public Optional<GameObject> GetClosedGate()
-    {
-        var Door = Arrays.stream(GameObjects.getObjectsOnTile(GateLocation)).filter(x -> x.getID() ==
-                                                                                         GateID).findFirst();
-        if(Door.isPresent() && Door.get().hasAction("Open"))
-        {
-            return Door;
-        }
-        return Optional.empty();
-    }
-
-    public NPC GetClosestSheep()
-    {
-        return NPCs.closest(t -> t.getName().equalsIgnoreCase(SheepName) && t.getID() != FalseSheepID &&
-                                 SheepArea.contains(t.getTile()) && t.hasAction(ShearAction) && !t.isMoving());
     }
 }

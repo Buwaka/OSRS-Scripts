@@ -14,22 +14,27 @@ import org.dreambot.api.script.impl.TaskScript;
 import org.dreambot.api.script.listener.GameStateListener;
 import org.dreambot.api.script.listener.GameTickListener;
 import org.dreambot.api.script.listener.ItemContainerListener;
+import org.dreambot.api.script.listener.PaintListener;
 import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.items.Item;
 import randomhandler.RandomHandler;
 
-import java.lang.ref.WeakReference;
+import java.awt.*;
+import java.util.List;
+import java.util.Queue;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 
 public abstract class tpircSScript extends TaskScript implements GameTickListener,
-                                                                 GameStateListener,
-                                                                 ItemContainerListener//,ActionListener,AnimationListener, ChatListener,ExperienceListener,HitSplatListener,ItemContainerListener,LoginListener, MenuRowListener,PaintListener,ProjectileListener,RegionLoadListener,SpawnListener
+        GameStateListener,
+        ItemContainerListener,
+        PaintListener//,ActionListener,AnimationListener, ChatListener,ExperienceListener,HitSplatListener,ItemContainerListener,LoginListener, MenuRowListener,PaintListener,ProjectileListener,RegionLoadListener,SpawnListener
 {
     private static Random                            rand                   = new Random();
     //TODO make this listen to everything and make it accessible through the script variable, perhaps make this calss include subcalsses that implement the listener, perhaps that may also trigger them
@@ -39,27 +44,37 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
     private final  Lock                              PersistentTaskListLock = new ReentrantLock();
     private final  List<SimpleTask>                  Tasks                  = new ArrayList<>();
     private final  Lock                              TaskListLock           = new ReentrantLock();
-    public         AtomicReference<SimpleTask>       CurrentTask            = new AtomicReference<>(null);
+    private final  List<Supplier<SimpleCycle[]>>     Cycles                 = new ArrayList<>();
+    public         AtomicReference<SimpleTask>       CurrentTask            = new AtomicReference<>(
+            null);
     public         AtomicInteger                     FailLimit              = new AtomicInteger(-1);
     public         Delegate3<ItemAction, Item, Item> onInventory            = new Delegate3<>();
     public         GameTickDelegate                  onGameTick             = new GameTickDelegate();
-    public Delegate onTaskRemoved = new Delegate();
-    public Delegate onTaskAdded = new Delegate();
+    public         Delegate                          onTaskRemoved          = new Delegate();
+    public         Delegate                          onTaskAdded            = new Delegate();
+    public         Delegate                          onBankCached           = new Delegate();
     private        int                               FailCount              = 0;
     private        int                               CycleCounter           = 0;
     private        Thread                            Randomizer;
-    private        List<SimpleCycle>                 Cycles                 = new ArrayList<>();
-    private        WeakReference<SimpleCycle>        CurrentCycle           = null;
-    private        AtomicBoolean                     isLooping              = new AtomicBoolean(false);
-    private        AtomicBoolean                     isSolving              = new AtomicBoolean(false);
-    private        AtomicBoolean                     isGameStateChanging    = new AtomicBoolean(false);
-    private        AtomicBoolean                     GameTicked             = new AtomicBoolean(false);
+    private        SimpleCycle                       CycleSetup             = null;
+    private        SimpleCycle                       CurrentCycle           = null;
+    private        Queue<SimpleCycle>                CycleQueue             = null;
+    private        AtomicBoolean                     isLooping              = new AtomicBoolean(
+            false);
+    private        AtomicBoolean                     isSolving              = new AtomicBoolean(
+            false);
+    private        AtomicBoolean                     isGameStateChanging    = new AtomicBoolean(
+            false);
+    private        AtomicBoolean                     GameTicked             = new AtomicBoolean(
+            false);
     private        AtomicBoolean                     isPaused               = new AtomicBoolean(true);
     private        AtomicInteger                     PauseTime              = new AtomicInteger(
             GetRandom().nextInt(5000) + 5000); // is pause on the start
-    private        long                              StopTestTimeout        = 10000;
+    private        long                              StopTaskTimeout        = 10000;
     private        OpenBankTask                      CacheBank              = null;
     private        GEInstance                        GrandExchangeInstance  = null;
+
+    private boolean DebugPaint = true;
 
     public enum ItemAction
     {
@@ -81,9 +96,279 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         });
     }
 
+    // For Legacy sake
+    public void AddCycle(SimpleCycle Cycle)
+    {
+        Cycles.add(() -> {return new SimpleCycle[]{Cycle};});
+    }
+
+    public void AddCycle(Supplier<SimpleCycle[]> Cycle)
+    {
+        Cycles.add(Cycle);
+    }
+
     public void Delay(int ms)
     {
         PauseTime.set(ms);
+    }
+
+    /**
+     * @return Returns current GE instance, creates one if none exists, do make sure to cleanup afterwards
+     */
+    public GEInstance GetGEInstance()
+    {
+        if(GrandExchangeInstance == null)
+        {
+            GrandExchangeInstance = new GEInstance();
+        }
+
+        return GrandExchangeInstance;
+    }
+
+    public OSRSUtilities.ScriptIntenity GetScriptIntensity() {return OSRSUtilities.ScriptIntenity.Sweating;}
+
+    public boolean IsActiveTaskLeft()
+    {
+        var tasks = GetSortedTasks();
+        Logger.log("tpircSScript: IsActiveTaskLeft: " + tasks.size());
+        return !tasks.isEmpty();
+    }
+
+    public final void ResetRandomizer()
+    {
+        KillRandomizer();
+        Randomizer = OSRSUtilities.StartRandomizerThread();
+    }
+
+    public final void SetRandomizerParameters(int minSpeed, float SpeedMultiplier, int Variance)
+    {
+        KillRandomizer();
+        Randomizer = OSRSUtilities.StartRandomizerThread(minSpeed, SpeedMultiplier, Variance);
+    }
+
+    public void StopCurrentCycle()
+    {
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.Reset(this);
+            CurrentCycle = null;
+        }
+        Collections.rotate(Cycles, -1);
+    }
+
+    public boolean StopTask(SimpleTask task)
+    {
+        Logger.log("Stopping task: " + task.GetTaskName());
+        boolean result = task.StopTask(this);
+        if(result)
+        {
+            removeNodes(task);
+        }
+        return result;
+    }
+
+    public void StopTaskNow(SimpleTask task)
+    {
+        task.StopTaskNOW(this);
+        removeNodes(task);
+    }
+
+    public final void addPersistentNodes(TaskNode... nodes)
+    {
+        if(nodes == null)
+        {return;}
+
+        Logger.log("Adding persistent nodes: " + Arrays.toString(nodes));
+        for(var node : nodes)
+        {
+            if(SimpleTask.class.isAssignableFrom(node.getClass()))
+            {
+                SimpleTask Task = (SimpleTask) node;
+                Task.Init(this);
+                Logger.log("Adding Persistent task: " + Task.GetTaskName());
+                PersistentTaskListLock.lock();
+                PersistentTasks.add(Task);
+                PersistentTaskListLock.unlock();
+            }
+            else
+            {
+                Logger.log("Trying to add Tasknode instead of SimpleTask: " +
+                           node.getClass().getName());
+            }
+        }
+    }
+
+    public List<SimpleTask> getPersistentNodes()
+    {
+        return PersistentTasks;
+    }
+
+    public List<SimpleTask> getSimpleTasks()
+    {
+        return Tasks;
+    }
+
+    public final void removePersistentNodes(TaskNode... nodes)
+    {
+        if(nodes == null)
+        {return;}
+
+        for(var node : nodes)
+        {
+            if(SimpleTask.class.isAssignableFrom(node.getClass()))
+            {
+                SimpleTask Task = (SimpleTask) node;
+                PersistentTaskListLock.lock();
+                Logger.log("Removing persistent task: " + Task.GetTaskName());
+                PersistentTasks.remove(Task);
+                PersistentTaskListLock.unlock();
+                Logger.log(PersistentTasks.size() + " Tasks left");
+            }
+            else
+            {
+                Logger.log("Trying to remove Tasknode instead of SimpleTask: " +
+                           node.getClass().getName());
+            }
+        }
+    }
+
+    public void setDebugPaint(boolean debugPaint)
+    {
+        DebugPaint = debugPaint;
+    }
+
+    private void CleanUpCycle()
+    {
+        Tasks.clear();
+        System.gc();
+    }
+
+    private void KillRandomizer()
+    {
+        if(Randomizer != null && Randomizer.isAlive())
+        {
+            Randomizer.interrupt();
+        }
+        Randomizer = null;
+    }
+
+    private boolean _setCurrentCycle(SimpleCycle next)
+    {
+        if(next.Ready() && !next.isGoalMet())
+        {
+            Logger.log(next.GetName() + " goal hasn't been met, starting");
+
+            if(next.hasStartUpTasks())
+            {
+                Logger.log("Script: _startCycle: Cycle has StartupRequirements, adding tasks, " +
+                           next.toString());
+                addNodes(next.GetStartupTasks());
+                CycleSetup = next;
+                return true;
+            }
+
+            if(next.Start(this))
+            {
+                Logger.log("Script: _startCycle: Start Cycle, " + next.toString());
+                CurrentCycle = next;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    //refactor this
+    private void _startCycle()
+    {
+        if(CacheBank != null)
+        {
+            return;
+        }
+
+        if(Cycles.isEmpty())
+        {
+            this.stop();
+            return;
+        }
+
+        if(CycleSetup != null)
+        {
+            if(CycleSetup.hasStartUpTasks())
+            {
+                if(!IsActiveTaskLeft())
+                {
+                    Logger.log(
+                            "Script: _startCycle: Startup tasks are not active, rejecting cycle, " +
+                            CycleSetup.toString());
+                    CycleSetup = null;
+                }
+                return;
+            }
+            else
+            {
+                Logger.log(
+                        "Script: _startCycle: Startup tasks have been completed, starting cycle, " +
+                        CycleSetup.toString());
+                if(CycleSetup.Start(this))
+                {
+                    Logger.log("Script: _startCycle: Start Cycle, " + CycleSetup.toString());
+                    CurrentCycle = CycleSetup;
+                    CycleSetup   = null;
+                }
+                return;
+            }
+        }
+
+        Logger.log("Start Cycle");
+        if(CycleQueue != null && !CycleQueue.isEmpty())
+        {
+            int length = CycleQueue.size();
+            for(int i = 0; i < length; i++)
+            {
+                SimpleCycle cycle = CycleQueue.poll();
+                if(_setCurrentCycle(cycle))
+                {
+                    return;
+                }
+                CycleQueue.add(cycle);
+            }
+        }
+        else
+        {
+            for(var ToGen : Cycles)
+            {
+                if(ToGen == null)
+                {
+                    continue;
+                }
+
+                SimpleCycle[] nextCycles = ToGen.get();
+                if(nextCycles == null)
+                {
+                    continue;
+                }
+
+                CycleQueue = new ArrayDeque<>();
+                for(int i = 0; i < nextCycles.length; i++)
+                {
+                    var cycle = nextCycles[i];
+                    if(_setCurrentCycle(cycle))
+                    {
+                        if(i != nextCycles.length - 1)
+                        {
+                            CycleQueue.addAll(List.of(Arrays.copyOfRange(nextCycles,
+                                                                         i,
+                                                                         nextCycles.length)));
+                        }
+
+                        return;
+                    }
+                    CycleQueue.add(cycle);
+                }
+            }
+        }
+
+
     }
 
     @Override
@@ -114,38 +399,25 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         Logger.log("onInventoryItemSwapped");
     }
 
-    public final void ResetRandomizer()
-    {
-        KillRandomizer();
-        Randomizer = OSRSUtilities.StartRandomizerThread();
-    }
-
-    private void KillRandomizer()
-    {
-        if(Randomizer != null && Randomizer.isAlive())
-        {
-            Randomizer.interrupt();
-        }
-        Randomizer = null;
-    }
-
-    public final void SetRandomizerParameters(int minSpeed, float SpeedMultiplier, int Variance)
-    {
-        KillRandomizer();
-        Randomizer = OSRSUtilities.StartRandomizerThread(minSpeed, SpeedMultiplier, Variance);
-    }
-
-    public void AddCycle(SimpleCycle Cycle)
-    {
-        Cycles.add(Cycle);
-    }
-
     @Override
     public void onStart()
     {
         super.onStart();
         Randomizer = OSRSUtilities.StartRandomizerThread();
         RandomHandler.clearRandoms();
+
+        if(!Bank.isCached() && !Bank.isOpen())
+        {
+            Logger.log("Bank is not cached and needs to be, visiting bank");
+            CacheBank = new OpenBankTask();
+            CacheBank.onComplete.Subscribe(CacheBank, () -> {
+                CacheBank = null;
+                onBankCached.Fire();
+            });
+            addNodes(CacheBank);
+            return;
+        }
+
         if(!Cycles.isEmpty() && !isGameStateChanging.get() && !isSolving.get())
         {
             Logger.log("Starting onstart procedure");
@@ -153,41 +425,82 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         }
     }
 
-    //refactor this
-    private void _startCycle()
+    @Override
+    public void onExit()
     {
-        if(Cycles.isEmpty())
+        super.onExit();
+        Randomizer.interrupt();
+        RandomHandler.loadRandoms();
+        if(CurrentCycle != null)
         {
-            this.stop();
-            return;
+            CurrentCycle.EndNow(this);
         }
+    }
 
-        if(CacheBank != null)
+    @Override
+    public void onPaint(Graphics graphics)
+    {
+        //Logger.log("Paint3D");
+        if(CurrentCycle != null)
         {
-            return;
+            CurrentCycle.onPaint(graphics);
         }
-
-        Logger.log("Start Cycle");
-        for(SimpleCycle next : Cycles)
+        for(var task : Tasks)
         {
-            if(next.isNeedsCachedBank() && !Bank.isCached() && !Bank.isOpen())
+            if(task != null)
             {
-                Logger.log("Bank is not cached and needs to be, visiting bank");
-                CacheBank = new OpenBankTask();
-                CacheBank.onComplete.Subscribe(CacheBank, () -> CacheBank = null);
-                addNodes(CacheBank);
-                return;
+                task.onPaint(graphics);
             }
-            if(next.Ready() && !next.isGoalMet())
+        }
+
+        if(DebugPaint)
+        {
+            if(CurrentCycle != null)
             {
-                Logger.log(next.GetName() + " goal hasn't been met, starting");
-                if(next.Start(this))
+                CurrentCycle.onDebugPaint(graphics);
+            }
+            for(var task : Tasks)
+            {
+                if(task != null)
                 {
-                    CurrentCycle = new WeakReference<>(next);
+                    task.onDebugPaint(graphics);
                 }
-                break;
             }
         }
+
+        super.onPaint(graphics);
+    }
+
+    @Override
+    public void onPaint(Graphics2D graphics)
+    {
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.onPaint(graphics);
+        }
+        for(var task : Tasks)
+        {
+            if(task != null)
+            {
+                task.onPaint(graphics);
+            }
+        }
+
+        if(DebugPaint)
+        {
+            if(CurrentCycle != null)
+            {
+                CurrentCycle.onDebugPaint(graphics);
+            }
+            for(var task : Tasks)
+            {
+                if(task != null)
+                {
+                    task.onDebugPaint(graphics);
+                }
+            }
+        }
+        super.onPaint(graphics);
     }
 
     @Override
@@ -211,7 +524,8 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             }
             else
             {
-                Logger.log("Trying to add Tasknode instead of SimpleTask: " + node.getClass().getName());
+                Logger.log("Trying to add Tasknode instead of SimpleTask: " +
+                           node.getClass().getName());
             }
         }
     }
@@ -241,8 +555,8 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             }
             else
             {
-                Logger.log(
-                        "removeNodes: Trying to remove Tasknode instead of SimpleTask: " + node.getClass().getName());
+                Logger.log("removeNodes: Trying to remove Tasknode instead of SimpleTask: " +
+                           node.getClass().getName());
             }
         }
     }
@@ -252,6 +566,28 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
     {
         return Tasks.toArray(new SimpleTask[0]);
     }
+
+    //    @Override
+    //    public boolean onSolverStart(RandomSolver solver)
+    //    {
+    //        // to prevent the next loop
+    //        isSolving.set(true);
+    //        if(isLooping.get())
+    //        {
+    //            Logger.log("LoopLock is locked, preventing solver from starting");
+    //            return false;
+    //        }
+    //
+    //        Logger.log("Locking Looplock, starting solver");
+    //        return true;
+    //    }
+    //
+    //    @Override
+    //    public void onSolverEnd(RandomSolver solver)
+    //    {
+    //        Logger.log("Completing Solver Condition");
+    //        isSolving.set(false);
+    //    }
 
     @Override
     public int onLoop()
@@ -271,7 +607,8 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         {
             if(FailCount > FailLimit.get())
             {
-                Logger.log("tpircSScript: onLoop: Fail limit exceeded, exiting, " + this.getClass().getName());
+                Logger.log("tpircSScript: onLoop: Fail limit exceeded, exiting, " +
+                           this.getClass().getName());
                 return -1;
             }
         }
@@ -281,20 +618,21 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         GameTicked.set(false);
 
         int CycleResult = 0;
-        if(CurrentCycle != null && CurrentCycle.get() != null)
+        if(CurrentCycle != null && CurrentCycle != null)
         {
-            CycleResult = CurrentCycle.get().Loop(this);
+            CycleResult = CurrentCycle.Loop(this);
         }
 
         Logger.log("tpircSScript: onLoop: CycleNullCheck: " + (CurrentCycle != null));
-        if(CurrentCycle != null && (CurrentCycle.get() != null))
+        if(CurrentCycle != null && (CurrentCycle != null))
         {
-            Logger.log(
-                    "tpircSScript: onLoop: CycleIsStarted Check: " + CurrentCycle.get().isStarted() + " CycleResult: " +
-                    CycleResult + " CycleIsComplete: " + CurrentCycle.get().isCycleComplete(this));
+            Logger.log("tpircSScript: onLoop: CycleIsStarted Check: " + CurrentCycle.isStarted() +
+                       " CycleResult: " + CycleResult + " CycleIsComplete: " +
+                       CurrentCycle.isCycleComplete(this));
         }
         if(IsActiveTaskLeft())
         {
+            // Task loop
             Logger.log("tpircSScript: onLoop: Task Loop");
             var sorted = GetSortedTasks();
             var task   = sorted.getFirst();
@@ -312,8 +650,8 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
                 if(CurrentTask.get() != null && !CurrentTask.get().equals(task))
                 {
                     Logger.log(
-                            "tpircSScript: onLoop: Replacing old task (" + CurrentTask.toString() + " with new task(" +
-                            task + ")");
+                            "tpircSScript: onLoop: Replacing old task (" + CurrentTask.toString() +
+                            " with new task(" + task + ")");
                     CurrentTask.get().ReplaceTask(this, task);
                 }
                 CurrentTask.set(task);
@@ -324,17 +662,19 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
                 FailCount = 0;
 
                 // Executing task
-                Logger.log("tpircSScript: onLoop: Executing task: " + CurrentTask.get().GetTaskName() + " (" +
-                           CurrentTask.get().getClass().getName() + ")");
+                Logger.log(
+                        "tpircSScript: onLoop: Executing task: " + CurrentTask.get().GetTaskName() +
+                        " (" + CurrentTask.get().getClass().getName() + ")");
 
                 int result = CurrentTask.get().execute();
                 //Logger.log("Task result is: " + result);
                 if(result <= 0)
                 {
                     // Stopping task
-                    Logger.log("tpircSScript: onLoop: " + CurrentTask.get().toString() + " return " + result +
-                               ", stopping task");
-                    if(!Sleep.sleepUntil(() -> StopTask(CurrentTask.get()), StopTestTimeout))
+                    Logger.log(
+                            "tpircSScript: onLoop: " + CurrentTask.get().toString() + " return " +
+                            result + ", stopping task");
+                    if(!Sleep.sleepUntil(() -> StopTask(CurrentTask.get()), StopTaskTimeout))
                     {
                         StopTaskNow(CurrentTask.get());
                     }
@@ -348,28 +688,36 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
                 return result;
             }
         }
-        else if(CurrentCycle != null && CurrentCycle.get() != null && CurrentCycle.get().isStarted() &&
-                (CycleResult <= 0 || CurrentCycle.get().isCycleComplete(this)))
+        else if(CurrentCycle != null && CurrentCycle.isStarted() &&
+                (CycleResult <= 0 || CurrentCycle.isCycleComplete(this)))
         {
             Logger.log("tpircSScript: onLoop: Cycle Complete check Loop");
-            CurrentCycle.get().CompleteCycle();
+            CurrentCycle.CompleteCycle();
             CleanUpCycle();
-            if(CurrentCycle.get().CanRestart(this))
+
+            // restart
+            if(!CurrentCycle.isGoalMet())
             {
-                CurrentCycle.get().Restart(this);
+                CurrentCycle.Restart(this);
                 isLooping.set(false);
                 GameTicked.set(false);
                 return OSRSUtilities.WaitTime(GetScriptIntensity());
             }
-            while(!CurrentCycle.get().End(this))
+
+            // end
+            while(!CurrentCycle.End(this))
             {
                 OSRSUtilities.Wait(GetScriptIntensity());
             }
+            if(CurrentCycle.hasEndTasks())
+            {
+                addNodes(CurrentCycle.GetEndTasks());
+            }
             StopCurrentCycle();
-            _startCycle();
         }
         else if(CurrentCycle == null && !Cycles.isEmpty())
         {
+            // Start Cycle
             Logger.log("tpircSScript: onLoop: Starting cuz cycle is empty");
             _startCycle();
         }
@@ -381,158 +729,6 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         isLooping.set(false);
         GameTicked.set(false);
         return OSRSUtilities.WaitTime(GetScriptIntensity());
-    }
-
-    public boolean IsActiveTaskLeft()
-    {
-        var tasks = GetSortedTasks();
-        Logger.log("tpircSScript: IsActiveTaskLeft: " + tasks.size());
-        return !tasks.isEmpty();
-    }
-
-    List<SimpleTask> GetSortedTasks()
-    {
-        return Tasks.stream().sorted((a, b) -> a.priority() - b.priority()).filter(t -> !t.isPaused() && t.isActive() &&
-                                                                                        t.accept()).toList();
-    }
-
-    public OSRSUtilities.ScriptIntenity GetScriptIntensity() {return OSRSUtilities.ScriptIntenity.Sweating;}
-
-    public boolean StopTask(SimpleTask task)
-    {
-        Logger.log("Stopping task: " + task.GetTaskName());
-        boolean result = task.StopTask(this);
-        if(result)
-        {
-            removeNodes(task);
-        }
-        return result;
-    }
-
-    public void StopTaskNow(SimpleTask task)
-    {
-        task.StopTaskNOW(this);
-        removeNodes(task);
-    }
-
-    private void CleanUpCycle()
-    {
-        Tasks.clear();
-        System.gc();
-    }
-
-    public void StopCurrentCycle()
-    {
-        if(CurrentCycle != null)
-        {
-            CurrentCycle.get().Reset(this);
-            CurrentCycle = null;
-        }
-        Collections.rotate(Cycles, -1);
-    }
-
-    @Override
-    public void onExit()
-    {
-        super.onExit();
-        Randomizer.interrupt();
-        RandomHandler.loadRandoms();
-        if(CurrentCycle != null && CurrentCycle.get() != null)
-        {
-            CurrentCycle.get().EndNow(this);
-        }
-    }
-
-    /**
-     * @return Returns current GE instance, creates one if none exists, do make sure to cleanup afterwards
-     */
-    public GEInstance GetGEInstance()
-    {
-        if(GrandExchangeInstance == null)
-        {
-            GrandExchangeInstance = new GEInstance();
-        }
-
-        return GrandExchangeInstance;
-    }
-
-    public List<SimpleTask> getSimpleTasks()
-    {
-        return Tasks;
-    }
-
-    public List<SimpleTask> getPersistentNodes()
-    {
-        return PersistentTasks;
-    }
-
-//    @Override
-//    public boolean onSolverStart(RandomSolver solver)
-//    {
-//        // to prevent the next loop
-//        isSolving.set(true);
-//        if(isLooping.get())
-//        {
-//            Logger.log("LoopLock is locked, preventing solver from starting");
-//            return false;
-//        }
-//
-//        Logger.log("Locking Looplock, starting solver");
-//        return true;
-//    }
-//
-//    @Override
-//    public void onSolverEnd(RandomSolver solver)
-//    {
-//        Logger.log("Completing Solver Condition");
-//        isSolving.set(false);
-//    }
-
-    public final void addPersistentNodes(TaskNode... nodes)
-    {
-        if(nodes == null)
-        {return;}
-
-        Logger.log("Adding persistent nodes: " + Arrays.toString(nodes));
-        for(var node : nodes)
-        {
-            if(SimpleTask.class.isAssignableFrom(node.getClass()))
-            {
-                SimpleTask Task = (SimpleTask) node;
-                Task.Init(this);
-                Logger.log("Adding Persistent task: " + Task.GetTaskName());
-                PersistentTaskListLock.lock();
-                PersistentTasks.add(Task);
-                PersistentTaskListLock.unlock();
-            }
-            else
-            {
-                Logger.log("Trying to add Tasknode instead of SimpleTask: " + node.getClass().getName());
-            }
-        }
-    }
-
-    public final void removePersistentNodes(TaskNode... nodes)
-    {
-        if(nodes == null)
-        {return;}
-
-        for(var node : nodes)
-        {
-            if(SimpleTask.class.isAssignableFrom(node.getClass()))
-            {
-                SimpleTask Task = (SimpleTask) node;
-                PersistentTaskListLock.lock();
-                Logger.log("Removing persistent task: " + Task.GetTaskName());
-                PersistentTasks.remove(Task);
-                PersistentTaskListLock.unlock();
-                Logger.log(PersistentTasks.size() + " Tasks left");
-            }
-            else
-            {
-                Logger.log("Trying to remove Tasknode instead of SimpleTask: " + node.getClass().getName());
-            }
-        }
     }
 
     @Override
@@ -559,6 +755,14 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         {
             GameTicked.set(true);
         }
+    }
+
+    List<SimpleTask> GetSortedTasks()
+    {
+        return Tasks.stream()
+                    .sorted((a, b) -> a.priority() - b.priority())
+                    .filter(t -> !t.isPaused() && t.isActive() && t.accept())
+                    .toList();
     }
 
     static Random GetRandom()

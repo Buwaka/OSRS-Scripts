@@ -33,17 +33,22 @@ public class RestorePrayerTask extends SimpleTask
             return null;
         }
 
-//        for(var altar : Altars)
-//        {
+        //        for(var altar : Altars)
+        //        {
         // TODO do something to calculate the distance of the path including teleports and shit
         // hand it over to traveltask
         //WebPathQuery.builder().from(Players.getLocal().getTile()).to(altar.Location).build().calculate()
-//        }
+        //        }
 
         var playerpos = Players.getLocal().getTile();
-        return Arrays.stream(Altars).min((x, y) -> (int) (
-                (LocalPathFinder.getLocalPathFinder().getWalkingDistance(playerpos, y.Location) -
-                 LocalPathFinder.getLocalPathFinder().getWalkingDistance(playerpos, x.Location)) * 100)).get();
+        return Arrays.stream(Altars)
+                     .min((x, y) -> (int) ((LocalPathFinder.getLocalPathFinder()
+                                                           .getWalkingDistance(playerpos,
+                                                                               y.Location) -
+                                            LocalPathFinder.getLocalPathFinder()
+                                                           .getWalkingDistance(playerpos,
+                                                                               x.Location)) * 100))
+                     .get();
     }
 
     @Nonnull
@@ -59,7 +64,8 @@ public class RestorePrayerTask extends SimpleTask
     @Override
     protected boolean Ready()
     {
-        boolean NeedJesus = Skills.getBoostedLevel(Skill.PRAYER) < Skills.getRealLevel(Skill.PRAYER);
+        boolean NeedJesus =
+                Skills.getBoostedLevel(Skill.PRAYER) < Skills.getRealLevel(Skill.PRAYER);
         return NeedJesus && super.Ready();
     }
 

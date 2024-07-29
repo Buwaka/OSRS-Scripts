@@ -27,14 +27,16 @@ public class FleeOvercrowdTask extends SimpleTask
     {
         super("Flee Overcrowded Area");
         //SetPersistant(true);
-        TaskPriority.set(-1);
+        SetTaskPriority(-1);
     }
 
     @Override
     public boolean Ready()
     {
-        boolean IsNotInteracting = !Players.getLocal().isInteractedWith() && WaitForEndInteract.get();
-        return IsNotInteracting && OSRSUtilities.IsAreaBusy(MaxPlayers.get(), OnlyActivePlayers.get()) && super.Ready();
+        boolean IsNotInteracting =
+                !Players.getLocal().isInteractedWith() && WaitForEndInteract.get();
+        return IsNotInteracting &&
+               OSRSUtilities.IsAreaBusy(MaxPlayers.get(), OnlyActivePlayers.get()) && super.Ready();
     }
 
     @Override
@@ -44,7 +46,7 @@ public class FleeOvercrowdTask extends SimpleTask
         {
             return 0;
         }
-        return OSRSUtilities.WaitTime(ScriptIntensity.get());
+        return OSRSUtilities.WaitTime(GetScriptIntensity());
     }
 
     @Nonnull

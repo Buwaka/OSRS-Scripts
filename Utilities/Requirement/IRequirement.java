@@ -15,10 +15,12 @@ public interface IRequirement extends Serializable
         Level,
         QuestPoint,
         Quest,
-        Lambda
+        Lambda,
+        Member,
+        Any
     }
 
-    boolean isRequirementMet();
-
     RequirementType GetRequirementType();
+
+    boolean isRequirementMet();
 }

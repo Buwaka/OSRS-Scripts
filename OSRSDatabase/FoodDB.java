@@ -46,14 +46,94 @@ public class FoodDB extends OSRSDataBase
         }
     }
 
-    public static boolean isFood(int ID)
+    public static Food[] GetBattleFoods(boolean f2p)
     {
-        var food = GetFood(ID);
-        if(food != null)
+        if(!BattleFoodDBCache.isEmpty())
         {
-            return true;
+            return BattleFoodDBCache.values().toArray(new Food[0]);
         }
-        return false;
+
+        List<Food> out = new ArrayList<>();
+        try
+        {
+            BattleFoodDBLock.lock();
+            InputStreamReader File   = new InputStreamReader(GetInputStream(BattleFoodDB));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = new Gson();
+            Reader.setLenient(true);
+
+            Reader.beginObject();
+
+            while(Reader.hasNext())
+            {
+                int  ID  = Integer.parseInt(Reader.nextName());
+                Food Obj = gson.fromJson(Reader, Food.class);
+                if(!f2p || Obj.members)
+                {
+                    out.add(Obj);
+                }
+                BattleFoodDBCache.put(ID, Obj);
+            }
+
+            Reader.endObject();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            if(BattleFoodDBLock.isLocked() && BattleFoodDBLock.isHeldByCurrentThread())
+            {
+                BattleFoodDBLock.unlock();
+            }
+            throw new RuntimeException(e);
+        }
+
+        BattleFoodDBLock.unlock();
+        return out.toArray(out.toArray(new Food[0]));
+    }
+
+    public static Food[] GetCommonFoods(boolean Member)
+    {
+        if(!CommonFoodDBCache.isEmpty())
+        {
+            return CommonFoodDBCache.values().toArray(new Food[0]);
+        }
+
+        List<Food> out = new ArrayList<>();
+        try
+        {
+            CommonFoodDBLock.lock();
+            InputStreamReader File   = new InputStreamReader(GetInputStream(CommonFoodDB));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = new Gson();
+            Reader.setLenient(true);
+
+            Reader.beginObject();
+
+            while(Reader.hasNext())
+            {
+                int  ID  = Integer.parseInt(Reader.nextName());
+                Food Obj = gson.fromJson(Reader, Food.class);
+                if(!Obj.members || Member)
+                {
+                    out.add(Obj);
+                }
+                CommonFoodDBCache.put(ID, Obj);
+            }
+
+            Reader.endObject();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            if(CommonFoodDBLock.isLocked() && CommonFoodDBLock.isHeldByCurrentThread())
+            {
+                CommonFoodDBLock.unlock();
+            }
+            throw new RuntimeException(e);
+        }
+
+        CommonFoodDBLock.unlock();
+        return out.toArray(out.toArray(new Food[0]));
     }
 
     public static Food GetFood(int FoodID)
@@ -151,93 +231,13 @@ public class FoodDB extends OSRSDataBase
         return out.toArray(out.toArray(new Food[0]));
     }
 
-    public static Food[] GetBattleFoods(boolean f2p)
+    public static boolean isFood(int ID)
     {
-        if(!BattleFoodDBCache.isEmpty())
+        var food = GetFood(ID);
+        if(food != null)
         {
-            return BattleFoodDBCache.values().toArray(new Food[0]);
+            return true;
         }
-
-        List<Food> out = new ArrayList<>();
-        try
-        {
-            BattleFoodDBLock.lock();
-            InputStreamReader File   = new InputStreamReader(GetInputStream(BattleFoodDB));
-            JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
-            Reader.setLenient(true);
-
-            Reader.beginObject();
-
-            while(Reader.hasNext())
-            {
-                int  ID  = Integer.parseInt(Reader.nextName());
-                Food Obj = gson.fromJson(Reader, Food.class);
-                if(!f2p || Obj.members)
-                {
-                    out.add(Obj);
-                }
-                BattleFoodDBCache.put(ID, Obj);
-            }
-
-            Reader.endObject();
-            Reader.close();
-
-        } catch(Exception e)
-        {
-            if(BattleFoodDBLock.isLocked() && BattleFoodDBLock.isHeldByCurrentThread())
-            {
-                BattleFoodDBLock.unlock();
-            }
-            throw new RuntimeException(e);
-        }
-
-        BattleFoodDBLock.unlock();
-        return out.toArray(out.toArray(new Food[0]));
-    }
-
-    public static Food[] GetCommonFoods(boolean Member)
-    {
-        if(!CommonFoodDBCache.isEmpty())
-        {
-            return CommonFoodDBCache.values().toArray(new Food[0]);
-        }
-
-        List<Food> out = new ArrayList<>();
-        try
-        {
-            CommonFoodDBLock.lock();
-            InputStreamReader File   = new InputStreamReader(GetInputStream(CommonFoodDB));
-            JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
-            Reader.setLenient(true);
-
-            Reader.beginObject();
-
-            while(Reader.hasNext())
-            {
-                int  ID  = Integer.parseInt(Reader.nextName());
-                Food Obj = gson.fromJson(Reader, Food.class);
-                if(!Obj.members || Member)
-                {
-                    out.add(Obj);
-                }
-                CommonFoodDBCache.put(ID, Obj);
-            }
-
-            Reader.endObject();
-            Reader.close();
-
-        } catch(Exception e)
-        {
-            if(CommonFoodDBLock.isLocked() && CommonFoodDBLock.isHeldByCurrentThread())
-            {
-                CommonFoodDBLock.unlock();
-            }
-            throw new RuntimeException(e);
-        }
-
-        CommonFoodDBLock.unlock();
-        return out.toArray(out.toArray(new Food[0]));
+        return false;
     }
 }

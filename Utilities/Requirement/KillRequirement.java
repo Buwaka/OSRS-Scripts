@@ -11,17 +11,17 @@ public class KillRequirement implements IRequirement
      * @return
      */
     @Override
-    public boolean isRequirementMet()
+    public IRequirement.RequirementType GetRequirementType()
     {
-        return false;
+        return IRequirement.RequirementType.Kill;
     }
 
     /**
      * @return
      */
     @Override
-    public IRequirement.RequirementType GetRequirementType()
+    public boolean isRequirementMet()
     {
-        return IRequirement.RequirementType.Kill;
+        return false;
     }
 }

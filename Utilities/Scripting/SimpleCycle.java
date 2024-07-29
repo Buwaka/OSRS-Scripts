@@ -19,7 +19,7 @@ import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 @JsonTypeName("SimpleCycle")
-public class SimpleCycle implements ICycle, Serializable
+public abstract class SimpleCycle implements ICycle, Serializable
 {
     /**
      * When a cycle is completed, this is called, the goal might not have been met yet
@@ -36,13 +36,11 @@ public class SimpleCycle implements ICycle, Serializable
     private @Nullable List<IRequirement>  Requirements    = null;
     private           String              CycleName       = "";
     private           boolean             NeedsCachedBank = true;
+    private           List<SimpleTask>    StartUpTasks    = null;
+    private           List<SimpleTask>    EndTasks        = null;
     private transient CycleType           Type            = CycleType.NaturalEnd;
     private transient int                 CycleCount      = 0;
-    private           int                 CycleCountLimit = -1;
-    /**
-     * If the task is complete AND has been cleaned up, check CanRestart for whether its just complete
-     */
-    private transient boolean             Finished        = false;
+    private @Nullable Integer             CycleCountLimit = null;
     private transient boolean             Started         = false;
     private           EnumSet<ECycleTags> Tags            = EnumSet.noneOf(ECycleTags.class);
 
@@ -60,22 +58,19 @@ public class SimpleCycle implements ICycle, Serializable
         CycleName = name;
     }
 
-    public tpircSScript GetScript()
+    public void AddEndTask(SimpleTask... Tasks)
     {
-        return ParentScript.get();
-    }
+        if(EndTasks == null)
+        {
+            EndTasks = new ArrayList<>();
+        }
 
-    public void AddRequirement(IRequirement... requirement)
-    {
-        if(Requirements == null)
+        for(var task : Tasks)
         {
-            Requirements = new ArrayList<>();
+            task.onComplete.Subscribe(this, () -> EndTasks.remove(task));
         }
-        if(requirement == null)
-        {
-            return;
-        }
-        Collections.addAll(Requirements, requirement);
+
+        EndTasks.addAll(List.of(Tasks));
     }
 
     public void AddGoal(IRequirement... requirement)
@@ -91,14 +86,138 @@ public class SimpleCycle implements ICycle, Serializable
         Collections.addAll(Goal, requirement);
     }
 
+    public void AddRequirement(IRequirement... requirement)
+    {
+        if(Requirements == null)
+        {
+            Requirements = new ArrayList<>();
+        }
+        if(requirement == null)
+        {
+            return;
+        }
+        Collections.addAll(Requirements, requirement);
+    }
+
+    public void AddStartUpTask(SimpleTask... Tasks)
+    {
+        if(StartUpTasks == null)
+        {
+            StartUpTasks = new ArrayList<>();
+        }
+
+        for(var task : Tasks)
+        {
+            task.onComplete.Subscribe(this, () -> StartUpTasks.remove(task));
+        }
+
+        StartUpTasks.addAll(List.of(Tasks));
+    }
+
     public void AddTag(EnumSet<ECycleTags> tags)
     {
         Tags.addAll(tags);
     }
 
+    public final boolean End(tpircSScript Script)
+    {
+        onCycleEnd.Fire();
+        return onEnd(Script);
+    }
+
+    /**
+     * No excuses, the cycle ends now, doesn't trigger any delegate, be sure to call End first in case you want it to fire
+     */
+    public final void EndNow(tpircSScript Script)
+    {
+        onEndNow(Script);
+    }
+
+    public int GetCycleLimit()
+    {
+        return CycleCountLimit;
+    }
+
+    public String GetName() {return CycleName;}
+
+    public tpircSScript GetScript()
+    {
+        return ParentScript.get();
+    }
+
+    public boolean IsRequirementMet()
+    {
+        if(Requirements == null)
+        {
+            return true;
+        }
+
+        boolean result = true;
+        for(var requirement : Requirements)
+        {
+            result &= requirement.isRequirementMet();
+        }
+        return result;
+    }
+
     public void RemoveTag(EnumSet<ECycleTags> tags)
     {
         Tags.removeAll(tags);
+    }
+
+    public final void Reset(tpircSScript Script)
+    {
+        if(GetCycleType() == CycleType.byCount)
+        {
+            CycleCount = 0;
+        }
+        onReset(Script);
+    }
+
+    public final boolean Restart(tpircSScript Script)
+    {
+        return onRestart(Script);
+    }
+
+    public void SetCycleLimit(int Limit)
+    {
+        CycleCountLimit = Limit;
+    }
+
+    public void SetName(String name) {CycleName = name;}
+
+    public boolean hasEndTasks()
+    {
+        if(EndTasks == null)
+        {
+            return false;
+        }
+
+        for(var task : EndTasks)
+        {
+            if(!task.isFinished())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasStartUpTasks()
+    {
+        if(StartUpTasks == null)
+        {
+            return false;
+        }
+
+        for(var task : StartUpTasks)
+        {
+            if(!task.isFinished())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isNeedsCachedBank()
@@ -111,9 +230,64 @@ public class SimpleCycle implements ICycle, Serializable
         NeedsCachedBank = needsCachedBank;
     }
 
-    public String GetName()          {return CycleName;}
+    protected final void CompleteCycle()
+    {
+        switch(Type)
+        {
+            case byCount ->
+            {
+                Logger.log("Completed Cycle " + (CycleCount + 1) + " of " + CycleCountLimit);
+            }
+            case byGoal ->
+            {
+                Logger.log("Completed Cycle, is goal met:  " + isGoalMet());
+            }
+            case Endless ->
+            {
+                Logger.log("Completed Cycle, Cycle is endless");
+            }
+            case NaturalEnd ->
+            {
+                Logger.log("Completed Cycle, Cycle is NaturalEnd");
+            }
+        }
 
-    public void SetName(String name) {CycleName = name;}
+        CycleCount++;
+        onCompleteCycle.Fire();
+    }
+
+    protected SimpleTask[] GetEndTasks()
+    {
+        return EndTasks.toArray(new SimpleTask[0]);
+    }
+
+    protected SimpleTask[] GetStartupTasks()
+    {
+        return StartUpTasks.toArray(new SimpleTask[0]);
+    }
+
+    protected final int Loop(tpircSScript Script)
+    {
+        int result = onLoop(Script);
+        return result;
+    }
+
+    protected boolean Ready()
+    {
+        return IsRequirementMet();
+    }
+
+    protected final void ResetCycleCount()
+    {
+        CycleCount = 0;
+    }
+
+    protected final boolean Start(tpircSScript Script)
+    {
+        Started      = true;
+        ParentScript = new WeakReference<>(Script);
+        return onStart(Script);
+    }
 
     public String toString()
     {
@@ -127,21 +301,39 @@ public class SimpleCycle implements ICycle, Serializable
     }
 
     @Override
-    public void SetCycleType(CycleType Type)
-    {
-        this.Type = Type;
-    }
-
-    @Override
     public CycleType GetCycleType()
     {
         return Type;
     }
 
     @Override
-    public boolean isFinished()
+    public void SetCycleType(CycleType Type)
     {
-        return Finished;
+        this.Type = Type;
+    }
+
+    /**
+     * will be called once there are no active tasks anymore, aka a single cycle has been completed
+     *
+     * @param Script
+     *
+     * @return true when Cycle is completed, ready for a restart
+     */
+    @Override
+    public boolean isCycleComplete(tpircSScript Script)
+    {
+        return !Script.IsActiveTaskLeft();
+    }
+
+    /**
+     * @param Script
+     *
+     * @return true when Cycle is completely done and should/will be terminated, typically the same as isCycleComplete
+     */
+    @Override
+    public boolean isCycleFinished(tpircSScript Script)
+    {
+        return isCycleComplete(Script);
     }
 
     @Override
@@ -151,26 +343,23 @@ public class SimpleCycle implements ICycle, Serializable
     }
 
     /**
-     * will be called once there are no active tasks anymore, aka a single cycle has been completed
-     *
      * @param Script
      *
-     * @return Cycle completed, ready for a restart
+     * @return if cycle has successfully started
      */
     @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public boolean onStart(tpircSScript Script)
     {
-        return isGoalMet();
+        return true;
     }
 
     /**
      * @return Whether the goal of this cycle has been met, based on CycleType
-     * aka all cycles are finished, time to end this cycle loop
      */
-    @Override
-    public boolean isGoalMet()
+
+    boolean isGoalMet()
     {
-        if(NeedsCachedBank && !Bank.isCached())
+        if(NeedsCachedBank && !Bank.isCached() || !Started)
         {
             return false;
         }
@@ -179,7 +368,7 @@ public class SimpleCycle implements ICycle, Serializable
         {
             case byCount ->
             {
-                if(CycleCount >= CycleCountLimit)
+                if(CycleCountLimit != null && CycleCount >= CycleCountLimit)
                 {
                     Logger.log("SimpleCycle: isGoalMet: byCount true");
                     return true;
@@ -210,167 +399,11 @@ public class SimpleCycle implements ICycle, Serializable
             }
             case NaturalEnd ->
             {
-                Logger.log("SimpleCycle: isGoalMet: natural end: " + isFinished());
-                return isFinished();
+                boolean result = isCycleFinished(GetScript());
+                Logger.log("SimpleCycle: isGoalMet: natural end: " + result);
+                return result;
             }
         }
         return false;
-    }
-
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        Script.onTaskRemoved.Subscribe(this, () -> {
-            if(Script.getSimpleTasks().isEmpty())
-            {
-                Finish();
-            }
-        });
-        return true;
-    }
-
-    public void SetCycleLimit(int Limit)
-    {
-        CycleCountLimit = Limit;
-    }
-
-    public int GetCycleLimit()
-    {
-        return CycleCountLimit;
-    }
-
-    public final boolean End(tpircSScript Script)
-    {
-        Finished = true;
-        onCycleEnd.Fire();
-        return onEnd(Script);
-    }
-
-    //protected boolean CanStart(tpircSScript Script) { return true;}
-
-    /**
-     * No excuses, the cycle ends now, doesn't trigger any delegate, be sure to call End first in case you want it to fire
-     */
-    public final void EndNow(tpircSScript Script)
-    {
-        onEndNow(Script);
-    }
-
-    public boolean CanRestart(tpircSScript Script)
-    {
-        switch(Type)
-        {
-            case byCount ->
-            {
-                if(CycleCount < CycleCountLimit)
-                {
-                    return true;
-                }
-            }
-            case byGoal ->
-            {
-                if(isGoalMet())
-                {
-                    return true;
-                }
-            }
-            case Endless ->
-            {
-                return true;
-            }
-            case NaturalEnd ->
-            {
-                return isFinished();
-            }
-        }
-        return false;
-    }
-
-    public final boolean Restart(tpircSScript Script)
-    {
-        return onRestart(Script);
-    }
-
-    public final void Reset(tpircSScript Script)
-    {
-        if(GetCycleType() == CycleType.byCount)
-        {
-            CycleCount = 0;
-        }
-        onReset(Script);
-    }
-
-    protected final void CompleteCycle()
-    {
-        switch(Type)
-        {
-            case byCount ->
-            {
-                Logger.log("Completed Cycle " + (CycleCount + 1) + " of " + CycleCountLimit);
-            }
-            case byGoal ->
-            {
-                Logger.log("Completed Cycle, is goal met:  " + isGoalMet());
-            }
-            case Endless ->
-            {
-                Logger.log("Completed Cycle, Cycle is endless");
-            }
-            case NaturalEnd ->
-            {
-                Logger.log("Completed Cycle, Cycle is NaturalEnd");
-            }
-        }
-
-        CycleCount++;
-        onCompleteCycle.Fire();
-    }
-
-    protected final void ResetCycleCount()
-    {
-        CycleCount = 0;
-    }
-
-    protected final boolean Start(tpircSScript Script)
-    {
-        Started      = true;
-        ParentScript = new WeakReference<>(Script);
-        return onStart(Script);
-    }
-
-    protected final void Finish()
-    {
-        Finished = true;
-    }
-
-    protected final int Loop(tpircSScript Script)
-    {
-        int result = onLoop(Script);
-        return result;
-    }
-
-    protected boolean Ready()
-    {
-        return IsRequirementMet();
-    }
-
-    public boolean IsRequirementMet()
-    {
-        if(Requirements == null)
-        {
-            return true;
-        }
-
-        boolean result = true;
-        for(var requirement : Requirements)
-        {
-            result &= requirement.isRequirementMet();
-        }
-        return result;
     }
 }

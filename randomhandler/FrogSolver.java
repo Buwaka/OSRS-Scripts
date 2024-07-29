@@ -48,7 +48,9 @@ public class FrogSolver extends RandomSolver
         int ran          = Calculations.random(1, 6);
         NPC froggyFrog   = NPCs.closest(MAIN_FROG);//Just the main frog
         NPC froggyPrince = NPCs.closest(ROYAL_FROGS);
-        froggyPrince = (froggyPrince == null ? NPCs.closest("Frog Prince", "Frog Princess") : froggyPrince);
+        froggyPrince = (froggyPrince == null
+                ? NPCs.closest("Frog Prince", "Frog Princess")
+                : froggyPrince);
 
         if(froggyFrog != null)
         {
@@ -72,7 +74,8 @@ public class FrogSolver extends RandomSolver
                 Sleep.sleepUntil(Dialogues::inDialogue, 10000);
                 RandomHandler.powerThroughDialogue();
                 Sleep.sleep(1350, 2850);
-                if(Arrays.stream(Dialogues.getOptions()).noneMatch(o -> o.toLowerCase().contains("no")))
+                if(Arrays.stream(Dialogues.getOptions())
+                         .noneMatch(o -> o.toLowerCase().contains("no")))
                 {
                     Sleep.sleep(1450, 2850);
                     Sleep.sleepUntil(Dialogues::canContinue, 10000);
@@ -85,7 +88,8 @@ public class FrogSolver extends RandomSolver
             if(Dialogues.inDialogue())
             {
                 Sleep.sleep(1350, 2850);
-                if(Arrays.stream(Dialogues.getOptions()).noneMatch(o -> o.toLowerCase().contains("no")))
+                if(Arrays.stream(Dialogues.getOptions())
+                         .noneMatch(o -> o.toLowerCase().contains("no")))
                 {
                     Sleep.sleep(1450, 2850);
                     Sleep.sleepUntil(Dialogues::canContinue, 10000);

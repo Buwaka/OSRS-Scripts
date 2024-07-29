@@ -25,6 +25,26 @@ public class HerbDB extends OSRSDataBase
         }
     }
 
+    public static int[] GetCleanHerbList()
+    {
+        if(HerbDBMap == null)
+        {
+            ReadHerbDB();
+        }
+
+        return HerbDBMap.keySet().stream().filter(t -> !isGrimyHerb(t)).mapToInt(t -> t).toArray();
+    }
+
+    public static int[] GetGrimyHerbList()
+    {
+        if(HerbDBMap == null)
+        {
+            ReadHerbDB();
+        }
+
+        return HerbDBMap.keySet().stream().filter(t -> isGrimyHerb(t)).mapToInt(t -> t).toArray();
+    }
+
     public static HerbData GetHerbData(int ID)
     {
         if(HerbDBMap == null)
@@ -33,6 +53,51 @@ public class HerbDB extends OSRSDataBase
         }
 
         return HerbDBMap.get(ID);
+    }
+
+    public static int[] GetHerbList()
+    {
+        if(HerbDBMap == null)
+        {
+            ReadHerbDB();
+        }
+
+        return HerbDBMap.keySet().stream().mapToInt(t -> t).toArray();
+    }
+
+    public static boolean isCleanHerb(int ID)
+    {
+        return !isGrimyHerb(ID);
+    }
+
+    public static boolean isGrimyHerb(int ID)
+    {
+        if(HerbDBMap == null)
+        {
+            ReadHerbDB();
+        }
+
+        return HerbDBMap.containsKey(ID) && HerbDBMap.get(ID).grimy_id == ID;
+    }
+
+    public static boolean isHerb(int ID)
+    {
+        if(HerbDBMap == null)
+        {
+            ReadHerbDB();
+        }
+
+        return HerbDBMap.containsKey(ID);
+    }
+
+    public static boolean isHerb(String name)
+    {
+        if(HerbDBMap == null)
+        {
+            ReadHerbDB();
+        }
+
+        return HerbDBMap.search(1, (key, val) -> val.name.equalsIgnoreCase(name)) != null;
     }
 
     private static void ReadHerbDB()
@@ -63,70 +128,5 @@ public class HerbDB extends OSRSDataBase
             Logger.log("Error reading HerbDB, Exception: " + e);
             throw new RuntimeException(e);
         }
-    }
-
-    public static boolean isHerb(int ID)
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.containsKey(ID);
-    }
-
-    public static boolean isHerb(String name)
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.search(1, (key, val) -> val.name.equalsIgnoreCase(name)) != null;
-    }
-
-    public static boolean isCleanHerb(int ID)
-    {
-        return !isGrimyHerb(ID);
-    }
-
-    public static boolean isGrimyHerb(int ID)
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.containsKey(ID) && HerbDBMap.get(ID).grimy_id == ID;
-    }
-
-    public static int[] GetGrimyHerbList()
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.keySet().stream().filter(t -> isGrimyHerb(t)).mapToInt(t -> t).toArray();
-    }
-
-    public static int[] GetCleanHerbList()
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.keySet().stream().filter(t -> !isGrimyHerb(t)).mapToInt(t -> t).toArray();
-    }
-
-    public static int[] GetHerbList()
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.keySet().stream().mapToInt(t -> t).toArray();
     }
 }

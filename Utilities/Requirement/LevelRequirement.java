@@ -3,10 +3,13 @@ package Utilities.Requirement;
 import org.dreambot.api.methods.skills.Skill;
 import org.dreambot.api.methods.skills.Skills;
 
+import javax.annotation.Nullable;
+
 public class LevelRequirement implements IRequirement
 {
-    Skill   skill;
-    int     level;
+    Skill skill;
+    int   level;
+    @Nullable
     Integer maxLevel = null;
 
     public LevelRequirement(Skill skill, int level)
@@ -26,6 +29,15 @@ public class LevelRequirement implements IRequirement
      * @return
      */
     @Override
+    public IRequirement.RequirementType GetRequirementType()
+    {
+        return IRequirement.RequirementType.Level;
+    }
+
+    /**
+     * @return
+     */
+    @Override
     public boolean isRequirementMet()
     {
         if(maxLevel != null)
@@ -33,15 +45,6 @@ public class LevelRequirement implements IRequirement
             return Skills.getRealLevel(skill) >= level && Skills.getRealLevel(skill) < maxLevel;
         }
         return Skills.getRealLevel(skill) >= level;
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public IRequirement.RequirementType GetRequirementType()
-    {
-        return IRequirement.RequirementType.Level;
     }
 
 

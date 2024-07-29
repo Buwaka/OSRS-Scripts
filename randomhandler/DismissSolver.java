@@ -69,8 +69,9 @@ public class DismissSolver extends RandomSolver
             if(Calculations.random(2) == 1)
             {
                 int ran = Calculations.random(1, 6);
-                RandomHandler.log("Delaying speaking to " + random.getName() + " for " + ran + " seconds...",
-                                  "DismissSolver");
+                RandomHandler.log(
+                        "Delaying speaking to " + random.getName() + " for " + ran + " seconds...",
+                        "DismissSolver");
                 Sleep.sleep(ran * 1000L);
             }
             Sleep.sleep(350, 850);

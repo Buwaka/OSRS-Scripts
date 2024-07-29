@@ -19,6 +19,11 @@ public class RestoreFullHealthTask extends SimpleTask
         super(Name);
     }
 
+    public boolean IsFullHealth()
+    {
+        return Players.getLocal().getHealthPercent() == 100;
+    }
+
     @Nonnull
     @Override
     public TaskType GetTaskType()
@@ -40,7 +45,7 @@ public class RestoreFullHealthTask extends SimpleTask
             return 0;
         }
 
-        OSRSUtilities.ScriptIntenity Intensity = ScriptIntensity.get();
+        OSRSUtilities.ScriptIntenity Intensity = GetScriptIntensity();
 
         if(Rations == null && OSRSUtilities.InventoryContainsAnyFoods(Client.isMembers()))
         {
@@ -51,7 +56,8 @@ public class RestoreFullHealthTask extends SimpleTask
         {
             if(Rations == null)
             {
-                Rations = new GetCombatRationsTask("Restore Full Health", OSRSUtilities.GetMissingHP());
+                Rations = new GetCombatRationsTask("Restore Full Health",
+                                                   OSRSUtilities.GetMissingHP());
             }
             if(Rations.Loop() == 0)
             {
@@ -60,10 +66,5 @@ public class RestoreFullHealthTask extends SimpleTask
         }
 
         return super.Loop();
-    }
-
-    public boolean IsFullHealth()
-    {
-        return Players.getLocal().getHealthPercent() == 100;
     }
 }

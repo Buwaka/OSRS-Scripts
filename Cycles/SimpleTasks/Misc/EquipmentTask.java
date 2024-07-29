@@ -1,5 +1,6 @@
 package Cycles.SimpleTasks.Misc;
 
+import Utilities.Combat.MeleeCombat;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -25,17 +26,34 @@ public class EquipmentTask extends SimpleTask
         super(Name);
     }
 
+    public EquipmentTask(String Name, MeleeCombat.Equipment equipment)
+    {
+        super(Name);
+
+        for(var slot : equipment.equip.entrySet())
+        {
+            if(slot == null || slot.getKey() == null ||
+               (Equipment.contains(slot.getValue().id) && !slot.getValue().stackable))
+            {
+                continue;
+            }
+            ToEquip.put(slot.getKey().GetDreamBotSkill(), slot.getValue().id);
+        }
+
+        Logger.log(ToEquip);
+    }
+
     public void Equip(EquipmentSlot Slot, int id)
     {
         ToEquip.put(Slot, id);
         ToUnEquip.remove(Slot);
     }
 
-//    public void Equip(int id)
-//    {
-//        var slot = Equipment.slot(id);
-//        ToEquip.put(EquipmentSlot.forOriginalSlotId(slot), id);
-//    }
+    //    public void Equip(int id)
+    //    {
+    //        var slot = Equipment.slot(id);
+    //        ToEquip.put(EquipmentSlot.forOriginalSlotId(slot), id);
+    //    }
 
     public void UnEquip(EquipmentSlot Slot)
     {
@@ -69,8 +87,9 @@ public class EquipmentTask extends SimpleTask
         boolean result = true;
         for(var equip : ToEquip.values())
         {
-            result &= Inventory.contains(equip);
+            result &= Inventory.contains(equip) || Equipment.contains(equip);
         }
+        Logger.log("EquipmentTask: Ready: EquipCheck: " + result);
 
         return result && super.Ready();
     }
@@ -115,7 +134,8 @@ public class EquipmentTask extends SimpleTask
                 Bank.depositAllItems();
             }
             var set = ToEquip.entrySet().iterator().next();
-            Logger.log("EquipmentTask: Loop: Equip ID " + set.getValue() + " for slot " + set.getKey());
+            Logger.log("EquipmentTask: Loop: Equip ID " + set.getValue() + " for slot " +
+                       set.getKey());
             if(Equipment.equip(set.getKey(), set.getValue()))
             {
                 ToEquip.remove(set.getKey());

@@ -1,0 +1,233 @@
+[
+  {
+    "id": 556,
+    "level": 1,
+    "name": "Air rune",
+    "exp": 5,
+    "creation": "Normal/Pure",
+    "combination": null,
+    "memberUse": 0,
+    "memberCraft": 0,
+    "levelMultiplier": [[2,11],[3,22],[4,33],[5,44],[6,55],[7,66],[8,77],[9,88],[10,99]]
+  },
+  {
+    "id": 558,
+    "level": 2,
+    "name": "Mind rune",
+    "exp": 5.5,
+    "creation": "Normal/Pure",
+    "combination": null,
+    "memberUse": 0,
+    "memberCraft": 0,
+    "levelMultiplier": [[2,14],[3,28],[4,42],[5,56],[6,70],[7,84],[8,98]]
+  },
+  {
+    "id": 555,
+    "level": 5,
+    "name": "Water rune",
+    "exp": 6,
+    "creation": "Normal/Pure",
+    "combination": null,
+    "memberUse": 0,
+    "memberCraft": 0,
+    "levelMultiplier": [[2,19],[3,38],[4,57],[5,76],[6,95]]
+  },
+  {
+    "id": 557,
+    "level": 9,
+    "name": "Earth rune",
+    "exp": 6.5,
+    "creation": "Normal/Pure",
+    "combination": null,
+    "memberUse": 0,
+    "memberCraft": 0,
+    "levelMultiplier": [[2,26],[3,52],[4,78],[5,104]]
+  },
+  {
+    "id": 554,
+    "level": 14,
+    "name": "Fire rune",
+    "exp": 7,
+    "creation": "Normal/Pure",
+    "combination": null,
+    "memberUse": 0,
+    "memberCraft": 0,
+    "levelMultiplier": [[2,35],[3,70]]
+  },
+  {
+    "id": 559,
+    "level": 20,
+    "name": "Body rune",
+    "exp": 7.5,
+    "creation": "Normal/Pure",
+    "combination": null,
+    "memberUse": 0,
+    "memberCraft": 0,
+    "levelMultiplier": [[2,46],[3,92]]
+  },
+  {
+    "id": 564,
+    "level": 27,
+    "name": "Cosmic rune",
+    "exp": 8,
+    "creation": "Pure",
+    "combination": null,
+    "memberUse": 0,
+    "memberCraft": 1,
+    "levelMultiplier": [[2,59]]
+  },
+  {
+    "id": 562,
+    "level": 35,
+    "name": "Chaos rune",
+    "exp": 8.5,
+    "creation": "Pure",
+    "combination": null,
+    "memberUse": 0,
+    "memberCraft": 1,
+    "levelMultiplier": [[2,74]]
+  },
+  {
+    "id": 9075,
+    "level": 40,
+    "name": "Astral rune",
+    "exp": 8.7,
+    "creation": "Pure",
+    "combination": null,
+    "memberUse": 1,
+    "memberCraft": 1,
+    "levelMultiplier": [[2,82]]
+  },
+  {
+    "id": 561,
+    "level": 44,
+    "name": "Nature rune",
+    "exp": 9,
+    "creation": "Pure",
+    "combination": null,
+    "memberUse": 0,
+    "memberCraft": 1,
+    "levelMultiplier": [[2,91]]
+  },
+  {
+    "id": 563,
+    "level": 54,
+    "name": "Law rune",
+    "exp": 9.5,
+    "creation": "Pure",
+    "combination": null,
+    "memberUse": 0,
+    "memberCraft": 1,
+    "levelMultiplier": [[2,95]]
+  },
+  {
+    "id": 560,
+    "level": 65,
+    "name": "Death rune",
+    "exp": 10,
+    "creation": "Pure",
+    "combination": null,
+    "memberUse": 0,
+    "memberCraft": 1,
+    "levelMultiplier": [[2,99]]
+  },
+  {
+    "id": 565,
+    "level": 77,
+    "name": "Blood rune",
+    "exp": 10.5,
+    "creation": "Pure",
+    "combination": null,
+    "memberUse": 1,
+    "memberCraft": 1,
+    "levelMultiplier": null
+  },
+  {
+    "id": 566,
+    "level": 90,
+    "name": "Soul rune",
+    "exp": 29.7,
+    "creation": "Dark",
+    "combination": null,
+    "memberUse": 1,
+    "memberCraft": 1,
+    "levelMultiplier": null
+  },
+  {
+    "id": 21880,
+    "level": 95,
+    "name": "Wrath rune",
+    "exp": 8,
+    "creation": "Pure",
+    "combination": null,
+    "memberUse": 1,
+    "memberCraft": 1,
+    "levelMultiplier": null
+  },
+  {
+    "id": 4695,
+    "level": 6,
+    "name": "Mist rune",
+    "exp": 8.5,
+    "creation": "Combination",
+    "combination": [556,555],
+    "memberUse": 1,
+    "memberCraft": 1,
+    "levelMultiplier": null
+  },
+  {
+    "id": 4696,
+    "level": 10,
+    "name": "Dust rune",
+    "exp": 9,
+    "creation": "Combination",
+    "combination": [556,557],
+    "memberUse": 1,
+    "memberCraft": 1,
+    "levelMultiplier": null
+  },
+  {
+    "id": 4698,
+    "level": 13,
+    "name": "Mud rune",
+    "exp": 9.5,
+    "creation": "Combination",
+    "combination": [555,557],
+    "memberUse": 1,
+    "memberCraft": 1,
+    "levelMultiplier": null
+  },
+  {
+    "id": 4697,
+    "level": 15,
+    "name": "Smoke rune",
+    "exp": 9.5,
+    "creation": "Combination",
+    "combination": [556,554],
+    "memberUse": 1,
+    "memberCraft": 1,
+    "levelMultiplier": null
+  },
+  {
+    "id": 4694,
+    "level": 19,
+    "name": "Steam rune",
+    "exp": 10,
+    "creation": "Combination",
+    "combination": [555,554],
+    "memberUse": 1,
+    "memberCraft": 1,
+    "levelMultiplier": null
+  },
+  {
+    "id": 4699,
+    "level": 23,
+    "name": "Lava rune",
+    "exp": 10.5,
+    "creation": "Combination",
+    "combination": [557,554],
+    "memberUse": 1,
+    "memberCraft": 1,
+    "levelMultiplier": null
+  }
+]

@@ -10,11 +10,6 @@ public class Delegate4<A, B, C, D>
 {
     List<WeakReference<Function4<A, B, C, D, Boolean>>> Subscribers = new ArrayList<>();
 
-    public void Subscribe(Function4<A, B, C, D, Boolean> function)
-    {
-        Subscribers.add(new WeakReference<>(function));
-    }
-
     public void Fire(A var1, B var2, C var3, D var4)
     {
         Subscribers.removeIf(t -> t.get() == null);
@@ -26,5 +21,10 @@ public class Delegate4<A, B, C, D>
                 func.get().apply(var1, var2, var3, var4);
             }
         }
+    }
+
+    public void Subscribe(Function4<A, B, C, D, Boolean> function)
+    {
+        Subscribers.add(new WeakReference<>(function));
     }
 }

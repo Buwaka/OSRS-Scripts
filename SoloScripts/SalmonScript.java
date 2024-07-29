@@ -77,7 +77,8 @@ public class SalmonScript extends tpircSScript
                 }
                 if(!Inventory.contains(RodID))
                 {
-                    OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(RodID, 1));
+                    OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(RodID,
+                                                                                             1));
                 }
 
                 OSRSUtilities.BankClose();
@@ -105,7 +106,8 @@ public class SalmonScript extends tpircSScript
                 out = States.TravelToBank;
             }
         }
-        else if(Inventory.isFull() && !Inventory.contains(RawSalmonID) && !Inventory.contains(RawTroutID))
+        else if(Inventory.isFull() && !Inventory.contains(RawSalmonID) &&
+                !Inventory.contains(RawTroutID))
         {
             if(OSRSUtilities.CanReachBank())
             {

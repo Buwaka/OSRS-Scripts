@@ -16,7 +16,8 @@
     "pyre": true,
     "pyre_dose": 2,
     "pyre_id": 3438,
-    "burnable": true
+    "burnable": true,
+    "type_enum": "Logs"
   },
   "1521": {
     "id": 1521,
@@ -31,7 +32,8 @@
     "pyre": true,
     "pyre_dose": 2,
     "pyre_id": 3440,
-    "burnable": true
+    "burnable": true,
+    "type_enum": "Oak logs"
   },
   "1519": {
     "id": 1519,
@@ -46,7 +48,8 @@
     "pyre": true,
     "pyre_dose": 3,
     "pyre_id": 3442,
-    "burnable": true
+    "burnable": true,
+    "type_enum": "Willow logs"
   },
   "1517": {
     "id": 1517,
@@ -61,7 +64,8 @@
     "pyre": true,
     "pyre_dose": 3,
     "pyre_id": 3444,
-    "burnable": true
+    "burnable": true,
+    "type_enum": "Maple logs"
   },
   "1515": {
     "id": 1515,
@@ -76,7 +80,8 @@
     "pyre": true,
     "pyre_dose": 3,
     "pyre_id": 3446,
-    "burnable": true
+    "burnable": true,
+    "type_enum": "Yew logs"
   },
   "1513": {
     "id": 1513,
@@ -91,7 +96,8 @@
     "pyre": true,
     "pyre_dose": 4,
     "pyre_id": 3448,
-    "burnable": true
+    "burnable": true,
+    "type_enum": "Magic logs"
   },
   "19669": {
     "id": 19669,
@@ -106,7 +112,8 @@
     "pyre": true,
     "pyre_dose": 4,
     "pyre_id": 19672,
-    "burnable": true
+    "burnable": true,
+    "type_enum": "Redwood logs"
   },
   "6333": {
     "id": 6333,
@@ -121,7 +128,8 @@
     "pyre": true,
     "pyre_dose": 3,
     "pyre_id": 6211,
-    "burnable": true
+    "burnable": true,
+    "type_enum": "Teak logs"
   },
   "6332": {
     "id": 6332,
@@ -136,7 +144,8 @@
     "pyre": true,
     "pyre_dose": 3,
     "pyre_id": 6213,
-    "burnable": true
+    "burnable": true,
+    "type_enum": "Mahogany logs"
   },
   "2862": {
     "id": 2862,

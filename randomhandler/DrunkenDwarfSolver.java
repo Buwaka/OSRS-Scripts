@@ -48,7 +48,8 @@ public class DrunkenDwarfSolver extends RandomSolver
             if(Calculations.random(2) == 1)
             {
                 int ran = Calculations.random(1, 6);
-                RandomHandler.log("Trying not to seem desperate for " + ran + " seconds...", "DrunkenDwarfSolver");
+                RandomHandler.log("Trying not to seem desperate for " + ran + " seconds...",
+                                  "DrunkenDwarfSolver");
                 Sleep.sleep(ran * 1000L);
             }
             Sleep.sleep(350, 850);

@@ -83,7 +83,8 @@ public class FreakyForesterSolver extends RandomSolver implements ChatListener
                 }
             }
         }
-        if(areaFreak.contains(Players.getLocal().getTile()) && Inventory.contains("Raw pheasant") || leave)
+        if(areaFreak.contains(Players.getLocal().getTile()) && Inventory.contains("Raw pheasant") ||
+           leave)
         {
             if(!leave)
             {
@@ -112,17 +113,22 @@ public class FreakyForesterSolver extends RandomSolver implements ChatListener
                     Sleep.sleep(550, 2500);
                     Sleep.sleepWhile(() -> Players.getLocal().isMoving(), 10000);
 
-                    if(Dialogues.inDialogue() && (Dialogues.getOptions() != null || Dialogues.canContinue()))
+                    if(Dialogues.inDialogue() &&
+                       (Dialogues.getOptions() != null || Dialogues.canContinue()))
                     {
-                        if(Dialogues.getOptions() != null & Dialogues.chooseFirstOptionContaining("leave", "Leave"))
+                        if(Dialogues.getOptions() != null &
+                           Dialogues.chooseFirstOptionContaining("leave", "Leave"))
                         {
                             Sleep.sleep(1550, 4500);
-                            Sleep.sleepWhile(() -> Client.getGameState().equals(GameState.LOADING), 10000);
+                            Sleep.sleepWhile(() -> Client.getGameState().equals(GameState.LOADING),
+                                             10000);
                         }
-                        if(Dialogues.getOptions() != null & Dialogues.chooseFirstOptionContaining("Yes", "yes"))
+                        if(Dialogues.getOptions() != null &
+                           Dialogues.chooseFirstOptionContaining("Yes", "yes"))
                         {
                             Sleep.sleep(1550, 4500);
-                            Sleep.sleepWhile(() -> Client.getGameState().equals(GameState.LOADING), 10000);
+                            Sleep.sleepWhile(() -> Client.getGameState().equals(GameState.LOADING),
+                                             10000);
                         }
                         leave = true;
                         return 1;
@@ -146,7 +152,8 @@ public class FreakyForesterSolver extends RandomSolver implements ChatListener
             if(Calculations.random(2) == 1)
             {
                 int ran = Calculations.random(2, 6);
-                RandomHandler.log("Ignoring the freak for " + ran + " seconds", "FreakyForesterSolver");
+                RandomHandler.log("Ignoring the freak for " + ran + " seconds",
+                                  "FreakyForesterSolver");
                 Sleep.sleep(ran * 1000L);
             }
             if(Inventory.isItemSelected())
@@ -184,10 +191,12 @@ public class FreakyForesterSolver extends RandomSolver implements ChatListener
             if(forester.interact())
             {
                 Sleep.sleep(550, 3850);
-                Sleep.sleepUntil(Dialogues::inDialogue, 10000);//Maybe pull this if out of forester if?
+                Sleep.sleepUntil(Dialogues::inDialogue,
+                                 10000);//Maybe pull this if out of forester if?
                 if(Dialogues.getNPCDialogue().contains("tail"))
                 {
-                    String tailFeathers = Dialogues.getNPCDialogue().split("kill")[1].split("tail")[0];
+                    String tailFeathers = Dialogues.getNPCDialogue()
+                                                   .split("kill")[1].split("tail")[0];
                     if(!tailFeathers.equals(""))
                     {
                         int feathers = 1;
@@ -203,11 +212,12 @@ public class FreakyForesterSolver extends RandomSolver implements ChatListener
                         {
                             feathers = 4;
                         }
-                        List<NPC> npcs = NPCs.all(n -> n.getID() != freakInstance && n.getID() != freakOverworld);
+                        List<NPC> npcs = NPCs.all(n -> n.getID() != freakInstance &&
+                                                       n.getID() != freakOverworld);
                         npcs.sort(Comparator.comparingInt(NPC::getID));
                         tailID = npcs.get(feathers - 1).getID();//5496 + feathers;
-                        RandomHandler.log("Okay the freak wants " + feathers + "[ID:" + tailID + "] tail feathers",
-                                          "FreakyForesterSolver");
+                        RandomHandler.log("Okay the freak wants " + feathers + "[ID:" + tailID +
+                                          "] tail feathers", "FreakyForesterSolver");
 
                         return 1;
                     }
@@ -220,8 +230,8 @@ public class FreakyForesterSolver extends RandomSolver implements ChatListener
         }
 
         //We have our target pheasant
-        if(areaFreak.contains(Players.getLocal().getTile()) && tailID > 0 && !Inventory.contains("Raw pheasant") &&
-           !leave && !drop)
+        if(areaFreak.contains(Players.getLocal().getTile()) && tailID > 0 &&
+           !Inventory.contains("Raw pheasant") && !leave && !drop)
         {
             GroundItem rawPheasant = GroundItems.closest("Raw pheasant");
             if(rawPheasant == null)
@@ -249,7 +259,8 @@ public class FreakyForesterSolver extends RandomSolver implements ChatListener
 
             if(Inventory.contains("Raw pheasant"))
             {
-                RandomHandler.log("Successfully obtained a pheasant corpse", "FreakyForesterSolver");
+                RandomHandler.log("Successfully obtained a pheasant corpse",
+                                  "FreakyForesterSolver");
                 Sleep.sleep(50, 2500);
                 leave = true;
             }

@@ -21,6 +21,15 @@ public class ItemRequirement implements IRequirement
      * @return
      */
     @Override
+    public IRequirement.RequirementType GetRequirementType()
+    {
+        return IRequirement.RequirementType.Item;
+    }
+
+    /**
+     * @return
+     */
+    @Override
     public boolean isRequirementMet()
     {
         boolean[] Checks = new boolean[Items.length];
@@ -66,14 +75,5 @@ public class ItemRequirement implements IRequirement
             }
         }
         return true;
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public IRequirement.RequirementType GetRequirementType()
-    {
-        return IRequirement.RequirementType.Item;
     }
 }

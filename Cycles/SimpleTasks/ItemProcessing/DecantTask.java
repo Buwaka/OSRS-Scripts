@@ -1,4 +1,4 @@
-package Cycles.SimpleTasks.Misc;
+package Cycles.SimpleTasks.ItemProcessing;
 
 public class DecantTask
 {

@@ -33,7 +33,8 @@ public class GetCombatRationsTask extends SimpleTask
     @Override
     public boolean Ready()
     {
-        return OSRSUtilities.CanReachBank() && OSRSUtilities.InventoryHPCount() < HPToCarry.get() && super.Ready();
+        return OSRSUtilities.CanReachBank() && OSRSUtilities.InventoryHPCount() < HPToCarry.get() &&
+               super.Ready();
     }
 
     @Override
@@ -43,6 +44,7 @@ public class GetCombatRationsTask extends SimpleTask
         {
             var HPtoGet = HPToCarry.get();
             var temp    = OSRSUtilities.GetBestFoodChoice(HPtoGet);
+            Logger.log("GetCombatRations: " + temp);
             if(temp == null)
             {
                 Logger.log("Failed to gather optimal food choices from bank");
@@ -59,14 +61,14 @@ public class GetCombatRationsTask extends SimpleTask
             }
 
             FirstCheck = false;
-            return OSRSUtilities.WaitTime(ScriptIntensity.get());
+            return OSRSUtilities.WaitTime(GetScriptIntensity());
         }
         else
         {
             OSRSUtilities.ProcessBankEntries(GetScript(),
                                              null,
                                              ItemsToPickup,
-                                             OSRSUtilities.WaitTime(ScriptIntensity.get()));
+                                             OSRSUtilities.WaitTime(GetScriptIntensity()));
         }
 
         return 0;

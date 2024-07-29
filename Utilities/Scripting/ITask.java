@@ -1,6 +1,7 @@
 package Utilities.Scripting;
 
 import javax.annotation.Nonnull;
+import java.awt.*;
 
 public interface ITask
 {
@@ -10,13 +11,14 @@ public interface ITask
         Travel,
         Slaughter,
         RestoreFullHealth,
-        Pray,
+        Tan,
         LootKills,
         LootLookout,
         LootArea,
         MinimumHealth,
         FleeOvercrowd,
         BankItems,
+        InventoryCheck,
         BankEquipment,
         GetCombatRations,
         Combine,
@@ -39,6 +41,21 @@ public interface ITask
     @Nonnull
     TaskType GetTaskType();
 
+    default void onDebugPaint(Graphics graphics)   {}
+
+    default void onDebugPaint(Graphics2D graphics) {}
+
+    default void onPaint(Graphics graphics)        {}
+
+    default void onPaint(Graphics2D graphics)      {}
+
+    /**
+     * @param Script
+     *
+     * @return true if successful, false if we need more time, keep triggering start until it is ready
+     */
+    default boolean onPauseTask(tpircSScript Script) {return true;}
+
     /**
      * @param Script
      *
@@ -51,7 +68,7 @@ public interface ITask
      *
      * @return true if successful, false if we need more time, keep triggering start until it is ready
      */
-    default boolean onPauseTask(tpircSScript Script) {return true;}
+    default boolean onStopTask(tpircSScript Script) {return true;}
 
     /**
      * @param Script
@@ -59,11 +76,4 @@ public interface ITask
      * @return true if successful, false if we need more time, keep triggering start until it is ready
      */
     default boolean onUnPauseTask(tpircSScript Script) {return true;}
-
-    /**
-     * @param Script
-     *
-     * @return true if successful, false if we need more time, keep triggering start until it is ready
-     */
-    default boolean onStopTask(tpircSScript Script) {return true;}
 }

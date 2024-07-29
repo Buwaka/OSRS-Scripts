@@ -44,6 +44,40 @@ public class RandomHandler
         BEEKEEPER
     }
 
+    public static void clearRandoms()
+    {
+        Client.getInstance().getRandomManager().enableSolver(RandomEvent.DISMISS);
+        Client.getInstance().getRandomManager().enableSolver(RandomEvent.GENIE);
+        Client.getInstance().getRandomManager().unregisterSolver("IDreamOfGenieSolver");
+        Client.getInstance().getRandomManager().unregisterSolver("DismissyWitItSolver");
+        Client.getInstance().getRandomManager().unregisterSolver("DrunkenDwarfSolver");
+        Client.getInstance().getRandomManager().unregisterSolver("FreakyForesterSolver");
+        Client.getInstance().getRandomManager().unregisterSolver("OldManSolver");
+        Client.getInstance().getRandomManager().unregisterSolver("RickyTurpentineSolver");
+        Client.getInstance().getRandomManager().unregisterSolver("FrogSolver");
+        Client.getInstance().getRandomManager().unregisterSolver("BeekeeperSolver");
+    }
+
+    public static String getPrevStatus()
+    {
+        return prevStatus;
+    }
+
+    public static void setPrevStatus(String prevStat)
+    {
+        prevStatus = prevStat;
+    }
+
+    public static int getSolvedCount()
+    {
+        return solvedCount;
+    }
+
+    public static void increaseSolvedCount()
+    {
+        solvedCount++;
+    }
+
     public static void loadRandoms()
     {
         Client.getInstance().getRandomManager().disableSolver(RandomEvent.DISMISS);
@@ -89,6 +123,38 @@ public class RandomHandler
         }
     }
 
+    public static void log(String msg)
+    {
+        log(msg, "RandomHandler");
+    }
+
+    public static void log(String stat, String solver)
+    {
+        if(!getPrevStatus().equals(stat))
+        {
+            Logger.log(new Color(93, 180, 82), "[" + solver + "] uuuhm" + stat);
+            setPrevStatus(stat);
+        }
+        status = stat;
+    }
+
+    public static void powerThroughDialogue()
+    {
+        if(Dialogues.inDialogue())
+        {
+            while(Dialogues.canContinue() || Dialogues.isProcessing())
+            {
+                if(Dialogues.continueDialogue())
+                {
+                    log("Continuing dialogue");
+                    Sleep.sleep(800, 3500);
+                }
+                if(Dialogues.areOptionsAvailable())
+                {return;}
+            }
+        }
+    }
+
     public static void unloadSolver(Event solver)
     {
         switch(solver)
@@ -120,20 +186,6 @@ public class RandomHandler
         }
     }
 
-    public static void clearRandoms()
-    {
-        Client.getInstance().getRandomManager().enableSolver(RandomEvent.DISMISS);
-        Client.getInstance().getRandomManager().enableSolver(RandomEvent.GENIE);
-        Client.getInstance().getRandomManager().unregisterSolver("IDreamOfGenieSolver");
-        Client.getInstance().getRandomManager().unregisterSolver("DismissyWitItSolver");
-        Client.getInstance().getRandomManager().unregisterSolver("DrunkenDwarfSolver");
-        Client.getInstance().getRandomManager().unregisterSolver("FreakyForesterSolver");
-        Client.getInstance().getRandomManager().unregisterSolver("OldManSolver");
-        Client.getInstance().getRandomManager().unregisterSolver("RickyTurpentineSolver");
-        Client.getInstance().getRandomManager().unregisterSolver("FrogSolver");
-        Client.getInstance().getRandomManager().unregisterSolver("BeekeeperSolver");
-    }
-
     public static boolean useLamp()
     {
         if(!Inventory.contains("Lamp"))
@@ -151,7 +203,8 @@ public class RandomHandler
             if(Inventory.interact("Lamp", "Rub"))
             {
                 Sleep.sleep(1350, 2500);
-                Sleep.sleepUntil(() -> Widgets.getWidget(WIDGET_LAMP) != null, Calculations.random(6000, 9000));
+                Sleep.sleepUntil(() -> Widgets.getWidget(WIDGET_LAMP) != null,
+                                 Calculations.random(6000, 9000));
                 Widget      skills = Widgets.getWidget(WIDGET_LAMP);
                 WidgetChild skill  = null;
                 if(skills != null)
@@ -227,57 +280,5 @@ public class RandomHandler
             }
         }
         return false;
-    }
-
-    public static void log(String msg)
-    {
-        log(msg, "RandomHandler");
-    }
-
-    public static void log(String stat, String solver)
-    {
-        if(!getPrevStatus().equals(stat))
-        {
-            Logger.log(new Color(93, 180, 82), "[" + solver + "] uuuhm" + stat);
-            setPrevStatus(stat);
-        }
-        status = stat;
-    }
-
-    public static String getPrevStatus()
-    {
-        return prevStatus;
-    }
-
-    public static void setPrevStatus(String prevStat)
-    {
-        prevStatus = prevStat;
-    }
-
-    public static void increaseSolvedCount()
-    {
-        solvedCount++;
-    }
-
-    public static void powerThroughDialogue()
-    {
-        if(Dialogues.inDialogue())
-        {
-            while(Dialogues.canContinue() || Dialogues.isProcessing())
-            {
-                if(Dialogues.continueDialogue())
-                {
-                    log("Continuing dialogue");
-                    Sleep.sleep(800, 3500);
-                }
-                if(Dialogues.areOptionsAvailable())
-                {return;}
-            }
-        }
-    }
-
-    public static int getSolvedCount()
-    {
-        return solvedCount;
     }
 }

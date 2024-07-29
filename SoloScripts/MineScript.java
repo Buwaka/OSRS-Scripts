@@ -30,35 +30,6 @@ public class MineScript extends tpircSScript
     static MineCycle CoalCycle    = new MineCycle("Coal", MineArea3, CoalName);
     static MineCycle MithrilCycle = new MineCycle("Mithril", MineArea4, MithrilName);
 
-    @Override
-    public void onStart()
-    {
-//        CopperCycle.SetCycleType(ICycle.CycleType.byCount);
-//        CopperCycle.GetCycleType().Count = 2;
-//        AddCycle(CopperCycle);
-//        TinCycle.SetCycleType(ICycle.CycleType.byCount);
-//        TinCycle.GetCycleType().Count = 20;
-//        AddCycle(TinCycle);
-//        IronCycle.SetCycleType(ICycle.CycleType.Endless);
-//        AddCycle(IronCycle);
-//        CoalCycle.SetCycleType(ICycle.CycleType.Endless);
-//        AddCycle(CoalCycle);
-        MithrilCycle.PreferredBank = BankLocation.FALADOR_EAST;
-        MithrilCycle.SetCycleType(ICycle.CycleType.Endless);
-        AddCycle(MithrilCycle);
-
-
-//        Gson   gson = OSRSUtilities.OSRSGsonBuilder.create();
-//        String json = gson.toJson(CoalCycle);
-//        json += gson.toJson(IronCycle);
-//        json += gson.toJson(CopperCycle);
-//        json += gson.toJson(TinCycle);
-//
-//        Logger.log(json);
-
-        super.onStart();
-    }
-
     public static void main(String[] args)
     {
         Gson   gson = OSRSUtilities.OSRSGsonBuilder.create();
@@ -68,5 +39,34 @@ public class MineScript extends tpircSScript
         json += gson.toJson(TinCycle);
 
         System.out.println(json);
+    }
+
+    @Override
+    public void onStart()
+    {
+        //        CopperCycle.SetCycleType(ICycle.CycleType.byCount);
+        //        CopperCycle.GetCycleType().Count = 2;
+        //        AddCycle(CopperCycle);
+        //        TinCycle.SetCycleType(ICycle.CycleType.byCount);
+        //        TinCycle.GetCycleType().Count = 20;
+        //        AddCycle(TinCycle);
+        //        IronCycle.SetCycleType(ICycle.CycleType.Endless);
+        //        AddCycle(IronCycle);
+        //        CoalCycle.SetCycleType(ICycle.CycleType.Endless);
+        //        AddCycle(CoalCycle);
+        MithrilCycle.PreferredBank = BankLocation.FALADOR_EAST;
+        MithrilCycle.SetCycleType(ICycle.CycleType.Endless);
+        AddCycle(MithrilCycle);
+
+
+        //        Gson   gson = OSRSUtilities.OSRSGsonBuilder.create();
+        //        String json = gson.toJson(CoalCycle);
+        //        json += gson.toJson(IronCycle);
+        //        json += gson.toJson(CopperCycle);
+        //        json += gson.toJson(TinCycle);
+        //
+        //        Logger.log(json);
+
+        super.onStart();
     }
 }

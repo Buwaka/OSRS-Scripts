@@ -26,6 +26,17 @@ public class OpenBankTask extends SimpleTask
         BankingLocation = loc;
     }
 
+    private BankLocation NearestThatIsntGE()
+    {
+        var all = BankLocation.getValidLocations();
+        return all.stream()
+                  .filter(t -> t != BankLocation.GRAND_EXCHANGE)
+                  .sorted((x, y) -> (int) (y.distance(Players.getLocal().getTile()) -
+                                           x.walkingDistance(Players.getLocal().getTile()) * 100))
+                  .toList()
+                  .getFirst();
+    }
+
     @Override
     public int Loop()
     {
@@ -34,22 +45,22 @@ public class OpenBankTask extends SimpleTask
             return 0;
         }
 
-//        if(travelToBank != null && travelToBank.isActive())
-//        {
-//            Logger.log("OpenBankTask: Travel");
-//            int result = travelToBank.execute();
-//            if(result == 0)
-//            {
-//                travelToBank = null;
-//                return OSRSUtilities.WaitTime(ScriptIntensity.get());
-//            }
-//            return result;
-//        }
-//        else
-//        {
+        //        if(travelToBank != null && travelToBank.isActive())
+        //        {
+        //            Logger.log("OpenBankTask: Travel");
+        //            int result = travelToBank.execute();
+        //            if(result == 0)
+        //            {
+        //                travelToBank = null;
+        //                return OSRSUtilities.WaitTime(ScriptIntensity.get());
+        //            }
+        //            return result;
+        //        }
+        //        else
+        //        {
         Logger.log("OpenBankTask: Open Bank");
         return OSRSUtilities.OpenBank() ? 0 : super.Loop();
-//        }
+        //        }
     }
 
     /**
@@ -65,13 +76,13 @@ public class OpenBankTask extends SimpleTask
     @Override
     public boolean onStartTask(tpircSScript Script)
     {
-//        if(!OSRSUtilities.CanReachBank())
-//        {
-//            var BankLoc = GetBankLocation();
-//            Logger.log("OpenBankTask, going to bank: " + BankLoc.name());
-//            travelToBank = new TravelTask("Travel to Bank", BankLoc.getCenter());
-//            travelToBank.CompleteCondition = OSRSUtilities::CanReachBank;
-//        }
+        //        if(!OSRSUtilities.CanReachBank())
+        //        {
+        //            var BankLoc = GetBankLocation();
+        //            Logger.log("OpenBankTask, going to bank: " + BankLoc.name());
+        //            travelToBank = new TravelTask("Travel to Bank", BankLoc.getCenter());
+        //            travelToBank.CompleteCondition = OSRSUtilities::CanReachBank;
+        //        }
         return super.onStartTask(Script);
     }
 
@@ -86,13 +97,5 @@ public class OpenBankTask extends SimpleTask
             return NearestThatIsntGE();
         }
         return BankLocation.LUMBRIDGE;
-    }
-
-    private BankLocation NearestThatIsntGE()
-    {
-        var all = BankLocation.getValidLocations();
-        return all.stream().filter(t -> t != BankLocation.GRAND_EXCHANGE).sorted((x, y) -> (int) (
-                y.distance(Players.getLocal().getTile()) -
-                x.walkingDistance(Players.getLocal().getTile()) * 100)).toList().getFirst();
     }
 }

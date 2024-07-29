@@ -18,14 +18,15 @@ import java.io.Serializable;
 @JsonTypeName("CombineCycle")
 public class CombineCycle extends SimpleCycle implements Serializable
 {
-    int source;
+    private           int           source;
     @Nullable
-    Integer sourceRatio;
-    int target;
+    private           Integer       sourceRatio;
+    private           int           target;
     @Nullable
-    Integer targetRatio;
-    transient CombineTask   combineTask;
-    transient BankItemsTask bankItemsTask;
+    private           Integer       targetRatio;
+    private           boolean       UseSkillingMenu = true;
+    private transient CombineTask   combineTask;
+    private transient BankItemsTask bankItemsTask;
 
     private CombineCycle()
     {
@@ -53,80 +54,20 @@ public class CombineCycle extends SimpleCycle implements Serializable
     }
 
     /**
-     * will be called once there are no active tasks anymore, aka a single cycle has been completed
-     *
-     * @param Script
-     *
-     * @return Cycle completed, ready for a restart
+     * @return how many times we can perform this cycle
      */
-    @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public int GetPossibleCycleCount()
     {
-        boolean result = Inventory.count(source) < sourceRatio || Inventory.count(target) < targetRatio;
-        Logger.log("CombineCycle: isCycleComplete: " + result);
-        return result;
+        Logger.log("CombineCycle:GetPossibleCycleCount: " + Bank.count(source) / sourceRatio + " " +
+                   Bank.count(target) / targetRatio + " " +
+                   OSRSUtilities.InventorySpace / (sourceRatio + targetRatio));
+        return Math.min(Bank.count(source) / sourceRatio, Bank.count(target) / targetRatio) /
+               (OSRSUtilities.InventorySpace / (sourceRatio + targetRatio));
     }
 
-    /**
-     * @return Whether the goal of this cycle has been met, based on CycleType
-     */
-    @Override
-    public boolean isGoalMet()
+    public void SetUseSkillingMenu(boolean Use)
     {
-        boolean result = Inventory.count(source) < sourceRatio || Inventory.count(target) < targetRatio;
-        Logger.log("CombineCycle: isGoalMet: " + result);
-        return result && super.isGoalMet();
-    }
-
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        StartCycle(Script);
-        return super.onStart(Script);
-    }
-
-    /**
-     * @param Script
-     *
-     * @return
-     */
-    @Override
-    public boolean CanRestart(tpircSScript Script)
-    {
-        if(GetCycleType() == CycleType.NaturalEnd)
-        {
-            if(Bank.count(source) > sourceRatio && Bank.count(target) > targetRatio)
-            {
-                return true;
-            }
-        }
-
-        return super.CanRestart(Script);
-    }
-
-    private void StartCycle(tpircSScript script)
-    {
-        if(!OSRSUtilities.CanReachBank())
-        {
-            TravelTask Travel = new TravelTask("", BankLocation.getNearest().getTile());
-            Travel.SetTaskName("Travel To Bank For ItemRequirements");
-            Travel.TaskPriority.set(0);
-            Travel.CompleteCondition = OSRSUtilities::CanReachBank;
-            script.addNodes(Travel);
-        }
-
-        bankItemsTask = new BankItemsTask("Grabbing items to combine");
-        if(!Inventory.isEmpty())
-        {
-            bankItemsTask.DepositAll();
-        }
-
-        bankItemsTask.FillInventory(source, sourceRatio, target, targetRatio);
-
-        combineTask                 = new CombineTask("Combining items", source, target);
-        combineTask.AcceptCondition = () -> !bankItemsTask.isActive();
-
-        script.addNodes(bankItemsTask, combineTask);
+        UseSkillingMenu = Use;
     }
 
     /**
@@ -147,22 +88,68 @@ public class CombineCycle extends SimpleCycle implements Serializable
         return false;
     }
 
-    /**
-     * @return how many times we can perform this cycle
-     */
-    public int GetPossibleCycleCount()
+    private void StartCycle(tpircSScript script)
     {
-        Logger.log("CombineCycle:GetPossibleCycleCount: " + Bank.count(source) / sourceRatio + " " +
-                   Bank.count(target) / targetRatio + " " + OSRSUtilities.InventorySpace / (sourceRatio + targetRatio));
-        return Math.min(Bank.count(source) / sourceRatio, Bank.count(target) / targetRatio) /
-               (OSRSUtilities.InventorySpace / (sourceRatio + targetRatio));
+        if(!OSRSUtilities.CanReachBank())
+        {
+            TravelTask Travel = new TravelTask("", BankLocation.getNearest().getTile());
+            Travel.SetTaskName("CC Travel To Bank For ItemRequirements");
+            Travel.SetTaskPriority(0);
+            Travel.CompleteCondition = OSRSUtilities::CanReachBank;
+            script.addNodes(Travel);
+        }
+
+        bankItemsTask = new BankItemsTask("Grabbing items to combine");
+        if(!Inventory.isEmpty())
+        {
+            bankItemsTask.AddDepositAll();
+        }
+
+        bankItemsTask.FillInventory(source, sourceRatio, target, targetRatio);
+
+        combineTask                 = new CombineTask("Combining items",
+                                                      source,
+                                                      target,
+                                                      UseSkillingMenu);
+        combineTask.AcceptCondition = () -> !bankItemsTask.isActive();
+
+        script.addNodes(bankItemsTask, combineTask);
+    }
+
+    /**
+     * will be called once there are no active tasks anymore, aka a single cycle has been completed
+     *
+     * @param Script
+     *
+     * @return Cycle completed, ready for a restart
+     */
+    @Override
+    public boolean isCycleComplete(tpircSScript Script)
+    {
+        boolean result =
+                Inventory.count(source) < sourceRatio || Inventory.count(target) < targetRatio;
+        Logger.log("CombineCycle: isCycleComplete: " + result);
+        return result;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public boolean isCycleFinished(tpircSScript Script)
+    {
+        boolean result =
+                (Inventory.count(source) < sourceRatio || Inventory.count(target) < targetRatio) &&
+                (Bank.count(source) < sourceRatio || Bank.count(target) < targetRatio);
+        Logger.log("CombineCycle: isGoalMet: " + result);
+        return result;
     }
 
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onStart(tpircSScript Script)
     {
         StartCycle(Script);
-        return true;
+        return super.onStart(Script);
     }
 
     @Override
@@ -172,28 +159,35 @@ public class CombineCycle extends SimpleCycle implements Serializable
         combineTask   = null;
     }
 
+    @Override
+    public boolean onRestart(tpircSScript Script)
+    {
+        StartCycle(Script);
+        return true;
+    }
+
     //    public static void main(String[] args) throws IOException
-//    {
-//        Gson      gson       = new Gson();
-////        final int PieShellID = 2313;
-////        final int PastyDoughID = 1953;
-////        var temp = new CombineCycle("Pie Shells", PieShellID, PastyDoughID);
-////
-////        String json = gson.toJson(temp);
-////        var json2 = gson.fromJson(json, CombineCycle.class);
-////
-////        System.out.println(json2);
-//
-//        var               input  = new BufferedInputStream(Objects.requireNonNull(OSRSDataBase.class.getClassLoader().getResourceAsStream("CombineCycles.json")));
-//        InputStreamReader File   = new InputStreamReader(input);
-//        JsonReader        Reader = new JsonReader(File);
-//
-//        Reader.beginArray();
-//        var json2 = gson.fromJson(Reader, CombineCycle.class);
-//        Reader.endArray();
-//
-//
-//        System.out.println(json2);
-//    }
+    //    {
+    //        Gson      gson       = new Gson();
+    ////        final int PieShellID = 2313;
+    ////        final int PastyDoughID = 1953;
+    ////        var temp = new CombineCycle("Pie Shells", PieShellID, PastyDoughID);
+    ////
+    ////        String json = gson.toJson(temp);
+    ////        var json2 = gson.fromJson(json, CombineCycle.class);
+    ////
+    ////        System.out.println(json2);
+    //
+    //        var               input  = new BufferedInputStream(Objects.requireNonNull(OSRSDataBase.class.getClassLoader().getResourceAsStream("CombineCycles.json")));
+    //        InputStreamReader File   = new InputStreamReader(input);
+    //        JsonReader        Reader = new JsonReader(File);
+    //
+    //        Reader.beginArray();
+    //        var json2 = gson.fromJson(Reader, CombineCycle.class);
+    //        Reader.endArray();
+    //
+    //
+    //        System.out.println(json2);
+    //    }
 
 }

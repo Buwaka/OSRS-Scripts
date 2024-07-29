@@ -3,10 +3,9 @@ package Cycles.SimpleTasks.Combat;
 import OSRSDatabase.MonsterDB;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleTask;
-import org.dreambot.api.methods.input.Camera;
 import org.dreambot.api.methods.map.Tile;
+import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.utilities.Logger;
-import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.items.GroundItem;
 
 import javax.annotation.Nonnull;
@@ -20,9 +19,42 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
     //TODO priority based on rarity from itemdb
     private final ConcurrentLinkedQueue<GroundItem> LootItems = new ConcurrentLinkedQueue<>();
 
+    private int[] IgnoreLoot = null;
+
     public LootKillsTask()
     {
         super("Loot items after kill");
+    }
+
+    public LootKillsTask(int... IgnoreItems)
+    {
+        super("Loot items after kill");
+        IgnoreLoot = IgnoreItems;
+    }
+
+    private void Cleanup()
+    {
+        for(var loot : LootItems)
+        {
+            if(!loot.exists())
+            {
+                LootItems.remove(loot);
+                Logger.log("LootKillsTask: Cleanup: " + loot.toString() + " removing from loot");
+            }
+            if(IgnoreLoot != null && Arrays.stream(IgnoreLoot).anyMatch((t) -> t == loot.getID()))
+            {
+                LootItems.remove(loot);
+                Logger.log("LootKillsTask: Cleanup: " + loot.toString() +
+                           " removing from loot because of ignore");
+            }
+            else
+            {
+                Logger.log(
+                        "LootKillsTask: Cleanup: " + loot.toString() + " exists:" + loot.exists() +
+                        " isonscreen:" + loot.isOnScreen());
+            }
+
+        }
     }
 
     @Override
@@ -31,7 +63,7 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
         int  ID       = (int) evt.getOldValue();
         Tile lootTile = (Tile) evt.getNewValue();
 
-        Logger.log("Loot found:" + ID + " " + lootTile);
+        Logger.log("LootKillsTask: propertyChange: Loot found:" + ID + " " + lootTile);
 
         var LootTable = MonsterDB.GetMonsterLootTable(ID);
         var size      = MonsterDB.GetMonsterSize(ID);
@@ -63,9 +95,13 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
         while(Item == null)
         {
             var first = LootItems.peek();
-            if(!first.exists())
+            Logger.log("LootKillTask: Removing Loot " + Arrays.toString(IgnoreLoot));
+            if(!first.exists() ||
+               (IgnoreLoot != null && Arrays.stream(IgnoreLoot).anyMatch(t -> t == first.getID())))
             {
+                Logger.log("LootKillTask: Removing Loot " + first);
                 LootItems.remove(first);
+                continue;
             }
             if(LootItems.isEmpty())
             {
@@ -77,33 +113,16 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
             }
         }
 
-        if(!Item.isOnScreen())
+        if(Item.distance() > 10)
         {
-            Camera.mouseRotateToTile(Item.getTile());
-            GroundItem finalItem = Item;
-            Sleep.sleepUntil(() -> finalItem.isOnScreen(), OSRSUtilities.WaitTime(ScriptIntensity.get()));
+            Walking.walk(Item.getTile());
         }
-
-        Item.interact();
+        else
+        {
+            Item.interact();
+        }
 
         return super.Loop();
-    }
-
-    private void Cleanup()
-    {
-        for(var loot : LootItems)
-        {
-            if(!loot.exists())
-            {
-                LootItems.remove(loot);
-                Logger.log(loot.toString() + " removing from loot");
-            }
-            else
-            {
-                Logger.log(loot.toString() + " exists:" + loot.exists() + " isonscreen:" + loot.isOnScreen());
-            }
-
-        }
     }
 
     @Nonnull

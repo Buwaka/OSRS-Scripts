@@ -24,7 +24,8 @@ public class WebObstacleNode extends AbstractWebNode
     public boolean hasRequirements()
     {
         //Equipment.all().get(0).
-        return Inventory.contains("Knife") || Inventory.contains("Sword") || Inventory.contains("Axe");
+        return Inventory.contains("Knife") || Inventory.contains("Sword") ||
+               Inventory.contains("Axe");
     }
 
     @Override

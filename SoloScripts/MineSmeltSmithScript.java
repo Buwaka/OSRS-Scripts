@@ -47,7 +47,10 @@ public class MineSmeltSmithScript extends tpircSScript
                                                new Tuple2<>(436, 1),
                                                new Tuple2<>(438, 1));
     SmeltCycle SmeltIron      = new SmeltCycle("Smelt Iron", "Iron bar", new Tuple2<>(440, 1));
-    SmeltCycle SmeltSteel     = new SmeltCycle("Smelt Steel", "Steel bar", new Tuple2<>(440, 1), new Tuple2<>(453, 2));
+    SmeltCycle SmeltSteel     = new SmeltCycle("Smelt Steel",
+                                               "Steel bar",
+                                               new Tuple2<>(440, 1),
+                                               new Tuple2<>(453, 2));
     SmeltCycle SmeltMithril   = new SmeltCycle("Smelt Mithril",
                                                "Mithril bar",
                                                new Tuple2<>(447, 1),
@@ -57,21 +60,38 @@ public class MineSmeltSmithScript extends tpircSScript
                                                new Tuple2<>(449, 1),
                                                new Tuple2<>(453, 6));
 
-    SmithCycle SmithMithrilSword       = new SmithCycle("Smith Mithril Stuff", "Mithril sword", MithrilBar);
-    SmithCycle SmithAdamaniteHelm      = new SmithCycle("Smith Adamantite Stuff", "Adamant med helm", AdamaniteBar);
-    SmithCycle SmithAdamanitePlateBody = new SmithCycle("Smith Adamantite Stuff", "Adamant platebody", AdamaniteBar);
+    SmithCycle SmithMithrilSword       = new SmithCycle("Smith Mithril Stuff",
+                                                        "Mithril sword",
+                                                        MithrilBar);
+    SmithCycle SmithAdamaniteHelm      = new SmithCycle("Smith Adamantite Stuff",
+                                                        "Adamant med helm",
+                                                        AdamaniteBar);
+    SmithCycle SmithAdamanitePlateBody = new SmithCycle("Smith Adamantite Stuff",
+                                                        "Adamant platebody",
+                                                        AdamaniteBar);
+
+    public static void main(String[] args)
+    {
+        Gson   gson = OSRSUtilities.OSRSGsonBuilder.create();
+        String json = gson.toJson(CoalCycle) + ",";
+        json += gson.toJson(IronCycle) + ",";
+        json += gson.toJson(CopperCycle) + ",";
+        json += gson.toJson(TinCycle);
+
+        System.out.println(json);
+    }
 
     @Override
     public void onStart()
     {
-//        CopperCycle.SetCycleType(ICycle.CycleType.byCount);
-//        CopperCycle.GetCycleType().Count = 2;
-//        AddCycle(CopperCycle);
-//        TinCycle.SetCycleType(ICycle.CycleType.byCount);
-//        TinCycle.GetCycleType().Count = 20;
-//        AddCycle(TinCycle);
-//        IronCycle.SetCycleType(ICycle.CycleType.Endless);
-//        AddCycle(IronCycle);
+        //        CopperCycle.SetCycleType(ICycle.CycleType.byCount);
+        //        CopperCycle.GetCycleType().Count = 2;
+        //        AddCycle(CopperCycle);
+        //        TinCycle.SetCycleType(ICycle.CycleType.byCount);
+        //        TinCycle.GetCycleType().Count = 20;
+        //        AddCycle(TinCycle);
+        //        IronCycle.SetCycleType(ICycle.CycleType.Endless);
+        //        AddCycle(IronCycle);
 
         SmithAdamaniteHelm.SetCycleType(ICycle.CycleType.byGoal);
         SmithAdamaniteHelm.AddRequirement(new LevelRequirement(Skill.SMITHING, 73, 88));
@@ -88,15 +108,18 @@ public class MineSmeltSmithScript extends tpircSScript
         SmithMithrilSword.AddRequirement(new LevelRequirement(Skill.SMITHING, 54, 74));
         SmithMithrilSword.AddGoal(new LevelRequirement(Skill.SMITHING, 74));
         AddCycle(SmithMithrilSword);
-//
+        //
         SmeltMithril.SetCycleType(ICycle.CycleType.byGoal);
         SmeltMithril.AddRequirement(new LevelRequirement(Skill.SMITHING, 58));
-        SmeltMithril.AddGoal(new ItemRequirement(true, new Tuple2<>(CoalOre, -4), new Tuple2<>(MithrilOre, 0)));
+        SmeltMithril.AddGoal(new ItemRequirement(true,
+                                                 new Tuple2<>(CoalOre, -4),
+                                                 new Tuple2<>(MithrilOre, 0)));
         AddCycle(SmeltMithril);
 
         SmeltAdamanite.SetCycleType(ICycle.CycleType.byGoal);
         SmeltAdamanite.AddRequirement(new LevelRequirement(Skill.SMITHING, 70));
-        SmeltAdamanite.onCycleEnd.Subscribe(SmeltAdamanite, () -> Sleep.sleepUntil(Bank::depositAllItems, 30000));
+        SmeltAdamanite.onCycleEnd.Subscribe(SmeltAdamanite,
+                                            () -> Sleep.sleepUntil(Bank::depositAllItems, 30000));
         AddCycle(SmeltAdamanite);
 
         CoalCycle.PreferredBank = BankLocation.FALADOR_EAST;
@@ -112,25 +135,14 @@ public class MineSmeltSmithScript extends tpircSScript
         AddCycle(AdamantiteCycle);
 
 
-//        Gson   gson = OSRSUtilities.OSRSGsonBuilder.create();
-//        String json = gson.toJson(CoalCycle);
-//        json += gson.toJson(IronCycle);
-//        json += gson.toJson(CopperCycle);
-//        json += gson.toJson(TinCycle);
-//
-//        Logger.log(json);
+        //        Gson   gson = OSRSUtilities.OSRSGsonBuilder.create();
+        //        String json = gson.toJson(CoalCycle);
+        //        json += gson.toJson(IronCycle);
+        //        json += gson.toJson(CopperCycle);
+        //        json += gson.toJson(TinCycle);
+        //
+        //        Logger.log(json);
 
         super.onStart();
-    }
-
-    public static void main(String[] args)
-    {
-        Gson   gson = OSRSUtilities.OSRSGsonBuilder.create();
-        String json = gson.toJson(CoalCycle) + ",";
-        json += gson.toJson(IronCycle) + ",";
-        json += gson.toJson(CopperCycle) + ",";
-        json += gson.toJson(TinCycle);
-
-        System.out.println(json);
     }
 }

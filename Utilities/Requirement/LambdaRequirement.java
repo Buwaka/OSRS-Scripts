@@ -8,17 +8,17 @@ public interface LambdaRequirement extends Supplier<Boolean>, IRequirement
      * @return
      */
     @Override
-    public default boolean isRequirementMet()
+    public default RequirementType GetRequirementType()
     {
-        return this.get();
+        return RequirementType.Lambda;
     }
 
     /**
      * @return
      */
     @Override
-    public default RequirementType GetRequirementType()
+    public default boolean isRequirementMet()
     {
-        return RequirementType.Lambda;
+        return this.get();
     }
 }

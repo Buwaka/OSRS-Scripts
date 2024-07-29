@@ -45,6 +45,11 @@ public class SmeltCycle extends SimpleCycle implements Serializable
         ItemIDRatio = Ores;
     }
 
+    public boolean HasRingOfForging()
+    {
+        return Inventory.contains(ForgingRingID) || Bank.contains(ForgingRingID);
+    }
+
     public int getFurnaceID()
     {
         return FurnaceID;
@@ -53,6 +58,71 @@ public class SmeltCycle extends SimpleCycle implements Serializable
     public void setFurnaceID(int furnaceID)
     {
         FurnaceID = furnaceID;
+    }
+
+    private void StartCycle(tpircSScript Script)
+    {
+        if(Arrays.stream(ItemIDRatio)
+                 .anyMatch(t -> Bank.count(t._1) < t._2 && Inventory.count(t._1) < t._2))
+        {
+            Script.StopCurrentCycle();
+            return;
+        }
+
+        OpenBankTask OpenBank = new OpenBankTask();
+
+        BankItemsTask GetItems = new BankItemsTask("Get Ores");
+        GetItems.AcceptCondition = () -> !OpenBank.isActive();
+        if(!Inventory.isEmpty())
+        {
+            GetItems.AddDepositAll();
+        }
+        if(ItemIDRatio.length == 1)
+        {
+            GetItems.AddWithdrawAll(ItemIDRatio[0]._1);
+        }
+        else
+        {
+            GetItems.FillInventory(ItemIDRatio);
+        }
+
+        SmeltTask = new UseObjectTask("Smelt Ores", TargetName, SmeltAction, FurnaceID);
+
+        if(NeedForgingRing != null && NeedForgingRing.booleanValue() &&
+           !Equipment.contains(ForgingRingID))
+        {
+            if(!Inventory.contains(ForgingRingID))
+            {
+                GetItems.AddWithdraw(ForgingRingID, 1);
+            }
+
+            EquipmentTask ForgingRingCheck = new EquipmentTask("Equip Forging Ring");
+            ForgingRingCheck.SetTaskPriority(-1);
+            ForgingRingCheck.AcceptCondition = () -> !Equipment.slotContains(EquipmentSlot.RING,
+                                                                             ForgingRingID);
+            ForgingRingCheck.Equip(EquipmentSlot.RING, ForgingRingID);
+
+            Script.addNodes(ForgingRingCheck);
+        }
+
+        Script.addNodes(OpenBank, GetItems, SmeltTask);
+    }
+
+    @Override
+    public boolean isCycleFinished(tpircSScript Script)
+    {
+        boolean itemRequirement = true;
+        for(var item : ItemIDRatio)
+        {
+            itemRequirement &=
+                    Bank.count(item._1) >= item._2 || Inventory.count(item._1) >= item._2;
+        }
+        if(Boolean.TRUE.equals(NeedForgingRing))
+        {
+            itemRequirement &= HasRingOfForging();
+        }
+
+        return itemRequirement;
     }
 
     /**
@@ -77,9 +147,11 @@ public class SmeltCycle extends SimpleCycle implements Serializable
         else
         {
             Logger.log("SmeltCycle: Can't reach Furnace");
-            BackupTravel                   = new TravelTask("Travel to backup Furnace", FurnaceBackupTile);
-            BackupTravel.CompleteCondition = () -> UseObjectTask.GetObjectStatic(FurnaceID) != null &&
-                                                   UseObjectTask.GetObjectStatic(FurnaceID).canReach();
+            BackupTravel                   = new TravelTask("Travel to backup Furnace",
+                                                            FurnaceBackupTile);
+            BackupTravel.CompleteCondition = () ->
+                    UseObjectTask.GetObjectStatic(FurnaceID) != null &&
+                    UseObjectTask.GetObjectStatic(FurnaceID).canReach();
             BackupTravel.onComplete.Subscribe(this, () -> {
                 if(UseObjectTask.GetObjectStatic(FurnaceID) != null)
                 {
@@ -93,77 +165,6 @@ public class SmeltCycle extends SimpleCycle implements Serializable
             Script.addNodes(BackupTravel);
         }
         return super.onStart(Script);
-    }
-
-    /**
-     * @param Script
-     *
-     * @return
-     */
-    @Override
-    public boolean CanRestart(tpircSScript Script)
-    {
-        boolean itemRequirement = true;
-        for(var item : ItemIDRatio)
-        {
-            itemRequirement &= Bank.count(item._1) >= item._2 || Inventory.count(item._1) >= item._2;
-        }
-        if(Boolean.TRUE.equals(NeedForgingRing))
-        {
-            itemRequirement &= HasRingOfForging();
-        }
-
-        return super.CanRestart(Script) && itemRequirement;
-    }
-
-    public boolean HasRingOfForging()
-    {
-        return Inventory.contains(ForgingRingID) || Bank.contains(ForgingRingID);
-    }
-
-    private void StartCycle(tpircSScript Script)
-    {
-        if(Arrays.stream(ItemIDRatio).anyMatch(t -> Bank.count(t._1) < t._2 && Inventory.count(t._1) < t._2))
-        {
-            Script.StopCurrentCycle();
-            return;
-        }
-
-        OpenBankTask OpenBank = new OpenBankTask();
-
-        BankItemsTask GetItems = new BankItemsTask("Get Ores");
-        GetItems.AcceptCondition = () -> !OpenBank.isActive();
-        if(!Inventory.isEmpty())
-        {
-            GetItems.DepositAll();
-        }
-        if(ItemIDRatio.length == 1)
-        {
-            GetItems.WithdrawAll(ItemIDRatio[0]._1);
-        }
-        else
-        {
-            GetItems.FillInventory(ItemIDRatio);
-        }
-
-        SmeltTask = new UseObjectTask("Smelt Ores", TargetName, SmeltAction, FurnaceID);
-
-        if(NeedForgingRing != null && NeedForgingRing.booleanValue() && !Equipment.contains(ForgingRingID))
-        {
-            if(!Inventory.contains(ForgingRingID))
-            {
-                GetItems.AddWithdraw(ForgingRingID, 1);
-            }
-
-            EquipmentTask ForgingRingCheck = new EquipmentTask("Equip Forging Ring");
-            ForgingRingCheck.TaskPriority.set(-1);
-            ForgingRingCheck.AcceptCondition = () -> !Equipment.slotContains(EquipmentSlot.RING, ForgingRingID);
-            ForgingRingCheck.Equip(EquipmentSlot.RING, ForgingRingID);
-
-            Script.addNodes(ForgingRingCheck);
-        }
-
-        Script.addNodes(OpenBank, GetItems, SmeltTask);
     }
 
     /**
@@ -183,6 +184,13 @@ public class SmeltCycle extends SimpleCycle implements Serializable
         return super.onEnd(Script);
     }
 
+    @Override
+    public void onReset(tpircSScript Script)
+    {
+        BackupTravel = null;
+        SmeltTask    = null;
+    }
+
     /**
      * @param Script
      *
@@ -193,12 +201,5 @@ public class SmeltCycle extends SimpleCycle implements Serializable
     {
         StartCycle(Script);
         return true;
-    }
-
-    @Override
-    public void onReset(tpircSScript Script)
-    {
-        BackupTravel = null;
-        SmeltTask    = null;
     }
 }

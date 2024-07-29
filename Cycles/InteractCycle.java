@@ -1,21 +1,33 @@
 package Cycles;
 
+import Cycles.SimpleTasks.Bank.BankItemsTask;
+import Cycles.SimpleTasks.Bank.InventoryCheckTask;
 import Cycles.SimpleTasks.ItemProcessing.InteractTask;
 import Cycles.SimpleTasks.TravelTask;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
-import org.dreambot.api.methods.container.impl.bank.Bank;
+import io.vavr.Tuple2;
+import org.dreambot.api.methods.container.impl.Inventory;
+import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.utilities.Logger;
-import org.dreambot.api.utilities.Sleep;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
 
 public class InteractCycle extends SimpleCycle
 {
-    private           Area[]       TargetArea   = null;
-    private           int[]        Targets;
-    private transient InteractTask interactTask = null;
+    private           Area[]                                   TargetArea            = null;
+    private           int[]                                    Targets;
+    private           String                                   Action                = null;
+    private           EnumSet<InteractTask.InteractableFilter> TargetFilter          = EnumSet.of(
+            InteractTask.InteractableFilter.GameObjects);
+    private transient InteractTask                             interactTask          = null;
+    private           boolean                                  WaitForFullInventory  = true;
+    private           boolean                                  DepositInventory      = true;
+    private           List<Tuple2<Integer, Integer>>           InventoryRequirements = null;
 
     public InteractCycle(String name, int... targets)
     {
@@ -23,9 +35,106 @@ public class InteractCycle extends SimpleCycle
         Targets = targets;
     }
 
+    public InteractCycle(String name, String Action, int... targets)
+    {
+        super(name);
+        Targets     = targets;
+        this.Action = Action;
+    }
+
+    public void AddFilter(InteractTask.InteractableFilter... Filter)
+    {
+        TargetFilter.addAll(List.of(Filter));
+    }
+
+    public void AddInventoryRequirement(int... IDs)
+    {
+        if(InventoryRequirements == null)
+        {
+            InventoryRequirements = new ArrayList<>();
+        }
+        for(var ID : IDs)
+        {
+            InventoryRequirements.add(new Tuple2<>(ID, 1));
+        }
+    }
+
+    public void SetFilter(InteractTask.InteractableFilter... Filter)
+    {
+        TargetFilter = EnumSet.noneOf(InteractTask.InteractableFilter.class);
+        TargetFilter.addAll(Arrays.asList(Filter));
+    }
+
     public void SetTargetArea(Area... areas)
     {
         TargetArea = areas;
+    }
+
+    public boolean hasInventoryRequirements()
+    {
+        for(var item : InventoryRequirements)
+        {
+            if(Inventory.count(item._1) < item._2)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setDepositInventory(boolean depositInventory)
+    {
+        DepositInventory = depositInventory;
+    }
+
+    public void setWaitForFullInventory(boolean waitForFullInventory)
+    {
+        WaitForFullInventory = waitForFullInventory;
+    }
+
+    private TravelTask CreateTravelTask()
+    {
+        Area       targetArea   = Arrays.stream(TargetArea).findAny().get();
+        TravelTask TravelToArea = new TravelTask("Travel to Area", targetArea.getRandomTile());
+        TravelToArea.SetTaskPriority(0);
+        TravelToArea.CompleteCondition = () -> targetArea.contains(Players.getLocal().getTile());
+        TravelToArea.onReachedDestination.Subscribe(this, this::onTravelComplete);
+        return TravelToArea;
+    }
+
+    private void StartCycle(tpircSScript Script)
+    {
+        interactTask = new InteractTask(GetName(), Action, Targets);
+        interactTask.SetFilter(TargetFilter);
+        if(WaitForFullInventory)
+        {
+            interactTask.SetWaitForInventory(true);
+            interactTask.CompleteCondition = Inventory::isFull;
+        }
+
+        if(TargetArea != null)
+        {
+            GetScript().addNodes(CreateTravelTask());
+        }
+
+        Script.addNodes(interactTask);
+    }
+
+    private void onTravelComplete()
+    {
+        if(interactTask != null && interactTask.GetTarget() == null)
+        {
+            GetScript().addNodes(CreateTravelTask());
+        }
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public boolean isCycleFinished(tpircSScript Script)
+    {
+        return Inventory.isFull();
     }
 
     /**
@@ -37,6 +146,11 @@ public class InteractCycle extends SimpleCycle
     public boolean onStart(tpircSScript Script)
     {
         StartCycle(Script);
+        if(InventoryRequirements != null && !hasInventoryRequirements())
+        {
+            Script.addNodes(new InventoryCheckTask(this.GetName() + " Requirements",
+                                                   InventoryRequirements.toArray(new Tuple2[0])));
+        }
         return super.onStart(Script);
     }
 
@@ -44,9 +158,16 @@ public class InteractCycle extends SimpleCycle
     public boolean onEnd(tpircSScript Script)
     {
         Logger.log("InteractCycle: OnEnd");
-        if(Sleep.sleepUntil(() -> Bank.open(), 60000))
+        if(DepositInventory)
         {
-            Bank.depositAllItems();
+            if(InventoryRequirements == null)
+            {
+                Script.addNodes(BankItemsTask.FullDepositInventory());
+            }
+            else
+            {
+                Script.addNodes(BankItemsTask.FullDepositInventory(InventoryRequirements.toArray(new Tuple2[0])));
+            }
         }
         return super.onEnd(Script);
     }
@@ -61,34 +182,5 @@ public class InteractCycle extends SimpleCycle
     {
         StartCycle(Script);
         return true;
-    }
-
-    private TravelTask CreateTravelTask()
-    {
-        TravelTask TravelToArea = new TravelTask("Travel to Area",
-                                                 Arrays.stream(TargetArea).findAny().get().getRandomTile());
-        TravelToArea.onReachedDestination.Subscribe(this, this::onTravelComplete);
-        return TravelToArea;
-    }
-
-    private void onTravelComplete()
-    {
-        if(interactTask != null && interactTask.GetTarget() == null)
-        {
-            GetScript().addNodes(CreateTravelTask());
-        }
-    }
-
-    private void StartCycle(tpircSScript Script)
-    {
-        interactTask = new InteractTask(GetName(), Targets);
-        interactTask.TaskPriority.set(0);
-
-        if(TargetArea != null)
-        {
-            GetScript().addNodes(CreateTravelTask());
-        }
-
-        Script.addNodes(interactTask);
     }
 }

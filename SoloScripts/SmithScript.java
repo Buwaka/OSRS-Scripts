@@ -13,15 +13,17 @@ public class SmithScript extends tpircSScript
     int        MithrilBar        = 2359;
     int        AdamaniteBar      = 2361;
     SmithCycle SteelSmithing     = new SmithCycle("Smith Steel nails", "Steel nails", SteelBarID);
-    SmithCycle SmithMithrilSword = new SmithCycle("Smith Mithril Stuff", "Mithril sword", MithrilBar);
+    SmithCycle SmithMithrilSword = new SmithCycle("Smith Mithril Stuff",
+                                                  "Mithril sword",
+                                                  MithrilBar);
 
     @Override
     public void onStart()
     {
 
-//        SteelSmithing.SetCycleType(ICycle.CycleType.byGoal);
-//        SteelSmithing.Goal = () -> Skills.getRealLevel(Skill.SMITHING) >= 50;
-//        AddCycle(SteelSmithing);
+        //        SteelSmithing.SetCycleType(ICycle.CycleType.byGoal);
+        //        SteelSmithing.Goal = () -> Skills.getRealLevel(Skill.SMITHING) >= 50;
+        //        AddCycle(SteelSmithing);
 
         SmithMithrilSword.SetCycleType(ICycle.CycleType.Endless);
         AddCycle(SmithMithrilSword);

@@ -40,6 +40,38 @@ public class ClayFiringScript extends tpircSScript
         Banking
     }
 
+    public States GetState()
+    {
+        States     out;
+        GameObject Wheel = GameObjects.closest(PottersWheelID);
+        if(Wheel != null && Wheel.distance(Players.getLocal().getTile()) < 8.0 &&
+           Inventory.contains(SoftClayID))
+        {
+            out = States.Shaping;
+        }
+        else if(Inventory.contains(SoftClayID))
+        {
+            out = States.TravelToWheel;
+        }
+        else if(OSRSUtilities.CanReachBank())
+        {
+            out = States.Banking;
+        }
+        else
+        {
+            out = States.TravelToBank;
+        }
+
+
+        if(out != LastState)
+        {
+            Logger.log("Transitioning to state: " + out);
+            LastState = out;
+        }
+
+        return out;
+    }
+
     @Override
     public int onLoop()
     {
@@ -95,36 +127,5 @@ public class ClayFiringScript extends tpircSScript
         }
 
         return 0;
-    }
-
-    public States GetState()
-    {
-        States     out;
-        GameObject Wheel = GameObjects.closest(PottersWheelID);
-        if(Wheel != null && Wheel.distance(Players.getLocal().getTile()) < 8.0 && Inventory.contains(SoftClayID))
-        {
-            out = States.Shaping;
-        }
-        else if(Inventory.contains(SoftClayID))
-        {
-            out = States.TravelToWheel;
-        }
-        else if(OSRSUtilities.CanReachBank())
-        {
-            out = States.Banking;
-        }
-        else
-        {
-            out = States.TravelToBank;
-        }
-
-
-        if(out != LastState)
-        {
-            Logger.log("Transitioning to state: " + out);
-            LastState = out;
-        }
-
-        return out;
     }
 }

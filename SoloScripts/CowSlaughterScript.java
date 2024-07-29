@@ -56,85 +56,22 @@ public class CowSlaughterScript extends tpircSScript
         Healing
     }
 
-    @Override
-    public int onLoop()
+    public int[] GetPickupList()
     {
-
-        States State = GetState();
-
-        switch(State)
+        List<Integer> ToPickup = new ArrayList<>();
+        if(PickupBones)
         {
-            case TravelToCows ->
-            {
-                OSRSUtilities.SimpleWalkTo(CowArea.getRandomTile());
-            }
-            case Pickup ->
-            {
-                var Items = GetSurroundingPickups();
-                OSRSUtilities.PickupItems(Items);
-            }
-            case Pray ->
-            {
-                while(Inventory.contains(BonesID))
-                {
-                    Inventory.get(BonesID).interact(BonesAction);
-                    OSRSUtilities.Wait(500, 200);
-                }
-            }
-            case FightCows ->
-            {
-                Character Cow = Players.getLocal().getInteractingCharacter();
-                if(Cow == null)
-                {
-                    Cow = OSRSUtilities.GetClosestAttackableEnemy(CowName);
-                    if(Cow == null)
-                    {
-                        Logger.log("No Cow found");
-                        return 0;
-                    }
-                    Cow.interact(AttackAction);
-                    Sleep.sleepTicks(3);
-                }
-
-                Logger.log("Attacking: " + Cow);
-
-                Tile LastTile = Cow.getTile();
-                while(Players.getLocal().isMoving() || Cow.isInteracting(Players.getLocal()))
-                {
-                    if(Players.getLocal().getHealthPercent() < MinHealthPercent)
-                    {
-                        //Flee
-                        OSRSUtilities.SimpleWalkTo(BankArea.getRandomTile());
-                        OSRSUtilities.Wait();
-                        break;
-                    }
-                    LastTile = Cow.getTile();
-                    Sleep.sleepTicks(1);
-                }
-
-                Character finalCow = Cow;
-                Sleep.sleepUntil(() -> !finalCow.exists(), 5000);
-                Sleep.sleepTicks(3);
-
-                var PickupList = GetPickupList();
-                Logger.log(LastTile);
-                OSRSUtilities.PickupOnArea(LastTile.getArea(3), PickupList);
-
-            }
-            case TravelToBank ->
-            {
-                OSRSUtilities.SimpleWalkTo(BankArea.getRandomTile());
-            }
-            case Banking ->
-            {
-                OSRSUtilities.BankDepositAll(InventoryExcepts);
-            }
-            case Healing ->
-            {
-                OSRSUtilities.BankHeal();
-            }
+            ToPickup.add(BonesID);
         }
-        return 0;
+        if(PickupBeef)
+        {
+            ToPickup.add(BeefID);
+        }
+        if(PickUpCowHide)
+        {
+            ToPickup.add(CowHideID);
+        }
+        return ToPickup.stream().mapToInt(t -> t).toArray();
     }
 
     public States GetState()
@@ -225,21 +162,84 @@ public class CowSlaughterScript extends tpircSScript
         return Items;
     }
 
-    public int[] GetPickupList()
+    @Override
+    public int onLoop()
     {
-        List<Integer> ToPickup = new ArrayList<>();
-        if(PickupBones)
+
+        States State = GetState();
+
+        switch(State)
         {
-            ToPickup.add(BonesID);
+            case TravelToCows ->
+            {
+                OSRSUtilities.SimpleWalkTo(CowArea.getRandomTile());
+            }
+            case Pickup ->
+            {
+                var Items = GetSurroundingPickups();
+                OSRSUtilities.PickupItems(Items);
+            }
+            case Pray ->
+            {
+                while(Inventory.contains(BonesID))
+                {
+                    Inventory.get(BonesID).interact(BonesAction);
+                    OSRSUtilities.Wait(500, 200);
+                }
+            }
+            case FightCows ->
+            {
+                Character Cow = Players.getLocal().getInteractingCharacter();
+                if(Cow == null)
+                {
+                    Cow = OSRSUtilities.GetClosestAttackableEnemy(CowName);
+                    if(Cow == null)
+                    {
+                        Logger.log("No Cow found");
+                        return 0;
+                    }
+                    Cow.interact(AttackAction);
+                    Sleep.sleepTicks(3);
+                }
+
+                Logger.log("Attacking: " + Cow);
+
+                Tile LastTile = Cow.getTile();
+                while(Players.getLocal().isMoving() || Cow.isInteracting(Players.getLocal()))
+                {
+                    if(Players.getLocal().getHealthPercent() < MinHealthPercent)
+                    {
+                        //Flee
+                        OSRSUtilities.SimpleWalkTo(BankArea.getRandomTile());
+                        OSRSUtilities.Wait();
+                        break;
+                    }
+                    LastTile = Cow.getTile();
+                    Sleep.sleepTicks(1);
+                }
+
+                Character finalCow = Cow;
+                Sleep.sleepUntil(() -> !finalCow.exists(), 5000);
+                Sleep.sleepTicks(3);
+
+                var PickupList = GetPickupList();
+                Logger.log(LastTile);
+                OSRSUtilities.PickupOnArea(LastTile.getArea(3), PickupList);
+
+            }
+            case TravelToBank ->
+            {
+                OSRSUtilities.SimpleWalkTo(BankArea.getRandomTile());
+            }
+            case Banking ->
+            {
+                OSRSUtilities.BankDepositAll(InventoryExcepts);
+            }
+            case Healing ->
+            {
+                OSRSUtilities.BankHeal();
+            }
         }
-        if(PickupBeef)
-        {
-            ToPickup.add(BeefID);
-        }
-        if(PickUpCowHide)
-        {
-            ToPickup.add(CowHideID);
-        }
-        return ToPickup.stream().mapToInt(t -> t).toArray();
+        return 0;
     }
 }

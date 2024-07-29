@@ -60,7 +60,7 @@ public class AreaSerializer implements JsonSerializer<Area>, JsonDeserializer<Ar
     }
 
     public Area deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws
-                                                                                                JsonParseException
+            JsonParseException
     {
         SerializedArea tempArea = context.deserialize(json, SerializedArea.class);
         Area           area     = new Area(tempArea.tiles);

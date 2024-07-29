@@ -33,32 +33,26 @@ public class MineCycle extends SimpleCycle implements Serializable
         Targets    = ObjectDB.GetObjectIDsByName(RockName);
     }
 
-
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        StartCycle(Script);
-        return super.onStart(Script);
-    }
-
     private void StartCycle(tpircSScript Script)
     {
         //TODO check if we have a pickaxe, if not, pick one from the bank
 
         InteractTask interactTask = new InteractTask(GetName(), Targets);
-        interactTask.TaskPriority.set(0);
+        interactTask.SetTaskPriority(0);
 
         TravelTask TravelToMine = new TravelTask("Travel to Mine",
-                                                 Arrays.stream(MiningArea).findAny().get().getRandomTile());
+                                                 Arrays.stream(MiningArea)
+                                                       .findAny()
+                                                       .get()
+                                                       .getRandomTile());
         TravelToMine.CompleteCondition = Inventory::isFull;
         TravelToMine.onReachedDestination.Subscribe(TravelToMine,
-                                                    () -> Script.addNodes(new TravelTask("Travel to different Minespot",
-                                                                                         Arrays.stream(MiningArea).findAny().get().getRandomTile())));
+                                                    () -> Script.addNodes(new TravelTask(
+                                                            "Travel to different Minespot",
+                                                            Arrays.stream(MiningArea)
+                                                                  .findAny()
+                                                                  .get()
+                                                                  .getRandomTile())));
 
 
         OpenBankTask OpenBank = new OpenBankTask();
@@ -70,10 +64,22 @@ public class MineCycle extends SimpleCycle implements Serializable
         OpenBank.AcceptCondition = () -> !interactTask.isActive();
 
         BankItemsTask BankOres = new BankItemsTask("Bank Ores");
-        BankOres.DepositAll();
+        BankOres.AddDepositAll();
         BankOres.AcceptCondition = () -> !OpenBank.isActive();
 
         Script.addNodes(BankOres, OpenBank, TravelToMine, interactTask);
+    }
+
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    @Override
+    public boolean onStart(tpircSScript Script)
+    {
+        StartCycle(Script);
+        return super.onStart(Script);
     }
 
     @Override

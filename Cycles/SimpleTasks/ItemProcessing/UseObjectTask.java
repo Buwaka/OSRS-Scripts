@@ -58,6 +58,16 @@ public class UseObjectTask extends SimpleTask
         InteractAction = Action;
     }
 
+    public GameObject GetObject(int... IDs)
+    {
+        var closest = GetObjectStatic(IDs);
+        if(closest != null && !closest.getInteractableFrom().isEmpty())
+        {
+            BackupTile = closest.getInteractableFrom().getFirst();
+        }
+        return closest;
+    }
+
     public Integer getCount()
     {
         return Count;
@@ -66,6 +76,17 @@ public class UseObjectTask extends SimpleTask
     public void setCount(Integer count)
     {
         Count = count;
+    }
+
+    public static GameObject GetObjectStatic(int... IDs)
+    {
+        return GameObjects.closest(new IdFilter<>(IDs));
+    }
+
+    private static Boolean CheckInventory(Object context, tpircSScript.ItemAction Action, Item item1, Item item2)
+    {
+        ((UseObjectTask) context).TimeoutTicker.set(((UseObjectTask) context).DefaultProcessTickTime);
+        return true;
     }
 
     /**
@@ -90,12 +111,6 @@ public class UseObjectTask extends SimpleTask
         return super.onStartTask(Script);
     }
 
-    private static Boolean CheckInventory(Object context, tpircSScript.ItemAction Action, Item item1, Item item2)
-    {
-        ((UseObjectTask) context).TimeoutTicker.set(((UseObjectTask) context).DefaultProcessTickTime);
-        return true;
-    }
-
     /**
      * @return
      */
@@ -104,21 +119,6 @@ public class UseObjectTask extends SimpleTask
     {
         var Obj = GetObject(ObjectID);
         return Obj != null && Obj.canReach() && super.Ready();
-    }
-
-    public GameObject GetObject(int... IDs)
-    {
-        var closest = GetObjectStatic(IDs);
-        if(closest != null && !closest.getInteractableFrom().isEmpty())
-        {
-            BackupTile = closest.getInteractableFrom().getFirst();
-        }
-        return closest;
-    }
-
-    public static GameObject GetObjectStatic(int... IDs)
-    {
-        return GameObjects.closest(new IdFilter<>(IDs));
     }
 
     /**
@@ -192,15 +192,21 @@ public class UseObjectTask extends SimpleTask
                 result = Sleep.sleepUntil(() -> Obj.interact(InteractAction), 10000, 2000);
                 if(!result)
                 {
-                    result = Sleep.sleepUntil(() -> Obj.interact(InteractAction, true, false), 10000, 2000);
+                    result = Sleep.sleepUntil(() -> Obj.interact(InteractAction, true, false),
+                                              10000,
+                                              2000);
                 }
                 else if(!result)
                 {
-                    result = Sleep.sleepUntil(() -> Obj.interactForceLeft(InteractAction), 10000, 2000);
+                    result = Sleep.sleepUntil(() -> Obj.interactForceLeft(InteractAction),
+                                              10000,
+                                              2000);
                 }
                 else if(!result)
                 {
-                    result = Sleep.sleepUntil(() -> Obj.interactForceRight(InteractAction), 10000, 2000);
+                    result = Sleep.sleepUntil(() -> Obj.interactForceRight(InteractAction),
+                                              10000,
+                                              2000);
                 }
             }
 
@@ -216,7 +222,8 @@ public class UseObjectTask extends SimpleTask
                 }
                 else
                 {
-                    Logger.log("UseObjectTask: Failed both interaction and walking to the object, quiting");
+                    Logger.log(
+                            "UseObjectTask: Failed both interaction and walking to the object, quiting");
                     return 0;
                 }
             }

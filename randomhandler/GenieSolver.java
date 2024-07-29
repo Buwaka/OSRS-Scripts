@@ -55,7 +55,8 @@ public class GenieSolver extends RandomSolver
             }
             if(Calculations.random(2) == 1)
             {
-                RandomHandler.log("Delaying speaking to Genie by " + ran + " seconds", "GenieSolver");
+                RandomHandler.log("Delaying speaking to Genie by " + ran + " seconds",
+                                  "GenieSolver");
                 Sleep.sleep(ran * 1000L);
             }
             if(genie.interact())

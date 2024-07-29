@@ -44,42 +44,6 @@ public class SmithCycle extends SimpleCycle
         MinimumBarCount = minimumBarCount;
     }
 
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        if(!Bank.isCached())
-        {
-            OpenBank = new OpenBankTask();
-            OpenBank.onComplete.Subscribe(this, () -> OpenBank = null);
-            Script.addNodes(OpenBank);
-        }
-        if(OpenBank != null)
-        {
-            return false;
-        }
-
-
-        if(TargetArea.contains(Players.getLocal().getTile()))
-        {
-            StartCycle(Script);
-            return super.onStart(Script);
-        }
-        else
-        {
-            BackupTravel                   = new TravelTask("Travel to Anvil", BackupTile);
-            BackupTravel.AcceptCondition   = Bank::isCached;
-            BackupTravel.CompleteCondition = () -> TargetArea.contains(Players.getLocal().getTile());
-            BackupTravel.onComplete.Subscribe(this, () -> StartCycle(Script));
-            Script.addNodes(BackupTravel);
-            return super.onStart(Script);
-        }
-    }
-
     private void StartCycle(tpircSScript Script)
     {
         if(Bank.count(BarID) < MinimumBarCount && Inventory.count(BarID) < MinimumBarCount)
@@ -92,17 +56,18 @@ public class SmithCycle extends SimpleCycle
 
         BankItemsTask GetItems = new BankItemsTask("Get Bars");
         GetItems.AcceptCondition = () -> Bank.isOpen();
-        GetItems.TaskPriority.set(0);
+        GetItems.SetTaskPriority(0);
         if(!Inventory.isEmpty())
         {
-            if(Inventory.contains(t -> t.getID() != HammerID && !Objects.equals(t.getName(), TargetName)))
+            if(Inventory.contains(t -> t.getID() != HammerID &&
+                                       !Objects.equals(t.getName(), TargetName)))
             {
-                GetItems.DepositAll();
+                GetItems.AddDepositAll();
                 GetItems.AddWithdraw(HammerID, 1);
             }
             else if(Inventory.contains(TargetName))
             {
-                GetItems.DepositAll(Inventory.get(TargetName).getID());
+                GetItems.AddDepositAll(Inventory.get(TargetName).getID());
             }
         }
 
@@ -143,5 +108,61 @@ public class SmithCycle extends SimpleCycle
     {
         StartCycle(Script);
         return super.onRestart(Script);
+    }
+
+    /**
+     * will be called once there are no active tasks anymore, aka a single cycle has been completed
+     *
+     * @param Script
+     *
+     * @return true when Cycle is completed, ready for a restart
+     */
+    @Override
+    public boolean isCycleComplete(tpircSScript Script)
+    {
+        return Inventory.count(BarID) < MinimumBarCount && Bank.count(BarID) < MinimumBarCount;
+    }
+
+    @Override
+    public boolean isCycleFinished(tpircSScript Script)
+    {
+        return Inventory.count(BarID) < MinimumBarCount;
+    }
+
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    @Override
+    public boolean onStart(tpircSScript Script)
+    {
+        if(!Bank.isCached())
+        {
+            OpenBank = new OpenBankTask();
+            OpenBank.onComplete.Subscribe(this, () -> OpenBank = null);
+            Script.addNodes(OpenBank);
+        }
+        if(OpenBank != null)
+        {
+            return false;
+        }
+
+
+        if(TargetArea.contains(Players.getLocal().getTile()))
+        {
+            StartCycle(Script);
+            return super.onStart(Script);
+        }
+        else
+        {
+            BackupTravel                   = new TravelTask("Travel to Anvil", BackupTile);
+            BackupTravel.AcceptCondition   = Bank::isCached;
+            BackupTravel.CompleteCondition = () -> TargetArea.contains(Players.getLocal()
+                                                                              .getTile());
+            BackupTravel.onComplete.Subscribe(this, () -> StartCycle(Script));
+            Script.addNodes(BackupTravel);
+            return super.onStart(Script);
+        }
     }
 }

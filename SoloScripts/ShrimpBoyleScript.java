@@ -46,88 +46,11 @@ public class ShrimpBoyleScript extends tpircSScript
         Bank
     }
 
-    @Override
-    public int onLoop()
-    {
-        final States State = GetState();
-
-        switch(State)
-        {
-            case TravelToFishSpot ->
-            {
-                OSRSUtilities.SimpleWalkTo(FishLocation);
-            }
-            case Fish ->
-            {
-                OSRSUtilities.Fish(FishAction, FishSpotID);
-            }
-            case TravelToFire ->
-            {
-                OSRSUtilities.SimpleWalkTo(FireLocation);
-            }
-            case Bake ->
-            {
-                // Only bake ancho's for now
-                while((Inventory.contains(ShrimpID) && CookShrimp) || (Inventory.contains(AnchoviesID) && CookAncho))
-                {
-                    if(Inventory.contains(ShrimpID) && CookShrimp)
-                    {
-                        Inventory.use(ShrimpID);
-                    }
-                    if(Inventory.contains(AnchoviesID) && CookAncho)
-                    {
-                        Inventory.use(AnchoviesID);
-                    }
-
-                    GameObject Fire = GameObjects.closest(FireID);
-                    if(Fire != null && Fire.isOnScreen())
-                    {
-                        Point pt = Fire.getClickablePoint();
-                        OSRSUtilities.RandomizeClick(pt, 2, 2);
-                        Mouse.click(pt);
-                        OSRSUtilities.Wait();
-                        OSRSUtilities.PickSkillingMenuItem(CookAction);
-                        OSRSUtilities.WaitForEndAnimationLoop(1500, 10000);
-                    }
-                    else
-                    {
-                        OSRSUtilities.SimpleWalkTo(FireLocation);
-                        OSRSUtilities.Wait();
-                    }
-                }
-
-            }
-            case TravelToBank ->
-            {
-                OSRSUtilities.SimpleWalkTo(BankLocation);
-            }
-            case Bank ->
-            {
-                OSRSUtilities.BankDepositAll(NetID);
-                if(!Inventory.contains(NetID))
-                {
-                    if(Bank.contains(NetID))
-                    {
-                        OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(NetID, 1));
-                    }
-                    else
-                    {
-                        Logger.log("No small net found, stopping script.");
-                        this.stop();
-                    }
-                }
-            }
-        }
-
-
-        return 0;
-    }
-
     public States GetState()
     {
         States out;
-        if(Inventory.isFull() &&
-           ((Inventory.contains(ShrimpID) && CookShrimp) || (Inventory.contains(AnchoviesID) && CookAncho)))
+        if(Inventory.isFull() && ((Inventory.contains(ShrimpID) && CookShrimp) ||
+                                  (Inventory.contains(AnchoviesID) && CookAncho)))
         {
             GameObject Fire = GameObjects.closest(FireID);
             if(Fire.isOnScreen())
@@ -172,5 +95,85 @@ public class ShrimpBoyleScript extends tpircSScript
         }
 
         return out;
+    }
+
+    @Override
+    public int onLoop()
+    {
+        final States State = GetState();
+
+        switch(State)
+        {
+            case TravelToFishSpot ->
+            {
+                OSRSUtilities.SimpleWalkTo(FishLocation);
+            }
+            case Fish ->
+            {
+                OSRSUtilities.Fish(FishAction, FishSpotID);
+            }
+            case TravelToFire ->
+            {
+                OSRSUtilities.SimpleWalkTo(FireLocation);
+            }
+            case Bake ->
+            {
+                // Only bake ancho's for now
+                while((Inventory.contains(ShrimpID) && CookShrimp) ||
+                      (Inventory.contains(AnchoviesID) && CookAncho))
+                {
+                    if(Inventory.contains(ShrimpID) && CookShrimp)
+                    {
+                        Inventory.use(ShrimpID);
+                    }
+                    if(Inventory.contains(AnchoviesID) && CookAncho)
+                    {
+                        Inventory.use(AnchoviesID);
+                    }
+
+                    GameObject Fire = GameObjects.closest(FireID);
+                    if(Fire != null && Fire.isOnScreen())
+                    {
+                        Point pt = Fire.getClickablePoint();
+                        OSRSUtilities.RandomizeClick(pt, 2, 2);
+                        Mouse.click(pt);
+                        OSRSUtilities.Wait();
+                        OSRSUtilities.PickSkillingMenuItem(CookAction);
+                        OSRSUtilities.WaitForEndAnimationLoop(1500, 10000);
+                    }
+                    else
+                    {
+                        OSRSUtilities.SimpleWalkTo(FireLocation);
+                        OSRSUtilities.Wait();
+                    }
+                }
+
+            }
+            case TravelToBank ->
+            {
+                OSRSUtilities.SimpleWalkTo(BankLocation);
+            }
+            case Bank ->
+            {
+                OSRSUtilities.BankDepositAll(NetID);
+                if(!Inventory.contains(NetID))
+                {
+                    if(Bank.contains(NetID))
+                    {
+                        OSRSUtilities.BankWithdraw(new AbstractMap.SimpleEntry<Integer, Integer>(
+                                NetID,
+                                1));
+                    }
+                    else
+                    {
+                        Logger.log("No small net found, stopping script.");
+                        this.stop();
+                    }
+                }
+            }
+        }
+
+
+        return 0;
     }
 }

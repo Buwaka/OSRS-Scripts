@@ -31,44 +31,6 @@ public class ClayMiningScript extends tpircSScript
         Banking
     }
 
-    public int onLoop()
-    {
-
-        States State = GetState();
-
-        switch(State)
-        {
-            case TravelToRocks ->
-            {
-                OSRSUtilities.WalkTo(MinePosition);
-            }
-            case Mining ->
-            {
-                OSRSUtilities.Mine(Rock1);
-                OSRSUtilities.Mine(Rock2);
-            }
-            case TravelToBank ->
-            {
-                OSRSUtilities.WalkTo(BankLocation.getRandomTile());
-                Bank.open();
-            }
-            case Banking ->
-            {
-                Bank.depositAllItems();
-
-//                if(Bank.count(ClayID) > (rand.nextInt(200) + 500))
-//                {
-//                    ScriptManager.getScriptManager().start("SoloScripts.ClayWatering","");
-//                    return 0;
-//                }
-
-                Bank.close();
-            }
-        }
-
-        return 0;
-    }
-
     public States GetState()
     {
         States State;
@@ -102,5 +64,43 @@ public class ClayMiningScript extends tpircSScript
     {
         var dist = Players.getLocal().getTile().distance(MinePosition);
         return dist < 1;
+    }
+
+    public int onLoop()
+    {
+
+        States State = GetState();
+
+        switch(State)
+        {
+            case TravelToRocks ->
+            {
+                OSRSUtilities.WalkTo(MinePosition);
+            }
+            case Mining ->
+            {
+                OSRSUtilities.Mine(Rock1);
+                OSRSUtilities.Mine(Rock2);
+            }
+            case TravelToBank ->
+            {
+                OSRSUtilities.WalkTo(BankLocation.getRandomTile());
+                Bank.open();
+            }
+            case Banking ->
+            {
+                Bank.depositAllItems();
+
+                //                if(Bank.count(ClayID) > (rand.nextInt(200) + 500))
+                //                {
+                //                    ScriptManager.getScriptManager().start("SoloScripts.ClayWatering","");
+                //                    return 0;
+                //                }
+
+                Bank.close();
+            }
+        }
+
+        return 0;
     }
 }

@@ -47,7 +47,8 @@ public class RickyTurpentineSolver extends RandomSolver
             RandomHandler.log("Shit, it's Ricky Turps!", "RickyTurpentineSolver");
             if(Calculations.random(2) == 1)
             {
-                RandomHandler.log("Pretending not to see Ricky for " + ran + " seconds...", "RickyTurpentineSolver");
+                RandomHandler.log("Pretending not to see Ricky for " + ran + " seconds...",
+                                  "RickyTurpentineSolver");
                 Sleep.sleep(ran * 1000L);
             }
             Sleep.sleep(350, 850);

@@ -14,6 +14,11 @@ public class GameTickDelegate extends Delegate
     ConcurrentLinkedQueue<Semaphore>   Tickers       = new ConcurrentLinkedQueue<>();
     WeakHashMap<Object, AtomicInteger> UpdateTickers = new WeakHashMap<>();
 
+    public void AddUpdateTicker(Object Caller, AtomicInteger Ticker)
+    {
+        UpdateTickers.put(Caller, Ticker);
+    }
+
     public void WaitRandomTicks(int max)
     {
         WaitTicks(OSRSUtilities.rand.nextInt(Math.max(1, max - 1)) + 1);
@@ -30,7 +35,9 @@ public class GameTickDelegate extends Delegate
             Tickers.remove(Lock);
         } catch(Exception e)
         {
-            Logger.log("GameTickDelegate: Failed to wait for the lock somehow, possibly thread got interrupted " + e);
+            Logger.log(
+                    "GameTickDelegate: Failed to wait for the lock somehow, possibly thread got interrupted " +
+                    e);
         }
     }
 
@@ -50,10 +57,5 @@ public class GameTickDelegate extends Delegate
         {
             ticker.decrementAndGet();
         }
-    }
-
-    public void AddUpdateTicker(Object Caller, AtomicInteger Ticker)
-    {
-        UpdateTickers.put(Caller, Ticker);
     }
 }

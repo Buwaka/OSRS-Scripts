@@ -11,17 +11,17 @@ public class EquipmentRequirement implements IRequirement
      * @return
      */
     @Override
-    public boolean isRequirementMet()
+    public RequirementType GetRequirementType()
     {
-        return false;
+        return RequirementType.Equipment;
     }
 
     /**
      * @return
      */
     @Override
-    public RequirementType GetRequirementType()
+    public boolean isRequirementMet()
     {
-        return RequirementType.Equipment;
+        return false;
     }
 }
