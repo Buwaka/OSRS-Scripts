@@ -1,0 +1,91 @@
+[
+  {
+    "MiningArea": [
+      {
+        "rectangle": {
+          "x": 3080,
+          "y": 3422,
+          "width": 8,
+          "height": 4
+        },
+        "z": 0
+      }
+    ],
+    "Targets": [
+      4676,
+      11366,
+      11367,
+      36204
+    ],
+    "CycleName": "Coal"
+  },
+  {
+    "MiningArea": [
+      {
+        "rectangle": {
+          "x": 3298,
+          "y": 3298,
+          "width": 4,
+          "height": 18
+        },
+        "z": 0
+      },
+      {
+        "rectangle": {
+          "x": 3295,
+          "y": 3279,
+          "width": 8,
+          "height": 4
+        },
+        "z": 0
+      }
+    ],
+    "Targets": [
+      11364,
+      11365,
+      36203,
+      42833
+    ],
+    "CycleName": "Iron ore"
+  },
+  {
+    "MiningArea": [
+      {
+        "rectangle": {
+          "x": 3281,
+          "y": 3361,
+          "width": 9,
+          "height": 10
+        },
+        "z": 0
+      }
+    ],
+    "Targets": [
+      10079,
+      10943,
+      11161,
+      37944
+    ],
+    "CycleName": "Copper ore"
+  },
+  {
+    "MiningArea": [
+      {
+        "rectangle": {
+          "x": 3281,
+          "y": 3361,
+          "width": 9,
+          "height": 10
+        },
+        "z": 0
+      }
+    ],
+    "Targets": [
+      10080,
+      11360,
+      11361,
+      37945
+    ],
+    "CycleName": "Tin ore"
+  }
+]

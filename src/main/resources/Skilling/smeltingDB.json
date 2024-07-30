@@ -1,0 +1,174 @@
+{
+  "2893": {
+    "id": 2893,
+    "Level": 20,
+    "Name": "Elemental metal",
+    "Ores": [
+      {
+        "_1": 2892,
+        "_2": 1
+      },
+      {
+        "_1": 453,
+        "_2": 4
+      }
+    ],
+    "Experience": 7.5,
+    "Members": true
+  },
+  "13354": {
+    "id": 13354,
+    "Level": 45,
+    "Name": "Lovakite bar",
+    "Ores": [
+      {
+        "_1": 13356,
+        "_2": 1
+      },
+      {
+        "_1": 453,
+        "_2": 2
+      }
+    ],
+    "Experience": 20.0,
+    "Members": true
+  },
+  "2349": {
+    "id": 2349,
+    "Level": 1,
+    "Name": "Bronze bar",
+    "Ores": [
+      {
+        "_1": 436,
+        "_2": 1
+      },
+      {
+        "_1": 438,
+        "_2": 1
+      }
+    ],
+    "Experience": 6.2,
+    "Members": false
+  },
+  "2351": {
+    "id": 2351,
+    "Level": 15,
+    "Name": "Iron bar",
+    "Ores": [
+      {
+        "_1": 440,
+        "_2": 1
+      }
+    ],
+    "Experience": 12.5,
+    "Members": false,
+    "NeedForgingRing": true
+  },
+  "2353": {
+    "id": 2353,
+    "Level": 30,
+    "Name": "Steel bar",
+    "Ores": [
+      {
+        "_1": 440,
+        "_2": 1
+      },
+      {
+        "_1": 453,
+        "_2": 4
+      }
+    ],
+    "Experience": 17.5,
+    "Members": false
+  },
+  "2355": {
+    "id": 2355,
+    "Level": 20,
+    "Name": "Silver bar",
+    "Ores": [
+      {
+        "_1": 442,
+        "_2": 1
+      }
+    ],
+    "Experience": 13.7,
+    "Members": false
+  },
+  "2357": {
+    "id": 2357,
+    "Level": 40,
+    "Name": "Gold bar",
+    "Ores": [
+      {
+        "_1": 444,
+        "_2": 1
+      }
+    ],
+    "Experience": 22.5,
+    "Members": false
+  },
+  "2359": {
+    "id": 2359,
+    "Level": 50,
+    "Name": "Mithril bar",
+    "Ores": [
+      {
+        "_1": 447,
+        "_2": 1
+      },
+      {
+        "_1": 453,
+        "_2": 4
+      }
+    ],
+    "Experience": 30.0,
+    "Members": false
+  },
+  "2361": {
+    "id": 2361,
+    "Level": 70,
+    "Name": "Adamantite bar",
+    "Ores": [
+      {
+        "_1": 449,
+        "_2": 1
+      },
+      {
+        "_1": 453,
+        "_2": 6
+      }
+    ],
+    "Experience": 37.5,
+    "Members": false
+  },
+  "9467": {
+    "id": 9467,
+    "Level": 13,
+    "Name": "Blurite bar",
+    "Ores": [
+      {
+        "_1": 668,
+        "_2": 1
+      }
+    ],
+    "Experience": 8.0,
+    "Members": true
+  },
+  "2363": {
+    "id": 2363,
+    "Level": 85,
+    "Name": "Runite bar",
+    "Ores": [
+      {
+        "_1": 451,
+        "_2": 1
+      },
+      {
+        "_1": 453,
+        "_2": 8
+      }
+    ],
+    "Experience": 50.0,
+    "Members": false
+  }
+}

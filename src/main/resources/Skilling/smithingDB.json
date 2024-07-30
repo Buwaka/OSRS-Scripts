@@ -1,0 +1,1358 @@
+{
+  "2349": [
+    {
+      "id": 1205,
+      "Level": 1,
+      "Name": "Bronze dagger",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1351,
+      "Level": 1,
+      "Name": "Bronze axe",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1422,
+      "Level": 2,
+      "Name": "Bronze mace",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1139,
+      "Level": 3,
+      "Name": "Bronze med helm",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 9386,
+      "Level": 3,
+      "Name": "Bronze bolts (unf) (unf)",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1277,
+      "Level": 4,
+      "Name": "Bronze sword",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 819,
+      "Level": 4,
+      "Name": "Bronze dart tip",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1794,
+      "Level": 4,
+      "Name": "Bronze wire",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 4819,
+      "Level": 4,
+      "Name": "Bronze nails",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1321,
+      "Level": 5,
+      "Name": "Bronze scimitar",
+      "XP": 25.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 1237,
+      "Level": 5,
+      "Name": "Bronze spear",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 11367,
+      "Level": 5,
+      "Name": "Bronze hasta",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 39,
+      "Level": 5,
+      "Name": "Bronze arrowtips",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 9420,
+      "Level": 6,
+      "Name": "Bronze limbs",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1291,
+      "Level": 6,
+      "Name": "Bronze longsword",
+      "XP": 25.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 3066,
+      "Level": 6,
+      "Name": "Bronze javelin heads",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1155,
+      "Level": 7,
+      "Name": "Bronze full helm",
+      "XP": 25.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 864,
+      "Level": 7,
+      "Name": "Bronze knife",
+      "XP": 12.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1173,
+      "Level": 8,
+      "Name": "Bronze sq shield",
+      "XP": 25.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 1337,
+      "Level": 9,
+      "Name": "Bronze warhammer",
+      "XP": 37.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1375,
+      "Level": 10,
+      "Name": "Bronze battleaxe",
+      "XP": 37.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1103,
+      "Level": 11,
+      "Name": "Bronze chainbody",
+      "XP": 37.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1189,
+      "Level": 12,
+      "Name": "Bronze kiteshield",
+      "XP": 37.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 3095,
+      "Level": 13,
+      "Name": "Bronze claws",
+      "XP": 25.0,
+      "Bars": 2,
+      "Members": true
+    },
+    {
+      "id": 1307,
+      "Level": 14,
+      "Name": "Bronze 2h sword",
+      "XP": 37.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1075,
+      "Level": 16,
+      "Name": "Bronze platelegs",
+      "XP": 37.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1087,
+      "Level": 16,
+      "Name": "Bronze plateskirt",
+      "XP": 37.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1117,
+      "Level": 18,
+      "Name": "Bronze platebody",
+      "XP": 62.5,
+      "Bars": 5,
+      "Members": false
+    }
+  ],
+  "2351": [
+    {
+      "id": 1203,
+      "Level": 15,
+      "Name": "Iron dagger",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1349,
+      "Level": 16,
+      "Name": "Iron axe",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1420,
+      "Level": 17,
+      "Name": "Iron mace",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 7225,
+      "Level": 17,
+      "Name": "Iron spit",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1137,
+      "Level": 18,
+      "Name": "Iron med helm",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 9377,
+      "Level": 18,
+      "Name": "Iron bolts (unf)",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1279,
+      "Level": 19,
+      "Name": "Iron sword",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 820,
+      "Level": 19,
+      "Name": "Iron dart tip",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 4820,
+      "Level": 19,
+      "Name": "Iron nails",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1323,
+      "Level": 20,
+      "Name": "Iron scimitar",
+      "XP": 50.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 1239,
+      "Level": 20,
+      "Name": "Iron spear",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 11369,
+      "Level": 20,
+      "Name": "Iron hasta",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 40,
+      "Level": 20,
+      "Name": "Iron arrowtips",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1293,
+      "Level": 21,
+      "Name": "Iron longsword",
+      "XP": 50.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 3074,
+      "Level": 21,
+      "Name": "Iron javelin heads",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1153,
+      "Level": 22,
+      "Name": "Iron full helm",
+      "XP": 50.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 863,
+      "Level": 22,
+      "Name": "Iron knife",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1175,
+      "Level": 23,
+      "Name": "Iron sq shield",
+      "XP": 50.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 9423,
+      "Level": 23,
+      "Name": "Iron limbs",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1335,
+      "Level": 24,
+      "Name": "Iron warhammer",
+      "XP": 75.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1363,
+      "Level": 25,
+      "Name": "Iron battleaxe",
+      "XP": 75.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1101,
+      "Level": 26,
+      "Name": "Iron chainbody",
+      "XP": 75.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 4541,
+      "Level": 26,
+      "Name": "Oil lantern frame",
+      "XP": 25.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1191,
+      "Level": 27,
+      "Name": "Iron kiteshield",
+      "XP": 75.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 3096,
+      "Level": 28,
+      "Name": "Iron claws",
+      "XP": 50.0,
+      "Bars": 2,
+      "Members": true
+    },
+    {
+      "id": 1309,
+      "Level": 29,
+      "Name": "Iron 2h sword",
+      "XP": 75.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1067,
+      "Level": 31,
+      "Name": "Iron platelegs",
+      "XP": 75.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1081,
+      "Level": 31,
+      "Name": "Iron plateskirt",
+      "XP": 75.0,
+      "Bars": 3,
+      "Members": false
+    }
+  ],
+  "2353": [
+    {
+      "id": 1207,
+      "Level": 30,
+      "Name": "Steel dagger",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1353,
+      "Level": 31,
+      "Name": "Steel axe",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1424,
+      "Level": 32,
+      "Name": "Steel mace",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1141,
+      "Level": 33,
+      "Name": "Steel med helm",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 9378,
+      "Level": 33,
+      "Name": "Steel bolts (unf)",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1281,
+      "Level": 34,
+      "Name": "Steel sword",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1539,
+      "Level": 34,
+      "Name": "Steel nails",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 821,
+      "Level": 34,
+      "Name": "Steel dart tip",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1325,
+      "Level": 35,
+      "Name": "Steel scimitar",
+      "XP": 75.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 1241,
+      "Level": 35,
+      "Name": "Steel spear",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 11371,
+      "Level": 35,
+      "Name": "Steel hasta",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 41,
+      "Level": 35,
+      "Name": "Steel arrowtips",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 2,
+      "Level": 35,
+      "Name": "Cannonball",
+      "XP": 25.6,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 9425,
+      "Level": 36,
+      "Name": "Steel limbs",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1295,
+      "Level": 36,
+      "Name": "Steel longsword",
+      "XP": 75.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 3084,
+      "Level": 36,
+      "Name": "Steel javelin heads",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 2370,
+      "Level": 36,
+      "Name": "Steel studs",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1157,
+      "Level": 37,
+      "Name": "Steel full helm",
+      "XP": 75.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 865,
+      "Level": 37,
+      "Name": "Steel knife",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1177,
+      "Level": 38,
+      "Name": "Steel sq shield",
+      "XP": 75.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 1339,
+      "Level": 39,
+      "Name": "Steel warhammer",
+      "XP": 112.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1365,
+      "Level": 40,
+      "Name": "Steel battleaxe",
+      "XP": 112.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1105,
+      "Level": 41,
+      "Name": "Steel chainbody",
+      "XP": 112.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1193,
+      "Level": 42,
+      "Name": "Steel kiteshield",
+      "XP": 112.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 3097,
+      "Level": 43,
+      "Name": "Steel claws",
+      "XP": 75.0,
+      "Bars": 2,
+      "Members": true
+    },
+    {
+      "id": 1311,
+      "Level": 44,
+      "Name": "Steel 2h sword",
+      "XP": 112.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1069,
+      "Level": 46,
+      "Name": "Steel platelegs",
+      "XP": 112.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1083,
+      "Level": 46,
+      "Name": "Steel plateskirt",
+      "XP": 112.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1119,
+      "Level": 48,
+      "Name": "Steel platebody",
+      "XP": 187.5,
+      "Bars": 5,
+      "Members": false
+    },
+    {
+      "id": 4544,
+      "Level": 49,
+      "Name": "Bullseye lantern (unf)",
+      "XP": 37.5,
+      "Bars": 1,
+      "Members": true
+    }
+  ],
+  "2359": [
+    {
+      "id": 1209,
+      "Level": 50,
+      "Name": "Mithril dagger",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1355,
+      "Level": 51,
+      "Name": "Mithril axe",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1428,
+      "Level": 52,
+      "Name": "Mithril mace",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1143,
+      "Level": 53,
+      "Name": "Mithril med helm",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 9379,
+      "Level": 53,
+      "Name": "Mithril bolts (unf)",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1285,
+      "Level": 54,
+      "Name": "Mithril sword",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 4822,
+      "Level": 54,
+      "Name": "Mithril nails",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 822,
+      "Level": 54,
+      "Name": "Mithril dart tip",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1329,
+      "Level": 55,
+      "Name": "Mithril scimitar",
+      "XP": 100.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 1243,
+      "Level": 55,
+      "Name": "Mithril spear",
+      "XP": 100.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 11373,
+      "Level": 55,
+      "Name": "Mithril hasta",
+      "XP": 100.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 42,
+      "Level": 55,
+      "Name": "Mithril arrowtips",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 9427,
+      "Level": 56,
+      "Name": "Mithril limbs",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1299,
+      "Level": 56,
+      "Name": "Mithril longsword",
+      "XP": 100.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 3092,
+      "Level": 56,
+      "Name": "Mithril javelin heads",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1159,
+      "Level": 57,
+      "Name": "Mithril full helm",
+      "XP": 100.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 866,
+      "Level": 57,
+      "Name": "Mithril knife",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1181,
+      "Level": 58,
+      "Name": "Mithril sq shield",
+      "XP": 100.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 1343,
+      "Level": 59,
+      "Name": "Mithril warhammer",
+      "XP": 150.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 822,
+      "Level": 59,
+      "Name": "Mithril dart tip",
+      "XP": 50.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1369,
+      "Level": 60,
+      "Name": "Mithril battleaxe",
+      "XP": 150.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1109,
+      "Level": 61,
+      "Name": "Mithril chainbody",
+      "XP": 150.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1197,
+      "Level": 62,
+      "Name": "Mithril kiteshield",
+      "XP": 150.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 3099,
+      "Level": 63,
+      "Name": "Mithril claws",
+      "XP": 100.0,
+      "Bars": 2,
+      "Members": true
+    },
+    {
+      "id": 1315,
+      "Level": 64,
+      "Name": "Mithril 2h sword",
+      "XP": 150.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1071,
+      "Level": 66,
+      "Name": "Mithril platelegs",
+      "XP": 150.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1085,
+      "Level": 66,
+      "Name": "Mithril plateskirt",
+      "XP": 150.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1121,
+      "Level": 68,
+      "Name": "Mithril platebody",
+      "XP": 250.0,
+      "Bars": 5,
+      "Members": false
+    }
+  ],
+  "2361": [
+    {
+      "id": 1211,
+      "Level": 70,
+      "Name": "Adamant dagger",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1357,
+      "Level": 71,
+      "Name": "Adamant axe",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1430,
+      "Level": 72,
+      "Name": "Adamant mace",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1145,
+      "Level": 73,
+      "Name": "Adamant med helm",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 9380,
+      "Level": 73,
+      "Name": "Adamant bolts(unf)",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1287,
+      "Level": 74,
+      "Name": "Adamant sword",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 4823,
+      "Level": 74,
+      "Name": "Adamantite nails",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 823,
+      "Level": 74,
+      "Name": "Adamant dart tip",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1331,
+      "Level": 75,
+      "Name": "Adamant scimitar",
+      "XP": 125.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 1245,
+      "Level": 75,
+      "Name": "Adamant spear",
+      "XP": 125.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 11375,
+      "Level": 75,
+      "Name": "Adamant hasta",
+      "XP": 125.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 43,
+      "Level": 75,
+      "Name": "Adamant arrowtips",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 9429,
+      "Level": 76,
+      "Name": "Adamantite limbs",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1301,
+      "Level": 76,
+      "Name": "Adamant longsword",
+      "XP": 125.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 3248,
+      "Level": 76,
+      "Name": "Adamant javelin heads",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1161,
+      "Level": 77,
+      "Name": "Adamant full helm",
+      "XP": 125.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 867,
+      "Level": 77,
+      "Name": "Adamant knife",
+      "XP": 62.5,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1183,
+      "Level": 78,
+      "Name": "Adamant sq shield",
+      "XP": 125.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 1345,
+      "Level": 79,
+      "Name": "Adamant warhammer",
+      "XP": 187.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1371,
+      "Level": 80,
+      "Name": "Adamant battleaxe",
+      "XP": 187.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1111,
+      "Level": 81,
+      "Name": "Adamant chainbody",
+      "XP": 187.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1199,
+      "Level": 82,
+      "Name": "Adamant kiteshield",
+      "XP": 187.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 3100,
+      "Level": 83,
+      "Name": "Adamant claws",
+      "XP": 125.0,
+      "Bars": 2,
+      "Members": true
+    },
+    {
+      "id": 1317,
+      "Level": 84,
+      "Name": "Adamant 2h sword",
+      "XP": 187.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1073,
+      "Level": 86,
+      "Name": "Adamant platelegs",
+      "XP": 187.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1091,
+      "Level": 86,
+      "Name": "Adamant plateskirt",
+      "XP": 187.5,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1123,
+      "Level": 88,
+      "Name": "Adamant platebody",
+      "XP": 312.5,
+      "Bars": 5,
+      "Members": false
+    }
+  ],
+  "2363": [
+    {
+      "id": 1213,
+      "Level": 85,
+      "Name": "Rune dagger",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1359,
+      "Level": 86,
+      "Name": "Rune axe",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1432,
+      "Level": 87,
+      "Name": "Rune mace",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 1147,
+      "Level": 88,
+      "Name": "Rune med helm",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 9381,
+      "Level": 88,
+      "Name": "Runite bolts (unf)",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1289,
+      "Level": 89,
+      "Name": "Rune sword",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": false
+    },
+    {
+      "id": 4824,
+      "Level": 89,
+      "Name": "Rune nails",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 824,
+      "Level": 89,
+      "Name": "Rune dart tip",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1333,
+      "Level": 90,
+      "Name": "Rune scimitar",
+      "XP": 150.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 1247,
+      "Level": 90,
+      "Name": "Rune spear",
+      "XP": 150.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 11377,
+      "Level": 90,
+      "Name": "Rune hasta",
+      "XP": 150.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 44,
+      "Level": 90,
+      "Name": "Rune arrowtips",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 9431,
+      "Level": 91,
+      "Name": "Runite limbs",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1303,
+      "Level": 91,
+      "Name": "Rune longsword",
+      "XP": 150.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 3911,
+      "Level": 91,
+      "Name": "Rune javelin heads",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1163,
+      "Level": 92,
+      "Name": "Rune full helm",
+      "XP": 150.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 805,
+      "Level": 92,
+      "Name": "Rune thrownaxe",
+      "XP": 75.0,
+      "Bars": 1,
+      "Members": true
+    },
+    {
+      "id": 1185,
+      "Level": 93,
+      "Name": "Rune sq shield",
+      "XP": 150.0,
+      "Bars": 2,
+      "Members": false
+    },
+    {
+      "id": 1347,
+      "Level": 94,
+      "Name": "Rune warhammer",
+      "XP": 225.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1373,
+      "Level": 95,
+      "Name": "Rune battleaxe",
+      "XP": 225.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1113,
+      "Level": 96,
+      "Name": "Rune chainbody",
+      "XP": 225.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1201,
+      "Level": 97,
+      "Name": "Rune kiteshield",
+      "XP": 225.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 3101,
+      "Level": 98,
+      "Name": "Rune claws",
+      "XP": 150.0,
+      "Bars": 2,
+      "Members": true
+    },
+    {
+      "id": 1319,
+      "Level": 99,
+      "Name": "Rune 2h sword",
+      "XP": 225.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1079,
+      "Level": 99,
+      "Name": "Rune platelegs",
+      "XP": 225.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1093,
+      "Level": 99,
+      "Name": "Rune plateskirt",
+      "XP": 225.0,
+      "Bars": 3,
+      "Members": false
+    },
+    {
+      "id": 1127,
+      "Level": 99,
+      "Name": "Rune platebody",
+      "XP": 375.0,
+      "Bars": 5,
+      "Members": false
+    }
+  ]
+}

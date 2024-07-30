@@ -1,0 +1,411 @@
+[
+  {
+    "Name": "",
+    "Location": {
+      "x": 3253,
+      "y": 3482,
+      "z": 0
+    },
+    "Member": false,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 3258,
+      "y": 3381,
+      "z": 0
+    },
+    "Member": false,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2933,
+      "y": 3514,
+      "z": 0
+    },
+    "Member": false,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2998,
+      "y": 3177,
+      "z": 0
+    },
+    "Member": false,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 3377,
+      "y": 3282,
+      "z": 0
+    },
+    "Member": false,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 3244,
+      "y": 3209,
+      "z": 0
+    },
+    "Member": false,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 3238,
+      "y": 3608,
+      "z": 0
+    },
+    "Member": false,
+    "Wilderness": true
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2949,
+      "y": 3821,
+      "z": 0
+    },
+    "Member": false,
+    "Wilderness": true
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 3128,
+      "y": 3636,
+      "z": 0
+    },
+    "Member": false,
+    "Wilderness": true
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 3174,
+      "y": 3628,
+      "z": 0
+    },
+    "Member": false,
+    "Wilderness": true
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 3413,
+      "y": 3489,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 3605,
+      "y": 3356,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 3738,
+      "y": 3308,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 3420,
+      "y": 3180,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 3281,
+      "y": 2775,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2796,
+      "y": 2793,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2606,
+      "y": 3210,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2529,
+      "y": 3287,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2455,
+      "y": 3231,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2618,
+      "y": 3308,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2723,
+      "y": 3282,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2850,
+      "y": 3349,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2694,
+      "y": 3461,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2286,
+      "y": 3427,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1545,
+      "y": 3808,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1743,
+      "y": 3499,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1734,
+      "y": 3576,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1614,
+      "y": 3512,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1310,
+      "y": 3618,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1283,
+      "y": 3677,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1450,
+      "y": 3173,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1564,
+      "y": 3167,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1699,
+      "y": 3087,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1683,
+      "y": 3032,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1736,
+      "y": 2928,
+      "z": 0
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2354,
+      "y": 3171,
+      "z": 1
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 2890,
+      "y": 3509,
+      "z": 1
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1614,
+      "y": 3673,
+      "z": 2
+    },
+    "Member": true,
+    "Wilderness": false
+  },
+  {
+    "Name": "",
+    "Location": {
+      "x": 1691,
+      "y": 3793,
+      "z": 2
+    },
+    "Member": true,
+    "Wilderness": false
+  },{
+  "Name": "",
+  "Location": {
+    "x": 3052,
+    "y": 3497,
+    "z": 1
+  },
+  "Member": false,
+  "Wilderness": false
+},
+  {
+    "Name": "",
+    "Location": {
+      "x": 3027,
+      "y": 3512,
+      "z": 1
+    },
+    "Member": false,
+    "Wilderness": false
+  }
+]

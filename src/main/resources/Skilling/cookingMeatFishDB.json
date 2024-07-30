@@ -1,0 +1,338 @@
+[
+  {
+    "level": 1,
+    "name": "Cooked meat",
+    "xp": 30,
+    "members": false
+  },
+  {
+    "level": 1,
+    "name": "Sinew",
+    "xp": 3,
+    "members": true
+  },
+  {
+    "level": 1,
+    "name": "Shrimps",
+    "xp": 30,
+    "members": false
+  },
+  {
+    "level": 1,
+    "name": "Cooked chicken",
+    "xp": 30,
+    "members": false
+  },
+  {
+    "level": 1,
+    "name": "Cooked rabbit",
+    "xp": 30,
+    "members": true
+  },
+  {
+    "level": 1,
+    "name": "Anchovies",
+    "xp": 30,
+    "members": false
+  },
+  {
+    "level": 1,
+    "name": "Sardine",
+    "xp": 40,
+    "members": false
+  },
+  {
+    "level": 1,
+    "name": "Poison karambwan",
+    "xp": 80,
+    "members": true
+  },
+  {
+    "level": 1,
+    "name": "Ugthanki meat",
+    "xp": 40,
+    "members": true
+  },
+  {
+    "level": 5,
+    "name": "Herring",
+    "xp": 50,
+    "members": false
+  },
+  {
+    "level": 7,
+    "name": "Guppy",
+    "xp": 12,
+    "members": false
+  },
+  {
+    "level": 10,
+    "name": "Mackerel",
+    "xp": 60,
+    "members": true
+  },
+  {
+    "level": 11,
+    "name": "Roast bird meat",
+    "xp": 60,
+    "members": true
+  },
+  {
+    "level": 12,
+    "name": "Thin snail",
+    "xp": 70,
+    "members": true
+  },
+  {
+    "level": 15,
+    "name": "Trout",
+    "xp": 70,
+    "members": false
+  },
+  {
+    "level": 16,
+    "name": "Spider on stick",
+    "xp": 80,
+    "members": true
+  },
+  {
+    "level": 16,
+    "name": "Spider on shaft",
+    "xp": 80,
+    "members": true
+  },
+  {
+    "level": 16,
+    "name": "Roast rabbit",
+    "xp": 70,
+    "members": true
+  },
+  {
+    "level": 17,
+    "name": "Lean snail",
+    "xp": 80,
+    "members": true
+  },
+  {
+    "level": 18,
+    "name": "Cod",
+    "xp": 75,
+    "members": true
+  },
+  {
+    "level": 20,
+    "name": "Pike",
+    "xp": 80,
+    "members": false
+  },
+  {
+    "level": 20,
+    "name": "Cavefish",
+    "xp": 23,
+    "members": false
+  },
+  {
+    "level": 21,
+    "name": "Roast beast meat",
+    "xp": 82.5,
+    "members": true
+  },
+  {
+    "level": 21,
+    "name": "Cooked crab meat",
+    "xp": 100,
+    "members": true
+  },
+  {
+    "level": 22,
+    "name": "Fat snail",
+    "xp": 95,
+    "members": true
+  },
+  {
+    "level": 23,
+    "name": "Cooked wild kebbit",
+    "xp": 73,
+    "members": true
+  },
+  {
+    "level": 25,
+    "name": "Salmon",
+    "xp": 90,
+    "members": false
+  },
+  {
+    "level": 28,
+    "name": "Slimy eel",
+    "xp": 95,
+    "members": true
+  },
+  {
+    "level": 30,
+    "name": "Tuna",
+    "xp": 100,
+    "members": false
+  },
+  {
+    "level": 30,
+    "name": "Cooked karambwan",
+    "xp": 190,
+    "members": true
+  },
+  {
+    "level": 30,
+    "name": "Cooked chompy",
+    "xp": 100,
+    "members": true
+  },
+  {
+    "level": 31,
+    "name": "Cooked fishcake",
+    "xp": 100,
+    "members": true
+  },
+  {
+    "level": 31,
+    "name": "Cooked larupia",
+    "xp": 92,
+    "members": true
+  },
+  {
+    "level": 32,
+    "name": "Cooked barb-tailed kebbit",
+    "xp": 106,
+    "members": true
+  },
+  {
+    "level": 33,
+    "name": "Tetra",
+    "xp": 31,
+    "members": false
+  },
+  {
+    "level": 35,
+    "name": "Rainbow fish",
+    "xp": 110,
+    "members": true
+  },
+  {
+    "level": 38,
+    "name": "Cave eel",
+    "xp": 115,
+    "members": true
+  },
+  {
+    "level": 40,
+    "name": "Lobster",
+    "xp": 120,
+    "members": false
+  },
+  {
+    "level": 41,
+    "name": "Cooked jubbly",
+    "xp": 160,
+    "members": true
+  },
+  {
+    "level": 41,
+    "name": "Cooked graahk",
+    "xp": 124,
+    "members": true
+  },
+  {
+    "level": 43,
+    "name": "Bass",
+    "xp": 130,
+    "members": true
+  },
+  {
+    "level": 45,
+    "name": "Swordfish",
+    "xp": 140,
+    "members": false
+  },
+  {
+    "level": 46,
+    "name": "Catfish",
+    "xp": 43,
+    "members": true
+  },
+  {
+    "level": 51,
+    "name": "Cooked kyatt",
+    "xp": 143,
+    "members": true
+  },
+  {
+    "level": 53,
+    "name": "Lava eel",
+    "xp": 30,
+    "members": true
+  },
+  {
+    "level": 59,
+    "name": "Cooked pyre fox",
+    "xp": 154,
+    "members": true
+  },
+  {
+    "level": 62,
+    "name": "Monkfish",
+    "xp": 150,
+    "members": true
+  },
+  {
+    "level": 68,
+    "name": "Cooked sunlight antelope",
+    "xp": 175,
+    "members": true
+  },
+  {
+    "level": 72,
+    "name": "Sacred eel",
+    "xp": "109-124",
+    "members": true
+  },
+  {
+    "level": 80,
+    "name": "Shark",
+    "xp": 210,
+    "members": true
+  },
+  {
+    "level": 82,
+    "name": "Sea turtle",
+    "xp": 211.3,
+    "members": true
+  },
+  {
+    "level": 82,
+    "name": "Cooked dashing kebbit",
+    "xp": 215,
+    "members": true
+  },
+  {
+    "level": 84,
+    "name": "Anglerfish",
+    "xp": 230,
+    "members": true
+  },
+  {
+    "level": 90,
+    "name": "Dark crab",
+    "xp": 215,
+    "members": true
+  },
+  {
+    "level": 91,
+    "name": "Manta ray",
+    "xp": 216.2,
+    "members": true
+  },
+  {
+    "level": 92,
+    "name": "Cooked moonlight antelope",
+    "xp": 220,
+    "members": true
+  }
+]

@@ -1,0 +1,3168 @@
+{
+  "197": {
+    "id": 197,
+    "name": "Poison chalice",
+    "hitpoints": 0,
+    "hitpointAlt": "Random",
+    "uses": 1,
+    "members": true
+  },
+  "247": {
+    "id": 247,
+    "name": "Jangerberries",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "315": {
+    "id": 315,
+    "name": "Shrimps",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": false
+  },
+  "319": {
+    "id": 319,
+    "name": "Anchovies",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "325": {
+    "id": 325,
+    "name": "Sardine",
+    "hitpoints": 4,
+    "uses": 1,
+    "members": false
+  },
+  "329": {
+    "id": 329,
+    "name": "Salmon",
+    "hitpoints": 9,
+    "uses": 1,
+    "members": false
+  },
+  "333": {
+    "id": 333,
+    "name": "Trout",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": false
+  },
+  "337": {
+    "id": 337,
+    "name": "Giant carp",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": true
+  },
+  "339": {
+    "id": 339,
+    "name": "Cod",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "347": {
+    "id": 347,
+    "name": "Herring",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": false
+  },
+  "351": {
+    "id": 351,
+    "name": "Pike",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": false
+  },
+  "355": {
+    "id": 355,
+    "name": "Mackerel",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": true
+  },
+  "361": {
+    "id": 361,
+    "name": "Tuna",
+    "hitpoints": 10,
+    "uses": 1,
+    "members": false
+  },
+  "365": {
+    "id": 365,
+    "name": "Bass",
+    "hitpoints": 13,
+    "uses": 1,
+    "members": true
+  },
+  "373": {
+    "id": 373,
+    "name": "Swordfish",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "379": {
+    "id": 379,
+    "name": "Lobster",
+    "hitpoints": 12,
+    "uses": 1,
+    "members": false
+  },
+  "385": {
+    "id": 385,
+    "name": "Shark",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  },
+  "391": {
+    "id": 391,
+    "name": "Manta ray",
+    "hitpoints": 22,
+    "uses": 1,
+    "members": true
+  },
+  "397": {
+    "id": 397,
+    "name": "Sea turtle",
+    "hitpoints": 21,
+    "uses": 1,
+    "members": true
+  },
+  "403": {
+    "id": 403,
+    "name": "Edible seaweed",
+    "hitpoints": 4,
+    "uses": 1,
+    "members": true
+  },
+  "431": {
+    "id": 431,
+    "name": "Karamjan rum",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": false
+  },
+  "712": {
+    "id": 712,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "1851": {
+    "id": 1851,
+    "name": "Tenti pineapple",
+    "hitpoints": 4,
+    "uses": 2,
+    "members": true
+  },
+  "1861": {
+    "id": 1861,
+    "name": "Ugthanki meat",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "1869": {
+    "id": 1869,
+    "name": "Chopped tomato",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "1871": {
+    "id": 1871,
+    "name": "Chopped onion",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "1875": {
+    "id": 1875,
+    "name": "Onion & tomato",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "1883": {
+    "id": 1883,
+    "name": "Ugthanki kebab",
+    "hitpoints": 19,
+    "uses": 1,
+    "members": true
+  },
+  "1885": {
+    "id": 1885,
+    "name": "Ugthanki kebab",
+    "hitpoints": 19,
+    "uses": 1,
+    "members": true
+  },
+  "1891": {
+    "id": 1891,
+    "name": "Cake",
+    "hitpoints": 4,
+    "uses": 3,
+    "members": false
+  },
+  "1897": {
+    "id": 1897,
+    "name": "Chocolate cake",
+    "hitpoints": 5,
+    "uses": 3,
+    "members": false
+  },
+  "1905": {
+    "id": 1905,
+    "name": "Asgarnian ale",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "1907": {
+    "id": 1907,
+    "name": "Wizard's mind bomb",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "1909": {
+    "id": 1909,
+    "name": "Greenman's ale",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "1911": {
+    "id": 1911,
+    "name": "Dragon bitter",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "1913": {
+    "id": 1913,
+    "name": "Dwarven stout",
+    "hitpoints": 0,
+    "uses": 1,
+    "members": false
+  },
+  "1915": {
+    "id": 1915,
+    "name": "Grog",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "1917": {
+    "id": 1917,
+    "name": "Beer",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "1942": {
+    "id": 1942,
+    "name": "Potato",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "1957": {
+    "id": 1957,
+    "name": "Onion",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "1959": {
+    "id": 1959,
+    "name": "Pumpkin",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "1961": {
+    "id": 1961,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "1963": {
+    "id": 1963,
+    "name": "Banana",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": false
+  },
+  "1965": {
+    "id": 1965,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "1967": {
+    "id": 1967,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "1969": {
+    "id": 1969,
+    "name": "Spinach roll",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": false
+  },
+  "1971": {
+    "id": 1971,
+    "name": "Kebab",
+    "hitpoints": 0,
+    "hitpointAlt": "3 + 7%",
+    "uses": 1,
+    "members": false
+  },
+  "1973": {
+    "id": 1973,
+    "name": "Chocolate bar",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": false
+  },
+  "1977": {
+    "id": 1977,
+    "name": "Chocolatey milk",
+    "hitpoints": 4,
+    "uses": 1,
+    "members": true
+  },
+  "1978": {
+    "id": 1978,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "1982": {
+    "id": 1982,
+    "name": "Tomato",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": false
+  },
+  "1985": {
+    "id": 1985,
+    "name": "Cheese",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": false
+  },
+  "1989": {
+    "id": 1989,
+    "name": "Half full wine jug",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": false
+  },
+  "1993": {
+    "id": 1993,
+    "name": "Jug of wine",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": false
+  },
+  "2003": {
+    "id": 2003,
+    "name": "Stew",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": false
+  },
+  "2011": {
+    "id": 2011,
+    "name": "Curry",
+    "hitpoints": 19,
+    "uses": 1,
+    "members": true
+  },
+  "2015": {
+    "id": 2015,
+    "name": "Vodka",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2017": {
+    "id": 2017,
+    "name": "Whisky",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2019": {
+    "id": 2019,
+    "name": "Gin",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2021": {
+    "id": 2021,
+    "name": "Brandy",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2028": {
+    "id": 2028,
+    "name": "Premade blurb' sp.",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "2030": {
+    "id": 2030,
+    "name": "Premade choc s'dy",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2032": {
+    "id": 2032,
+    "name": "Premade dr' dragon",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2034": {
+    "id": 2034,
+    "name": "Premade fr' blast",
+    "hitpoints": 9,
+    "uses": 1,
+    "members": true
+  },
+  "2036": {
+    "id": 2036,
+    "name": "Premade p' punch",
+    "hitpoints": 9,
+    "uses": 1,
+    "members": true
+  },
+  "2038": {
+    "id": 2038,
+    "name": "Premade sgg",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2040": {
+    "id": 2040,
+    "name": "Premade wiz blz'd",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2048": {
+    "id": 2048,
+    "name": "Pineapple punch",
+    "hitpoints": 9,
+    "uses": 1,
+    "members": true
+  },
+  "2054": {
+    "id": 2054,
+    "name": "Wizard blizzard",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2064": {
+    "id": 2064,
+    "name": "Blurberry special",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "2074": {
+    "id": 2074,
+    "name": "Choc saturday",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2080": {
+    "id": 2080,
+    "name": "Short green guy",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2084": {
+    "id": 2084,
+    "name": "Fruit blast",
+    "hitpoints": 9,
+    "uses": 1,
+    "members": true
+  },
+  "2092": {
+    "id": 2092,
+    "name": "Drunk dragon",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "2102": {
+    "id": 2102,
+    "name": "Lemon",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2104": {
+    "id": 2104,
+    "name": "Lemon chunks",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2106": {
+    "id": 2106,
+    "name": "Lemon slices",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2108": {
+    "id": 2108,
+    "name": "Orange",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2110": {
+    "id": 2110,
+    "name": "Orange chunks",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2112": {
+    "id": 2112,
+    "name": "Orange slices",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2114": {
+    "id": 2114,
+    "name": "Pineapple",
+    "hitpoints": 2,
+    "hitpointAlt": "has to be sliced first",
+    "uses": 4,
+    "members": true
+  },
+  "2116": {
+    "id": 2116,
+    "name": "Pineapple chunks",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2118": {
+    "id": 2118,
+    "name": "Pineapple ring",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2120": {
+    "id": 2120,
+    "name": "Lime",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2122": {
+    "id": 2122,
+    "name": "Lime chunks",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2124": {
+    "id": 2124,
+    "name": "Lime slices",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2126": {
+    "id": 2126,
+    "name": "Dwellberries",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2128": {
+    "id": 2128,
+    "name": "Equa leaves",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "2130": {
+    "id": 2130,
+    "name": "Pot of cream",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "2140": {
+    "id": 2140,
+    "name": "Cooked chicken",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": false
+  },
+  "2142": {
+    "id": 2142,
+    "name": "Cooked meat",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": false
+  },
+  "2149": {
+    "id": 2149,
+    "name": "Lava eel",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2152": {
+    "id": 2152,
+    "name": "Toad's legs",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "2162": {
+    "id": 2162,
+    "name": "King worm",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "2185": {
+    "id": 2185,
+    "name": "Chocolate bomb",
+    "hitpoints": 15,
+    "uses": 1,
+    "members": true
+  },
+  "2187": {
+    "id": 2187,
+    "name": "Tangled toad's legs",
+    "hitpoints": 15,
+    "uses": 1,
+    "members": true
+  },
+  "2191": {
+    "id": 2191,
+    "name": "Worm hole",
+    "hitpoints": 12,
+    "uses": 1,
+    "members": true
+  },
+  "2195": {
+    "id": 2195,
+    "name": "Veg ball",
+    "hitpoints": 12,
+    "uses": 1,
+    "members": true
+  },
+  "2205": {
+    "id": 2205,
+    "name": "Worm crunchies",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "2209": {
+    "id": 2209,
+    "name": "Chocchip crunchies",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "2213": {
+    "id": 2213,
+    "name": "Spicy crunchies",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "2217": {
+    "id": 2217,
+    "name": "Toad crunchies",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "2219": {
+    "id": 2219,
+    "name": "Premade w'm batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2221": {
+    "id": 2221,
+    "name": "Premade t'd batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2223": {
+    "id": 2223,
+    "name": "Premade c+t batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2225": {
+    "id": 2225,
+    "name": "Premade fr't batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2227": {
+    "id": 2227,
+    "name": "Premade veg batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2229": {
+    "id": 2229,
+    "name": "Premade choc bomb",
+    "hitpoints": 15,
+    "uses": 1,
+    "members": true
+  },
+  "2231": {
+    "id": 2231,
+    "name": "Premade ttl",
+    "hitpoints": 15,
+    "uses": 1,
+    "members": true
+  },
+  "2233": {
+    "id": 2233,
+    "name": "Premade worm hole",
+    "hitpoints": 12,
+    "uses": 1,
+    "members": true
+  },
+  "2235": {
+    "id": 2235,
+    "name": "Premade veg ball",
+    "hitpoints": 12,
+    "uses": 1,
+    "members": true
+  },
+  "2237": {
+    "id": 2237,
+    "name": "Premade w'm crun'",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "2239": {
+    "id": 2239,
+    "name": "Premade ch' crunch",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "2241": {
+    "id": 2241,
+    "name": "Premade s'y crunch",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "2243": {
+    "id": 2243,
+    "name": "Premade t'd crunch",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "2253": {
+    "id": 2253,
+    "name": "Worm batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2255": {
+    "id": 2255,
+    "name": "Toad batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2259": {
+    "id": 2259,
+    "name": "Cheese+tom batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2277": {
+    "id": 2277,
+    "name": "Fruit batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2281": {
+    "id": 2281,
+    "name": "Vegetable batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2289": {
+    "id": 2289,
+    "name": "Plain pizza",
+    "hitpoints": 7,
+    "uses": 2,
+    "members": false
+  },
+  "2293": {
+    "id": 2293,
+    "name": "Meat pizza",
+    "hitpoints": 8,
+    "uses": 2,
+    "members": false
+  },
+  "2297": {
+    "id": 2297,
+    "name": "Anchovy pizza",
+    "hitpoints": 9,
+    "uses": 2,
+    "members": false
+  },
+  "2301": {
+    "id": 2301,
+    "name": "Pineapple pizza",
+    "hitpoints": 11,
+    "uses": 2,
+    "members": true
+  },
+  "2309": {
+    "id": 2309,
+    "name": "Bread",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": false
+  },
+  "2323": {
+    "id": 2323,
+    "name": "Apple pie",
+    "hitpoints": 7,
+    "uses": 2,
+    "members": false
+  },
+  "2325": {
+    "id": 2325,
+    "name": "Redberry pie",
+    "hitpoints": 5,
+    "uses": 2,
+    "members": false
+  },
+  "2327": {
+    "id": 2327,
+    "name": "Meat pie",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": false
+  },
+  "2343": {
+    "id": 2343,
+    "name": "Cooked oomlie wrap",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": true
+  },
+  "2878": {
+    "id": 2878,
+    "name": "Cooked chompy",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "2955": {
+    "id": 2955,
+    "name": "Moonlight mead",
+    "hitpoints": 4,
+    "uses": 1,
+    "members": true
+  },
+  "3144": {
+    "id": 3144,
+    "name": "Cooked karambwan",
+    "hitpoints": 18,
+    "uses": 1,
+    "members": true
+  },
+  "3147": {
+    "id": 3147,
+    "name": "Cooked karambwan",
+    "hitpoints": 18,
+    "uses": 1,
+    "members": true
+  },
+  "3162": {
+    "id": 3162,
+    "name": "Sliced banana",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": false
+  },
+  "3164": {
+    "id": 3164,
+    "name": "Karamjan rum",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": false
+  },
+  "3165": {
+    "id": 3165,
+    "name": "Karamjan rum",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": false
+  },
+  "3228": {
+    "id": 3228,
+    "name": "Cooked rabbit",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "3369": {
+    "id": 3369,
+    "name": "Thin snail meat",
+    "hitpoints": 0,
+    "hitpointAlt": "range 5 – 7",
+    "uses": 1,
+    "members": true
+  },
+  "3371": {
+    "id": 3371,
+    "name": "Lean snail meat",
+    "hitpoints": 0,
+    "hitpointAlt": "range 5 – 8",
+    "uses": 1,
+    "members": true
+  },
+  "3373": {
+    "id": 3373,
+    "name": "Fat snail meat",
+    "hitpoints": 0,
+    "hitpointAlt": "range 7 – 9",
+    "uses": 1,
+    "members": true
+  },
+  "3381": {
+    "id": 3381,
+    "name": "Cooked slimy eel",
+    "hitpoints": 0,
+    "hitpointAlt": "range 6 – 10",
+    "uses": 1,
+    "members": true
+  },
+  "3711": {
+    "id": 3711,
+    "name": "Keg of beer",
+    "hitpoints": 15,
+    "uses": 1,
+    "members": true
+  },
+  "3801": {
+    "id": 3801,
+    "name": "Keg of beer",
+    "hitpoints": 15,
+    "uses": 1,
+    "members": true
+  },
+  "3803": {
+    "id": 3803,
+    "name": "Beer tankard",
+    "hitpoints": 4,
+    "uses": 1,
+    "members": true
+  },
+  "4012": {
+    "id": 4012,
+    "name": "Monkey nuts",
+    "hitpoints": 4,
+    "uses": 1,
+    "members": true
+  },
+  "4014": {
+    "id": 4014,
+    "name": "Monkey bar",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "4016": {
+    "id": 4016,
+    "name": "Banana stew",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "4237": {
+    "id": 4237,
+    "name": "Nettle-water",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "4239": {
+    "id": 4239,
+    "name": "Nettle tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "4240": {
+    "id": 4240,
+    "name": "Nettle tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "4242": {
+    "id": 4242,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "4243": {
+    "id": 4243,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "4245": {
+    "id": 4245,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "4246": {
+    "id": 4246,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "4291": {
+    "id": 4291,
+    "name": "Cooked chicken",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": false
+  },
+  "4293": {
+    "id": 4293,
+    "name": "Cooked meat",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": false
+  },
+  "4485": {
+    "id": 4485,
+    "name": "White pearl",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "4517": {
+    "id": 4517,
+    "name": "Giant frog legs",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": true
+  },
+  "4561": {
+    "id": 4561,
+    "name": "Purple sweets",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 3",
+    "uses": 1,
+    "members": false
+  },
+  "4608": {
+    "id": 4608,
+    "name": "Super kebab",
+    "hitpoints": 0,
+    "hitpointAlt": "3 + 7%",
+    "uses": 1,
+    "members": true
+  },
+  "4627": {
+    "id": 4627,
+    "name": "Bandit's brew",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "4838": {
+    "id": 4838,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "5003": {
+    "id": 5003,
+    "name": "Cave eel",
+    "hitpoints": 0,
+    "hitpointAlt": "8 – 12",
+    "uses": 1,
+    "members": true
+  },
+  "5004": {
+    "id": 5004,
+    "name": "Frog spawn",
+    "hitpoints": 0,
+    "hitpointAlt": "3 – 6",
+    "uses": 1,
+    "members": true
+  },
+  "5504": {
+    "id": 5504,
+    "name": "Strawberry",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 6",
+    "uses": 1,
+    "members": true
+  },
+  "5739": {
+    "id": 5739,
+    "name": "Asgarnian ale(m)",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "5741": {
+    "id": 5741,
+    "name": "Mature wmb",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "5743": {
+    "id": 5743,
+    "name": "Greenman's ale(m)",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "5745": {
+    "id": 5745,
+    "name": "Dragon bitter(m)",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "5747": {
+    "id": 5747,
+    "name": "Dwarven stout(m)",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "5749": {
+    "id": 5749,
+    "name": "Moonlight mead(m)",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": true
+  },
+  "5751": {
+    "id": 5751,
+    "name": "Axeman's folly",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "5753": {
+    "id": 5753,
+    "name": "Axeman's folly(m)",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "5755": {
+    "id": 5755,
+    "name": "Chef's delight",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "5757": {
+    "id": 5757,
+    "name": "Chef's delight(m)",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "5759": {
+    "id": 5759,
+    "name": "Slayer's respite",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "5761": {
+    "id": 5761,
+    "name": "Slayer's respite(m)",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "5763": {
+    "id": 5763,
+    "name": "Cider",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "5765": {
+    "id": 5765,
+    "name": "Mature cider",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "5793": {
+    "id": 5793,
+    "name": "Greenmans ale(4)",
+    "hitpoints": 1,
+    "uses": 4,
+    "members": true
+  },
+  "5801": {
+    "id": 5801,
+    "name": "Mind bomb(4)",
+    "hitpoints": 1,
+    "uses": 4,
+    "members": true
+  },
+  "5857": {
+    "id": 5857,
+    "name": "Dwarven stout(m4)",
+    "hitpoints": 2,
+    "uses": 4,
+    "members": true
+  },
+  "5865": {
+    "id": 5865,
+    "name": "Asgarnian ale(m4)",
+    "hitpoints": 4,
+    "uses": 2,
+    "members": true
+  },
+  "5873": {
+    "id": 5873,
+    "name": "Greenmans ale(m4)",
+    "hitpoints": 2,
+    "uses": 4,
+    "members": true
+  },
+  "5881": {
+    "id": 5881,
+    "name": "Mind bomb(m4)",
+    "hitpoints": 2,
+    "uses": 4,
+    "members": true
+  },
+  "5889": {
+    "id": 5889,
+    "name": "Dragon bitter(m4)",
+    "hitpoints": 2,
+    "uses": 4,
+    "members": true
+  },
+  "5897": {
+    "id": 5897,
+    "name": "Moonlight mead(m4)",
+    "hitpoints": 6,
+    "uses": 4,
+    "members": true
+  },
+  "5905": {
+    "id": 5905,
+    "name": "Axeman's folly(m4)",
+    "hitpoints": 2,
+    "uses": 4,
+    "members": true
+  },
+  "5913": {
+    "id": 5913,
+    "name": "Chef's delight(m4)",
+    "hitpoints": 2,
+    "uses": 4,
+    "members": true
+  },
+  "5921": {
+    "id": 5921,
+    "name": "Slayer's respite(m4)",
+    "hitpoints": 2,
+    "uses": 4,
+    "members": true
+  },
+  "5929": {
+    "id": 5929,
+    "name": "Cider(m4)",
+    "hitpoints": 2,
+    "uses": 4,
+    "members": true
+  },
+  "5972": {
+    "id": 5972,
+    "name": "Papaya fruit",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "5982": {
+    "id": 5982,
+    "name": "Watermelon",
+    "hitpoints": 0,
+    "hitpointAlt": " range (1 - 5) × 3",
+    "uses": 3,
+    "members": true
+  },
+  "5984": {
+    "id": 5984,
+    "name": "Watermelon slice",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 5",
+    "uses": 1,
+    "members": true
+  },
+  "5988": {
+    "id": 5988,
+    "name": "Cooked sweetcorn",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 10",
+    "uses": 1,
+    "members": true
+  },
+  "6293": {
+    "id": 6293,
+    "name": "Spider on stick",
+    "hitpoints": 0,
+    "hitpointAlt": "7 – 10",
+    "uses": 1,
+    "members": true
+  },
+  "6295": {
+    "id": 6295,
+    "name": "Spider on shaft",
+    "hitpoints": 0,
+    "hitpointAlt": "7 – 10",
+    "uses": 1,
+    "members": true
+  },
+  "6297": {
+    "id": 6297,
+    "name": "Spider on stick",
+    "hitpoints": 0,
+    "hitpointAlt": "7 – 10",
+    "uses": 1,
+    "members": true
+  },
+  "6299": {
+    "id": 6299,
+    "name": "Spider on shaft",
+    "hitpoints": 0,
+    "hitpointAlt": "7 – 10",
+    "uses": 1,
+    "members": true
+  },
+  "6303": {
+    "id": 6303,
+    "name": "Spider on shaft",
+    "hitpoints": 0,
+    "hitpointAlt": "7 – 10",
+    "uses": 1,
+    "members": true
+  },
+  "6311": {
+    "id": 6311,
+    "name": "Gout tuber",
+    "hitpoints": 12,
+    "uses": 1,
+    "members": true
+  },
+  "6469": {
+    "id": 6469,
+    "name": "White tree fruit",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "6701": {
+    "id": 6701,
+    "name": "Baked potato",
+    "hitpoints": 4,
+    "uses": 1,
+    "members": true
+  },
+  "6703": {
+    "id": 6703,
+    "name": "Potato with butter",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": true
+  },
+  "6705": {
+    "id": 6705,
+    "name": "Potato with cheese",
+    "hitpoints": 16,
+    "uses": 1,
+    "members": true
+  },
+  "6794": {
+    "id": 6794,
+    "name": "Choc-ice",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "6883": {
+    "id": 6883,
+    "name": "Peach",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "6961": {
+    "id": 6961,
+    "name": "Baguette",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": false
+  },
+  "6962": {
+    "id": 6962,
+    "name": "Triangle sandwich",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": false
+  },
+  "6963": {
+    "id": 6963,
+    "name": "Roll",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": false
+  },
+  "6965": {
+    "id": 6965,
+    "name": "Square sandwich",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": false
+  },
+  "6969": {
+    "id": 6969,
+    "name": "Shark",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  },
+  "7054": {
+    "id": 7054,
+    "name": "Chilli potato",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": true
+  },
+  "7056": {
+    "id": 7056,
+    "name": "Egg potato",
+    "hitpoints": 16,
+    "uses": 1,
+    "members": true
+  },
+  "7058": {
+    "id": 7058,
+    "name": "Mushroom potato",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  },
+  "7060": {
+    "id": 7060,
+    "name": "Tuna potato",
+    "hitpoints": 22,
+    "uses": 1,
+    "members": true
+  },
+  "7062": {
+    "id": 7062,
+    "name": "Chilli con carne",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "7064": {
+    "id": 7064,
+    "name": "Egg and tomato",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "7066": {
+    "id": 7066,
+    "name": "Mushroom & onion",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "7068": {
+    "id": 7068,
+    "name": "Tuna and corn",
+    "hitpoints": 13,
+    "uses": 1,
+    "members": true
+  },
+  "7070": {
+    "id": 7070,
+    "name": "Minced meat",
+    "hitpoints": 13,
+    "uses": 1,
+    "members": true
+  },
+  "7072": {
+    "id": 7072,
+    "name": "Spicy sauce",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "7078": {
+    "id": 7078,
+    "name": "Scrambled egg",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "7082": {
+    "id": 7082,
+    "name": "Fried mushrooms",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "7084": {
+    "id": 7084,
+    "name": "Fried onions",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "7086": {
+    "id": 7086,
+    "name": "Chopped tuna",
+    "hitpoints": 10,
+    "uses": 1,
+    "members": true
+  },
+  "7157": {
+    "id": 7157,
+    "name": "Braindeath 'rum'",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": true
+  },
+  "7178": {
+    "id": 7178,
+    "name": "Garden pie",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "7188": {
+    "id": 7188,
+    "name": "Fish pie",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "7198": {
+    "id": 7198,
+    "name": "Admiral pie",
+    "hitpoints": 8,
+    "uses": 2,
+    "members": true
+  },
+  "7208": {
+    "id": 7208,
+    "name": "Wild pie",
+    "hitpoints": 11,
+    "uses": 2,
+    "members": true
+  },
+  "7218": {
+    "id": 7218,
+    "name": "Summer pie",
+    "hitpoints": 11,
+    "uses": 2,
+    "members": true
+  },
+  "7223": {
+    "id": 7223,
+    "name": "Roast rabbit",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "7228": {
+    "id": 7228,
+    "name": "Cooked chompy",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "7479": {
+    "id": 7479,
+    "name": "Spicy stew",
+    "hitpoints": 0,
+    "uses": 1,
+    "members": true
+  },
+  "7521": {
+    "id": 7521,
+    "name": "Cooked crab meat",
+    "hitpoints": 2,
+    "uses": 5,
+    "members": true
+  },
+  "7523": {
+    "id": 7523,
+    "name": "Cooked crab meat",
+    "hitpoints": 2,
+    "uses": 5,
+    "members": true
+  },
+  "7524": {
+    "id": 7524,
+    "name": "Cooked crab meat",
+    "hitpoints": 2,
+    "uses": 5,
+    "members": true
+  },
+  "7525": {
+    "id": 7525,
+    "name": "Cooked crab meat",
+    "hitpoints": 2,
+    "uses": 5,
+    "members": true
+  },
+  "7526": {
+    "id": 7526,
+    "name": "Cooked crab meat",
+    "hitpoints": 2,
+    "uses": 5,
+    "members": true
+  },
+  "7530": {
+    "id": 7530,
+    "name": "Cooked fishcake",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "7568": {
+    "id": 7568,
+    "name": "Cooked jubbly",
+    "hitpoints": 15,
+    "uses": 1,
+    "members": true
+  },
+  "7572": {
+    "id": 7572,
+    "name": "Red banana",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "7573": {
+    "id": 7573,
+    "name": "Tchiki monkey nuts",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "7574": {
+    "id": 7574,
+    "name": "Sliced red banana",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "7579": {
+    "id": 7579,
+    "name": "Stuffed snake",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  },
+  "7730": {
+    "id": 7730,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "7731": {
+    "id": 7731,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "7733": {
+    "id": 7733,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "7734": {
+    "id": 7734,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "7736": {
+    "id": 7736,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "7737": {
+    "id": 7737,
+    "name": "Cup of tea",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "7740": {
+    "id": 7740,
+    "name": "Beer",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "7744": {
+    "id": 7744,
+    "name": "Asgarnian ale",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "7746": {
+    "id": 7746,
+    "name": "Greenman's ale",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "7748": {
+    "id": 7748,
+    "name": "Dragon bitter",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "7750": {
+    "id": 7750,
+    "name": "Moonlight mead",
+    "hitpoints": 4,
+    "uses": 1,
+    "members": true
+  },
+  "7752": {
+    "id": 7752,
+    "name": "Cider",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "7754": {
+    "id": 7754,
+    "name": "Chef's delight",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "7919": {
+    "id": 7919,
+    "name": "Bottle of wine",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": true
+  },
+  "7928": {
+    "id": 7928,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "7929": {
+    "id": 7929,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "7930": {
+    "id": 7930,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "7931": {
+    "id": 7931,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "7932": {
+    "id": 7932,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "7933": {
+    "id": 7933,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "7934": {
+    "id": 7934,
+    "name": "Field ration",
+    "hitpoints": 10,
+    "uses": 1,
+    "members": true
+  },
+  "7942": {
+    "id": 7942,
+    "name": "Fresh monkfish",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "7943": {
+    "id": 7943,
+    "name": "Fresh monkfish",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "7946": {
+    "id": 7946,
+    "name": "Monkfish",
+    "hitpoints": 16,
+    "uses": 1,
+    "members": true
+  },
+  "8241": {
+    "id": 8241,
+    "name": "Asgarnian ale",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "8242": {
+    "id": 8242,
+    "name": "Greenman's ale",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "8243": {
+    "id": 8243,
+    "name": "Dragon bitter",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "8244": {
+    "id": 8244,
+    "name": "Chef's delight",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "8520": {
+    "id": 8520,
+    "name": "Asgarnian ale",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "8522": {
+    "id": 8522,
+    "name": "Greenman's ale",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "8524": {
+    "id": 8524,
+    "name": "Dragon bitter",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "8526": {
+    "id": 8526,
+    "name": "Chef's delight",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "9052": {
+    "id": 9052,
+    "name": "Locust meat",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "9487": {
+    "id": 9487,
+    "name": "Wizard blizzard",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "9489": {
+    "id": 9489,
+    "name": "Wizard blizzard",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "9508": {
+    "id": 9508,
+    "name": "Wizard blizzard",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "9510": {
+    "id": 9510,
+    "name": "Short green guy",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "9512": {
+    "id": 9512,
+    "name": "Pineapple punch",
+    "hitpoints": 9,
+    "uses": 1,
+    "members": true
+  },
+  "9514": {
+    "id": 9514,
+    "name": "Fruit blast",
+    "hitpoints": 9,
+    "uses": 1,
+    "members": true
+  },
+  "9516": {
+    "id": 9516,
+    "name": "Drunk dragon",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "9518": {
+    "id": 9518,
+    "name": "Choc saturday",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "9520": {
+    "id": 9520,
+    "name": "Blurberry special",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "9527": {
+    "id": 9527,
+    "name": "Fruit batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "9529": {
+    "id": 9529,
+    "name": "Toad batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "9531": {
+    "id": 9531,
+    "name": "Worm batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "9533": {
+    "id": 9533,
+    "name": "Vegetable batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "9535": {
+    "id": 9535,
+    "name": "Cheese+tom batta",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "9538": {
+    "id": 9538,
+    "name": "Toad crunchies",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "9540": {
+    "id": 9540,
+    "name": "Spicy crunchies",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "9542": {
+    "id": 9542,
+    "name": "Worm crunchies",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "9544": {
+    "id": 9544,
+    "name": "Chocchip crunchies",
+    "hitpoints": 7,
+    "uses": 1,
+    "members": true
+  },
+  "9547": {
+    "id": 9547,
+    "name": "Worm hole",
+    "hitpoints": 12,
+    "uses": 1,
+    "members": true
+  },
+  "9549": {
+    "id": 9549,
+    "name": "Veg ball",
+    "hitpoints": 12,
+    "uses": 1,
+    "members": true
+  },
+  "9553": {
+    "id": 9553,
+    "name": "Chocolate bomb",
+    "hitpoints": 15,
+    "uses": 1,
+    "members": true
+  },
+  "9980": {
+    "id": 9980,
+    "name": "Roast bird meat",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": true
+  },
+  "9988": {
+    "id": 9988,
+    "name": "Roast beast meat",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "9994": {
+    "id": 9994,
+    "name": "Spicy tomato",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "9996": {
+    "id": 9996,
+    "name": "Spicy minced meat",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "10136": {
+    "id": 10136,
+    "name": "Rainbow fish",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "10476": {
+    "id": 10476,
+    "name": "Purple sweets",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 3",
+    "uses": 1,
+    "members": false
+  },
+  "10477": {
+    "id": 10477,
+    "name": "Purple sweets",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 3",
+    "uses": 1,
+    "members": false
+  },
+  "10478": {
+    "id": 10478,
+    "name": "Purple sweets",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 3",
+    "uses": 1,
+    "members": false
+  },
+  "10479": {
+    "id": 10479,
+    "name": "Purple sweets",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 3",
+    "uses": 1,
+    "members": false
+  },
+  "10480": {
+    "id": 10480,
+    "name": "Purple sweets",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 3",
+    "uses": 1,
+    "members": false
+  },
+  "10481": {
+    "id": 10481,
+    "name": "Purple sweets",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 3",
+    "uses": 1,
+    "members": false
+  },
+  "10482": {
+    "id": 10482,
+    "name": "Purple sweets",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 3",
+    "uses": 1,
+    "members": false
+  },
+  "10483": {
+    "id": 10483,
+    "name": "Purple sweets",
+    "hitpoints": 0,
+    "hitpointAlt": "1 – 3",
+    "uses": 1,
+    "members": false
+  },
+  "10848": {
+    "id": 10848,
+    "name": "Spring sq'irkjuice",
+    "hitpoints": 0,
+    "hitpointAlt": "0[confirmation needed]",
+    "uses": 1,
+    "members": true
+  },
+  "10849": {
+    "id": 10849,
+    "name": "Summer sq'irkjuice",
+    "hitpoints": 0,
+    "hitpointAlt": "0[confirmation needed]",
+    "uses": 1,
+    "members": true
+  },
+  "10850": {
+    "id": 10850,
+    "name": "Autumn sq'irkjuice",
+    "hitpoints": 0,
+    "hitpointAlt": "0[confirmation needed]",
+    "uses": 1,
+    "members": true
+  },
+  "10851": {
+    "id": 10851,
+    "name": "Winter sq'irkjuice",
+    "hitpoints": 0,
+    "hitpointAlt": "0[confirmation needed]",
+    "uses": 1,
+    "members": true
+  },
+  "10859": {
+    "id": 10859,
+    "name": "Tea flask",
+    "hitpoints": 3,
+    "uses": 5,
+    "members": true
+  },
+  "10960": {
+    "id": 10960,
+    "name": "Green gloop soup",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "10961": {
+    "id": 10961,
+    "name": "Frogspawn gumbo",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "10962": {
+    "id": 10962,
+    "name": "Frogburger",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "10963": {
+    "id": 10963,
+    "name": "Coated frogs' legs",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "10964": {
+    "id": 10964,
+    "name": "Bat shish",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "10965": {
+    "id": 10965,
+    "name": "Fingers",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "10967": {
+    "id": 10967,
+    "name": "Roast frog",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "10968": {
+    "id": 10968,
+    "name": "Mushrooms",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "10969": {
+    "id": 10969,
+    "name": "Fillets",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "10970": {
+    "id": 10970,
+    "name": "Loach",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "10971": {
+    "id": 10971,
+    "name": "Eel sushi",
+    "hitpoints": 10,
+    "uses": 1,
+    "members": true
+  },
+  "11027": {
+    "id": 11027,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "11028": {
+    "id": 11028,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "11029": {
+    "id": 11029,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "11030": {
+    "id": 11030,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "11324": {
+    "id": 11324,
+    "name": "Roe",
+    "hitpoints": 3,
+    "uses": 1,
+    "members": true
+  },
+  "11326": {
+    "id": 11326,
+    "name": "Caviar",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "11429": {
+    "id": 11429,
+    "name": "Attack mix(2)",
+    "hitpoints": 3,
+    "uses": 2,
+    "members": true
+  },
+  "11433": {
+    "id": 11433,
+    "name": "Antipoison mix(2)",
+    "hitpoints": 3,
+    "uses": 2,
+    "members": true
+  },
+  "11437": {
+    "id": 11437,
+    "name": "Relicym's mix(2)",
+    "hitpoints":3,
+
+    "uses": 2,
+    "members": true
+  },
+  "11443": {
+    "id": 11443,
+    "name": "Strength mix(2)",
+    "hitpoints": 3,
+    "uses": 2,
+    "members": true
+  },
+  "11445": {
+    "id": 11445,
+    "name": "Combat mix(2)",
+    "hitpoints": 3,
+    "uses": 2,
+    "members": true
+  },
+  "11449": {
+    "id": 11449,
+    "name": "Restore mix(2)",
+    "hitpoints": 3,
+    "uses": 2,
+    "members": true
+  },
+  "11453": {
+    "id": 11453,
+    "name": "Energy mix(2)",
+    "hitpoints": 3,
+    "uses": 2,
+    "members": true
+  },
+  "11457": {
+    "id": 11457,
+    "name": "Defence mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11461": {
+    "id": 11461,
+    "name": "Agility mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11465": {
+    "id": 11465,
+    "name": "Prayer mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11469": {
+    "id": 11469,
+    "name": "Superattack mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11473": {
+    "id": 11473,
+    "name": "Anti-poison supermix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11477": {
+    "id": 11477,
+    "name": "Fishing mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11481": {
+    "id": 11481,
+    "name": "Super energy mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11485": {
+    "id": 11485,
+    "name": "Super str. mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11489": {
+    "id": 11489,
+    "name": "Magic essence mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11493": {
+    "id": 11493,
+    "name": "Super restore mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11497": {
+    "id": 11497,
+    "name": "Super def. mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11501": {
+    "id": 11501,
+    "name": "Antidote+ mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11505": {
+    "id": 11505,
+    "name": "Antifire mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11509": {
+    "id": 11509,
+    "name": "Ranging mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11513": {
+    "id": 11513,
+    "name": "Magic mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11517": {
+    "id": 11517,
+    "name": "Hunting mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11521": {
+    "id": 11521,
+    "name": "Zamorak mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "11936": {
+    "id": 11936,
+    "name": "Dark crab",
+    "hitpoints": 22,
+    "uses": 1,
+    "members": true
+  },
+  "11960": {
+    "id": 11960,
+    "name": "Extended antifire mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "12633": {
+    "id": 12633,
+    "name": "Stamina mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "13441": {
+    "id": 13441,
+    "name": "Anglerfish",
+    "hitpoints": 0,
+    "hitpointAlt": "3 - 22",
+    "uses": 1,
+    "members": true
+  },
+  "19662": {
+    "id": 19662,
+    "name": "Botanical pie",
+    "hitpoints": 7,
+    "uses": 2,
+    "members": true
+  },
+  "20390": {
+    "id": 20390,
+    "name": "Shark",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  },
+  "20547": {
+    "id": 20547,
+    "name": "Monkfish",
+    "hitpoints": 16,
+    "uses": 1,
+    "members": true
+  },
+  "20856": {
+    "id": 20856,
+    "name": "Pysk fish (0)",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "20858": {
+    "id": 20858,
+    "name": "Suphi fish (1)",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "20860": {
+    "id": 20860,
+    "name": "Leckish fish (2)",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "20862": {
+    "id": 20862,
+    "name": "Brawk fish (3)",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": true
+  },
+  "20864": {
+    "id": 20864,
+    "name": "Mycil fish (4)",
+    "hitpoints": 17,
+    "uses": 1,
+    "members": true
+  },
+  "20866": {
+    "id": 20866,
+    "name": "Roqed fish (5)",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  },
+  "20868": {
+    "id": 20868,
+    "name": "Kyren fish (6)",
+    "hitpoints": 23,
+    "uses": 1,
+    "members": true
+  },
+  "20871": {
+    "id": 20871,
+    "name": "Guanic bat (0)",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "20873": {
+    "id": 20873,
+    "name": "Prael bat (1)",
+    "hitpoints": 8,
+    "uses": 1,
+    "members": true
+  },
+  "20875": {
+    "id": 20875,
+    "name": "Giral bat (2)",
+    "hitpoints": 11,
+    "uses": 1,
+    "members": true
+  },
+  "20877": {
+    "id": 20877,
+    "name": "Phluxia bat (3)",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": true
+  },
+  "20879": {
+    "id": 20879,
+    "name": "Kryket bat (4)",
+    "hitpoints": 17,
+    "uses": 1,
+    "members": true
+  },
+  "20881": {
+    "id": 20881,
+    "name": "Murng bat (5)",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  },
+  "20883": {
+    "id": 20883,
+    "name": "Psykk bat (6)",
+    "hitpoints": 23,
+    "uses": 1,
+    "members": true
+  },
+  "21690": {
+    "id": 21690,
+    "name": "Mushroom pie",
+    "hitpoints":8,
+    "uses": 2,
+    "members": true
+  },
+  "22430": {
+    "id": 22430,
+    "name": "Bloody bracer",
+    "hitpoints": 2,
+    "uses": 1,
+    "members": true
+  },
+  "22519": {
+    "id": 22519,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "22520": {
+    "id": 22520,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "22539": {
+    "id": 22539,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "22540": {
+    "id": 22540,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "22795": {
+    "id": 22795,
+    "name": "Dragonfruit pie",
+    "hitpoints": 10,
+    "uses": 2,
+    "members": true
+  },
+  "22929": {
+    "id": 22929,
+    "name": "Dragonfruit",
+    "hitpoints": 10,
+    "uses": 1,
+    "members": true
+  },
+  "23533": {
+    "id": 23533,
+    "name": "Cooked karambwan",
+    "hitpoints": 18,
+    "uses": 1,
+    "members": true
+  },
+  "23874": {
+    "id": 23874,
+    "name": "Paddlefish",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  },
+  "23948": {
+    "id": 23948,
+    "name": "Elven dawn",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "24367": {
+    "id": 24367,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "24368": {
+    "id": 24368,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "24426": {
+    "id": 24426,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "24427": {
+    "id": 24427,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "24549": {
+    "id": 24549,
+    "name": "Cake",
+    "hitpoints":4,
+    "uses": 3,
+    "members": false
+  },
+  "24785": {
+    "id": 24785,
+    "name": "Cooked mystery meat",
+    "hitpoints": 5,
+    "uses": 1,
+    "members": true
+  },
+  "24971": {
+    "id": 24971,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "24972": {
+    "id": 24972,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "24973": {
+    "id": 24973,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "24974": {
+    "id": 24974,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "24979": {
+    "id": 24979,
+    "name": "Pumpkin",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "24994": {
+    "id": 24994,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "24995": {
+    "id": 24995,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "24996": {
+    "id": 24996,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "24997": {
+    "id": 24997,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "25617": {
+    "id": 25617,
+    "name": "Tea flask",
+    "hitpoints": 3,
+    "uses": 5,
+    "members": true
+  },
+  "25631": {
+    "id": 25631,
+    "name": "Steak sandwich",
+    "hitpoints": 6,
+    "uses": 1,
+    "members": false
+  },
+  "25958": {
+    "id": 25958,
+    "name": "Corrupted paddlefish",
+    "hitpoints": 16,
+    "uses": 1,
+    "members": true
+  },
+  "25960": {
+    "id": 25960,
+    "name": "Crystal paddlefish",
+    "hitpoints": 16,
+    "uses": 1,
+    "members": true
+  },
+  "26149": {
+    "id": 26149,
+    "name": "Tuna",
+    "hitpoints": 10,
+    "uses": 1,
+    "members": false
+  },
+  "26350": {
+    "id": 26350,
+    "name": "Ancient mix(2)",
+    "hitpoints": 6,
+    "uses": 2,
+    "members": true
+  },
+  "26417": {
+    "id": 26417,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26418": {
+    "id": 26418,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26419": {
+    "id": 26419,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26420": {
+    "id": 26420,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26926": {
+    "id": 26926,
+    "name": "Easter egg",
+    "hitpoints": 14,
+    "uses": 1,
+    "members": false
+  },
+  "26971": {
+    "id": 26971,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26972": {
+    "id": 26972,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26973": {
+    "id": 26973,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26974": {
+    "id": 26974,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26975": {
+    "id": 26975,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26976": {
+    "id": 26976,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26977": {
+    "id": 26977,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26978": {
+    "id": 26978,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26979": {
+    "id": 26979,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "26980": {
+    "id": 26980,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "27014": {
+    "id": 27014,
+    "name": "Kovac's grog",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": true
+  },
+  "27323": {
+    "id": 27323,
+    "name": "Silk dressing (2)",
+    "hitpoints": 100,
+    "uses": 1,
+    "members": true
+  },
+  "27351": {
+    "id": 27351,
+    "name": "Honey locust",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  },
+  "27781": {
+    "id": 27781,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "27782": {
+    "id": 27782,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "28678": {
+    "id": 28678,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "28679": {
+    "id": 28679,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "28680": {
+    "id": 28680,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "28681": {
+    "id": 28681,
+    "name": "Cabbage",
+    "hitpoints": 1,
+    "uses": 1,
+    "members": false
+  },
+  "29077": {
+    "id": 29077,
+    "name": "Cooked moss lizard",
+    "hitpoints": 0,
+    "hitpointAlt": "Up to 33",
+    "uses": 1,
+    "members": true
+  },
+  "29128": {
+    "id": 29128,
+    "name": "Cooked wild kebbit",
+    "hitpoints": 0,
+    "hitpointAlt": "4 + 4",
+    "uses": 1,
+    "members": true
+  },
+  "29131": {
+    "id": 29131,
+    "name": "Cooked barb-tailed kebbit",
+    "hitpoints": 0,
+    "hitpointAlt": "7 + 5",
+    "uses": 1,
+    "members": true
+  },
+  "29134": {
+    "id": 29134,
+    "name": "Cooked dashing kebbit",
+    "hitpoints": 0,
+    "hitpointAlt": "13 + 10",
+    "uses": 1,
+    "members": true
+  },
+  "29137": {
+    "id": 29137,
+    "name": "Cooked pyre fox",
+    "hitpoints": 0,
+    "hitpointAlt": "11 + 8",
+    "uses": 1,
+    "members": true
+  },
+  "29140": {
+    "id": 29140,
+    "name": "Cooked sunlight antelope",
+    "hitpoints": 0,
+    "hitpointAlt": "12 + 9",
+    "uses": 1,
+    "members": true
+  },
+  "29143": {
+    "id": 29143,
+    "name": "Cooked moonlight antelope",
+    "hitpoints": 0,
+    "hitpointAlt": "14 + 12",
+    "uses": 1,
+    "members": true
+  },
+  "29146": {
+    "id": 29146,
+    "name": "Cooked larupia",
+    "hitpoints": 0,
+    "hitpointAlt": "6 + 5",
+    "uses": 1,
+    "members": true
+  },
+  "29149": {
+    "id": 29149,
+    "name": "Cooked graahk",
+    "hitpoints": 0,
+    "hitpointAlt": "8 + 6",
+    "uses": 1,
+    "members": true
+  },
+  "29152": {
+    "id": 29152,
+    "name": "Cooked kyatt",
+    "hitpoints": 0,
+    "hitpointAlt": "9 + 8",
+    "uses": 1,
+    "members": true
+  }
+}

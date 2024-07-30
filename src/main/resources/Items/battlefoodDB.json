@@ -1,0 +1,51 @@
+{
+  "2297": {
+    "id": 2297,
+    "name": "Anchovy pizza",
+    "hitpoints": 9,
+    "uses": 2,
+    "members": false
+  },
+  "2301": {
+    "id": 2301,
+    "name": "Pineapple pizza",
+    "hitpoints": 11,
+    "uses": 2,
+    "members": true
+  },
+  "3144": {
+    "id": 3144,
+    "name": "Cooked karambwan",
+    "hitpoints": 18,
+    "uses": 1,
+    "members": true
+  },
+  "3147": {
+    "id": 3147,
+    "name": "Cooked karambwan",
+    "hitpoints": 18,
+    "uses": 1,
+    "members": true
+  },
+  "7946": {
+    "id": 7946,
+    "name": "Monkfish",
+    "hitpoints": 16,
+    "uses": 1,
+    "members": true
+  },
+  "20390": {
+    "id": 20390,
+    "name": "Shark",
+    "hitpoints": 20,
+    "uses": 1,
+    "members": true
+  },
+  "20547": {
+    "id": 20547,
+    "name": "Monkfish",
+    "hitpoints": 16,
+    "uses": 1,
+    "members": true
+  }
+}

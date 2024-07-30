@@ -1,0 +1,232 @@
+{
+  "1511": {
+    "id": 1511,
+    "name": "Logs",
+    "member": false,
+    "level": 1,
+    "exp": 25,
+    "noted_id": 1512,
+    "trees": [
+      "Tree",
+      "Dying tree",
+      "Dead tree",
+      "Evergreen tree",
+      "Jungle tree"
+    ],
+    "pyre": true,
+    "pyre_dose": 2,
+    "pyre_id": 3438,
+    "burnable": true,
+    "type_enum": "Logs"
+  },
+  "1521": {
+    "id": 1521,
+    "name": "Oak logs",
+    "member": false,
+    "level": 15,
+    "exp": 37.5,
+    "noted_id": 1522,
+    "trees": [
+      "Oak tree"
+    ],
+    "pyre": true,
+    "pyre_dose": 2,
+    "pyre_id": 3440,
+    "burnable": true,
+    "type_enum": "Oak logs"
+  },
+  "1519": {
+    "id": 1519,
+    "name": "Willow logs",
+    "member": false,
+    "level": 30,
+    "exp": 67.5,
+    "noted_id": 1520,
+    "trees": [
+      "Willow tree"
+    ],
+    "pyre": true,
+    "pyre_dose": 3,
+    "pyre_id": 3442,
+    "burnable": true,
+    "type_enum": "Willow logs"
+  },
+  "1517": {
+    "id": 1517,
+    "name": "Maple logs",
+    "member": false,
+    "level": 45,
+    "exp": 100,
+    "noted_id": 1518,
+    "trees": [
+      "Maple tree"
+    ],
+    "pyre": true,
+    "pyre_dose": 3,
+    "pyre_id": 3444,
+    "burnable": true,
+    "type_enum": "Maple logs"
+  },
+  "1515": {
+    "id": 1515,
+    "name": "Yew logs",
+    "exp": 175,
+    "member": false,
+    "level": 60,
+    "noted_id": 1516,
+    "trees": [
+      "Yew tree"
+    ],
+    "pyre": true,
+    "pyre_dose": 3,
+    "pyre_id": 3446,
+    "burnable": true,
+    "type_enum": "Yew logs"
+  },
+  "1513": {
+    "id": 1513,
+    "name": "Magic logs",
+    "member": true,
+    "level": 75,
+    "noted_id": 1514,
+    "exp": 250,
+    "trees": [
+      "Magic logs"
+    ],
+    "pyre": true,
+    "pyre_dose": 4,
+    "pyre_id": 3448,
+    "burnable": true,
+    "type_enum": "Magic logs"
+  },
+  "19669": {
+    "id": 19669,
+    "name": "Redwood logs",
+    "member": true,
+    "level": 90,
+    "exp": 380,
+    "noted_id": 19670,
+    "trees": [
+      "Redwood tree"
+    ],
+    "pyre": true,
+    "pyre_dose": 4,
+    "pyre_id": 19672,
+    "burnable": true,
+    "type_enum": "Redwood logs"
+  },
+  "6333": {
+    "id": 6333,
+    "name": "Teak logs",
+    "member": true,
+    "level": 35,
+    "exp": 85,
+    "noted_id": 6334,
+    "trees": [
+      "Teak tree"
+    ],
+    "pyre": true,
+    "pyre_dose": 3,
+    "pyre_id": 6211,
+    "burnable": true,
+    "type_enum": "Teak logs"
+  },
+  "6332": {
+    "id": 6332,
+    "name": "Mahogany logs",
+    "member": true,
+    "level": 50,
+    "exp": 125,
+    "noted_id": 8836,
+    "trees": [
+      "Mahogany tree"
+    ],
+    "pyre": true,
+    "pyre_dose": 3,
+    "pyre_id": 6213,
+    "burnable": true,
+    "type_enum": "Mahogany logs"
+  },
+  "2862": {
+    "id": 2862,
+    "name": "Achey tree logs",
+    "member": true,
+    "level": 1,
+    "exp": 24,
+    "noted_id": 2863,
+    "trees": [
+      "Achey tree"
+    ],
+    "pyre": true,
+    "pyre_dose": 2,
+    "pyre_id": 3438,
+    "burnable": true
+  },
+  "10810": {
+    "id": 10810,
+    "name": "Arctic pine logs",
+    "member": true,
+    "level": 54,
+    "exp": 40,
+    "noted_id": 10811,
+    "trees": [
+      "Arctic pine tree"
+    ],
+    "pyre": true,
+    "pyre_dose": 2,
+    "pyre_id": 10808,
+    "burnable": true
+  },
+  "8934": {
+    "id": 8934,
+    "name": "Scrapey tree logs",
+    "member": true,
+    "level": 0,
+    "exp": 24,
+    "noted_id": 8935,
+    "trees": [
+      "Scrapey trees"
+    ],
+    "pyre": false,
+    "burnable": false
+  },
+  "13355": {
+    "id": 13355,
+    "name": "Juniper logs",
+    "member": true,
+    "level": 42,
+    "exp": 35,
+    "noted_id": -1,
+    "trees": [
+      "Mature juniper tree"
+    ],
+    "pyre": false,
+    "burnable": false
+  },
+  "3239": {
+    "id": 3239,
+    "name": "Bark",
+    "member": true,
+    "level": 45,
+    "exp": 82.5,
+    "noted_id": 3240,
+    "trees": [
+      "Hollow tree"
+    ],
+    "pyre": false,
+    "burnable": false
+  },
+  "24691": {
+    "id": 24691,
+    "name": "Blisterwood logs",
+    "member": false,
+    "level": 62,
+    "exp": 76,
+    "noted_id": 24692,
+    "trees": [
+      "Blisterwood tree"
+    ],
+    "pyre": false,
+    "burnable": true
+  }
+}
