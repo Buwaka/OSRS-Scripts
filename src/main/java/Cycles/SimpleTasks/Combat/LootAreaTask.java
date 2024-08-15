@@ -26,14 +26,6 @@ public class LootAreaTask extends SimpleTask
         LootAreas.add(area);
     }
 
-    private void CheckAreas()
-    {
-        for(var area : LootAreas)
-        {
-            LootItems.addAll(OSRSUtilities.GetLootItems(area));
-        }
-    }
-
     @Override
     public boolean Ready()
     {
@@ -79,6 +71,14 @@ public class LootAreaTask extends SimpleTask
         }
 
         return super.Loop();
+    }
+
+    private void CheckAreas()
+    {
+        for(var area : LootAreas)
+        {
+            LootItems.addAll(OSRSUtilities.GetLootItems(area));
+        }
     }
 
     @Nonnull

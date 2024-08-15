@@ -41,6 +41,29 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
         SourceItemID = ItemID;
     }
 
+    /**
+     * @param Script
+     *
+     * @return
+     */
+    @Override
+    public int onLoop(tpircSScript Script)
+    {
+        if(InteractComplete)
+        {
+            if(Dialogues.inDialogue())
+            {
+                InteractComplete = false;
+                Script.addNodes(CreateInteractTask());
+            }
+            else if(!Inventory.contains(SourceItemID))
+            {
+                return 0;
+            }
+        }
+        return super.onLoop(Script);
+    }
+
     private InteractInventoryTask CreateInteractTask()
     {
         InteractTask = new InteractInventoryTask("Interacting with items", Action, SourceItemID);
@@ -51,6 +74,18 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
         InteractTask.AcceptCondition = () -> !BankTask.isActive();
         InteractTask.onComplete.Subscribe(this, () -> InteractComplete = true);
         return InteractTask;
+    }
+
+    /**
+     * When all cycles have been completed and we want to do the cycle again, this is called
+     *
+     * @param Script
+     */
+    @Override
+    public void onReset(tpircSScript Script)
+    {
+        StartCycle(Script);
+        super.onReset(Script);
     }
 
     private void StartCycle(tpircSScript Script)
@@ -81,41 +116,6 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
         BankTask.AddWithdrawAll(SourceItemID);
 
         Script.addNodes(BankTask, CreateInteractTask());
-    }
-
-    /**
-     * @param Script
-     *
-     * @return
-     */
-    @Override
-    public int onLoop(tpircSScript Script)
-    {
-        if(InteractComplete)
-        {
-            if(Dialogues.inDialogue())
-            {
-                InteractComplete = false;
-                Script.addNodes(CreateInteractTask());
-            }
-            else if(!Inventory.contains(SourceItemID))
-            {
-                return 0;
-            }
-        }
-        return super.onLoop(Script);
-    }
-
-    /**
-     * When all cycles have been completed and we want to do the cycle again, this is called
-     *
-     * @param Script
-     */
-    @Override
-    public void onReset(tpircSScript Script)
-    {
-        StartCycle(Script);
-        super.onReset(Script);
     }
 
     /**

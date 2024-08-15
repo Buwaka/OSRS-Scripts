@@ -28,11 +28,13 @@ public interface ITask
         BossTask,
         AlchTask,
         InteractInventoryTask,
+        GETask,
 
         //Advanced tasks
         SlaughterAndLoot,
         RestorePrayer,
-        OpenBank
+        OpenBank,
+        GraveStone
 
     }
 

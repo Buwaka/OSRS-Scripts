@@ -55,6 +55,9 @@ public class TravelTask extends SimpleTask
         OSRSUtilities.ScriptIntenity Intensity = GetScriptIntensity();
         Obstacles.InitCustomObstacles();
 
+        Logger.log("TravelTask: onStartTask: Current Tile: " + Players.getLocal().getTile() +
+                   ", Destination: " + Destination);
+
         switch(Intensity)
         {
             case Lax ->

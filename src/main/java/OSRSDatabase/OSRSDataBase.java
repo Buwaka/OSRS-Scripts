@@ -15,13 +15,6 @@ import java.util.Objects;
 
 public class OSRSDataBase
 {
-    protected static InputStream GetInputStream(String DB)
-    {
-        return new BufferedInputStream(Objects.requireNonNull(OSRSDataBase.class.getClassLoader()
-                                                                                .getResourceAsStream(
-                                                                                        DB)));
-    }
-
     protected static String _toString(Object ths, Class klas)
     {
         Field[]       fields = klas.getFields();
@@ -120,6 +113,13 @@ public class OSRSDataBase
         }
 
         return out;
+    }
+
+    protected static InputStream GetInputStream(String DB)
+    {
+        return new BufferedInputStream(Objects.requireNonNull(OSRSDataBase.class.getClassLoader()
+                                                                                .getResourceAsStream(
+                                                                                        DB)));
     }
 
     private static void main(String[] args) throws JSONException

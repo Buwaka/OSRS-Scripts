@@ -64,6 +64,105 @@ public class InteractTask extends SimpleTask
         TargetFilter.addAll(List.of(Filter));
     }
 
+    public void SetFilter(InteractableFilter... Filter)
+    {
+        TargetFilter = EnumSet.noneOf(InteractableFilter.class);
+        TargetFilter.addAll(Arrays.asList(Filter));
+    }
+
+    public void SetFilter(EnumSet<InteractableFilter> Filter)
+    {
+        TargetFilter = Filter;
+    }
+
+    public void SetWaitForInventory(boolean wait)
+    {
+        WaitForInventory = wait;
+    }
+
+    @Nonnull
+    @Override
+    public TaskType GetTaskType()
+    {
+        return TaskType.InteractTask;
+    }
+
+    /**
+     * @param Script
+     *
+     * @return return true if successful, false if we need more time, keep triggering start until it is ready
+     */
+    @Override
+    public boolean onStartTask(tpircSScript Script)
+    {
+        Script.onInventory.Subscribe(this, this::onItem);
+        return super.onStartTask(Script);
+    }
+
+    private Boolean onItem(tpircSScript.ItemAction action, Item item, Item item1)
+    {
+        InventorySemaphore.release();
+        Logger.log("InteractTask: onItem: released permit");
+        return true;
+    }
+
+    //TODO check for pickaxe in equipment slot or inventory
+    @Override
+    public boolean Ready()
+    {
+        var target = GetTarget();
+        Logger.log("InteractTask: Ready: target = " + target);
+        return target != null && super.Ready();
+    }
+
+    @Override
+    protected int Loop()
+    {
+        if(Inventory.isFull())
+        {
+            return 0;
+        }
+
+        if(Players.getLocal().isAnimating() && !Dialogues.inDialogue())
+        {
+            return super.Loop();
+        }
+
+        // only hop world when we are in the right place and circumstances, aka after a successful interact
+        if(StartedInteracting && GetTarget() == null)
+        {
+            OSRSUtilities.JumpToOtherWorld(GetScript().onGameTick);
+        }
+
+        var target = GetTarget();
+
+        if(target != null)
+        {
+            if(target.distance() > 10)
+            {
+                Walking.walk(target.getTile().getArea(5).getRandomTile());
+                return super.Loop();
+            }
+
+            if(Sleep.sleepUntil(target::interact, InteractTimeout))
+            {
+                Logger.log("InteractTask: Loop: interact successful");
+                StartedInteracting = true;
+                Logger.log("InteractTask: Loop: Acquired permit");
+                Sleep.sleepUntil(() -> (!WaitForInventory || InventorySemaphore.tryAcquire()) ||
+                                       !target.exists() || Arrays.stream(ObjectIDs)
+                                                                 .noneMatch(t -> t ==
+                                                                                 target.getID()) ||
+                                       Dialogues.inDialogue(), Timeout);
+
+
+            }
+        }
+
+
+        return super.Loop();
+    }
+
     public Entity GetTarget()
     {
         return GetTarget(false);
@@ -126,104 +225,5 @@ public class InteractTask extends SimpleTask
         //        }
 
         return null;
-    }
-
-    public void SetFilter(InteractableFilter... Filter)
-    {
-        TargetFilter = EnumSet.noneOf(InteractableFilter.class);
-        TargetFilter.addAll(Arrays.asList(Filter));
-    }
-
-    public void SetFilter(EnumSet<InteractableFilter> Filter)
-    {
-        TargetFilter = Filter;
-    }
-
-    public void SetWaitForInventory(boolean wait)
-    {
-        WaitForInventory = wait;
-    }
-
-    private static Boolean onItem(Object context, tpircSScript.ItemAction action, Item item, Item item1)
-    {
-        ((InteractTask) context).InventorySemaphore.release();
-        Logger.log("InteractTask: onItem: released permit");
-        return true;
-    }
-
-    @Nonnull
-    @Override
-    public TaskType GetTaskType()
-    {
-        return TaskType.InteractTask;
-    }
-
-    /**
-     * @param Script
-     *
-     * @return return true if successful, false if we need more time, keep triggering start until it is ready
-     */
-    @Override
-    public boolean onStartTask(tpircSScript Script)
-    {
-        Script.onInventory.Subscribe(this, InteractTask::onItem);
-        return super.onStartTask(Script);
-    }
-
-    //TODO check for pickaxe in equipment slot or inventory
-    @Override
-    protected boolean Ready()
-    {
-        var target = GetTarget();
-        Logger.log("InteractTask: Ready: target = " + target);
-        return target != null && super.Ready();
-    }
-
-    @Override
-    protected int Loop()
-    {
-        if(Inventory.isFull())
-        {
-            return 0;
-        }
-
-        if(Players.getLocal().isAnimating() && !Dialogues.inDialogue())
-        {
-            return super.Loop();
-        }
-
-        // only hop world when we are in the right place and circumstances, aka after a successful interact
-        if(StartedInteracting && GetTarget() == null)
-        {
-            OSRSUtilities.JumpToOtherWorld(GetScript().onGameTick);
-        }
-
-        var target = GetTarget();
-
-        if(target != null)
-        {
-            if(target.distance() > 10)
-            {
-                Walking.walk(target.getTile().getArea(5).getRandomTile());
-                return super.Loop();
-            }
-
-            if(Sleep.sleepUntil(target::interact, InteractTimeout))
-            {
-                Logger.log("InteractTask: Loop: interact successful");
-                StartedInteracting = true;
-                Logger.log("InteractTask: Loop: Acquired permit");
-                Sleep.sleepUntil(() -> (!WaitForInventory || InventorySemaphore.tryAcquire()) ||
-                                       !target.exists() || Arrays.stream(ObjectIDs)
-                                                                 .noneMatch(t -> t ==
-                                                                                 target.getID()) ||
-                                       Dialogues.inDialogue(), Timeout);
-
-
-            }
-        }
-
-
-        return super.Loop();
     }
 }

@@ -32,31 +32,6 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
         IgnoreLoot = IgnoreItems;
     }
 
-    private void Cleanup()
-    {
-        for(var loot : LootItems)
-        {
-            if(!loot.exists())
-            {
-                LootItems.remove(loot);
-                Logger.log("LootKillsTask: Cleanup: " + loot.toString() + " removing from loot");
-            }
-            if(IgnoreLoot != null && Arrays.stream(IgnoreLoot).anyMatch((t) -> t == loot.getID()))
-            {
-                LootItems.remove(loot);
-                Logger.log("LootKillsTask: Cleanup: " + loot.toString() +
-                           " removing from loot because of ignore");
-            }
-            else
-            {
-                Logger.log(
-                        "LootKillsTask: Cleanup: " + loot.toString() + " exists:" + loot.exists() +
-                        " isonscreen:" + loot.isOnScreen());
-            }
-
-        }
-    }
-
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
@@ -123,6 +98,31 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
         }
 
         return super.Loop();
+    }
+
+    private void Cleanup()
+    {
+        for(var loot : LootItems)
+        {
+            if(!loot.exists())
+            {
+                LootItems.remove(loot);
+                Logger.log("LootKillsTask: Cleanup: " + loot.toString() + " removing from loot");
+            }
+            if(IgnoreLoot != null && Arrays.stream(IgnoreLoot).anyMatch((t) -> t == loot.getID()))
+            {
+                LootItems.remove(loot);
+                Logger.log("LootKillsTask: Cleanup: " + loot.toString() +
+                           " removing from loot because of ignore");
+            }
+            else
+            {
+                Logger.log(
+                        "LootKillsTask: Cleanup: " + loot.toString() + " exists:" + loot.exists() +
+                        " isonscreen:" + loot.isOnScreen());
+            }
+
+        }
     }
 
     @Nonnull

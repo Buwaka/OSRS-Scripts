@@ -37,7 +37,7 @@ public class CombatManager
     private              List<Spell>                 SpellsToUse              = new ArrayList<>();
     private              Runnable                    FightLoop                = null; // Are we going to do a loop inside here? honestly should probably be inside the task and this as layer inbetween
 
-    //public MeleeCombat MeleeManager = new MeleeCombat();
+    //public EquipmentManager MeleeManager = new EquipmentManager();
 
     //TODO use potions
     //TODO function that gets requirements, such as arrows (attach lambda to oncomplete to wield arrows), food, potions
@@ -102,7 +102,6 @@ public class CombatManager
             return null;
         }
 
-        Sleep.sleepTicks(3);
         Logger.log("CombatManager: Fight: Attacking: " + Foe);
 
         return Foe;
@@ -139,22 +138,6 @@ public class CombatManager
         }
     }
 
-    public boolean isArrowsLoaded()
-    {
-        var item = Equipment.getItemInSlot(EquipmentSlot.ARROWS);
-        return item != null && item.getAmount() > MinimumArrows;
-    }
-
-    public boolean isFullHealth()
-    {
-        return Skills.getBoostedLevel(Skill.HITPOINTS) >= Skills.getRealLevel(Skill.HITPOINTS);
-    }
-
-    public boolean isFullPrayer()
-    {
-        return Skills.getBoostedLevel(Skill.PRAYER) >= Skills.getRealLevel(Skill.PRAYER);
-    }
-
     public boolean isReady()
     {
         if(!PrayersToUse.isEmpty() && !isFullPrayer())
@@ -178,6 +161,22 @@ public class CombatManager
         }
 
         return true;
+    }
+
+    public boolean isArrowsLoaded()
+    {
+        var item = Equipment.getItemInSlot(EquipmentSlot.ARROWS);
+        return item != null && item.getAmount() > MinimumArrows;
+    }
+
+    public boolean isFullHealth()
+    {
+        return Skills.getBoostedLevel(Skill.HITPOINTS) >= Skills.getRealLevel(Skill.HITPOINTS);
+    }
+
+    public boolean isFullPrayer()
+    {
+        return Skills.getBoostedLevel(Skill.PRAYER) >= Skills.getRealLevel(Skill.PRAYER);
     }
 
     public boolean isRunesLoaded()

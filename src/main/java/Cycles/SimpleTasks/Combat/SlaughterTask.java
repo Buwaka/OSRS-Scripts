@@ -60,68 +60,6 @@ public class SlaughterTask extends SimpleTask
         return null;
     }
 
-    public NPC GetNearestTarget()
-    {
-        //        if(_closestTarget == null)
-        //             // ||OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), CacheTimeout.get()))
-        //        {
-        //            _closestTarget = OSRSUtilities.GetClosestAttackableEnemy(TargetIDs);
-        //        }
-        return OSRSUtilities.GetClosestAttackableEnemy(TargetIDs);
-    }
-
-    public Character GetTarget()
-    {
-        if(!TargetListeners.isEmpty())
-        {
-            Character    weakest    = GetNearestTarget();
-            int          healthperc = 100;
-            Set<Integer> keys       = TargetListeners.keySet();
-            var          Targets    = NPCs.all(y -> keys.contains(y.hashCode()));
-
-            for(var target : Targets)
-            {
-                if(target.getHealthPercent() <= healthperc)
-                {
-                    weakest    = target;
-                    healthperc = target.getHealthPercent();
-                }
-            }
-            return weakest;
-        }
-        else
-        {
-            return GetNearestTarget();
-        }
-    }
-
-    private void TargetListener(int TargetHash)
-    {
-        Character Target = NPCs.closest(t -> t.hashCode() == TargetHash);
-        Logger.log("SlaughterTask: TargetListener: Starting to listen to target: " +
-                   Target.toString() + " hashcode: " + Target.hashCode());
-        if(Sleep.sleepUntil(() -> !Target.exists(), Long.MAX_VALUE))
-        {
-            Logger.log(
-                    "SlaughterTask: TargetListener: Target has ceased to exist or has been defeated, waiting for end of animation for loot");
-            Sleep.sleepUntil(() -> !Target.isAnimating(), 10000);
-            Sleep.sleepTicks(3);
-            onKill(Target.getID(), Target.getTile());
-        }
-        else
-        {
-            Logger.log("SlaughterTask: TargetListener: Target Timeout");
-        }
-        Logger.log("SlaughterTask: TargetListener: Stop listening to target: " + Target.toString() +
-                   " hashcode: " + Target.hashCode());
-        TargetListeners.remove(Target.hashCode());
-    }
-
-    private void onKill(int ID, Tile DeathTile)
-    {
-        onKill.firePropertyChange("Kill", ID, DeathTile);
-    }
-
     @Override
     public boolean Ready()
     {
@@ -163,6 +101,68 @@ public class SlaughterTask extends SimpleTask
         }
 
         return super.Loop();
+    }
+
+    private void TargetListener(int TargetHash)
+    {
+        Character Target = NPCs.closest(t -> t.hashCode() == TargetHash);
+        Logger.log("SlaughterTask: TargetListener: Starting to listen to target: " +
+                   Target.toString() + " hashcode: " + Target.hashCode());
+        if(Sleep.sleepUntil(() -> !Target.exists(), Long.MAX_VALUE))
+        {
+            Logger.log(
+                    "SlaughterTask: TargetListener: Target has ceased to exist or has been defeated, waiting for end of animation for loot");
+            Sleep.sleepUntil(() -> !Target.isAnimating(), 10000);
+            Sleep.sleepTicks(3);
+            onKill(Target.getID(), Target.getTile());
+        }
+        else
+        {
+            Logger.log("SlaughterTask: TargetListener: Target Timeout");
+        }
+        Logger.log("SlaughterTask: TargetListener: Stop listening to target: " + Target.toString() +
+                   " hashcode: " + Target.hashCode());
+        TargetListeners.remove(Target.hashCode());
+    }
+
+    private void onKill(int ID, Tile DeathTile)
+    {
+        onKill.firePropertyChange("Kill", ID, DeathTile);
+    }
+
+    public Character GetTarget()
+    {
+        if(!TargetListeners.isEmpty())
+        {
+            Character    weakest    = GetNearestTarget();
+            int          healthperc = 100;
+            Set<Integer> keys       = TargetListeners.keySet();
+            var          Targets    = NPCs.all(y -> keys.contains(y.hashCode()));
+
+            for(var target : Targets)
+            {
+                if(target.getHealthPercent() <= healthperc)
+                {
+                    weakest    = target;
+                    healthperc = target.getHealthPercent();
+                }
+            }
+            return weakest;
+        }
+        else
+        {
+            return GetNearestTarget();
+        }
+    }
+
+    public NPC GetNearestTarget()
+    {
+        //        if(_closestTarget == null)
+        //             // ||OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), CacheTimeout.get()))
+        //        {
+        //            _closestTarget = OSRSUtilities.GetClosestAttackableEnemy(TargetIDs);
+        //        }
+        return OSRSUtilities.GetClosestAttackableEnemy(TargetIDs);
     }
 
     @Nonnull

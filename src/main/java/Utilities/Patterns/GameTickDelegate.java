@@ -30,7 +30,7 @@ public class GameTickDelegate extends Delegate
         Tickers.add(Lock);
         try
         {
-            Logger.log("Waiting for ticks");
+            Logger.log("GameTickDelegate: Waiting for ticks");
             Lock.acquire();
             Tickers.remove(Lock);
         } catch(Exception e)

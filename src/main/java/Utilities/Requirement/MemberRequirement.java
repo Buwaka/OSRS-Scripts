@@ -1,9 +1,13 @@
 package Utilities.Requirement;
 
+import org.dreambot.api.Client;
+
+import java.io.Serial;
+
 public class MemberRequirement implements IRequirement
 {
-
-    // TODO
+    @Serial
+    private static final long serialVersionUID = 5829362324941237304L;
 
     /**
      * @return
@@ -20,6 +24,6 @@ public class MemberRequirement implements IRequirement
     @Override
     public boolean isRequirementMet()
     {
-        return false;
+        return Client.isMembers();
     }
 }

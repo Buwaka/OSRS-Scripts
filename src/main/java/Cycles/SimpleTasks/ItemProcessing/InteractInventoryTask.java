@@ -44,7 +44,7 @@ public class InteractInventoryTask extends SimpleTask
      * @return
      */
     @Override
-    protected boolean Ready()
+    public boolean Ready()
     {
         return Inventory.contains(ItemID);
     }

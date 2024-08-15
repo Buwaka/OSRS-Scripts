@@ -136,56 +136,6 @@ public class FoodDB extends OSRSDataBase
         return out.toArray(out.toArray(new Food[0]));
     }
 
-    public static Food GetFood(int FoodID)
-    {
-        if(!FoodDBCache.containsKey(FoodID))
-        {
-            return FoodDBCache.get(FoodID);
-        }
-
-        try
-        {
-            FoodDBLock.lock();
-            InputStreamReader File   = new InputStreamReader(GetInputStream(FoodDB));
-            JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
-            Reader.setLenient(true);
-
-            Reader.beginObject();
-
-            while(Reader.hasNext())
-            {
-                int ID = Integer.parseInt(Reader.nextName());
-
-                if(FoodID == ID)
-                {
-                    Food Obj = gson.fromJson(Reader, Food.class);
-                    FoodDBCache.put(ID, Obj);
-                    FoodDBLock.unlock();
-                    return Obj;
-                }
-                else
-                {
-                    Reader.skipValue();
-                }
-            }
-
-            Reader.endObject();
-            Reader.close();
-
-        } catch(Exception e)
-        {
-            if(FoodDBLock.isLocked() && FoodDBLock.isHeldByCurrentThread())
-            {
-                FoodDBLock.unlock();
-            }
-            throw new RuntimeException(e);
-        }
-
-        FoodDBLock.unlock();
-        return null;
-    }
-
     public static Food[] GetFoods(boolean f2p)
     {
         if(!FoodDBCache.isEmpty())
@@ -239,5 +189,55 @@ public class FoodDB extends OSRSDataBase
             return true;
         }
         return false;
+    }
+
+    public static Food GetFood(int FoodID)
+    {
+        if(!FoodDBCache.containsKey(FoodID))
+        {
+            return FoodDBCache.get(FoodID);
+        }
+
+        try
+        {
+            FoodDBLock.lock();
+            InputStreamReader File   = new InputStreamReader(GetInputStream(FoodDB));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = new Gson();
+            Reader.setLenient(true);
+
+            Reader.beginObject();
+
+            while(Reader.hasNext())
+            {
+                int ID = Integer.parseInt(Reader.nextName());
+
+                if(FoodID == ID)
+                {
+                    Food Obj = gson.fromJson(Reader, Food.class);
+                    FoodDBCache.put(ID, Obj);
+                    FoodDBLock.unlock();
+                    return Obj;
+                }
+                else
+                {
+                    Reader.skipValue();
+                }
+            }
+
+            Reader.endObject();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            if(FoodDBLock.isLocked() && FoodDBLock.isHeldByCurrentThread())
+            {
+                FoodDBLock.unlock();
+            }
+            throw new RuntimeException(e);
+        }
+
+        FoodDBLock.unlock();
+        return null;
     }
 }

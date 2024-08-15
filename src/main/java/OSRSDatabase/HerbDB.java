@@ -35,6 +35,46 @@ public class HerbDB extends OSRSDataBase
         return HerbDBMap.keySet().stream().filter(t -> !isGrimyHerb(t)).mapToInt(t -> t).toArray();
     }
 
+    public static boolean isGrimyHerb(int ID)
+    {
+        if(HerbDBMap == null)
+        {
+            ReadHerbDB();
+        }
+
+        return HerbDBMap.containsKey(ID) && HerbDBMap.get(ID).grimy_id == ID;
+    }
+
+    private static void ReadHerbDB()
+    {
+        HerbDBMap = new ConcurrentHashMap<>();
+
+        try
+        {
+            InputStreamReader File   = new InputStreamReader(GetInputStream(HerbDBPath));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = new Gson();
+            Reader.setLenient(true);
+
+            Reader.beginObject();
+
+            while(Reader.hasNext())
+            {
+                int      ID  = Integer.parseInt(Reader.nextName());
+                HerbData Obj = gson.fromJson(Reader, HerbData.class);
+                HerbDBMap.put(ID, Obj);
+            }
+
+            Reader.endObject();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            Logger.log("Error reading HerbDB, Exception: " + e);
+            throw new RuntimeException(e);
+        }
+    }
+
     public static int[] GetGrimyHerbList()
     {
         if(HerbDBMap == null)
@@ -70,16 +110,6 @@ public class HerbDB extends OSRSDataBase
         return !isGrimyHerb(ID);
     }
 
-    public static boolean isGrimyHerb(int ID)
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.containsKey(ID) && HerbDBMap.get(ID).grimy_id == ID;
-    }
-
     public static boolean isHerb(int ID)
     {
         if(HerbDBMap == null)
@@ -98,35 +128,5 @@ public class HerbDB extends OSRSDataBase
         }
 
         return HerbDBMap.search(1, (key, val) -> val.name.equalsIgnoreCase(name)) != null;
-    }
-
-    private static void ReadHerbDB()
-    {
-        HerbDBMap = new ConcurrentHashMap<>();
-
-        try
-        {
-            InputStreamReader File   = new InputStreamReader(GetInputStream(HerbDBPath));
-            JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
-            Reader.setLenient(true);
-
-            Reader.beginObject();
-
-            while(Reader.hasNext())
-            {
-                int      ID  = Integer.parseInt(Reader.nextName());
-                HerbData Obj = gson.fromJson(Reader, HerbData.class);
-                HerbDBMap.put(ID, Obj);
-            }
-
-            Reader.endObject();
-            Reader.close();
-
-        } catch(Exception e)
-        {
-            Logger.log("Error reading HerbDB, Exception: " + e);
-            throw new RuntimeException(e);
-        }
     }
 }

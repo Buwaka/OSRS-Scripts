@@ -6,7 +6,6 @@ import OSRSDatabase.ItemDB;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
-
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.equipment.Equipment;
@@ -37,31 +36,17 @@ public class AlchCycle extends SimpleCycle
         super(name);
     }
 
-    public LinkedList<Item> GetProfitableAlchs()
+    /**
+     * will be called once there are no active tasks anymore, aka a single cycle has been completed
+     *
+     * @param Script
+     *
+     * @return Cycle completed, ready for a restart
+     */
+    @Override
+    public boolean isCycleComplete(tpircSScript Script)
     {
-        LinkedList<Item> ItemsToAlch = new LinkedList<>();
-        int              RunePrice   = LivePrices.get(NatureRuneID);
-        for(var item : Bank.all())
-        {
-            if(item != null && ItemDB.isAlchable(item.getID()) && item.getAmount() > 3)
-            {
-                Logger.log("AlchCycle: GetProfitableAlchs: Checking price for " + item.getName());
-                ItemDB.ItemData itemData  = ItemDB.GetItemData(item.getID());
-                int             GEPrice   = LivePrices.get(item.getID());
-                int             AlchPrice = itemData.highalch;
-                int             profit    = (AlchPrice - RunePrice) - GEPrice;
-
-                if(profit >= ProfitMargin)
-                {
-                    Logger.log(
-                            "AlchCycle: GetProfitableAlchs: Alching " + item.getName() + "(GE: " +
-                            GEPrice + ", AlchPrice: " + AlchPrice + ") with profit: " + profit);
-                    ItemsToAlch.add(item);
-                }
-            }
-        }
-
-        return ItemsToAlch;
+        return isDoneAlching();
     }
 
     public boolean isDoneAlching()
@@ -74,19 +59,6 @@ public class AlchCycle extends SimpleCycle
             }
         }
         return true;
-    }
-
-    /**
-     * will be called once there are no active tasks anymore, aka a single cycle has been completed
-     *
-     * @param Script
-     *
-     * @return Cycle completed, ready for a restart
-     */
-    @Override
-    public boolean isCycleComplete(tpircSScript Script)
-    {
-        return isDoneAlching();
     }
 
     /**
@@ -151,6 +123,33 @@ public class AlchCycle extends SimpleCycle
         StartTime = Instant.now();
 
         return super.onStart(Script);
+    }
+
+    public LinkedList<Item> GetProfitableAlchs()
+    {
+        LinkedList<Item> ItemsToAlch = new LinkedList<>();
+        int              RunePrice   = LivePrices.get(NatureRuneID);
+        for(var item : Bank.all())
+        {
+            if(item != null && ItemDB.isAlchable(item.getID()) && item.getAmount() > 3)
+            {
+                Logger.log("AlchCycle: GetProfitableAlchs: Checking price for " + item.getName());
+                ItemDB.ItemData itemData  = ItemDB.GetItemData(item.getID());
+                int             GEPrice   = LivePrices.get(item.getID());
+                int             AlchPrice = itemData.highalch;
+                int             profit    = (AlchPrice - RunePrice) - GEPrice;
+
+                if(profit >= ProfitMargin)
+                {
+                    Logger.log(
+                            "AlchCycle: GetProfitableAlchs: Alching " + item.getName() + "(GE: " +
+                            GEPrice + ", AlchPrice: " + AlchPrice + ") with profit: " + profit);
+                    ItemsToAlch.add(item);
+                }
+            }
+        }
+
+        return ItemsToAlch;
     }
 
     /**

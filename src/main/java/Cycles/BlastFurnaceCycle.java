@@ -38,11 +38,6 @@ public class BlastFurnaceCycle extends SimpleCycle
         super(name);
     }
 
-    private Boolean onInventory(Object o, tpircSScript.ItemAction action, Item item, Item item1)
-    {
-        return false;
-    }
-
     /**
      * will be called once there are no active tasks anymore, aka a single cycle has been completed
      *
@@ -86,6 +81,11 @@ public class BlastFurnaceCycle extends SimpleCycle
 
 
         return super.onStart(Script);
+    }
+
+    private Boolean onInventory(tpircSScript.ItemAction action, Item item, Item item1)
+    {
+        return false;
     }
 
     /**

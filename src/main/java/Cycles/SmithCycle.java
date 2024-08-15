@@ -42,6 +42,31 @@ public class SmithCycle extends SimpleCycle
         MinimumBarCount = minimumBarCount;
     }
 
+    @Override
+    public boolean onEnd(tpircSScript Script)
+    {
+        Smithtask    = null;
+        BackupTravel = null;
+
+        if(Sleep.sleepUntil(() -> Bank.open(), 60000))
+        {
+            Bank.depositAllItems();
+        }
+        return super.onEnd(Script);
+    }
+
+    /**
+     * @param Script
+     *
+     * @return
+     */
+    @Override
+    public boolean onRestart(tpircSScript Script)
+    {
+        StartCycle(Script);
+        return super.onRestart(Script);
+    }
+
     private void StartCycle(tpircSScript Script)
     {
         if(Bank.count(BarID) < MinimumBarCount && Inventory.count(BarID) < MinimumBarCount)
@@ -81,31 +106,6 @@ public class SmithCycle extends SimpleCycle
         Smithtask = new SmithTask("Smith stuff", TargetName, SmithAction, AnvilID);
 
         Script.addNodes(OpenBank, GetItems, Smithtask);
-    }
-
-    @Override
-    public boolean onEnd(tpircSScript Script)
-    {
-        Smithtask    = null;
-        BackupTravel = null;
-
-        if(Sleep.sleepUntil(() -> Bank.open(), 60000))
-        {
-            Bank.depositAllItems();
-        }
-        return super.onEnd(Script);
-    }
-
-    /**
-     * @param Script
-     *
-     * @return
-     */
-    @Override
-    public boolean onRestart(tpircSScript Script)
-    {
-        StartCycle(Script);
-        return super.onRestart(Script);
     }
 
     /**

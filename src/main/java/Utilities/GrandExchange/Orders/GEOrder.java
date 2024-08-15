@@ -1,18 +1,34 @@
 package Utilities.GrandExchange.Orders;
 
+import Utilities.Serializers.SerializableSupplier;
+
 public interface GEOrder
 {
     enum OrderType
+    {
+        Market,
+        Limit
+    }
+
+    enum TransactionType
     {
         Buy,
         Sell
     }
 
+    void AddQuantity(int quantity);
+
     int GetID();
+
+    OrderType GetOrderType();
 
     int GetPrice();
 
+    SerializableSupplier<Integer> GetPriceGenerator();
+
     int GetQuantity();
 
-    OrderType GetType();
+    int GetTotalPrice();
+
+    TransactionType GetTransactionType();
 }

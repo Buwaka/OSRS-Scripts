@@ -19,11 +19,6 @@ public class RestoreFullHealthTask extends SimpleTask
         super(Name);
     }
 
-    public boolean IsFullHealth()
-    {
-        return Players.getLocal().getHealthPercent() == 100;
-    }
-
     @Nonnull
     @Override
     public TaskType GetTaskType()
@@ -66,5 +61,10 @@ public class RestoreFullHealthTask extends SimpleTask
         }
 
         return super.Loop();
+    }
+
+    public boolean IsFullHealth()
+    {
+        return Players.getLocal().getHealthPercent() == 100;
     }
 }

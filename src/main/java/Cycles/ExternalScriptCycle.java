@@ -49,7 +49,7 @@ public class ExternalScriptCycle extends SimpleCycle
                 }
             }
 
-            ScriptManager.getScriptManager().start(CurrentScriptName, null);
+            //ScriptManager.getScriptManager().start(CurrentScriptName, null);
         });
 
         Script.stop();

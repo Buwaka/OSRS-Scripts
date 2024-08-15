@@ -1,6 +1,7 @@
 package Cycles.SimpleTasks.Bank;
 
 import OSRSDatabase.ItemDB;
+import Utilities.Scripting.tpircSScript;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -46,38 +47,6 @@ public class InventoryCheckTask extends BankItemsTask
     }
 
     /**
-     * @return false if a Bank visit is necessary, true if we're good
-     */
-    public boolean HasRequirements()
-    {
-//        for(var item : Inventory.all())
-//        {
-//            if(item != null && Items.stream().anyMatch(t -> t._1 != item.getID()))
-//            {
-//                return false;
-//            }
-//        }
-
-        for(var item : Items)
-        {
-            if(item._2 == -1)
-            {
-                if(ItemDB.GetItemData(item._1).stackable && Bank.contains(item._1))
-                {
-                    return false;
-                }
-            }
-            else if(Inventory.count(item._1) < item._2 && !Equipment.contains(item._1))
-            {
-                return false;
-            }
-
-
-        }
-        return true;
-    }
-
-    /**
      * @return
      */
     @Override
@@ -99,9 +68,9 @@ public class InventoryCheckTask extends BankItemsTask
     }
 
     @Override
-    public int Loop()
+    public boolean onStartTask(tpircSScript Script)
     {
-        if(DepositEverythingElse)
+        if(DepositEverythingElse && !Inventory.onlyContains(Items.stream().mapToInt( (t) -> t._1).toArray()))
         {
             AddDepositAll();
             for(var item : Items)
@@ -120,9 +89,7 @@ public class InventoryCheckTask extends BankItemsTask
                 }
             }
         }
-
-
-        return super.Loop();
+        return super.onStartTask(Script);
     }
 
     @Nonnull
@@ -130,5 +97,46 @@ public class InventoryCheckTask extends BankItemsTask
     public TaskType GetTaskType()
     {
         return TaskType.InventoryCheck;
+    }
+
+    /**
+     * @return false if a Bank visit is necessary, true if we're good
+     */
+    public boolean HasRequirements()
+    {
+        //        for(var item : Inventory.all())
+        //        {
+        //            if(item != null && Items.stream().anyMatch(t -> t._1 != item.getID()))
+        //            {
+        //                return false;
+        //            }
+        //        }
+
+        for(var item : Items)
+        {
+            if(item._2 == Integer.MAX_VALUE)
+            {
+                var itemData = ItemDB.GetItemData(item._1);
+                if((itemData != null && itemData.stackable) && Bank.contains(item._1))
+                {
+                    Logger.log("InventoryCheck: HasRequirements: false, stackabale item");
+                    return false;
+                }
+                else if(!Inventory.contains(item._1) || (!Inventory.isFull() && Bank.contains(item._1)))
+                {
+                    Logger.log("InventoryCheck: HasRequirements: false, still inventory space");
+                    return false;
+                }
+            }
+            else if(Inventory.count(item._1) < item._2 && !Equipment.contains(item._1))
+            {
+                Logger.log("InventoryCheck: HasRequirements: false, item not present");
+                return false;
+            }
+
+
+        }
+        Logger.log("InventoryCheck: HasRequirements: true");
+        return true;
     }
 }

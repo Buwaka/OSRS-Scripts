@@ -10,35 +10,35 @@ import org.dreambot.api.utilities.Logger;
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
+import java.util.function.Supplier;
 
 public abstract class SimpleCycle implements ICycle, Serializable
 {
     /**
      * When a cycle is completed, this is called, the goal might not have been met yet
      */
-    public transient  Delegate            onCompleteCycle = new Delegate();
+    public transient  Delegate                   onCompleteCycle = new Delegate();
     /**
      * When the cycle is complete and will exit
      */
-    public transient  Delegate            onCycleEnd      = new Delegate();
+    public transient  Delegate                   onCycleEnd      = new Delegate();
     /**
      * returns true when goal is met
      */
-    private @Nullable List<IRequirement>  Goal            = null;
-    private @Nullable List<IRequirement>  Requirements    = null;
-    private           String              CycleName       = "";
-    private           boolean             NeedsCachedBank = true;
-    private           List<SimpleTask>    StartUpTasks    = null;
-    private           List<SimpleTask>    EndTasks        = null;
-    private transient CycleType           Type            = CycleType.NaturalEnd;
-    private transient int                 CycleCount      = 0;
-    private @Nullable Integer             CycleCountLimit = null;
-    private transient boolean             Started         = false;
-    private           EnumSet<ECycleTags> Tags            = EnumSet.noneOf(ECycleTags.class);
+    private @Nullable List<IRequirement>         Goal            = null;
+    private @Nullable List<IRequirement>         Requirements    = null;
+    private           String                     CycleName       = "";
+    private           boolean                    NeedsCachedBank       = true;
+    private           List<Supplier<SimpleTask[]>> StartUpTaskGenerators = null;
+    private           List<Supplier<SimpleTask[]>> EndTaskGenerators     = null;
+    private boolean StartUpTasksCreated = false;
+    private boolean EndTasksCreated = false;
+    private transient CycleType                  Type                  = CycleType.NaturalEnd;
+    private transient int                        CycleCount      = 0;
+    private @Nullable Integer                    CycleCountLimit = null;
+    private transient boolean                    Started         = false;
+    private           EnumSet<ECycleTags>        Tags            = EnumSet.noneOf(ECycleTags.class);
 
     private transient WeakReference<tpircSScript> ParentScript = null;
 
@@ -54,21 +54,6 @@ public abstract class SimpleCycle implements ICycle, Serializable
         CycleName = name;
     }
 
-    public void AddEndTask(SimpleTask... Tasks)
-    {
-        if(EndTasks == null)
-        {
-            EndTasks = new ArrayList<>();
-        }
-
-        for(var task : Tasks)
-        {
-            task.onComplete.Subscribe(this, () -> EndTasks.remove(task));
-        }
-
-        EndTasks.addAll(List.of(Tasks));
-    }
-
     public void AddGoal(IRequirement... requirement)
     {
         if(Goal == null)
@@ -79,7 +64,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
         {
             return;
         }
-        Collections.addAll(Goal, requirement);
+        Logger.log("SimpleCycle: AddGoal: " + Collections.addAll(Goal, requirement));
     }
 
     public void AddRequirement(IRequirement... requirement)
@@ -95,19 +80,81 @@ public abstract class SimpleCycle implements ICycle, Serializable
         Collections.addAll(Requirements, requirement);
     }
 
-    public void AddStartUpTask(SimpleTask... Tasks)
+    public void AddStartUpTask(Supplier<SimpleTask[]>... TaskGenerator)
     {
-        if(StartUpTasks == null)
+        if(StartUpTaskGenerators == null)
         {
-            StartUpTasks = new ArrayList<>();
+            StartUpTaskGenerators = new ArrayList<>();
         }
 
-        for(var task : Tasks)
+        StartUpTaskGenerators.addAll(List.of(TaskGenerator));
+    }
+
+    public void AddEndTask(Supplier<SimpleTask[]>... TaskGenerator)
+    {
+        if(EndTaskGenerators == null)
         {
-            task.onComplete.Subscribe(this, () -> StartUpTasks.remove(task));
+            EndTaskGenerators = new ArrayList<>();
         }
 
-        StartUpTasks.addAll(List.of(Tasks));
+        EndTaskGenerators.addAll(List.of(TaskGenerator));
+    }
+
+    protected SimpleTask[] GenerateEndTasks()
+    {
+        List<SimpleTask> out = new ArrayList<>();
+
+        for(var gen : EndTaskGenerators)
+        {
+            if(gen == null)
+            {
+                continue;
+            }
+            var gens = gen.get();
+            Logger.log("SimpleCycle: GenerateEndTasks: " + Arrays.toString(gens));
+            out.addAll(List.of(gens));
+        }
+        EndTasksCreated = true;
+        return out.toArray(new SimpleTask[0]);
+    }
+
+    protected SimpleTask[] GenerateStartupTasks()
+    {
+        List<SimpleTask> out = new ArrayList<>();
+
+        for(var gen : StartUpTaskGenerators)
+        {
+            if(gen == null)
+            {
+                continue;
+            }
+            var gens = gen.get();
+            Logger.log("SimpleCycle: GenerateStartupTasks: " + Arrays.toString(gens));
+            out.addAll(List.of(gens));
+        }
+
+        StartUpTasksCreated = true;
+        return out.toArray(new SimpleTask[0]);
+    }
+
+    public boolean hasEndTasks()
+    {
+        if(EndTaskGenerators == null || EndTaskGenerators.isEmpty() || EndTasksCreated)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean hasStartUpTasks()
+    {
+        if(StartUpTaskGenerators == null || StartUpTaskGenerators.isEmpty() || StartUpTasksCreated)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public void AddTag(EnumSet<ECycleTags> tags)
@@ -136,26 +183,6 @@ public abstract class SimpleCycle implements ICycle, Serializable
 
     public String GetName() {return CycleName;}
 
-    public tpircSScript GetScript()
-    {
-        return ParentScript.get();
-    }
-
-    public boolean IsRequirementMet()
-    {
-        if(Requirements == null)
-        {
-            return true;
-        }
-
-        boolean result = true;
-        for(var requirement : Requirements)
-        {
-            result &= requirement.isRequirementMet();
-        }
-        return result;
-    }
-
     public void RemoveTag(EnumSet<ECycleTags> tags)
     {
         Tags.removeAll(tags);
@@ -167,11 +194,15 @@ public abstract class SimpleCycle implements ICycle, Serializable
         {
             CycleCount = 0;
         }
+        StartUpTasksCreated = false;
+        EndTasksCreated = false;
         onReset(Script);
     }
 
     public final boolean Restart(tpircSScript Script)
     {
+        StartUpTasksCreated = false;
+        EndTasksCreated = false;
         return onRestart(Script);
     }
 
@@ -181,40 +212,6 @@ public abstract class SimpleCycle implements ICycle, Serializable
     }
 
     public void SetName(String name) {CycleName = name;}
-
-    public boolean hasEndTasks()
-    {
-        if(EndTasks == null)
-        {
-            return false;
-        }
-
-        for(var task : EndTasks)
-        {
-            if(!task.isFinished())
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean hasStartUpTasks()
-    {
-        if(StartUpTasks == null)
-        {
-            return false;
-        }
-
-        for(var task : StartUpTasks)
-        {
-            if(!task.isFinished())
-            {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public boolean isNeedsCachedBank()
     {
@@ -252,14 +249,63 @@ public abstract class SimpleCycle implements ICycle, Serializable
         onCompleteCycle.Fire();
     }
 
-    protected SimpleTask[] GetEndTasks()
+    /**
+     * @return Whether the goal of this cycle has been met, based on CycleType
+     */
+
+    boolean isGoalMet()
     {
-        return EndTasks.toArray(new SimpleTask[0]);
+        if(NeedsCachedBank && !Bank.isCached())
+        {
+            return false;
+        }
+
+        switch(GetCycleType())
+        {
+            case byCount ->
+            {
+                if(CycleCountLimit != null && CycleCount >= CycleCountLimit)
+                {
+                    Logger.log("SimpleCycle: isGoalMet: byCount true");
+                    return true;
+                }
+            }
+            case byGoal ->
+            {
+                {
+                    if(Goal == null)
+                    {
+                        Logger.log("SimpleCycle: isGoalMet: byGoal true cuz there is no goal");
+                        return true;
+                    }
+
+                    boolean result = true;
+                    for(var goal : Goal)
+                    {
+                        result &= goal.isRequirementMet();
+                    }
+                    Logger.log("SimpleCycle: isGoalMet: byGoal result: " + result);
+                    return result;
+                }
+            }
+            case Endless ->
+            {
+                Logger.log("SimpleCycle: isGoalMet: Endless false");
+                return false;
+            }
+            case NaturalEnd ->
+            {
+                boolean result = isCycleFinished(GetScript());
+                Logger.log("SimpleCycle: isGoalMet: natural end: " + result);
+                return result;
+            }
+        }
+        return false;
     }
 
-    protected SimpleTask[] GetStartupTasks()
+    public tpircSScript GetScript()
     {
-        return StartUpTasks.toArray(new SimpleTask[0]);
+        return ParentScript.get();
     }
 
     protected final int Loop(tpircSScript Script)
@@ -273,6 +319,21 @@ public abstract class SimpleCycle implements ICycle, Serializable
         return IsRequirementMet();
     }
 
+    public boolean IsRequirementMet()
+    {
+        if(Requirements == null)
+        {
+            return true;
+        }
+
+        boolean result = true;
+        for(var requirement : Requirements)
+        {
+            result &= requirement.isRequirementMet();
+        }
+        return result;
+    }
+
     protected final void ResetCycleCount()
     {
         CycleCount = 0;
@@ -280,9 +341,13 @@ public abstract class SimpleCycle implements ICycle, Serializable
 
     protected final boolean Start(tpircSScript Script)
     {
-        Started      = true;
-        ParentScript = new WeakReference<>(Script);
+        Started = true;
         return onStart(Script);
+    }
+
+    protected final void init(tpircSScript Script)
+    {
+        ParentScript = new WeakReference<>(Script);
     }
 
     public String toString()
@@ -347,59 +412,5 @@ public abstract class SimpleCycle implements ICycle, Serializable
     public boolean onStart(tpircSScript Script)
     {
         return true;
-    }
-
-    /**
-     * @return Whether the goal of this cycle has been met, based on CycleType
-     */
-
-    boolean isGoalMet()
-    {
-        if(NeedsCachedBank && !Bank.isCached() || !Started)
-        {
-            return false;
-        }
-
-        switch(GetCycleType())
-        {
-            case byCount ->
-            {
-                if(CycleCountLimit != null && CycleCount >= CycleCountLimit)
-                {
-                    Logger.log("SimpleCycle: isGoalMet: byCount true");
-                    return true;
-                }
-            }
-            case byGoal ->
-            {
-                {
-                    if(Goal == null)
-                    {
-                        Logger.log("SimpleCycle: isGoalMet: byGoal true cuz there is no goal");
-                        return true;
-                    }
-
-                    boolean result = true;
-                    for(var goal : Goal)
-                    {
-                        result &= goal.isRequirementMet();
-                    }
-                    Logger.log("SimpleCycle: isGoalMet: byGoal result: " + result);
-                    return result;
-                }
-            }
-            case Endless ->
-            {
-                Logger.log("SimpleCycle: isGoalMet: Endless false");
-                return false;
-            }
-            case NaturalEnd ->
-            {
-                boolean result = isCycleFinished(GetScript());
-                Logger.log("SimpleCycle: isGoalMet: natural end: " + result);
-                return result;
-            }
-        }
-        return false;
     }
 }

@@ -1,10 +1,15 @@
 package OSRSDatabase;
 
+import Utilities.OSRSUtilities;
+import Utilities.Requirement.CombatRequirement;
+import Utilities.Requirement.IRequirement;
+import Utilities.Requirement.LevelRequirement;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import io.vavr.Tuple2;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.dreambot.api.methods.combat.CombatStyle;
 import org.dreambot.api.methods.grandexchange.LivePrices;
 import org.dreambot.api.methods.skills.Skills;
 import org.dreambot.api.utilities.Logger;
@@ -12,10 +17,7 @@ import org.dreambot.api.utilities.Logger;
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -26,11 +28,13 @@ public class ItemDB extends OSRSDataBase
     final private static ReentrantLock                        ItemDBLock  = new ReentrantLock();
     final private static ConcurrentHashMap<Integer, ItemData> ItemDBCache = new ConcurrentHashMap<>();
 
+
     public enum Skill
     {
         @SerializedName("attack") ATTACK,
         @SerializedName("defence") DEFENCE,
         @SerializedName("strength") STRENGTH,
+        @SerializedName("combat") COMBAT,
         @SerializedName("hitpoints") HITPOINTS,
         @SerializedName("ranged") RANGED,
         @SerializedName("prayer") PRAYER,
@@ -54,6 +58,11 @@ public class ItemDB extends OSRSDataBase
 
         public org.dreambot.api.methods.skills.Skill GetDreamBotSkill()
         {
+            if(this == COMBAT)
+            {
+                return null;
+            }
+
             return org.dreambot.api.methods.skills.Skill.valueOf(this.name().toUpperCase());
         }
     }
@@ -62,7 +71,29 @@ public class ItemDB extends OSRSDataBase
     {
         public List<Tuple2<Skill, Integer>> SkillLevelPair = new ArrayList<>();
 
-        private static class RequirementDeserializer implements JsonDeserializer<Requirement>
+        public IRequirement[] GetLevelRequirements()
+        {
+            List<IRequirement> out = new ArrayList<>();
+            for(var pair : SkillLevelPair)
+            {
+                if(pair._1 == null)
+                {
+                    continue;
+                }
+                if(pair._1 == Skill.COMBAT)
+                {
+                    out.add(new CombatRequirement(pair._2));
+                }
+                else
+                {
+                    out.add(new LevelRequirement(pair._1, pair._2));
+                }
+
+            }
+            return out.toArray(new IRequirement[0]);
+        }
+
+        public static class RequirementDeserializer implements JsonDeserializer<Requirement>
         {
             public Requirement deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws
                     JsonParseException
@@ -70,8 +101,16 @@ public class ItemDB extends OSRSDataBase
                 Requirement out = new Requirement();
                 for(var skill : json.getAsJsonObject().entrySet())
                 {
-
-                    out.SkillLevelPair.add(new Tuple2<Skill, Integer>(Skill.valueOf(skill.getKey()),
+                    Skill skell;
+                    if(skill.getKey().toUpperCase().equals("RUNECRAFT"))
+                    {
+                        skell = Skill.RUNECRAFTING;
+                    }
+                    else
+                    {
+                        skell = Skill.valueOf(skill.getKey().toUpperCase());
+                    }
+                    out.SkillLevelPair.add(new Tuple2<Skill, Integer>(skell,
                                                                       skill.getValue().getAsInt()));
                 }
                 return out;
@@ -127,6 +166,59 @@ public class ItemDB extends OSRSDataBase
         public @Nullable String        wiki_url;
         public @Nullable EquipmentData equipment;
         public @Nullable WeaponData    weapon;
+
+
+        public double GetDPS(StanceData.Attacktype type)
+        {
+            if(weapon == null || equipment == null)
+            {
+                return 0;
+            }
+
+            int TickInterval = weapon.attack_speed;
+            var possibleStances = Arrays.stream(weapon.stances)
+                                        .filter((t) -> t.attack_type == type)
+                                        .toList();
+            double max = 0;
+            for(var stance : possibleStances)
+            {
+                double speed = TickInterval;
+                if(stance.boosts != null &&
+                   stance.boosts.equalsIgnoreCase("attack speed by 1 tick"))
+                {
+                    speed++;
+                }
+
+                double attack = 0;
+                switch(type)
+                {
+                    case stab ->
+                    {
+                        attack = equipment.attack_stab;
+                    }
+                    case slash ->
+                    {
+                        attack = equipment.attack_slash;
+                    }
+                    case crush ->
+                    {
+                        attack = equipment.attack_crush;
+                    }
+                    case magic, defensive_casting, spellcasting ->
+                    {
+                        attack = equipment.magic_damage;
+                    }
+                    case ranged ->
+                    {
+                        attack = equipment.ranged_strength;
+                    }
+                }
+
+                max = Math.max(max, attack / speed);
+            }
+
+            return max;
+        }
 
         public String toString()
         {
@@ -246,67 +338,6 @@ public class ItemDB extends OSRSDataBase
         }
     }
 
-    public static class ToolData
-    {
-        public           Type        type;
-        public           String      name;
-        public           boolean     equipable;
-        public @Nullable Integer     strength;
-        public @Nullable Requirement requirements;
-
-        public enum Type
-        {
-            Axe,
-            Chisel,
-            Hammer,
-            Knife,
-            Machete,
-            @SerializedName("Pestle and mortar") Pestle_and_mortar,
-            Pickaxe,
-            Saw,
-            Shears,
-            Tinderbox,
-            @SerializedName("Tool space") Tool_space,
-            @SerializedName("Tool store") Tool_store,
-            @SerializedName("Ammo mould") Ammo_mould,
-            @SerializedName("Amulet mould") Amulet_mould,
-            @SerializedName("Bolt mould") Bolt_mould,
-            @SerializedName("Bracelet mould") Bracelet_mould,
-            @SerializedName("Glassblowing pipe") Glassblowing_pipe,
-            @SerializedName("Holy mould") Holy_mould,
-            @SerializedName("Necklace mould") Necklace_mould,
-            Needle,
-            @SerializedName("Ring mould") Ring_mould,
-            @SerializedName("Sickle mould") Sickle_mould,
-            @SerializedName("Tiara mould") Tiara_mould,
-            @SerializedName("Unholy mould") Unholy_mould,
-            @SerializedName("Gardening trowel") Gardening_trowel,
-            Rake,
-            Secateurs,
-            @SerializedName("Seed dibber") Seed_dibber,
-            Spade,
-            Trowel,
-            @SerializedName("Watering can") Watering_can,
-            @SerializedName("Barbarian rod") Barbarian_rod,
-            @SerializedName("Big fishing net") Big_fishing_net,
-            @SerializedName("Fishing rod") Fishing_rod,
-            @SerializedName("Fly fishing rod") Fly_fishing_rod,
-            Harpoon,
-            @SerializedName("Karambwan vessel") Karambwan_vessel,
-            @SerializedName("Lobster pot") Lobster_pot,
-            @SerializedName("Oily fishing rod") Oily_fishing_rod,
-            @SerializedName("Small fishing net") Small_fishing_net,
-            @SerializedName("Bird snare") Bird_snare,
-            @SerializedName("Box trap") Box_trap,
-            @SerializedName("Butterfly net") Butterfly_net,
-            @SerializedName("Magic box") Magic_box,
-            @SerializedName("Noose wand") Noose_wand,
-            @SerializedName("Rabbit snare") Rabbit_snare,
-            @SerializedName("Teasing stick") Teasing_stick,
-            Torch
-        }
-    }
-
     public static class WeaponData
     {
         public int          attack_speed;
@@ -407,7 +438,6 @@ public class ItemDB extends OSRSDataBase
             ranged,
             @SerializedName("defensive casting") defensive_casting,
             spellcasting;
-
         }
 
         public enum AttackStyles
@@ -430,6 +460,22 @@ public class ItemDB extends OSRSDataBase
             ranged,
             attack,
             @SerializedName("ranged and defence") ranged_and_defence;
+
+            public CombatStyle GetDBCStyle()
+            {
+                switch(this)
+                {
+                    case magic -> {return CombatStyle.MAGIC;}
+                    case shared -> {return CombatStyle.SHARED;}
+                    case magic_and_defence -> {return CombatStyle.MAGIC_DEFENCE;}
+                    case strength -> {return CombatStyle.STRENGTH;}
+                    case defence -> {return CombatStyle.DEFENCE;}
+                    case ranged -> {return CombatStyle.RANGED_RAPID;}
+                    case attack -> {return CombatStyle.ATTACK;}
+                    case ranged_and_defence -> {return CombatStyle.RANGED_DEFENCE;}
+                }
+                return CombatStyle.ATTACK;
+            }
         }
 
         public String toString()
@@ -438,7 +484,7 @@ public class ItemDB extends OSRSDataBase
         }
     }
 
-    public static ItemData[] GetAllItemKeywordMatch(String keyword)
+    public static ItemData[] GetAllItemKeywordMatch(String keyword, boolean IgnoreNoteAndPlaceHolder)
     {
         List<ItemData> out = new ArrayList<>();
         try
@@ -446,7 +492,7 @@ public class ItemDB extends OSRSDataBase
             ItemDBLock.lock();
             InputStreamReader File   = new InputStreamReader(GetInputStream(ItemDB));
             JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
+            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
             Reader.setLenient(true);
 
             Reader.beginObject();
@@ -455,7 +501,13 @@ public class ItemDB extends OSRSDataBase
             {
                 int      ID  = Integer.parseInt(Reader.nextName());
                 ItemData Obj = gson.fromJson(Reader, ItemData.class);
-                if(Obj.name.toLowerCase().contains(keyword.toLowerCase()))
+
+                if(IgnoreNoteAndPlaceHolder && Obj.linked_id_item != null)
+                {
+                    continue;
+                }
+
+                if((" " + Obj.name + " ").toLowerCase().contains(" " + keyword.toLowerCase() + " "))
                 {
                     out.add(Obj);
                 }
@@ -491,7 +543,7 @@ public class ItemDB extends OSRSDataBase
             ItemDBLock.lock();
             InputStreamReader File   = new InputStreamReader(GetInputStream(ItemDB));
             JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
+            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
             Reader.setLenient(true);
 
             Reader.beginObject();
@@ -532,6 +584,17 @@ public class ItemDB extends OSRSDataBase
         return out.firstEntry().getValue();
     }
 
+    public static int GetProfitAlch(int ID)
+    {
+        var item = GetItemData(ID);
+        if(item != null)
+        {
+            return _GetProfitAlch(item);
+        }
+        Logger.log("ItemDB: GetProfitAlch: Item with ID " + ID + " not found");
+        return Integer.MIN_VALUE;
+    }
+
     public static ItemData GetItemData(int ItemID)
     {
         if(ItemDBCache.containsKey(ItemID))
@@ -543,7 +606,7 @@ public class ItemDB extends OSRSDataBase
             ItemDBLock.lock();
             InputStreamReader File   = new InputStreamReader(GetInputStream(ItemDB));
             JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
+            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
             Reader.setLenient(true);
 
             Reader.beginObject();
@@ -582,6 +645,31 @@ public class ItemDB extends OSRSDataBase
         return null;
     }
 
+    private static int _GetProfitAlch(ItemData data)
+    {
+        if(data.highalch == null)
+        {
+            Logger.log("ItemDB: _GetProfitAlch: item with name " + data.name + " is not alchable");
+            return Integer.MIN_VALUE;
+        }
+
+        final int NatureRuneID = 561;
+        int       RunePrice    = LivePrices.get(NatureRuneID);
+        int       AlchPrice    = data.highalch;
+        return (AlchPrice - RunePrice) - data.cost;
+    }
+
+    public static int GetProfitAlch(String Name)
+    {
+        var item = GetItemDataByName(Name);
+        if(item.length > 0)
+        {
+            return _GetProfitAlch(item[0]);
+        }
+        Logger.log("ItemDB: GetProfitAlch: Item with ID " + Name + " not found");
+        return Integer.MIN_VALUE;
+    }
+
     public static ItemData[] GetItemDataByName(String Name)
     {
         List<ItemData> out = new ArrayList<>();
@@ -590,7 +678,7 @@ public class ItemDB extends OSRSDataBase
             ItemDBLock.lock();
             InputStreamReader File   = new InputStreamReader(GetInputStream(ItemDB));
             JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
+            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
             Reader.setLenient(true);
 
             Reader.beginObject();
@@ -622,28 +710,6 @@ public class ItemDB extends OSRSDataBase
         return out.toArray(out.toArray(new ItemData[0]));
     }
 
-    public static int GetProfitAlch(int ID)
-    {
-        var item = GetItemData(ID);
-        if(item != null)
-        {
-            return _GetProfitAlch(item);
-        }
-        Logger.log("ItemDB: GetProfitAlch: Item with ID " + ID + " not found");
-        return Integer.MIN_VALUE;
-    }
-
-    public static int GetProfitAlch(String Name)
-    {
-        var item = GetItemDataByName(Name);
-        if(item.length > 0)
-        {
-            return _GetProfitAlch(item[0]);
-        }
-        Logger.log("ItemDB: GetProfitAlch: Item with ID " + Name + " not found");
-        return Integer.MIN_VALUE;
-    }
-
     public static int GetProfitGE(int ID)
     {
         var item = GetItemData(ID);
@@ -653,6 +719,19 @@ public class ItemDB extends OSRSDataBase
         }
         Logger.log("ItemDB: GetProfitGE: Item with ID " + ID + " not found");
         return Integer.MIN_VALUE;
+    }
+
+    private static int _GetProfitGE(ItemData data)
+    {
+        if(!data.tradeable_on_ge)
+        {
+            Logger.log("ItemDB: _GetProfitGE: item with name " + data.name +
+                       " is not tradable on the GE");
+            return Integer.MIN_VALUE;
+        }
+
+        int GEPrice = LivePrices.get(data.id);
+        return GEPrice - data.cost;
     }
 
     public static int GetProfitGE(String Name)
@@ -699,44 +778,6 @@ public class ItemDB extends OSRSDataBase
         return false;
     }
 
-    public static boolean isProfitableItem(int ID)
-    {
-        var item = GetItemData(ID);
-        if(item != null)
-        {
-            return _isProfitableItem(item);
-        }
-        Logger.log("ItemDB: isProfitable: Item with ID " + ID + " not found");
-        return false;
-    }
-
-    private static int _GetProfitAlch(ItemData data)
-    {
-        if(data.highalch == null)
-        {
-            Logger.log("ItemDB: _GetProfitAlch: item with name " + data.name + " is not alchable");
-            return Integer.MIN_VALUE;
-        }
-
-        final int NatureRuneID = 561;
-        int       RunePrice    = LivePrices.get(NatureRuneID);
-        int       AlchPrice    = data.highalch;
-        return (AlchPrice - RunePrice) - data.cost;
-    }
-
-    private static int _GetProfitGE(ItemData data)
-    {
-        if(!data.tradeable_on_ge)
-        {
-            Logger.log("ItemDB: _GetProfitGE: item with name " + data.name +
-                       " is not tradable on the GE");
-            return Integer.MIN_VALUE;
-        }
-
-        int GEPrice = LivePrices.get(data.id);
-        return GEPrice - data.cost;
-    }
-
     private static boolean _isProfitableItem(ItemData data)
     {
         if(data != null)
@@ -747,6 +788,17 @@ public class ItemDB extends OSRSDataBase
             return AlchCheck && QuestCheck && TradeAble;
         }
         Logger.log("ItemDB: _isProfitable: Item dats is null");
+        return false;
+    }
+
+    public static boolean isProfitableItem(int ID)
+    {
+        var item = GetItemData(ID);
+        if(item != null)
+        {
+            return _isProfitableItem(item);
+        }
+        Logger.log("ItemDB: isProfitable: Item with ID " + ID + " not found");
         return false;
     }
 

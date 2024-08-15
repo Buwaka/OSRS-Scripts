@@ -1,19 +1,29 @@
 package Cycles;
 
 import Cycles.SimpleTasks.Bank.BankItemsTask;
+import Cycles.SimpleTasks.Bank.GETask;
 import Cycles.SimpleTasks.ItemProcessing.InteractTask;
+import Cycles.SimpleTasks.Misc.EquipmentTask;
 import OSRSDatabase.NPCDB;
+import OSRSDatabase.OSRSPrices;
 import OSRSDatabase.ObjectDB;
 import OSRSDatabase.WoodDB;
 import Utilities.ECycleTags;
+import Utilities.GrandExchange.GEInstance;
+import Utilities.GrandExchange.Orders.MarketBuyOrder;
 import Utilities.OSRSUtilities;
 import Utilities.Requirement.LevelRequirement;
 import Utilities.Requirement.MemberRequirement;
 import Utilities.Requirement.QuestRequirement;
 import Utilities.Scripting.SimpleCycle;
+import Utilities.Scripting.tpircSScript;
 import com.google.gson.Gson;
 import io.vavr.Tuple2;
 import org.dreambot.api.Client;
+import org.dreambot.api.methods.container.impl.Inventory;
+import org.dreambot.api.methods.container.impl.bank.Bank;
+import org.dreambot.api.methods.container.impl.equipment.Equipment;
+import org.dreambot.api.methods.container.impl.equipment.EquipmentSlot;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.quest.book.FreeQuest;
 import org.dreambot.api.methods.quest.book.PaidQuest;
@@ -26,13 +36,20 @@ import java.util.*;
 public class CycleLibrary
 {
     // Json Paths
-    final String SmeltCycleDBPath       = "SmeltCycles.json";
-    final String MineCycleDBPath        = "MineCycles.json";
-    final String CombineCycleDBPath     = "CombineCycles.json";
-    final String CombatLootCycleDBPath  = "CombatLootCycles.json";
-    final String WoodCuttingCycleDBPath = "WoodCuttingCycles.json";
-    final String FireMakingCycleDBPath  = "FireMakingCycles.json";
-    final String PyreCycleDBPath        = "PyreCycles.json";
+    final          String       SmeltCycleDBPath       = "SmeltCycles.json";
+    final          String       MineCycleDBPath        = "MineCycles.json";
+    final          String       CombineCycleDBPath     = "CombineCycles.json";
+    final          String       CombatLootCycleDBPath  = "CombatLootCycles.json";
+    final          String       WoodCuttingCycleDBPath = "WoodCuttingCycles.json";
+    final          String       FireMakingCycleDBPath  = "FireMakingCycles.json";
+    final          String       PyreCycleDBPath        = "PyreCycles.json";
+    private static tpircSScript OwnerScript            = null;
+
+    static public void init(tpircSScript owner)
+    {
+        OwnerScript = owner;
+    }
+
 
     public static SimpleCycle[] FireMakingWoodCuttingTraining()
     {
@@ -43,12 +60,50 @@ public class CycleLibrary
         var MagicLog  = WoodDB.GetWoodData(WoodDB.WoodType.Magic);
 
         // Areas
-        var DraynorWillowArea = new Area(3087, 3237, 3092, 3227);
-       // var DraynorOakArea    = new Area(3098, 3250, 3105, 3239); aggressive prison guards
-        var WCGuildArea       = new Area(1581, 3495, 1585, 3490);
-        var LumbridgeArea     = new Area(3198, 3239, 3148, 3215);
-        var LumbridgeOakArea = new Area(3247, 3277, 3215, 3261);
-        var VarrockArea       = new Area(3202, 3506, 3223, 3501);
+        var DraynorWillowArea = new Area(3087, 3237, 3092, 3227, 0);
+        // var DraynorOakArea    = new Area(3098, 3250, 3105, 3239); aggressive prison guards
+        var WCGuildArea      = new Area(1581, 3495, 1585, 3490, 0);
+        var LumbridgeArea    = new Area(3198, 3239, 3148, 3215, 0);
+        var LumbridgeOakArea = new Area(3247, 3277, 3215, 3261, 0);
+        var VarrockArea      = new Area(3202, 3506, 3223, 3501, 0);
+
+
+
+        WoodDB.WoodCuttingTool BestWoodcuttingTool = WoodDB.GetBestWoodCuttingTool(Client.isMembers(),
+                                                                                   "Firemaking",
+                                                                                   "cheap");
+        WoodDB.WoodCuttingTool AvailableWoodcuttingTool = WoodDB.GetBestWoodCuttingTool(Client.isMembers(),
+                                                                                        GEInstance.GetAllItemsID(),
+                                                                                        "Firemaking");
+
+
+        Logger.log("CycleLibrary: FireMakingWoodCuttingTraining: Available tool: " +
+                   AvailableWoodcuttingTool.name);
+        Logger.log("CycleLibrary: FireMakingWoodCuttingTraining: Best tool: " +
+                   BestWoodcuttingTool.name);
+
+        WoodDB.WoodCuttingTool ToolToUse = AvailableWoodcuttingTool;
+        if(BestWoodcuttingTool != AvailableWoodcuttingTool &&
+           BestWoodcuttingTool.WoodCuttingStrength > AvailableWoodcuttingTool.WoodCuttingStrength &&
+           BestWoodcuttingTool.ge_tradable)
+        {
+            Logger.log("CycleLibrary: FireMakingWoodCuttingTraining: Want to buy new axe: " +
+                       BestWoodcuttingTool);
+            if(OSRSPrices.GetAveragePrice(BestWoodcuttingTool.id) < GEInstance.GetLiquidMoney())
+            {
+                OwnerScript.GetGEInstance().AddUniqueOrder(new MarketBuyOrder(BestWoodcuttingTool.id, 1));
+                var neworder = new GETask("Buy New Woodcutting tool");
+                neworder.SetTaskPriority(-1);
+                OwnerScript.addNodes(neworder);
+            }
+            else
+            {
+                Logger.log("CycleLibrary: FireMakingWoodCuttingTraining: Cannot afford : " +
+                           BestWoodcuttingTool);
+            }
+
+        }
+        Logger.log("CycleLibrary: FireMakingWoodCuttingTraining: ToolToUse: " + ToolToUse);
 
 
         int TinderBoxID = 590;
@@ -57,7 +112,10 @@ public class CycleLibrary
         int WoodCuttingLevel = Skills.getRealLevel(Skill.WOODCUTTING);
         var result = WoodDB.GetBestFireMakingLog(Math.min(WoodCuttingLevel, FireMakingLevel),
                                                  Client.isMembers());
-        int[] BurnAbleLogs =  WoodDB.GetBurnableLogs(FireMakingLevel, Client.isMembers()).stream().mapToInt(t -> t.id).toArray();
+        int[] BurnAbleLogs = WoodDB.GetBurnableLogs(FireMakingLevel, Client.isMembers())
+                                   .stream()
+                                   .mapToInt(t -> t.id)
+                                   .toArray();
 
 
         SimpleCycle WoodCuttingCycle = null;
@@ -88,28 +146,33 @@ public class CycleLibrary
                 WoodCuttingCycle = CutReg;
                 var RegLogCycle = new InteractOnPositionCycle("Burn logs",
                                                               TinderBoxID,
-                                                              (t) -> Arrays.stream(WoodDB.GetFireMakingPositions(FireMakingLevel,
-                                                                      t)).toList(), BurnAbleLogs);
+                                                              (t) -> Arrays.stream(WoodDB.GetFireMakingPositions(
+                                                                      FireMakingLevel,
+                                                                      t)).toList(),
+                                                              BurnAbleLogs);
                 RegLogCycle.TileChecker = WoodDB::isTileBurnableAndWithinReach;
                 FireMakingCycle         = RegLogCycle;
-            } case Oak ->
-        {
-            InteractCycle CutOak = new InteractCycle("Go cut " + OakLog.name,
-                                                     ObjectDB.GetObjectIDsByName(OakLog.trees));
-            CutOak.SetTargetArea(LumbridgeOakArea);
-            CutOak.AddRequirement(new LevelRequirement(Skill.WOODCUTTING, OakLog.level));
-            CutOak.setDepositInventory(false);
-            CutOak.AddInventoryRequirement(TinderBoxID);
-            WoodCuttingCycle = CutOak;
+            }
+            case Oak ->
+            {
+                InteractCycle CutOak = new InteractCycle("Go cut " + OakLog.name,
+                                                         ObjectDB.GetObjectIDsByName(OakLog.trees));
+                CutOak.SetTargetArea(LumbridgeOakArea);
+                CutOak.AddRequirement(new LevelRequirement(Skill.WOODCUTTING, OakLog.level));
+                CutOak.setDepositInventory(false);
+                CutOak.AddInventoryRequirement(TinderBoxID);
+                WoodCuttingCycle = CutOak;
 
-            var OakLogCycle = new InteractOnPositionCycle("Burn logs",
-                                                          TinderBoxID,
-                                                          (t) -> Arrays.stream(WoodDB.GetFireMakingPositions(FireMakingLevel,
-                                                                                                             t)).toList(), BurnAbleLogs);
-            OakLogCycle.TileChecker = WoodDB::isTileBurnableAndWithinReach;
-            OakLogCycle.AddRequirement(new LevelRequirement(Skill.FIREMAKING, OakLog.level));
-            FireMakingCycle = OakLogCycle;
-        }
+                var OakLogCycle = new InteractOnPositionCycle("Burn logs",
+                                                              TinderBoxID,
+                                                              (t) -> Arrays.stream(WoodDB.GetFireMakingPositions(
+                                                                      FireMakingLevel,
+                                                                      t)).toList(),
+                                                              BurnAbleLogs);
+                OakLogCycle.TileChecker = WoodDB::isTileBurnableAndWithinReach;
+                OakLogCycle.AddRequirement(new LevelRequirement(Skill.FIREMAKING, OakLog.level));
+                FireMakingCycle = OakLogCycle;
+            }
             case Willow ->
             {
                 InteractCycle CutWillow = new InteractCycle("Go cut " + WillowLog.name,
@@ -122,8 +185,10 @@ public class CycleLibrary
 
                 var WillowLogCycle = new InteractOnPositionCycle("Burn logs",
                                                                  TinderBoxID,
-                                                                 (t) -> Arrays.stream(WoodDB.GetFireMakingPositions(FireMakingLevel,
-                                                                                                                    t)).toList(), BurnAbleLogs);
+                                                                 (t) -> Arrays.stream(WoodDB.GetFireMakingPositions(
+                                                                         FireMakingLevel,
+                                                                         t)).toList(),
+                                                                 BurnAbleLogs);
                 WillowLogCycle.TileChecker = WoodDB::isTileBurnableAndWithinReach;
                 WillowLogCycle.AddRequirement(new LevelRequirement(Skill.FIREMAKING,
                                                                    WillowLog.level));
@@ -145,8 +210,10 @@ public class CycleLibrary
 
                 var YewLogCycle = new InteractOnPositionCycle("Burn logs",
                                                               TinderBoxID,
-                                                              (t) -> Arrays.stream(WoodDB.GetFireMakingPositions(FireMakingLevel,
-                                                                                                                 t)).toList(), BurnAbleLogs);
+                                                              (t) -> Arrays.stream(WoodDB.GetFireMakingPositions(
+                                                                      FireMakingLevel,
+                                                                      t)).toList(),
+                                                              BurnAbleLogs);
                 YewLogCycle.TileChecker = WoodDB::isTileBurnableAndWithinReach;
                 YewLogCycle.AddRequirement(new LevelRequirement(Skill.FIREMAKING, YewLog.level));
                 FireMakingCycle = YewLogCycle;
@@ -193,7 +260,13 @@ public class CycleLibrary
         //AddCycle(CreatePyreLog);
 
 
-        //Cut wood cycle
+        if(!Inventory.contains(ToolToUse.id))
+        {
+            WoodCuttingCycle.AddStartUpTask(() -> new BankItemsTask[]{
+                    BankItemsTask.SimpleWithdraw(ToolToUse.id)});
+            WoodCuttingCycle.AddStartUpTask(() -> new EquipmentTask[]{
+                    EquipmentTask.SimpleEquip("Equip Axe", ToolToUse.id, EquipmentSlot.WEAPON)});
+        }
 
         Logger.log("CycleLibrary: FireMakingWoodCuttingTraining: Type: " + type.value + " Cycles " +
                    WoodCuttingCycle.GetName() + " " + FireMakingCycle.GetName());
@@ -305,52 +378,6 @@ public class CycleLibrary
         return OSRSUtilities.OSRSGsonBuilder.create().toJson(Smelts);
     }
 
-    public static SimpleCycle GetFishingCycle()
-    {
-        List<InteractCycle> Cycles = new ArrayList<>();
-        //        final int SmallBaitSpotID   = 1530;
-        //        final int RodFishingSpotID  = 1527;
-        //        final int CageHarpoonSpotID = 1522;
-
-        final String FishingSpot  = "Fishing spot";
-        final int[]  FishingSpots = NPCDB.GetObjectIDsByName(FishingSpot);
-
-        final String SmallNetAction = "Small Net";
-        final String RodBaitAction  = "Bait";
-
-        final int SmallNetID   = 303;
-        final int RodID        = 307;
-        final int FlyRodID     = 309;
-        final int LobsterPotID = 301;
-        final int HarpoonID    = 311;
-
-
-        // F2P
-        Area LumbridgeSwampNet = new Area(3236, 3150, 3241, 3159);
-        Area DraynorNet        = new Area(3089, 3228, 3087, 3234);
-        Area[] EdgeVillBait = {
-                new Area(3102, 3435, 3106, 3432), new Area(3099, 3426, 3101, 3422)};
-        Area KaramjaCageHarpoon = new Area(2924, 3180, 2925, 3172);
-
-
-        InteractCycle ShrimpCycle = new InteractCycle("Shrimps and Anchovy",
-                                                      SmallNetAction,
-                                                      FishingSpots);
-        ShrimpCycle.SetFilter(InteractTask.InteractableFilter.NPCs);
-        ShrimpCycle.SetTargetArea(DraynorNet);
-        ShrimpCycle.AddInventoryRequirement(SmallNetID);
-        ShrimpCycle.AddRequirement(new LevelRequirement(Skill.FISHING, 0));
-        ShrimpCycle.AddEndTask(BankItemsTask.FullDepositInventory(SmallNetID));
-        Cycles.add(ShrimpCycle);
-
-
-        Gson gson = OSRSUtilities.OSRSGsonBuilder.create();
-
-
-        return ShrimpCycle;
-
-    }
-
     public static SimpleCycle GetWoodCuttingCycle(WoodDB.WoodType type)
     {
         var regLog    = WoodDB.GetWoodData("Logs");
@@ -439,6 +466,53 @@ public class CycleLibrary
     public static void main(String[] args)
     {
         System.out.print(GetFishingCycle());
+    }
+
+    public static SimpleCycle GetFishingCycle()
+    {
+        List<InteractCycle> Cycles = new ArrayList<>();
+        //        final int SmallBaitSpotID   = 1530;
+        //        final int RodFishingSpotID  = 1527;
+        //        final int CageHarpoonSpotID = 1522;
+
+        final String FishingSpot  = "Fishing spot";
+        final int[]  FishingSpots = NPCDB.GetObjectIDsByName(FishingSpot);
+
+        final String SmallNetAction = "Small Net";
+        final String RodBaitAction  = "Bait";
+
+        final int SmallNetID   = 303;
+        final int RodID        = 307;
+        final int FlyRodID     = 309;
+        final int LobsterPotID = 301;
+        final int HarpoonID    = 311;
+
+
+        // F2P
+        Area LumbridgeSwampNet = new Area(3236, 3150, 3241, 3159);
+        Area DraynorNet        = new Area(3089, 3228, 3087, 3234);
+        Area[] EdgeVillBait = {
+                new Area(3102, 3435, 3106, 3432), new Area(3099, 3426, 3101, 3422)};
+        Area KaramjaCageHarpoon = new Area(2924, 3180, 2925, 3172);
+
+
+        InteractCycle ShrimpCycle = new InteractCycle("Shrimps and Anchovy",
+                                                      SmallNetAction,
+                                                      FishingSpots);
+        ShrimpCycle.SetFilter(InteractTask.InteractableFilter.NPCs);
+        ShrimpCycle.SetTargetArea(DraynorNet);
+        ShrimpCycle.AddInventoryRequirement(SmallNetID);
+        ShrimpCycle.AddRequirement(new LevelRequirement(Skill.FISHING, 0));
+        ShrimpCycle.AddEndTask(() -> new BankItemsTask[]{
+                BankItemsTask.FullDepositInventory(SmallNetID)});
+        Cycles.add(ShrimpCycle);
+
+
+        Gson gson = OSRSUtilities.OSRSGsonBuilder.create();
+
+
+        return ShrimpCycle;
+
     }
 
     //    public static String GenerateJSONSmithCycles()

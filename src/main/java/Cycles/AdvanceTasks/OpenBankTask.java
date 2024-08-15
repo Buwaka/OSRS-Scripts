@@ -26,17 +26,6 @@ public class OpenBankTask extends SimpleTask
         BankingLocation = loc;
     }
 
-    private BankLocation NearestThatIsntGE()
-    {
-        var all = BankLocation.getValidLocations();
-        return all.stream()
-                  .filter(t -> t != BankLocation.GRAND_EXCHANGE)
-                  .sorted((x, y) -> (int) (y.distance(Players.getLocal().getTile()) -
-                                           x.walkingDistance(Players.getLocal().getTile()) * 100))
-                  .toList()
-                  .getFirst();
-    }
-
     @Override
     public int Loop()
     {
@@ -97,5 +86,16 @@ public class OpenBankTask extends SimpleTask
             return NearestThatIsntGE();
         }
         return BankLocation.LUMBRIDGE;
+    }
+
+    private BankLocation NearestThatIsntGE()
+    {
+        var all = BankLocation.getValidLocations();
+        return all.stream()
+                  .filter(t -> t != BankLocation.GRAND_EXCHANGE)
+                  .sorted((x, y) -> (int) (y.distance(Players.getLocal().getTile()) -
+                                           x.walkingDistance(Players.getLocal().getTile()) * 100))
+                  .toList()
+                  .getFirst();
     }
 }

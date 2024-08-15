@@ -5,26 +5,30 @@ import io.vavr.Function1;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.WeakHashMap;
 
 public class Delegate1<A>
 {
-    List<WeakReference<Function1<A, Boolean>>> Subscribers = new ArrayList<>();
+    WeakHashMap<Object, Function1<A, Boolean>>          Subscribers = new WeakHashMap<>();
 
     public void Fire(A var1)
     {
-        Subscribers.removeIf(t -> t.get() == null);
-
-        for(var func : Subscribers)
+        for(var func : Subscribers.entrySet())
         {
-            if(func.get() != null)
+            if(func.getValue() != null)
             {
-                func.get().apply(var1);
+                func.getValue().apply(var1);
             }
         }
     }
 
-    public void Subscribe(Function1<A, Boolean> function)
+    public void Subscribe(Object caller, Function1<A, Boolean> function)
     {
-        Subscribers.add(new WeakReference<>(function));
+        Subscribers.put(caller, function);
+    }
+
+    public int SubscribeCount()
+    {
+        return Subscribers.size();
     }
 }

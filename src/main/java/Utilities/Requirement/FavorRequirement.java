@@ -2,8 +2,12 @@ package Utilities.Requirement;
 
 import org.dreambot.api.methods.favour.House;
 
+import java.io.Serial;
+
 public class FavorRequirement implements IRequirement
 {
+    @Serial
+    private static final long serialVersionUID = -3503527546478455791L;
     House house;
     int   favour;
 

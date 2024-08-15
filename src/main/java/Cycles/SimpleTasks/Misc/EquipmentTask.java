@@ -1,32 +1,37 @@
 package Cycles.SimpleTasks.Misc;
 
-import Utilities.Combat.MeleeCombat;
+import Cycles.SimpleTasks.Bank.BankItemsTask;
+import Utilities.Combat.EquipmentHelper;
+import Utilities.Combat.EquipmentManager;
 import Utilities.Scripting.SimpleTask;
+import org.dreambot.api.methods.combat.Combat;
+import org.dreambot.api.methods.combat.CombatStyle;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.equipment.Equipment;
 import org.dreambot.api.methods.container.impl.equipment.EquipmentSlot;
 import org.dreambot.api.utilities.Logger;
+import org.dreambot.api.wrappers.items.Item;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class EquipmentTask extends SimpleTask
 {
     HashMap<EquipmentSlot, Integer> ToEquip    = new HashMap<>();
-    Set<EquipmentSlot>              ToUnEquip  = new HashSet<>();
+    Set<EquipmentSlot> ToUnEquip = new HashSet<>();
+    List<Integer>      ToDeposit = new ArrayList<>();
     boolean                         UnEquipAll = false;
     private int Fails   = 0;
     private int Retries = 5;
+    private boolean DepositPreviousEquipment = false;
 
     public EquipmentTask(String Name)
     {
         super(Name);
     }
 
-    public EquipmentTask(String Name, MeleeCombat.Equipment equipment)
+    public EquipmentTask(String Name, EquipmentHelper.Equipment equipment)
     {
         super(Name);
 
@@ -41,6 +46,13 @@ public class EquipmentTask extends SimpleTask
         }
 
         Logger.log(ToEquip);
+    }
+
+    public static EquipmentTask SimpleEquip(String name, int ID, EquipmentSlot slot)
+    {
+        EquipmentTask out = new EquipmentTask(name);
+        out.Equip(slot, ID);
+        return out;
     }
 
     public void Equip(EquipmentSlot Slot, int id)
@@ -68,6 +80,16 @@ public class EquipmentTask extends SimpleTask
         UnEquipAll = true;
     }
 
+    public void SetAtackType(CombatStyle type)
+    {
+        Combat.setCombatStyle(type);
+    }
+
+    public void SetAtackType()
+    {
+        Combat.setCombatStyle(EquipmentManager.GetDBCombatStyle());
+    }
+
     /**
      * @return
      */
@@ -82,7 +104,7 @@ public class EquipmentTask extends SimpleTask
      * @return
      */
     @Override
-    protected boolean Ready()
+    public boolean Ready()
     {
         boolean result = true;
         for(var equip : ToEquip.values())
@@ -106,6 +128,14 @@ public class EquipmentTask extends SimpleTask
             return 0;
         }
 
+        if(!DepositPreviousEquipment)
+        {
+            if(UnEquipAll || !ToUnEquip.isEmpty())
+            {
+                DepositPreviousEquipment = true;
+            }
+        }
+
         if(UnEquipAll)
         {
             Logger.log("EquipmentTask: Loop: UnEquipAll");
@@ -118,9 +148,11 @@ public class EquipmentTask extends SimpleTask
         {
             var slot = ToUnEquip.iterator().next();
             Logger.log("EquipmentTask: Loop: UnEquip slot " + slot.name());
-            if(Equipment.unequip(slot))
+            Item item = Equipment.getItemInSlot(slot);
+            if(item != null && Equipment.unequip(slot))
             {
                 ToUnEquip.remove(slot);
+                ToDeposit.add(item.getID());
             }
             else
             {
@@ -147,6 +179,11 @@ public class EquipmentTask extends SimpleTask
         }
         else
         {
+            SetAtackType();
+            if(DepositPreviousEquipment)
+            {
+                GetScript().addNodes( BankItemsTask.SimpleDeposit(ToDeposit.stream().mapToInt(Integer::intValue).toArray()));
+            }
             // Done
             return 0;
         }

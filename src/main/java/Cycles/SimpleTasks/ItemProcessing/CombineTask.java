@@ -47,54 +47,9 @@ public class CombineTask extends SimpleTask
         UseSkillingMenu = useSkillingMenu;
     }
 
-    public Item GetSource()
-    {
-        return Inventory.get(sourceID);
-    }
-
-    public Item GetTarget()
-    {
-        return Inventory.get(targetID);
-    }
-
     public void SetSkillingMenuIndex(int index)
     {
         SkillingMenuIndex = index;
-    }
-
-    private boolean InventoryCheck()
-    {
-        Logger.log("CombineTask: InventoryCheck: " + Inventory.count(sourceID) + " " +
-                   Inventory.count(targetID));
-        return Inventory.count(sourceID) >= sourceRatio && Inventory.count(targetID) >= targetRatio;
-    }
-
-    private int RetryCheck(int Super)
-    {
-        counter++;
-        if(counter > retries)
-        {
-            Logger.log("CombineTask: RetryCheck: Failed all retries, exiting");
-            return 0;
-        }
-        return Super;
-    }
-
-    private boolean TimeoutCheck()
-    {
-        boolean result = System.nanoTime() - lastInventoryChange.get() >
-                         TimeUnit.MILLISECONDS.toNanos(timeout);
-        Logger.log(
-                "Timeoutcheck: " + System.nanoTime() + " - " + lastInventoryChange.get() + " > " +
-                TimeUnit.MILLISECONDS.toNanos(timeout) + " = " + result);
-        return result;
-    }
-
-    private static Boolean ResetInventoryTimer(Object context, tpircSScript.ItemAction action, Item item, Item item1)
-    {
-        Logger.log("ResetInventoryTimer");
-        ((CombineTask) context).lastInventoryChange.set(System.nanoTime());
-        return true;
     }
 
     @Override
@@ -150,6 +105,44 @@ public class CombineTask extends SimpleTask
         return RetryCheck(super.Loop());
     }
 
+    public Item GetSource()
+    {
+        return Inventory.get(sourceID);
+    }
+
+    public Item GetTarget()
+    {
+        return Inventory.get(targetID);
+    }
+
+    private int RetryCheck(int Super)
+    {
+        counter++;
+        if(counter > retries)
+        {
+            Logger.log("CombineTask: RetryCheck: Failed all retries, exiting");
+            return 0;
+        }
+        return Super;
+    }
+
+    private boolean TimeoutCheck()
+    {
+        boolean result = System.nanoTime() - lastInventoryChange.get() >
+                         TimeUnit.MILLISECONDS.toNanos(timeout);
+        Logger.log(
+                "Timeoutcheck: " + System.nanoTime() + " - " + lastInventoryChange.get() + " > " +
+                TimeUnit.MILLISECONDS.toNanos(timeout) + " = " + result);
+        return result;
+    }
+
+    private boolean InventoryCheck()
+    {
+        Logger.log("CombineTask: InventoryCheck: " + Inventory.count(sourceID) + " " +
+                   Inventory.count(targetID));
+        return Inventory.count(sourceID) >= sourceRatio && Inventory.count(targetID) >= targetRatio;
+    }
+
     @Nonnull
     @Override
     public TaskType GetTaskType()
@@ -161,7 +154,14 @@ public class CombineTask extends SimpleTask
     public boolean onStartTask(tpircSScript Script)
     {
         lastInventoryChange.set(System.nanoTime());
-        Script.onInventory.Subscribe(this, CombineTask::ResetInventoryTimer);
+        Script.onInventory.Subscribe(this, this::ResetInventoryTimer);
+        return true;
+    }
+
+    private Boolean ResetInventoryTimer(tpircSScript.ItemAction action, Item item, Item item1)
+    {
+        Logger.log("ResetInventoryTimer");
+        lastInventoryChange.set(System.nanoTime());
         return true;
     }
 

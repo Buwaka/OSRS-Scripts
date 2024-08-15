@@ -58,24 +58,9 @@ public class RandomHandler
         Client.getInstance().getRandomManager().unregisterSolver("BeekeeperSolver");
     }
 
-    public static String getPrevStatus()
-    {
-        return prevStatus;
-    }
-
-    public static void setPrevStatus(String prevStat)
-    {
-        prevStatus = prevStat;
-    }
-
     public static int getSolvedCount()
     {
         return solvedCount;
-    }
-
-    public static void increaseSolvedCount()
-    {
-        solvedCount++;
     }
 
     public static void loadRandoms()
@@ -123,21 +108,6 @@ public class RandomHandler
         }
     }
 
-    public static void log(String msg)
-    {
-        log(msg, "RandomHandler");
-    }
-
-    public static void log(String stat, String solver)
-    {
-        if(!getPrevStatus().equals(stat))
-        {
-            Logger.log(new Color(93, 180, 82), "[" + solver + "] uuuhm" + stat);
-            setPrevStatus(stat);
-        }
-        status = stat;
-    }
-
     public static void powerThroughDialogue()
     {
         if(Dialogues.inDialogue())
@@ -153,6 +123,31 @@ public class RandomHandler
                 {return;}
             }
         }
+    }
+
+    public static void log(String msg)
+    {
+        log(msg, "RandomHandler");
+    }
+
+    public static void log(String stat, String solver)
+    {
+        if(!getPrevStatus().equals(stat))
+        {
+            Logger.log(new Color(93, 180, 82), "[" + solver + "] uuuhm" + stat);
+            setPrevStatus(stat);
+        }
+        status = stat;
+    }
+
+    public static String getPrevStatus()
+    {
+        return prevStatus;
+    }
+
+    public static void setPrevStatus(String prevStat)
+    {
+        prevStatus = prevStat;
     }
 
     public static void unloadSolver(Event solver)
@@ -280,5 +275,10 @@ public class RandomHandler
             }
         }
         return false;
+    }
+
+    public static void increaseSolvedCount()
+    {
+        solvedCount++;
     }
 }

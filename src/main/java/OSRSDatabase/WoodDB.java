@@ -1,5 +1,7 @@
 package OSRSDatabase;
 
+import Utilities.OSRSUtilities;
+import Utilities.Requirement.IRequirement;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
@@ -7,7 +9,6 @@ import io.vavr.Tuple2;
 import org.dreambot.api.Client;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.GameObjects;
-import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.utilities.Logger;
@@ -16,16 +17,15 @@ import org.dreambot.api.wrappers.interactive.SceneObject;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WoodDB extends OSRSDataBase
 {
-    final private static String                               WoodDBPath = "Skilling/woodDB.json";
-    private static       ConcurrentHashMap<Integer, WoodData> WoodDBMap  = null;
+    final private static String                               WoodDBPath      = "Skilling/woodDB.json";
+    private static       ConcurrentHashMap<Integer, WoodData> WoodDBMap       = null;
+    final private static String                               WoodToolsDBPath = "Items/Tools/woodcuttingtoolsDB.json";
+    private static       List<WoodCuttingTool>                WoodToolsDBList = null;
 
     public enum WoodType
     {
@@ -68,6 +68,15 @@ public class WoodDB extends OSRSDataBase
         }
     }
 
+    public static class WoodCuttingTool extends ToolDB.ToolData
+    {
+        public int WoodCuttingStrength;
+        public String toString()
+        {
+            return _toString(this, this.getClass());
+        }
+    }
+
     public final class CollisionDataFlag
     {
         /**
@@ -101,21 +110,6 @@ public class WoodDB extends OSRSDataBase
         public static final int BLOCK_LINE_OF_SIGHT_FULL  = 0x20000;
     }
 
-    public static List<WoodData> GetBurnableLogs(int FireMakingLevel, boolean isMember)
-    {
-        List<WoodData> out = new ArrayList<>();
-
-        for(var wood : WoodDBMap.values())
-        {
-            if(GetFireMakingLevel(wood.id) <= FireMakingLevel && wood.burnable &&
-               (!wood.member || isMember))
-            {
-                out.add(wood);
-            }
-        }
-        return out;
-    }
-
     public static Tuple2<WoodType, WoodData> GetBestFireMakingLog(int FireMakingLevel, boolean isMember)
     {
         if(WoodDBMap == null)
@@ -134,6 +128,80 @@ public class WoodDB extends OSRSDataBase
             }
         }
         return new Tuple2<>(out.type_enum, out);
+    }
+
+    public static WoodData GetWoodData(String Name)
+    {
+        if(WoodDBMap == null)
+        {
+            ReadWoodDB();
+        }
+
+        return WoodDBMap.search(1, (key, val) -> val.name.equalsIgnoreCase(Name) ? val : null);
+    }
+
+    private static void ReadWoodDB()
+    {
+        WoodDBMap = new ConcurrentHashMap<>();
+
+        try
+        {
+            InputStreamReader File   = new InputStreamReader(GetInputStream(WoodDBPath));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
+            Reader.setLenient(true);
+
+            Reader.beginObject();
+
+            while(Reader.hasNext())
+            {
+                int      ID  = Integer.parseInt(Reader.nextName());
+                WoodData Obj = gson.fromJson(Reader, WoodData.class);
+                WoodDBMap.put(ID, Obj);
+            }
+
+            Reader.endObject();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            Logger.log("Error reading HerbDB, Exception: " + e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void ReadWoodCuttingToolsDB()
+    {
+        if(WoodToolsDBList != null)
+        {
+            return;
+        }
+
+        WoodToolsDBList = new ArrayList<>();
+
+        try
+        {
+            InputStreamReader File   = new InputStreamReader(GetInputStream(WoodToolsDBPath));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
+            Reader.setLenient(true);
+
+            Reader.beginArray();
+
+            while(Reader.hasNext())
+            {
+                WoodCuttingTool Obj = gson.fromJson(Reader, WoodCuttingTool.class);
+                WoodToolsDBList.add(Obj);
+            }
+
+            Reader.endArray();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            Logger.log("Error reading HerbDB, Exception: " + e);
+            throw new RuntimeException(e);
+        }
     }
 
     public static WoodData GetBestWoodCuttingLog(int WoodCuttingLevel)
@@ -155,27 +223,96 @@ public class WoodDB extends OSRSDataBase
         return out;
     }
 
-    public static int GetBurnableLogsInventory(int FireMakingLevel)
+    public static List<WoodData> GetBurnableLogs(int FireMakingLevel, boolean isMember)
     {
-        int count = 0;
-        for(var item : Inventory.all())
+        List<WoodData> out = new ArrayList<>();
+
+        for(var wood : WoodDBMap.values())
         {
-            if(item == null || !item.isValid())
+            if(GetFireMakingLevel(wood.id) <= FireMakingLevel && wood.burnable &&
+               (!wood.member || isMember))
             {
-                continue;
-            }
-            var wood = GetWoodData(item.getID());
-            if(wood != null && wood.burnable && FireMakingLevel >= GetFireMakingLevel(wood.id))
-            {
-                count++;
+                out.add(wood);
             }
         }
-        return count;
+        return out;
     }
 
     public static int GetFireMakingLevel(int LogID)
     {
         return GetWoodCuttingLevel(LogID);
+    }
+
+    public static int GetWoodCuttingLevel(int LogID)
+    {
+        WoodData data = GetWoodData(LogID);
+
+        if(data != null)
+        {
+            return data.level;
+        }
+        return 101;
+    }
+
+    public static WoodData GetWoodData(int ID)
+    {
+        if(WoodDBMap == null)
+        {
+            ReadWoodDB();
+        }
+
+        return WoodDBMap.get(ID);
+    }
+
+    public static WoodCuttingTool GetBestWoodCuttingTool(boolean isMember, String... TagPreferences)
+    {
+        ReadWoodCuttingToolsDB();
+
+        SortedMap<Integer, WoodCuttingTool> results = new TreeMap<>();
+        for(var tool : WoodToolsDBList)
+        {
+            if((tool.requirements == null || IRequirement.IsAllRequirementMet(tool.requirements)))
+            {
+                //Tag preference bonus points
+                int bonus = 0;
+                for(var tag : TagPreferences)
+                {
+                    if(tool.tags != null && tool.tags.length > 0 && (isMember || !tool.members) &&
+                       Arrays.stream(tool.tags).anyMatch((t) -> t.equalsIgnoreCase(tag)))
+                    {
+                        bonus += 100;
+                    }
+                }
+                results.put(tool.WoodCuttingStrength + bonus, tool);
+            }
+        }
+        return results.lastEntry().getValue();
+    }
+
+    public static WoodCuttingTool GetBestWoodCuttingTool(boolean isMember,int[] Options, String... TagPreferences)
+    {
+        ReadWoodCuttingToolsDB();
+
+        SortedMap<Integer, WoodCuttingTool> results = new TreeMap<>();
+        for(var tool : WoodToolsDBList)
+        {
+            if((tool.requirements == null || IRequirement.IsAllRequirementMet(tool.requirements)) && (isMember || !tool.members) &&
+               Arrays.stream(Options).anyMatch((t) -> t == tool.id))
+            {
+                //Tag preference bonus points
+                int bonus = 0;
+                for(var tag : TagPreferences)
+                {
+                    if(tool.tags != null && tool.tags.length > 0 &&
+                       Arrays.stream(tool.tags).anyMatch((t) -> t.equalsIgnoreCase(tag)))
+                    {
+                        bonus += 100;
+                    }
+                }
+                results.put(tool.WoodCuttingStrength + bonus, tool);
+            }
+        }
+        return results.lastEntry().getValue();
     }
 
     public static Tile[] GetFireMakingPositions(int FireMakingLevel, Area StartingPosition)
@@ -253,6 +390,145 @@ public class WoodDB extends OSRSDataBase
         }
     }
 
+    public static int GetBurnableLogsInventory(int FireMakingLevel)
+    {
+        int count = 0;
+        for(var item : Inventory.all())
+        {
+            if(item == null || !item.isValid())
+            {
+                continue;
+            }
+            var wood = GetWoodData(item.getID());
+            if(wood != null && wood.burnable && FireMakingLevel >= GetFireMakingLevel(wood.id))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static TreeMap<Integer, Tile[]> MostConsecutiveTiles(Tile startTile)
+    {
+        final int SearchHeight = 20;
+        final int SearchWidth  = 35;
+        int       y            = startTile.getY();
+        Logger.log("WoodDB: MostConsecutiveTiles: y = " + y + ", x = " + startTile.getX());
+        TreeMap<Integer, Tile[]> out = new TreeMap<>();
+        for(int i = y - SearchHeight; i < y + SearchHeight; i++)
+        {
+            int        CurrentMax   = 0;
+            int        count        = 0;
+            int        TileY        = i;
+            List<Tile> MaxTiles     = new ArrayList<>();
+            List<Tile> CurrentTiles = new ArrayList<>();
+            Tile       last         = null;
+            for(int j = -SearchWidth; j < SearchWidth; j++)
+            {
+                int  TileX   = startTile.getX() + j;
+                Tile Current = new Tile(TileX, TileY);
+                if(isTileBurnableAndWithinReach(startTile, Current) &&
+                   (last == null || isTileWalkable(last, Current)))
+                {
+                    count++;
+                    CurrentTiles.add(Current);
+                }
+                else
+                {
+                    if(count > CurrentMax)
+                    {
+                        CurrentMax = count;
+                        MaxTiles   = CurrentTiles;
+                    }
+                    CurrentTiles = new ArrayList<>();
+                    count        = 0;
+                }
+                last = Current;
+            }
+            out.put(CurrentMax, MaxTiles.reversed().toArray(new Tile[0]));
+        }
+        return out;
+    }
+
+    public static boolean isTileBurnableAndWithinReach(Tile SourceTile, Tile TargetTile)
+    {
+        return SourceTile != null && TargetTile != null && TargetTile.canReach() &&
+               isTileBurnable(TargetTile) && TargetTile.walkingDistance(SourceTile) < 100;
+    }
+
+    public static boolean isTileBurnable(Tile tile)
+    {
+        if(tile == null) {return false;}
+
+        var objs = GameObjects.getObjectsOnTile(tile);
+        boolean nonematch = Arrays.stream(objs)
+                                  .noneMatch((t) -> t.getClass()
+                                                     .isAssignableFrom(SceneObject.class) ||
+                                                    t.getClass()
+                                                     .isAssignableFrom(GameObject.class));
+
+
+        boolean isUnderRoof = isUnderRoof(tile);
+        boolean isSolid     = isTileSolid(tile);
+
+
+        //Logger.log("isTileBurnable: " + isUnderRoof + isSolid + objs.length + nonematch);
+
+        return !isUnderRoof && !isSolid && nonematch;
+    }
+
+    public static boolean isTileSolid(Tile tile)
+    {
+        var Collissionmap = Client.getCollisionMaps();
+
+        int x = tile.getGridX();
+        int y = tile.getGridY();
+        int z = Client.getPlane();
+        //Logger.log("isTileSolid: x " + x + " y " + y + " z " + z + Collissionmap.length);
+
+        return Collissionmap[Client.getPlane()].isSolid(x, y);
+    }
+
+    public static boolean isUnderRoof(Tile t)
+    {
+        final int  TILE_FLAG_UNDER_ROOF = 4;
+        final int  TILE_SETTINGS_MAX_Z  = 4;
+        byte[][][] tileSettings         = Client.getTileSettings();
+
+
+        // Very unsure about this!
+        int x = t.getGridX();
+        int y = t.getGridY();
+        int z = Client.getPlane();
+
+        if(x < 0 || x >= tileSettings[0].length || y < 0 || y >= tileSettings[0][0].length ||
+           z < 0 || z > tileSettings.length)
+        {
+            // Tile is outside of scope
+            return false;
+        }
+
+        if((tileSettings[z][x][y] & TILE_FLAG_UNDER_ROOF) == TILE_FLAG_UNDER_ROOF)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isTileWalkable(Tile from, Tile to)
+    {
+        var Collissionmap = Client.getCollisionMaps();
+
+        int x1 = from.getGridX();
+        int y1 = from.getGridY();
+        int x2 = to.getGridX();
+        int y2 = to.getGridY();
+        //Logger.log("isTileSolid: x " + x + " y " + y + " z " + z + Collissionmap.length);
+
+        return Collissionmap[Client.getPlane()].isWalkable(x1, y1, x2, y2);
+    }
+
     public static WoodData GetMoneyEfficientPyreLog(boolean ignoreLogPrice, boolean IgnoreLowVolume)
     {
         if(WoodDBMap == null)
@@ -300,189 +576,8 @@ public class WoodDB extends OSRSDataBase
         return 101;
     }
 
-    public static int GetWoodCuttingLevel(int LogID)
-    {
-        WoodData data = GetWoodData(LogID);
-
-        if(data != null)
-        {
-            return data.level;
-        }
-        return 101;
-    }
-
-    public static WoodData GetWoodData(String Name)
-    {
-        if(WoodDBMap == null)
-        {
-            ReadWoodDB();
-        }
-
-        return WoodDBMap.search(1, (key, val) -> val.name.equalsIgnoreCase(Name) ? val : null);
-    }
-
-    public static WoodData GetWoodData(int ID)
-    {
-        if(WoodDBMap == null)
-        {
-            ReadWoodDB();
-        }
-
-        return WoodDBMap.get(ID);
-    }
-
     public static WoodData GetWoodData(WoodType type)
     {
         return GetWoodData(type.value);
-    }
-
-    public static TreeMap<Integer, Tile[]> MostConsecutiveTiles(Tile tile)
-    {
-        final int SearchHeight = 20;
-        final int SearchWidth  = 35;
-        int       y            = tile.getY();
-        Logger.log("WoodDB: MostConsecutiveTiles: y = " + y + ", x = " + tile.getX());
-        TreeMap<Integer, Tile[]> out = new TreeMap<>();
-        for(int i = y - SearchHeight; i < y + SearchHeight; i++)
-        {
-            int        CurrentMax   = 0;
-            int        count        = 0;
-            int        TileY        = i;
-            List<Tile> MaxTiles     = new ArrayList<>();
-            List<Tile> CurrentTiles = new ArrayList<>();
-            Tile last = null;
-            for(int j = -SearchWidth; j < SearchWidth; j++)
-            {
-                int  TileX   = tile.getX() + j;
-                Tile Current = new Tile(TileX, TileY);
-                if(isTileBurnableAndWithinReach(Current) && (last == null || isTileWalkable(last, Current)))
-                {
-                    count++;
-                    CurrentTiles.add(Current);
-                }
-                else
-                {
-                    if(count > CurrentMax)
-                    {
-                        CurrentMax = count;
-                        MaxTiles   = CurrentTiles;
-                    }
-                    CurrentTiles = new ArrayList<>();
-                    count        = 0;
-                }
-                last = Current;
-            }
-            out.put(CurrentMax, MaxTiles.reversed().toArray(new Tile[0]));
-        }
-        return out;
-    }
-
-    public static boolean isTileBurnable(Tile tile)
-    {
-        if(tile == null) {return false;}
-
-        var objs = GameObjects.getObjectsOnTile(tile);
-        boolean nonematch = Arrays.stream(objs)
-                                  .noneMatch((t) -> t.getClass()
-                                                     .isAssignableFrom(SceneObject.class) || t.getClass()
-                                                                                              .isAssignableFrom(
-                                                                                                      GameObject.class));
-
-
-        boolean isUnderRoof = isUnderRoof(tile);
-        boolean isSolid     = isTileSolid(tile);
-
-
-        //Logger.log("isTileBurnable: " + isUnderRoof + isSolid + objs.length + nonematch);
-
-        return !isUnderRoof && !isSolid && nonematch;
-    }
-
-    public static boolean isTileBurnableAndWithinReach(Tile tile)
-    {
-        return tile != null && tile.canReach() && isTileBurnable(tile) && tile.walkingDistance(
-                Players.getLocal().getTile()) < 100;
-    }
-
-    public static boolean isTileSolid(Tile tile)
-    {
-        var Collissionmap = Client.getCollisionMaps();
-
-        int x = tile.getGridX();
-        int y = tile.getGridY();
-        int z = Client.getPlane();
-        //Logger.log("isTileSolid: x " + x + " y " + y + " z " + z + Collissionmap.length);
-
-        return Collissionmap[Client.getPlane()].isSolid(x, y);
-    }
-
-    public static boolean isTileWalkable(Tile from, Tile to)
-    {
-        var Collissionmap = Client.getCollisionMaps();
-
-        int x1 = from.getGridX();
-        int y1 = from.getGridY();
-        int x2 = to.getGridX();
-        int y2 = to.getGridY();
-        //Logger.log("isTileSolid: x " + x + " y " + y + " z " + z + Collissionmap.length);
-
-        return Collissionmap[Client.getPlane()].isWalkable(x1, y1, x2, y2);
-    }
-
-    public static boolean isUnderRoof(Tile t)
-    {
-        final int  TILE_FLAG_UNDER_ROOF = 4;
-        final int  TILE_SETTINGS_MAX_Z  = 4;
-        byte[][][] tileSettings         = Client.getTileSettings();
-
-
-        // Very unsure about this!
-        int x = t.getGridX();
-        int y = t.getGridY();
-        int z = Client.getPlane();
-
-        if(x < 0 || x >= tileSettings[0].length || y < 0 || y >= tileSettings[0][0].length ||
-           z < 0 || z > tileSettings.length)
-        {
-            // Tile is outside of scope
-            return false;
-        }
-
-        if((tileSettings[z][x][y] & TILE_FLAG_UNDER_ROOF) == TILE_FLAG_UNDER_ROOF)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    private static void ReadWoodDB()
-    {
-        WoodDBMap = new ConcurrentHashMap<>();
-
-        try
-        {
-            InputStreamReader File   = new InputStreamReader(GetInputStream(WoodDBPath));
-            JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
-            Reader.setLenient(true);
-
-            Reader.beginObject();
-
-            while(Reader.hasNext())
-            {
-                int      ID  = Integer.parseInt(Reader.nextName());
-                WoodData Obj = gson.fromJson(Reader, WoodData.class);
-                WoodDBMap.put(ID, Obj);
-            }
-
-            Reader.endObject();
-            Reader.close();
-
-        } catch(Exception e)
-        {
-            Logger.log("Error reading HerbDB, Exception: " + e);
-            throw new RuntimeException(e);
-        }
     }
 }

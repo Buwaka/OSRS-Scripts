@@ -14,6 +14,18 @@ public class CycleUtilities
 {
     static final String CombineDB = "CombineCycles.json";
 
+    public static List<CombineCycle> GetAllValidCombineCycles()
+    {
+        var all      = GetAllCombineCycles();
+        var allValid = all.stream().filter(CombineCycle::isValid).toList();
+        for(var valid : allValid)
+        {
+            valid.SetCycleType(ICycle.CycleType.byCount);
+            valid.SetCycleLimit(valid.GetPossibleCycleCount());
+        }
+        return allValid;
+    }
+
     public static List<CombineCycle> GetAllCombineCycles()
     {
         var input = new BufferedInputStream(Objects.requireNonNull(CycleUtilities.class.getClassLoader()
@@ -45,17 +57,5 @@ public class CycleUtilities
         }
 
         return result;
-    }
-
-    public static List<CombineCycle> GetAllValidCombineCycles()
-    {
-        var all      = GetAllCombineCycles();
-        var allValid = all.stream().filter(CombineCycle::isValid).toList();
-        for(var valid : allValid)
-        {
-            valid.SetCycleType(ICycle.CycleType.byCount);
-            valid.SetCycleLimit(valid.GetPossibleCycleCount());
-        }
-        return allValid;
     }
 }

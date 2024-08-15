@@ -8,35 +8,40 @@ import org.dreambot.api.script.TaskNode;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 public abstract class SimpleTask extends TaskNode implements ITask, Serializable, Cloneable
 {
     // TODO replace with serializable Requirement
-    public transient  Supplier<Boolean>                             AcceptCondition   = () -> true;
-    public transient  Supplier<Boolean>                             CompleteCondition = null;
+    public transient  Supplier<Boolean>            AcceptCondition   = () -> true;
+    public transient  Supplier<Boolean>            CompleteCondition = null;
+    public transient  Delegate                     onComplete        = new Delegate();
+    public transient  Delegate1<SimpleTask>        onReplaced        = new Delegate1<>();
+    public transient  Delegate                     onAccept          = new Delegate();
+    public transient  Delegate1<Integer>           onExecute         = new Delegate1<>();
+    public transient  Delegate                     onStart           = new Delegate();
+    public transient  Delegate                     onStop            = new Delegate();
+    public transient  Delegate                     onPause           = new Delegate();
+    public transient  Delegate                     onUnPause         = new Delegate();
     // public            SimpleTask[]                                  ChildTasks        = null; // TODO, basically start these tasks when this task is complete
-    private   OSRSUtilities.ScriptIntenity ScriptIntensity   =
-            OSRSUtilities.ScriptIntenity.Sweating;
-    private int         TaskPriority = 1;
-    public transient Delegate              onComplete   = new Delegate();
-    public transient Delegate1<SimpleTask> onReplaced   = new Delegate1<>();
-    public transient Delegate              onAccept     = new Delegate();
-    public transient Delegate1<Integer>    onExecute    = new Delegate1<>();
-    public transient Delegate              onStart      = new Delegate();
-    public transient Delegate              onStop       = new Delegate();
-    public transient Delegate              onPause      = new Delegate();
-    public transient Delegate              onUnPause    = new Delegate();
-    private          String                TaskName     = "";
-    private transient boolean                                       Active            = true;
-    private transient boolean                                       Finished          = false;
-    private transient boolean                                       Paused            = false;
-    private transient WeakReference<tpircSScript>                   ParentScript      = null;
+    private           OSRSUtilities.ScriptIntenity ScriptIntensity   = OSRSUtilities.ScriptIntenity.Sweating;
+    private           int                          TaskPriority      = 1;
+    private           String                       TaskName          = "";
+    private transient boolean                      Active            = true;
+    private transient boolean                      Finished          = false;
+    private transient boolean                      Paused            = false;
+    private transient WeakReference<tpircSScript>  ParentScript      = null;
 
     public SimpleTask(String Name)
     {
         TaskName = Name;
+    }
+
+    public SimpleTask Copy()
+    {
+        Gson       gson     = OSRSUtilities.OSRSGsonBuilder.create();
+        SimpleTask deepCopy = gson.fromJson(gson.toJson(this), this.getClass());
+        return deepCopy;
     }
 
     public tpircSScript GetScript()
@@ -50,13 +55,6 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
     public void Init(tpircSScript Script)
     {
         ParentScript = new WeakReference<>(Script);
-    }
-
-    public SimpleTask Copy()
-    {
-        Gson gson = OSRSUtilities.OSRSGsonBuilder.create();
-        SimpleTask deepCopy = gson.fromJson(gson.toJson(this), this.getClass());
-        return deepCopy;
     }
 
     /**
@@ -75,6 +73,11 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
     public void SetTaskName(String Name)
     {
         TaskName = Name;
+    }
+
+    public void SetTaskPriority(int taskPriority)
+    {
+        TaskPriority = taskPriority;
     }
 
     /**
@@ -102,40 +105,18 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
 
     public final boolean isPaused() {return Paused;}
 
+    protected final void ReplaceTask(tpircSScript Script, SimpleTask other)
+    {
+        onReplaced(Script, other);
+        onReplaced.Fire(other);
+    }
+
     /**
      * @param Script caller script
      * @param other  Task that is replacing this one
      *               Is called after the task has been stopped
      */
     public void onReplaced(tpircSScript Script, SimpleTask other) {}
-
-    public OSRSUtilities.ScriptIntenity GetScriptIntensity()
-    {
-        return ScriptIntensity;
-    }
-
-    public void SetScriptIntensity(OSRSUtilities.ScriptIntenity scriptIntensity)
-    {
-        ScriptIntensity = scriptIntensity;
-    }
-
-    protected int Loop()
-    {
-        return CompleteCondition != null && CompleteCondition.get()
-                ? 0
-                : OSRSUtilities.WaitTime(GetScriptIntensity());
-    }
-
-    protected boolean Ready()
-    {
-        return AcceptCondition.get();
-    }
-
-    protected final void ReplaceTask(tpircSScript Script, SimpleTask other)
-    {
-        onReplaced(Script, other);
-        onReplaced.Fire(other);
-    }
 
     /**
      * @param Script Caller script, this basically
@@ -152,6 +133,11 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
             onStart.Fire();
         }
         return result;
+    }
+
+    public void SetScriptIntensity(OSRSUtilities.ScriptIntenity scriptIntensity)
+    {
+        ScriptIntensity = scriptIntensity;
     }
 
     /**
@@ -197,11 +183,6 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
         return TaskPriority;
     }
 
-    public void SetTaskPriority(int taskPriority)
-    {
-        TaskPriority = taskPriority;
-    }
-
     @Override
     public final boolean accept()
     {
@@ -211,6 +192,11 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
             onAccept.Fire();
         }
         return result;
+    }
+
+    public boolean Ready()
+    {
+        return AcceptCondition.get();
     }
 
     @Override
@@ -223,5 +209,17 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
             onComplete.Fire();
         }
         return result;
+    }
+
+    protected int Loop()
+    {
+        return CompleteCondition != null && CompleteCondition.get()
+                ? 0
+                : OSRSUtilities.WaitTime(GetScriptIntensity());
+    }
+
+    public OSRSUtilities.ScriptIntenity GetScriptIntensity()
+    {
+        return ScriptIntensity;
     }
 }

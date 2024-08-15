@@ -10,8 +10,8 @@ import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.utilities.Logger;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.io.Serializable;
 
 
@@ -87,34 +87,6 @@ public class CombineCycle extends SimpleCycle implements Serializable
         return false;
     }
 
-    private void StartCycle(tpircSScript script)
-    {
-        if(!OSRSUtilities.CanReachBank())
-        {
-            TravelTask Travel = new TravelTask("", BankLocation.getNearest().getTile());
-            Travel.SetTaskName("CC Travel To Bank For ItemRequirements");
-            Travel.SetTaskPriority(0);
-            Travel.CompleteCondition = OSRSUtilities::CanReachBank;
-            script.addNodes(Travel);
-        }
-
-        bankItemsTask = new BankItemsTask("Grabbing items to combine");
-        if(!Inventory.isEmpty())
-        {
-            bankItemsTask.AddDepositAll();
-        }
-
-        bankItemsTask.FillInventory(source, sourceRatio, target, targetRatio);
-
-        combineTask                 = new CombineTask("Combining items",
-                                                      source,
-                                                      target,
-                                                      UseSkillingMenu);
-        combineTask.AcceptCondition = () -> !bankItemsTask.isActive();
-
-        script.addNodes(bankItemsTask, combineTask);
-    }
-
     /**
      * will be called once there are no active tasks anymore, aka a single cycle has been completed
      *
@@ -149,6 +121,34 @@ public class CombineCycle extends SimpleCycle implements Serializable
     {
         StartCycle(Script);
         return super.onStart(Script);
+    }
+
+    private void StartCycle(tpircSScript script)
+    {
+        if(!OSRSUtilities.CanReachBank())
+        {
+            TravelTask Travel = new TravelTask("", BankLocation.getNearest().getTile());
+            Travel.SetTaskName("CC Travel To Bank For ItemRequirements");
+            Travel.SetTaskPriority(0);
+            Travel.CompleteCondition = OSRSUtilities::CanReachBank;
+            script.addNodes(Travel);
+        }
+
+        bankItemsTask = new BankItemsTask("Grabbing items to combine");
+        if(!Inventory.isEmpty())
+        {
+            bankItemsTask.AddDepositAll();
+        }
+
+        bankItemsTask.FillInventory(source, sourceRatio, target, targetRatio);
+
+        combineTask                 = new CombineTask("Combining items",
+                                                      source,
+                                                      target,
+                                                      UseSkillingMenu);
+        combineTask.AcceptCondition = () -> !bankItemsTask.isActive();
+
+        script.addNodes(bankItemsTask, combineTask);
     }
 
     @Override

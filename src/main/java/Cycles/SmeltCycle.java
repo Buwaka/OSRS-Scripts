@@ -43,11 +43,6 @@ public class SmeltCycle extends SimpleCycle implements Serializable
         ItemIDRatio = Ores;
     }
 
-    public boolean HasRingOfForging()
-    {
-        return Inventory.contains(ForgingRingID) || Bank.contains(ForgingRingID);
-    }
-
     public int getFurnaceID()
     {
         return FurnaceID;
@@ -56,6 +51,70 @@ public class SmeltCycle extends SimpleCycle implements Serializable
     public void setFurnaceID(int furnaceID)
     {
         FurnaceID = furnaceID;
+    }
+
+    @Override
+    public boolean isCycleFinished(tpircSScript Script)
+    {
+        boolean itemRequirement = true;
+        for(var item : ItemIDRatio)
+        {
+            itemRequirement &=
+                    Bank.count(item._1) >= item._2 || Inventory.count(item._1) >= item._2;
+        }
+        if(Boolean.TRUE.equals(NeedForgingRing))
+        {
+            itemRequirement &= HasRingOfForging();
+        }
+
+        return itemRequirement;
+    }
+
+    public boolean HasRingOfForging()
+    {
+        return Inventory.contains(ForgingRingID) || Bank.contains(ForgingRingID);
+    }
+
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    @Override
+    public boolean onStart(tpircSScript Script)
+    {
+        if(NeedForgingRing != null && NeedForgingRing.booleanValue() && !HasRingOfForging())
+        {
+            Logger.log("SmeltCycle: onStart: No ring of forging, doing nothing");
+            return super.onStart(Script);
+        }
+
+        if(GameObjects.closest(FurnaceID) != null && GameObjects.closest(FurnaceID).canReach())
+        {
+            Logger.log("SmeltCycle: Can reach Furnace");
+            StartCycle(Script);
+        }
+        else
+        {
+            Logger.log("SmeltCycle: Can't reach Furnace");
+            BackupTravel                   = new TravelTask("Travel to backup Furnace",
+                                                            FurnaceBackupTile);
+            BackupTravel.CompleteCondition = () ->
+                    UseObjectTask.GetObjectStatic(FurnaceID) != null &&
+                    UseObjectTask.GetObjectStatic(FurnaceID).canReach();
+            BackupTravel.onComplete.Subscribe(this, () -> {
+                if(UseObjectTask.GetObjectStatic(FurnaceID) != null)
+                {
+                    StartCycle(Script);
+                }
+                else
+                {
+                    this.EndNow(Script);
+                }
+            });
+            Script.addNodes(BackupTravel);
+        }
+        return super.onStart(Script);
     }
 
     private void StartCycle(tpircSScript Script)
@@ -104,65 +163,6 @@ public class SmeltCycle extends SimpleCycle implements Serializable
         }
 
         Script.addNodes(OpenBank, GetItems, SmeltTask);
-    }
-
-    @Override
-    public boolean isCycleFinished(tpircSScript Script)
-    {
-        boolean itemRequirement = true;
-        for(var item : ItemIDRatio)
-        {
-            itemRequirement &=
-                    Bank.count(item._1) >= item._2 || Inventory.count(item._1) >= item._2;
-        }
-        if(Boolean.TRUE.equals(NeedForgingRing))
-        {
-            itemRequirement &= HasRingOfForging();
-        }
-
-        return itemRequirement;
-    }
-
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        if(NeedForgingRing != null && NeedForgingRing.booleanValue() && !HasRingOfForging())
-        {
-            Logger.log("SmeltCycle: onStart: No ring of forging, doing nothing");
-            return super.onStart(Script);
-        }
-
-        if(GameObjects.closest(FurnaceID) != null && GameObjects.closest(FurnaceID).canReach())
-        {
-            Logger.log("SmeltCycle: Can reach Furnace");
-            StartCycle(Script);
-        }
-        else
-        {
-            Logger.log("SmeltCycle: Can't reach Furnace");
-            BackupTravel                   = new TravelTask("Travel to backup Furnace",
-                                                            FurnaceBackupTile);
-            BackupTravel.CompleteCondition = () ->
-                    UseObjectTask.GetObjectStatic(FurnaceID) != null &&
-                    UseObjectTask.GetObjectStatic(FurnaceID).canReach();
-            BackupTravel.onComplete.Subscribe(this, () -> {
-                if(UseObjectTask.GetObjectStatic(FurnaceID) != null)
-                {
-                    StartCycle(Script);
-                }
-                else
-                {
-                    this.EndNow(Script);
-                }
-            });
-            Script.addNodes(BackupTravel);
-        }
-        return super.onStart(Script);
     }
 
     /**

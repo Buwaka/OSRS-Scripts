@@ -241,56 +241,6 @@ public class MonsterDB extends OSRSDataBase
         }
     }
 
-    public static MonsterData GetMonsterData(int MonsterID)
-    {
-        if(MonsterDBCache.containsKey(MonsterID))
-        {
-            return MonsterDBCache.get(MonsterID);
-        }
-
-        try
-        {
-            MonsterDBLock.lock();
-            InputStreamReader File   = new InputStreamReader(GetInputStream(MonsterDB));
-            JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
-            Reader.setLenient(true);
-
-            Reader.beginObject();
-
-            while(Reader.hasNext())
-            {
-                int ID = Integer.parseInt(Reader.nextName());
-
-                if(MonsterID == ID)
-                {
-                    MonsterData Data = gson.fromJson(Reader, MonsterData.class);
-                    MonsterDBCache.put(MonsterID, Data);
-                    MonsterDBLock.unlock();
-                    return Data;
-                }
-                else
-                {
-                    Reader.skipValue();
-                }
-            }
-
-            Reader.endObject();
-            Reader.close();
-
-        } catch(Exception e)
-        {
-            if(MonsterDBLock.isLocked() && MonsterDBLock.isHeldByCurrentThread())
-            {
-                MonsterDBLock.unlock();
-            }
-            throw new RuntimeException(e);
-        }
-
-        MonsterDBLock.unlock();
-        return null;
-    }
-
     public static int[] GetMonsterIDsByName(String Name, boolean Exact)
     {
         if(MonsterIDsByNameCache.containsKey(Name))
@@ -361,6 +311,56 @@ public class MonsterDB extends OSRSDataBase
         {
             return monster.drops;
         }
+        return null;
+    }
+
+    public static MonsterData GetMonsterData(int MonsterID)
+    {
+        if(MonsterDBCache.containsKey(MonsterID))
+        {
+            return MonsterDBCache.get(MonsterID);
+        }
+
+        try
+        {
+            MonsterDBLock.lock();
+            InputStreamReader File   = new InputStreamReader(GetInputStream(MonsterDB));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = new Gson();
+            Reader.setLenient(true);
+
+            Reader.beginObject();
+
+            while(Reader.hasNext())
+            {
+                int ID = Integer.parseInt(Reader.nextName());
+
+                if(MonsterID == ID)
+                {
+                    MonsterData Data = gson.fromJson(Reader, MonsterData.class);
+                    MonsterDBCache.put(MonsterID, Data);
+                    MonsterDBLock.unlock();
+                    return Data;
+                }
+                else
+                {
+                    Reader.skipValue();
+                }
+            }
+
+            Reader.endObject();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            if(MonsterDBLock.isLocked() && MonsterDBLock.isHeldByCurrentThread())
+            {
+                MonsterDBLock.unlock();
+            }
+            throw new RuntimeException(e);
+        }
+
+        MonsterDBLock.unlock();
         return null;
     }
 

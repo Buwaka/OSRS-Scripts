@@ -2,14 +2,7 @@
 <module version="4">
   <component name="AdditionalModuleElements">
     <content url="file://$MODULE_DIR$" dumb="true">
-      <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Cycles/CycleDatabase" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database/Items" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database/Processing" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database/Skilling" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database/misc" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/OSRSDatabase/Database/monsters" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
   </component>
 </module>

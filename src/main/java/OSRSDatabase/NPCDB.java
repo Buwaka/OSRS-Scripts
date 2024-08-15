@@ -49,9 +49,9 @@ public class NPCDB extends OSRSDataBase
 
             while(Reader.hasNext())
             {
-                int             ID       = Integer.parseInt(Reader.nextName());
+                int     ID       = Integer.parseInt(Reader.nextName());
                 NPCData Obj      = gson.fromJson(Reader, NPCData.class);
-                int             distance = calc.apply(Obj.name.toLowerCase(), keyword.toLowerCase());
+                int     distance = calc.apply(Obj.name.toLowerCase(), keyword.toLowerCase());
 
                 if(distance != -1)
                 {

@@ -62,7 +62,7 @@ public class RestorePrayerTask extends SimpleTask
      * @return
      */
     @Override
-    protected boolean Ready()
+    public boolean Ready()
     {
         boolean NeedJesus =
                 Skills.getBoostedLevel(Skill.PRAYER) < Skills.getRealLevel(Skill.PRAYER);

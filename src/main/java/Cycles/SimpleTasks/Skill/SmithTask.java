@@ -67,18 +67,6 @@ public class SmithTask extends SimpleTask
         Count = count;
     }
 
-    @SafeVarargs
-    public static GameObject GetObject(int... ID)
-    {
-        return GameObjects.closest(new IdFilter<>(ID));
-    }
-
-    private static Boolean CheckInventory(Object context, tpircSScript.ItemAction Action, Item item1, Item item2)
-    {
-        ((SmithTask) context).TimeoutTicker.set(((SmithTask) context).DefaultProcessTickTime);
-        return true;
-    }
-
     /**
      * @return
      */
@@ -97,15 +85,21 @@ public class SmithTask extends SimpleTask
     @Override
     public boolean onStartTask(tpircSScript Script)
     {
-        Script.onInventory.Subscribe(this, SmithTask::CheckInventory);
+        Script.onInventory.Subscribe(this, this::CheckInventory);
         return super.onStartTask(Script);
+    }
+
+    private Boolean CheckInventory(tpircSScript.ItemAction Action, Item item1, Item item2)
+    {
+        TimeoutTicker.set(DefaultProcessTickTime);
+        return true;
     }
 
     /**
      * @return
      */
     @Override
-    protected boolean Ready()
+    public boolean Ready()
     {
         var Obj = GetObject(ObjectID);
         return Obj != null && Obj.canReach() && super.Ready();
@@ -196,6 +190,12 @@ public class SmithTask extends SimpleTask
             GetScript().onGameTick.AddUpdateTicker(this, TimeoutTicker);
         }
         return super.Loop();
+    }
+
+    @SafeVarargs
+    public static GameObject GetObject(int... ID)
+    {
+        return GameObjects.closest(new IdFilter<>(ID));
     }
 
     void SetBackupTile(Tile BackupTile)

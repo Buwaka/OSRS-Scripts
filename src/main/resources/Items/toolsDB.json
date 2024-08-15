@@ -1,0 +1,2434 @@
+[
+  {
+    "id": 1349,
+    "type": "Axe",
+    "name": "Iron axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 1351,
+    "type": "Axe",
+    "name": "Bronze axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 1353,
+    "type": "Axe",
+    "name": "Steel axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 5
+        }
+      }
+    ]
+  },
+  {
+    "id": 1355,
+    "type": "Axe",
+    "name": "Mithril axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 20
+        }
+      }
+    ]
+  },
+  {
+    "id": 1357,
+    "type": "Axe",
+    "name": "Adamant axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 30
+        }
+      }
+    ]
+  },
+  {
+    "id": 1359,
+    "type": "Axe",
+    "name": "Rune axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": 1361,
+    "type": "Axe",
+    "name": "Black axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 10
+        }
+      }
+    ]
+  },
+  {
+    "id": 6739,
+    "type": "Axe",
+    "name": "Dragon axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 61
+        }
+      }
+    ]
+  },
+  {
+    "id": 10491,
+    "type": "Axe",
+    "name": "Blessed axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 20
+        }
+      }
+    ]
+  },
+  {
+    "id": 13241,
+    "type": "Axe",
+    "name": "Infernal axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": 13242,
+    "type": "Axe",
+    "name": "Infernal axe (uncharged)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": 20011,
+    "type": "Axe",
+    "name": "3rd age axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 65
+        }
+      }
+    ]
+  },
+  {
+    "id": 22634,
+    "type": "Axe",
+    "name": "Morrigan's throwing axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Ranged",
+          "level": 78
+        }
+      }
+    ]
+  },
+  {
+    "id": 23279,
+    "type": "Axe",
+    "name": "Gilded axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 41
+        }
+      },
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": 23673,
+    "type": "Axe",
+    "name": "Crystal axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 71
+        }
+      }
+    ]
+  },
+  {
+    "id": 23675,
+    "type": "Axe",
+    "name": "Crystal axe (inactive)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      }
+    ]
+  },
+  {
+    "id": 23821,
+    "type": "Axe",
+    "name": "Corrupted axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 23862,
+    "type": "Axe",
+    "name": "Crystal axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 71
+        }
+      }
+    ]
+  },
+  {
+    "id": 25066,
+    "type": "Axe",
+    "name": "Infernal axe (or)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25110,
+    "type": "Axe",
+    "name": "Trailblazer axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25371,
+    "type": "Axe",
+    "name": "Infernal axe (uncharged)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25378,
+    "type": "Axe",
+    "name": "Dragon axe (or)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25484,
+    "type": "Axe",
+    "name": "Soulreaper axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 27912,
+    "type": "Axe",
+    "name": "Morrigan's throwing axe (bh)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 27914,
+    "type": "Axe",
+    "name": "Morrigan's throwing axe (bh)(inactive)",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28177,
+    "type": "Axe",
+    "name": "Felling axe handle",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 28196,
+    "type": "Axe",
+    "name": "Bronze felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28199,
+    "type": "Axe",
+    "name": "Iron felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28202,
+    "type": "Axe",
+    "name": "Steel felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28205,
+    "type": "Axe",
+    "name": "Black felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28208,
+    "type": "Axe",
+    "name": "Mithril felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28211,
+    "type": "Axe",
+    "name": "Adamant felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28214,
+    "type": "Axe",
+    "name": "Rune felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28217,
+    "type": "Axe",
+    "name": "Dragon felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28220,
+    "type": "Axe",
+    "name": "Crystal felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28223,
+    "type": "Axe",
+    "name": "Crystal felling axe (inactive)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28226,
+    "type": "Axe",
+    "name": "3rd age felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28319,
+    "type": "Axe",
+    "name": "Executioner's axe head",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28338,
+    "type": "Axe",
+    "name": "Soulreaper axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28773,
+    "type": "Axe",
+    "name": "Sage's axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28810,
+    "type": "Axe",
+    "name": "Zombie axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28813,
+    "type": "Axe",
+    "name": "Broken zombie axe",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 1755,
+    "type": "Chisel",
+    "name": "Chisel",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 5601,
+    "type": "Chisel",
+    "name": "Chisel",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28414,
+    "type": "Chisel",
+    "name": "Chisel",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 2347,
+    "type": "Hammer",
+    "name": "Hammer",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 2949,
+    "type": "Hammer",
+    "name": "Golden hammer",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 3678,
+    "type": "Hammer",
+    "name": "Flamtaer hammer",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 4162,
+    "type": "Hammer",
+    "name": "Rock hammer",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 11707,
+    "type": "Hammer",
+    "name": "Cursed goblin hammer",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 21742,
+    "type": "Hammer",
+    "name": "Granite hammer",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Strength",
+          "level": 50
+        }
+      }
+    ]
+  },
+  {
+    "id": 22761,
+    "type": "Hammer",
+    "name": "Dinh's hammer",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 24727,
+    "type": "Hammer",
+    "name": "Hallowed hammer",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25633,
+    "type": "Hammer",
+    "name": "Imcando hammer (broken)",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25644,
+    "type": "Hammer",
+    "name": "Imcando hammer",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 863,
+    "type": "Knife",
+    "name": "Iron knife",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Ranged",
+          "level": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 864,
+    "type": "Knife",
+    "name": "Bronze knife",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Ranged",
+          "level": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 865,
+    "type": "Knife",
+    "name": "Steel knife",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Ranged",
+          "level": 5
+        }
+      }
+    ]
+  },
+  {
+    "id": 866,
+    "type": "Knife",
+    "name": "Mithril knife",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Ranged",
+          "level": 20
+        }
+      }
+    ]
+  },
+  {
+    "id": 867,
+    "type": "Knife",
+    "name": "Adamant knife",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Ranged",
+          "level": 30
+        }
+      }
+    ]
+  },
+  {
+    "id": 868,
+    "type": "Knife",
+    "name": "Rune knife",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Ranged",
+          "level": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": 869,
+    "type": "Knife",
+    "name": "Black knife",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Ranged",
+          "level": 10
+        }
+      }
+    ]
+  },
+  {
+    "id": 946,
+    "type": "Knife",
+    "name": "Knife",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 5605,
+    "type": "Knife",
+    "name": "Knife",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 7447,
+    "type": "Knife",
+    "name": "Kitchen knife",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": 20779,
+    "type": "Knife",
+    "name": "Hunting knife",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 20781,
+    "type": "Knife",
+    "name": "Killer's knife",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 21059,
+    "type": "Knife",
+    "name": "Killer's knife",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 22804,
+    "type": "Knife",
+    "name": "Dragon knife",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Ranged",
+          "level": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": 22812,
+    "type": "Knife",
+    "name": "Dragon knife",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 22814,
+    "type": "Knife",
+    "name": "Dragon knife",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25799,
+    "type": "Knife",
+    "name": "Bloody knife",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 27157,
+    "type": "Knife",
+    "name": "Dragon knife",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 28413,
+    "type": "Knife",
+    "name": "Knife",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 975,
+    "type": "Machete",
+    "name": "Machete",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 6313,
+    "type": "Machete",
+    "name": "Opal machete",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 6315,
+    "type": "Machete",
+    "name": "Jade machete",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 6317,
+    "type": "Machete",
+    "name": "Red topaz machete",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 233,
+    "type": "Pestle and mortar",
+    "name": "Pestle and mortar",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 23865,
+    "type": "Pestle and mortar",
+    "name": "Pestle and mortar",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 466,
+    "type": "Pickaxe",
+    "name": "Pickaxe handle",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 468,
+    "type": "Pickaxe",
+    "name": "Broken pickaxe",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 470,
+    "type": "Pickaxe",
+    "name": "Broken pickaxe",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 472,
+    "type": "Pickaxe",
+    "name": "Broken pickaxe",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 474,
+    "type": "Pickaxe",
+    "name": "Broken pickaxe",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 476,
+    "type": "Pickaxe",
+    "name": "Broken pickaxe",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 478,
+    "type": "Pickaxe",
+    "name": "Broken pickaxe",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 1265,
+    "type": "Pickaxe",
+    "name": "Bronze pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 1
+        }
+      },
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 1267,
+    "type": "Pickaxe",
+    "name": "Iron pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 1
+        }
+      },
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 1269,
+    "type": "Pickaxe",
+    "name": "Steel pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 6
+        }
+      },
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 5
+        }
+      }
+    ]
+  },
+  {
+    "id": 1271,
+    "type": "Pickaxe",
+    "name": "Adamant pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 31
+        }
+      },
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 30
+        }
+      }
+    ]
+  },
+  {
+    "id": 1273,
+    "type": "Pickaxe",
+    "name": "Mithril pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 21
+        }
+      },
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 20
+        }
+      }
+    ]
+  },
+  {
+    "id": 1275,
+    "type": "Pickaxe",
+    "name": "Rune pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 41
+        }
+      },
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": 11719,
+    "type": "Pickaxe",
+    "name": "Rune pickaxe (nz)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": 11720,
+    "type": "Pickaxe",
+    "name": "Mithril pickaxe (nz)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 20
+        }
+      }
+    ]
+  },
+  {
+    "id": 11721,
+    "type": "Pickaxe",
+    "name": "Iron pickaxe (nz)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 11920,
+    "type": "Pickaxe",
+    "name": "Dragon pickaxe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": 11923,
+    "type": "Pickaxe",
+    "name": "Broken pickaxe",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 12297,
+    "type": "Pickaxe",
+    "name": "Black pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 10
+        }
+      }
+    ]
+  },
+  {
+    "id": 12594,
+    "type": "Pickaxe",
+    "name": "Broken pickaxe",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 12797,
+    "type": "Pickaxe",
+    "name": "Dragon pickaxe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": 12800,
+    "type": "Pickaxe",
+    "name": "Dragon pickaxe upgrade kit",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 13243,
+    "type": "Pickaxe",
+    "name": "Infernal pickaxe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": 13244,
+    "type": "Pickaxe",
+    "name": "Infernal pickaxe (uncharged)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": 20014,
+    "type": "Pickaxe",
+    "name": "3rd age pickaxe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 65
+        }
+      }
+    ]
+  },
+  {
+    "id": 23276,
+    "type": "Pickaxe",
+    "name": "Gilded pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 41
+        }
+      },
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 40
+        }
+      }
+    ]
+  },
+  {
+    "id": 23677,
+    "type": "Pickaxe",
+    "name": "Dragon pickaxe (or)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 61
+        }
+      }
+    ]
+  },
+  {
+    "id": 23680,
+    "type": "Pickaxe",
+    "name": "Crystal pickaxe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 71
+        }
+      }
+    ]
+  },
+  {
+    "id": 23682,
+    "type": "Pickaxe",
+    "name": "Crystal pickaxe (inactive)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 71
+        }
+      }
+    ]
+  },
+  {
+    "id": 23822,
+    "type": "Pickaxe",
+    "name": "Corrupted pickaxe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 23863,
+    "type": "Pickaxe",
+    "name": "Crystal pickaxe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 71
+        }
+      }
+    ]
+  },
+  {
+    "id": 25063,
+    "type": "Pickaxe",
+    "name": "Infernal pickaxe (or)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25112,
+    "type": "Pickaxe",
+    "name": "Trailblazer pickaxe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25369,
+    "type": "Pickaxe",
+    "name": "Infernal pickaxe (uncharged)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25376,
+    "type": "Pickaxe",
+    "name": "Dragon pickaxe (or)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 27695,
+    "type": "Pickaxe",
+    "name": "Dragon pickaxe (broken)",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 8794,
+    "type": "Saw",
+    "name": "Saw",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 9625,
+    "type": "Saw",
+    "name": "Crystal saw",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 9626,
+    "type": "Saw",
+    "name": "Crystal saw seed",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 24880,
+    "type": "Saw",
+    "name": "Amy's saw",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 1735,
+    "type": "Shears",
+    "name": "Shears",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 5603,
+    "type": "Shears",
+    "name": "Shears",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 590,
+    "type": "Tinderbox",
+    "name": "Tinderbox",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 2946,
+    "type": "Tinderbox",
+    "name": "Golden tinderbox",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 4073,
+    "type": "Tinderbox",
+    "name": "Damp tinderbox",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 7156,
+    "type": "Tinderbox",
+    "name": "Tinderbox",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 8384,
+    "type": "Tool store",
+    "name": "Tool store 1",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 8385,
+    "type": "Tool store",
+    "name": "Tool store 2",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 8386,
+    "type": "Tool store",
+    "name": "Tool store 3",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 8387,
+    "type": "Tool store",
+    "name": "Tool store 4",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 8388,
+    "type": "Tool store",
+    "name": "Tool store 5",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 4,
+    "type": "Ammo mould",
+    "name": "Ammo mould",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 27012,
+    "type": "Ammo mould",
+    "name": "Double ammo mould",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 1595,
+    "type": "Amulet mould",
+    "name": "Amulet mould",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 9434,
+    "type": "Bolt mould",
+    "name": "Bolt mould",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 11065,
+    "type": "Bracelet mould",
+    "name": "Bracelet mould",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 1785,
+    "type": "Glassblowing pipe",
+    "name": "Glassblowing pipe",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 1599,
+    "type": "Holy mould",
+    "name": "Holy mould",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 1597,
+    "type": "Necklace mould",
+    "name": "Necklace mould",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 1733,
+    "type": "Needle",
+    "name": "Needle",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 1804,
+    "type": "Needle",
+    "name": "Silver needle",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 1805,
+    "type": "Needle",
+    "name": "Silver needle",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 2951,
+    "type": "Needle",
+    "name": "Golden needle",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 26813,
+    "type": "Needle",
+    "name": "Abyssal needle",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 1592,
+    "type": "Ring mould",
+    "name": "Ring mould",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 2976,
+    "type": "Sickle mould",
+    "name": "Sickle mould",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 5523,
+    "type": "Tiara mould",
+    "name": "Tiara mould",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 1594,
+    "type": "Unholy mould",
+    "name": "Unholy mould",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 5325,
+    "type": "Gardening trowel",
+    "name": "Gardening trowel",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 5341,
+    "type": "Rake",
+    "name": "Rake",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 5347,
+    "type": "Rake",
+    "name": "Rake handle",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 5348,
+    "type": "Rake",
+    "name": "Rake head",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 5329,
+    "type": "Secateurs",
+    "name": "Secateurs",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 7409,
+    "type": "Secateurs",
+    "name": "Magic secateurs",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 7410,
+    "type": "Secateurs",
+    "name": "Queen's secateurs",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 9020,
+    "type": "Secateurs",
+    "name": "Queen's secateurs",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 11711,
+    "type": "Secateurs",
+    "name": "Magic secateurs (nz)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28159,
+    "type": "Secateurs",
+    "name": "Secateurs blade",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 28161,
+    "type": "Secateurs",
+    "name": "Secateurs attachment",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 5343,
+    "type": "Seed dibber",
+    "name": "Seed dibber",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 952,
+    "type": "Spade",
+    "name": "Spade",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 5327,
+    "type": "Spade",
+    "name": "Spade handle",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 5328,
+    "type": "Spade",
+    "name": "Spade head",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 5586,
+    "type": "Spade",
+    "name": "Metal spade",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 5587,
+    "type": "Spade",
+    "name": "Metal spade",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 20164,
+    "type": "Spade",
+    "name": "Large spade",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 23282,
+    "type": "Spade",
+    "name": "Gilded spade",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 27873,
+    "type": "Spade",
+    "name": "Eastfloor spade",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 676,
+    "type": "Trowel",
+    "name": "Trowel",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 5325,
+    "type": "Trowel",
+    "name": "Gardening trowel",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 5331,
+    "type": "Watering can",
+    "name": "Watering can",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 6797,
+    "type": "Watering can",
+    "name": "Watering can",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 11323,
+    "type": "Barbarian rod",
+    "name": "Barbarian rod",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 22842,
+    "type": "Barbarian rod",
+    "name": "Pearl barbarian rod",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 305,
+    "type": "Big fishing net",
+    "name": "Big fishing net",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 307,
+    "type": "Fishing rod",
+    "name": "Fishing rod",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 309,
+    "type": "Fishing rod",
+    "name": "Fly fishing rod",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 1585,
+    "type": "Fishing rod",
+    "name": "Oily fishing rod",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 6662,
+    "type": "Fishing rod",
+    "name": "Broken fishing rod",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 22844,
+    "type": "Fishing rod",
+    "name": "Pearl fly fishing rod",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 22846,
+    "type": "Fishing rod",
+    "name": "Pearl fishing rod",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 23122,
+    "type": "Fishing rod",
+    "name": "Oily pearl fishing rod",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 309,
+    "type": "Fly fishing rod",
+    "name": "Fly fishing rod",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 22844,
+    "type": "Fly fishing rod",
+    "name": "Pearl fly fishing rod",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 311,
+    "type": "Harpoon",
+    "name": "Harpoon",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 10129,
+    "type": "Harpoon",
+    "name": "Barb-tail harpoon",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 21028,
+    "type": "Harpoon",
+    "name": "Dragon harpoon",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": 21031,
+    "type": "Harpoon",
+    "name": "Infernal harpoon",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": 21033,
+    "type": "Harpoon",
+    "name": "Infernal harpoon (uncharged)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": 23762,
+    "type": "Harpoon",
+    "name": "Crystal harpoon",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Fishing",
+          "level": 71
+        }
+      }
+    ]
+  },
+  {
+    "id": 23764,
+    "type": "Harpoon",
+    "name": "Crystal harpoon (inactive)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Fishing",
+          "level": 71
+        }
+      }
+    ]
+  },
+  {
+    "id": 23823,
+    "type": "Harpoon",
+    "name": "Corrupted harpoon",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 23864,
+    "type": "Harpoon",
+    "name": "Crystal harpoon",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Fishing",
+          "level": 71
+        }
+      }
+    ]
+  },
+  {
+    "id": 25059,
+    "type": "Harpoon",
+    "name": "Infernal harpoon (or)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25114,
+    "type": "Harpoon",
+    "name": "Trailblazer harpoon",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25367,
+    "type": "Harpoon",
+    "name": "Infernal harpoon (uncharged)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 25373,
+    "type": "Harpoon",
+    "name": "Dragon harpoon (or)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 3157,
+    "type": "Karambwan vessel",
+    "name": "Karambwan vessel",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 3159,
+    "type": "Karambwan vessel",
+    "name": "Karambwan vessel",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 301,
+    "type": "Lobster pot",
+    "name": "Lobster pot",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 1585,
+    "type": "Oily fishing rod",
+    "name": "Oily fishing rod",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 303,
+    "type": "Small fishing net",
+    "name": "Small fishing net",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": true
+  },
+  {
+    "id": 6209,
+    "type": "Small fishing net",
+    "name": "Small fishing net",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 10006,
+    "type": "Bird snare",
+    "name": "Bird snare",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 12740,
+    "type": "Bird snare",
+    "name": "Bird snare pack",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 10008,
+    "type": "Box trap",
+    "name": "Box trap",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 12742,
+    "type": "Box trap",
+    "name": "Box trap pack",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 10010,
+    "type": "Butterfly net",
+    "name": "Butterfly net",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Hunter",
+          "level": 15
+        }
+      }
+    ]
+  },
+  {
+    "id": 11259,
+    "type": "Butterfly net",
+    "name": "Magic butterfly net",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Hunter",
+          "level": 17
+        }
+      }
+    ]
+  },
+  {
+    "id": 10025,
+    "type": "Magic box",
+    "name": "Magic box",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 10150,
+    "type": "Noose wand",
+    "name": "Noose wand",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 10031,
+    "type": "Rabbit snare",
+    "name": "Rabbit snare",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 10029,
+    "type": "Teasing stick",
+    "name": "Teasing stick",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 594,
+    "type": "Torch",
+    "name": "Lit torch",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 595,
+    "type": "Torch",
+    "name": "Torch",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 596,
+    "type": "Torch",
+    "name": "Unlit torch",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": true
+  },
+  {
+    "id": 8987,
+    "type": "Torch",
+    "name": "Torch",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 9665,
+    "type": "Torch",
+    "name": "Torch",
+    "equipable": false,
+    "members": false,
+    "ge_tradable": false
+  },
+  {
+    "id": 20720,
+    "type": "Torch",
+    "name": "Bruma torch",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 27312,
+    "type": "Torch",
+    "name": "The jackal's torch",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28364,
+    "type": "Torch",
+    "name": "Basic shadow torch",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28365,
+    "type": "Torch",
+    "name": "Superior shadow torch",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28366,
+    "type": "Torch",
+    "name": "Perfected shadow torch",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28378,
+    "type": "Torch",
+    "name": "Basic shadow torch schematic",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28379,
+    "type": "Torch",
+    "name": "Superior shadow torch schematic",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28380,
+    "type": "Torch",
+    "name": "Perfected shadow torch schematic",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28381,
+    "type": "Torch",
+    "name": "Perfected shadow torch schematic",
+    "equipable": false,
+    "members": true,
+    "ge_tradable": false
+  },
+  {
+    "id": 28748,
+    "type": "Torch",
+    "name": "Trailblazer reloaded torch",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true
+  }
+]

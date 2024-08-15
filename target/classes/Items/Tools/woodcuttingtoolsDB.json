@@ -1,0 +1,658 @@
+[
+  {
+    "id": 1349,
+    "type": "Axe",
+    "name": "Iron axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 150,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 1
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 1
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  {
+    "id": 1351,
+    "type": "Axe",
+    "name": "Bronze axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 100,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 1
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 1
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  {
+    "id": 1353,
+    "type": "Axe",
+    "name": "Steel axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 200,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 5
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 6
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  {
+    "id": 1355,
+    "type": "Axe",
+    "name": "Mithril axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 250,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 20
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 21
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  {
+    "id": 1357,
+    "type": "Axe",
+    "name": "Adamant axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 300,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 30
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 31
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  {
+    "id": 1359,
+    "type": "Axe",
+    "name": "Rune axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 350,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 40
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 41
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  {
+    "id": 1361,
+    "type": "Axe",
+    "name": "Black axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 225,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 10
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 11
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  {
+    "id": 6739,
+    "type": "Axe",
+    "name": "Dragon axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 385,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 61
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  {
+    "id": 13241,
+    "type": "Axe",
+    "name": "Infernal axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "WoodCuttingStrength": 385,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 61
+        }
+      },
+      {
+        "Level": {
+          "skill": "Firemaking",
+          "level": 85
+        }
+      }
+    ],
+    "tags": [
+      "special",
+      "FireMaking"
+    ]
+  },
+  {
+    "id": 13242,
+    "type": "Axe",
+    "name": "Infernal axe (uncharged)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "WoodCuttingStrength": 385,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "special"
+    ]
+  },
+  {
+    "id": 20011,
+    "type": "Axe",
+    "name": "3rd age axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 385,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 65
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "expensive"
+    ]
+  },
+  {
+    "id": 23279,
+    "type": "Axe",
+    "name": "Gilded axe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 350,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 41
+        }
+      },
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 40
+        }
+      }
+    ],
+    "tags": [
+      "expensive"
+    ]
+  },
+  {
+    "id": 23673,
+    "type": "Axe",
+    "name": "Crystal axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "WoodCuttingStrength": 402,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 71
+        }
+      }
+    ],
+    "tags": [
+      "expensive"
+    ]
+  },
+  {
+    "id": 23675,
+    "type": "Axe",
+    "name": "Crystal axe (inactive)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "WoodCuttingStrength": 385,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 71
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      }
+    ],
+    "tags": [
+      "expensive"
+    ]
+  },
+  {
+    "id": 28196,
+    "type": "Axe",
+    "name": "Bronze felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 100,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 1
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 1
+        }
+      }
+    ],
+    "tags": [
+      "WoodCuttingEXP"
+    ]
+  },
+  {
+    "id": 28199,
+    "type": "Axe",
+    "name": "Iron felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 100
+  },
+  {
+    "id": 28202,
+    "type": "Axe",
+    "name": "Steel felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 200,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 1
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 1
+        }
+      }
+    ],
+    "tags": [
+      "WoodCuttingEXP"
+    ]
+  },
+  {
+    "id": 28205,
+    "type": "Axe",
+    "name": "Black felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 225,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 10
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 11
+        }
+      }
+    ],
+    "tags": [
+      "WoodCuttingEXP"
+    ]
+  },
+  {
+    "id": 28208,
+    "type": "Axe",
+    "name": "Mithril felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 250,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 20
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 21
+        }
+      }
+    ],
+    "tags": [
+      "WoodCuttingEXP"
+    ]
+  },
+  {
+    "id": 28211,
+    "type": "Axe",
+    "name": "Adamant felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 300,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 30
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 31
+        }
+      }
+    ],
+    "tags": [
+      "WoodCuttingEXP"
+    ]
+  },
+  {
+    "id": 28214,
+    "type": "Axe",
+    "name": "Rune felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 350,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 40
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 41
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "WoodCuttingEXP"
+    ]
+  },
+  {
+    "id": 28217,
+    "type": "Axe",
+    "name": "Dragon felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 385,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "WoodCuttingEXP"
+    ]
+  },
+  {
+    "id": 28220,
+    "type": "Axe",
+    "name": "Crystal felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "WoodCuttingStrength": 402,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 71
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "WoodCuttingEXP"
+    ]
+  },
+  {
+    "id": 28223,
+    "type": "Axe",
+    "name": "Crystal felling axe (inactive)",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": false,
+    "WoodCuttingStrength": 385,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 71
+        }
+      }
+    ],
+    "tags": [
+      "expensive"
+    ]
+  },
+  {
+    "id": 28226,
+    "type": "Axe",
+    "name": "3rd age felling axe",
+    "equipable": true,
+    "members": true,
+    "ge_tradable": true,
+    "WoodCuttingStrength": 385,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 65
+        }
+      },
+      {
+        "Level": {
+          "skill": "Woodcutting",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "WoodCuttingEXP"
+    ]
+  }
+]

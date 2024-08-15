@@ -49,7 +49,7 @@ public class AlchTask extends SimpleTask
     public boolean onStartTask(tpircSScript Script)
     {
         AlchItem = Inventory.get(AlchItemID);
-        Script.onInventory.Subscribe(this, (a, b, c, d) -> Ready = true);
+        Script.onInventory.Subscribe(this, (a, b, c) -> Ready = true);
         Logger.log("AlchTask: onStartTask: Starting Alch of item " + AlchItem);
         return super.onStartTask(Script);
     }
@@ -58,7 +58,7 @@ public class AlchTask extends SimpleTask
      * @return
      */
     @Override
-    protected boolean Ready()
+    public boolean Ready()
     {
         return Magic.canCast(Normal.HIGH_LEVEL_ALCHEMY) && super.Ready();
     }

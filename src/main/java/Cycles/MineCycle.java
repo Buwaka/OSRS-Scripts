@@ -31,6 +31,18 @@ public class MineCycle extends SimpleCycle implements Serializable
         Targets    = ObjectDB.GetObjectIDsByName(RockName);
     }
 
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    @Override
+    public boolean onStart(tpircSScript Script)
+    {
+        StartCycle(Script);
+        return super.onStart(Script);
+    }
+
     private void StartCycle(tpircSScript Script)
     {
         //TODO check if we have a pickaxe, if not, pick one from the bank
@@ -66,18 +78,6 @@ public class MineCycle extends SimpleCycle implements Serializable
         BankOres.AcceptCondition = () -> !OpenBank.isActive();
 
         Script.addNodes(BankOres, OpenBank, TravelToMine, interactTask);
-    }
-
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        StartCycle(Script);
-        return super.onStart(Script);
     }
 
     @Override

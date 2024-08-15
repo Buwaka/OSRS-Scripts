@@ -54,16 +54,52 @@ public class MineGuildCycle extends SimpleCycle
         super(name);
     }
 
-    public int GetSackOres()
+    /**
+     * will be called once there are no active tasks anymore, aka a single cycle has been completed
+     *
+     * @param Script
+     *
+     * @return Cycle completed, ready for a restart
+     */
+    @Override
+    public boolean isCycleComplete(tpircSScript Script)
     {
-        var SackOreWidget = Widgets.get(SackOreWidgetIDs);
-        if(SackOreWidget == null)
+        return Complete;
+    }
+
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    @Override
+    public boolean onStart(tpircSScript Script)
+    {
+        Init(Script);
+
+        return super.onStart(Script);
+    }
+
+    private void Init(tpircSScript Script)
+    {
+        Logger.log("MineGuildCycle: Init: ");
+        //TODO make sure we have a pickaxe
+
+        if(GetSackSpace() <= OSRSUtilities.InventorySpace)
         {
-            return 0;
+            CurrentState = MGState.Deposit;
         }
-        Logger.log("MineGuildCycle: GetSackOres: " + SackOreWidget.getText());
-        Scanner scan = new Scanner(SackOreWidget.getText()).useDelimiter("[^0-9]+");
-        return scan.nextInt();
+        else
+        {
+            CurrentState = MGState.Mining;
+        }
+
+        if(!Inventory.isEmpty())
+        {
+            DropInventoryAtBank(Script);
+        }
+
+        Complete = false;
     }
 
     public int GetSackSpace()
@@ -114,54 +150,6 @@ public class MineGuildCycle extends SimpleCycle
         }
 
         Bank.close();
-    }
-
-    private void Init(tpircSScript Script)
-    {
-        Logger.log("MineGuildCycle: Init: ");
-        //TODO make sure we have a pickaxe
-
-        if(GetSackSpace() <= OSRSUtilities.InventorySpace)
-        {
-            CurrentState = MGState.Deposit;
-        }
-        else
-        {
-            CurrentState = MGState.Mining;
-        }
-
-        if(!Inventory.isEmpty())
-        {
-            DropInventoryAtBank(Script);
-        }
-
-        Complete = false;
-    }
-
-    /**
-     * will be called once there are no active tasks anymore, aka a single cycle has been completed
-     *
-     * @param Script
-     *
-     * @return Cycle completed, ready for a restart
-     */
-    @Override
-    public boolean isCycleComplete(tpircSScript Script)
-    {
-        return Complete;
-    }
-
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        Init(Script);
-
-        return super.onStart(Script);
     }
 
     /**
@@ -388,6 +376,18 @@ public class MineGuildCycle extends SimpleCycle
             }
         }
         return super.onLoop(Script);
+    }
+
+    public int GetSackOres()
+    {
+        var SackOreWidget = Widgets.get(SackOreWidgetIDs);
+        if(SackOreWidget == null)
+        {
+            return 0;
+        }
+        Logger.log("MineGuildCycle: GetSackOres: " + SackOreWidget.getText());
+        Scanner scan = new Scanner(SackOreWidget.getText()).useDelimiter("[^0-9]+");
+        return scan.nextInt();
     }
 
     /**

@@ -5,7 +5,10 @@ import Cycles.AdvanceTasks.SlaughterAndLoot;
 import Cycles.SimpleTasks.Bank.BankItemsTask;
 import Cycles.SimpleTasks.Bank.GetCombatRationsTask;
 import Cycles.SimpleTasks.Combat.RestoreFullHealthTask;
+import Cycles.SimpleTasks.Misc.EquipmentTask;
 import Cycles.SimpleTasks.TravelTask;
+import OSRSDatabase.ItemDB;
+import Utilities.Combat.EquipmentManager;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
@@ -34,6 +37,9 @@ public class CombatLootBankCycle extends SimpleCycle
     private List<AbstractMap.SimpleEntry<Integer, Integer>> ItemRequirements = null;
     private int[]                                           IgnoreLoot       = null;
     private boolean                                         PrayBones        = false;
+    private boolean                                         EscapeLowHP      = true;
+    private ItemDB.StanceData.ExperienceType                EXPType          = ItemDB.StanceData.ExperienceType.strength;
+    private boolean                                         Complete         = false;
 
     public CombatLootBankCycle(String Name, Area[] KillingArea, int[] Targets, List<AbstractMap.SimpleEntry<Integer, Integer>> ItemRequirements, BankLocation BankLoc)
     {
@@ -72,17 +78,14 @@ public class CombatLootBankCycle extends SimpleCycle
         PrayBones = Pray;
     }
 
-    public TravelTask TravelToBank()
+    public void SetEscapeLowHP(boolean Escape)
     {
-        if(BankingLocation != null)
-        {
-            return new TravelTask("", BankingLocation.getTile());
-        }
-        else if(BankLocation.getNearest() != null)
-        {
-            return new TravelTask("", BankLocation.getNearest().getTile());
-        }
-        return new TravelTask("", new Tile());
+        EscapeLowHP = Escape;
+    }
+
+    public void SetEXPType(ItemDB.StanceData.ExperienceType expType)
+    {
+        EXPType = expType;
     }
 
     public void setIgnoreLoot(int... ignoreLoot)
@@ -90,18 +93,24 @@ public class CombatLootBankCycle extends SimpleCycle
         IgnoreLoot = ignoreLoot;
     }
 
+    /**
+     * will be called once there are no active tasks anymore, aka a single cycle has been completed
+     *
+     * @param Script
+     *
+     * @return true when Cycle is completed, ready for a restart
+     */
+    @Override
+    public boolean isCycleComplete(tpircSScript Script)
+    {
+        return Complete;
+    }
+
     @Override
     public boolean onStart(tpircSScript Script)
     {
         StartCycle(Script);
         return super.onStart(Script);
-    }
-
-    @Override
-    public boolean onRestart(tpircSScript Script)
-    {
-        StartCycle(Script);
-        return true;
     }
 
     void StartCycle(tpircSScript Script)
@@ -121,30 +130,51 @@ public class CombatLootBankCycle extends SimpleCycle
                                                         ItemRequirements);
         SALTask.setIgnoreLoot(IgnoreLoot);
         SALTask.setPrayBones(PrayBones);
+        SALTask.setEscapeLowHP(EscapeLowHP);
 
-        if(!OSRSUtilities.CheckInventory(ItemRequirements, false))
+
+        var           equipment      = EquipmentManager.SetEXPFocus(EXPType);
+        EquipmentTask EquipEquipment = new EquipmentTask("Equipment Test", equipment);
+        EquipEquipment.SetTaskPriority(1);
+        Script.addNodes(EquipEquipment);
+
+        if(!OSRSUtilities.CheckInventory(ItemRequirements, false) || !equipment.isEquipped())
         {
-            Logger.log("NotReady for combat, first go to bank");
-            TravelTask Travel3 = TravelToBank();
-            Travel3.SetTaskName("CLBCTravel To Bank For ItemRequirements");
-            Travel3.SetTaskPriority(0);
-            Travel3.CompleteCondition = OSRSUtilities::CanReachBank;
-            Script.addNodes(Travel3);
+            if(BankLocation.getNearest().distance(Players.getLocal().getTile()) > 100)
+            {
+                Logger.log("NotReady for combat, first go to bank");
+                TravelTask Travel3 = TravelToBank();
+                Travel3.SetTaskName("CLBCTravel To Bank For ItemRequirements");
+                Travel3.SetTaskPriority(0);
+                Travel3.CompleteCondition = OSRSUtilities::CanReachBank;
+                Script.addNodes(Travel3);
+            }
 
             BankItemsTask Setup = new BankItemsTask("Banking ItemRequirements");
+
+            var BankEquipment = equipment.GetBankEquipment();
+            Logger.log("CombatLootBankCycle: StartCycle: BankEquipment: " +
+                       Arrays.toString(BankEquipment));
+            if(BankEquipment.length > 0)
+            {
+                Setup.AddWithdraw(BankEquipment);
+            }
             if(!Inventory.isEmpty())
             {
                 Setup.AddDepositAll();
             }
-            for(var item : ItemRequirements)
+            if(ItemRequirements != null)
             {
-                Setup.AddWithdraw(item.getKey(), item.getValue());
+                for(var item : ItemRequirements)
+                {
+                    Setup.AddWithdraw(item.getKey(), item.getValue());
+                }
             }
             if(BankingLocation != null)
             {
                 Setup.SetSpecificBank(BankingLocation);
             }
-            Setup.SetTaskPriority(-1);
+            Setup.SetTaskPriority(0);
             Script.addNodes(Setup);
         }
 
@@ -152,24 +182,24 @@ public class CombatLootBankCycle extends SimpleCycle
         if(OSRSUtilities.InventoryHPCount() < HPtoCarry.get())
         {
             GetCombatRationsTask Rations = new GetCombatRationsTask("Get Rations", HPtoCarry.get());
-            Rations.SetTaskPriority(-1);
+            Rations.SetTaskPriority(1);
             Script.addNodes(Rations);
         }
 
         if(Players.getLocal().getHealthPercent() < (Skills.getRealLevel(Skill.HITPOINTS) / 2))
         {
             RestoreFullHealthTask Healup = new RestoreFullHealthTask("FullHeal");
-            Healup.SetTaskPriority(-2);
+            Healup.SetTaskPriority(1);
             Script.addNodes(Healup);
         }
 
         TravelTask Travel2 = TravelToBank();
-        Travel2.SetTaskPriority(2);
+        Travel2.SetTaskPriority(3);
         Travel2.AcceptCondition   = () -> !SALTask.isActive();
         Travel2.CompleteCondition = OSRSUtilities::CanReachBank;
         Travel2.SetTaskName("Travel To Bank to drop loot");
         BankItemsTask BankTask = new BankItemsTask("Banking loot");
-        BankTask.AddDeposit(-1, -1);
+        BankTask.AddDepositAll();
         if(ItemRequirements != null)
         {
             for(var item : ItemRequirements)
@@ -177,15 +207,36 @@ public class CombatLootBankCycle extends SimpleCycle
                 BankTask.AddWithdraw(item.getKey(), item.getValue());
             }
         }
+        BankTask.onComplete.Subscribe(this, () -> {Complete = true;});
 
         if(BankingLocation != null)
         {
             BankTask.SetSpecificBank(BankingLocation);
         }
 
-        BankTask.SetTaskPriority(2);
+        BankTask.SetTaskPriority(4);
         BankTask.AcceptCondition = () -> !SALTask.isActive();
 
         Script.addNodes(Travel1, Travel2, SALTask, BankTask);
+    }
+
+    public TravelTask TravelToBank()
+    {
+        if(BankingLocation != null)
+        {
+            return new TravelTask("", BankingLocation.getTile());
+        }
+        else if(BankLocation.getNearest() != null)
+        {
+            return new TravelTask("", BankLocation.getNearest().getTile());
+        }
+        return new TravelTask("", new Tile());
+    }
+
+    @Override
+    public boolean onRestart(tpircSScript Script)
+    {
+        StartCycle(Script);
+        return true;
     }
 }

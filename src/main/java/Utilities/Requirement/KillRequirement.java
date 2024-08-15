@@ -1,7 +1,12 @@
 package Utilities.Requirement;
 
+import java.io.Serial;
+
 public class KillRequirement implements IRequirement
 {
+    @Serial
+    private static final long serialVersionUID = 8664327205259346103L;
+
     public KillRequirement()
     {
         //TODO

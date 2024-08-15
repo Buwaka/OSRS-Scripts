@@ -1,42 +1,51 @@
 package Utilities.GrandExchange.Orders;
 
-public class MarketBuyOrder implements GEOrder
+import OSRSDatabase.OSRSPrices;
+import Utilities.GrandExchange.GEInstance;
+import Utilities.Patterns.SYMaths;
+import Utilities.Scripting.ExternalLambdaUsage;
+
+import java.io.Serial;
+
+public class MarketBuyOrder extends BaseOrder
 {
 
+    @Serial
+    private static final long serialVersionUID = 642092741145280019L;
 
-    /**
-     * @return
-     */
-    @Override
-    public int GetID()
+    public MarketBuyOrder(int id, int count)
     {
-        return 0;
+        super(id, count, TransactionType.Buy, OrderType.Market);
+        PriceGenerator = () -> GetInstaBuyPrice(id);
     }
 
-    /**
-     * @return
-     */
-    @Override
-    public int GetPrice()
+    @ExternalLambdaUsage
+    public static int GetInstaBuyPrice(int id)
     {
-        return 0;
+        int price;
+        int highprice = OSRSPrices.GetAverageHighPrice(id) * 2;
+        int digits    = SYMaths.DigitCount(highprice);
+
+        if(digits > 1)
+        {
+            double decimal     = (int) Math.pow(10, digits - 1);
+            double significant = highprice / decimal;
+            int    newPrice    = (int) (Math.ceil(significant) * decimal);
+            if((double) (newPrice - highprice) / (double) highprice < 0.1)
+            {
+                price = Math.min(newPrice * 2, GEInstance.GetLiquidMoney());
+            }
+            else
+            {
+                price = newPrice;
+            }
+        }
+        else
+        {
+            price = 100;
+        }
+
+        return price;
     }
 
-    /**
-     * @return
-     */
-    @Override
-    public int GetQuantity()
-    {
-        return 0;
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public OrderType GetType()
-    {
-        return null;
-    }
 }

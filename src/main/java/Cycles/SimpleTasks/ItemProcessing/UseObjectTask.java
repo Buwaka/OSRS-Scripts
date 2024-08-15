@@ -58,16 +58,6 @@ public class UseObjectTask extends SimpleTask
         InteractAction = Action;
     }
 
-    public GameObject GetObject(int... IDs)
-    {
-        var closest = GetObjectStatic(IDs);
-        if(closest != null && !closest.getInteractableFrom().isEmpty())
-        {
-            BackupTile = closest.getInteractableFrom().getFirst();
-        }
-        return closest;
-    }
-
     public Integer getCount()
     {
         return Count;
@@ -76,17 +66,6 @@ public class UseObjectTask extends SimpleTask
     public void setCount(Integer count)
     {
         Count = count;
-    }
-
-    public static GameObject GetObjectStatic(int... IDs)
-    {
-        return GameObjects.closest(new IdFilter<>(IDs));
-    }
-
-    private static Boolean CheckInventory(Object context, tpircSScript.ItemAction Action, Item item1, Item item2)
-    {
-        ((UseObjectTask) context).TimeoutTicker.set(((UseObjectTask) context).DefaultProcessTickTime);
-        return true;
     }
 
     /**
@@ -107,15 +86,21 @@ public class UseObjectTask extends SimpleTask
     @Override
     public boolean onStartTask(tpircSScript Script)
     {
-        Script.onInventory.Subscribe(this, UseObjectTask::CheckInventory);
+        Script.onInventory.Subscribe(this, this::CheckInventory);
         return super.onStartTask(Script);
+    }
+
+    private Boolean CheckInventory(tpircSScript.ItemAction Action, Item item1, Item item2)
+    {
+        TimeoutTicker.set(DefaultProcessTickTime);
+        return true;
     }
 
     /**
      * @return
      */
     @Override
-    protected boolean Ready()
+    public boolean Ready()
     {
         var Obj = GetObject(ObjectID);
         return Obj != null && Obj.canReach() && super.Ready();
@@ -238,6 +223,21 @@ public class UseObjectTask extends SimpleTask
             GetScript().onGameTick.AddUpdateTicker(this, TimeoutTicker);
         }
         return super.Loop();
+    }
+
+    public GameObject GetObject(int... IDs)
+    {
+        var closest = GetObjectStatic(IDs);
+        if(closest != null && !closest.getInteractableFrom().isEmpty())
+        {
+            BackupTile = closest.getInteractableFrom().getFirst();
+        }
+        return closest;
+    }
+
+    public static GameObject GetObjectStatic(int... IDs)
+    {
+        return GameObjects.closest(new IdFilter<>(IDs));
     }
 
     void SetBackupTile(Tile BackupTile)

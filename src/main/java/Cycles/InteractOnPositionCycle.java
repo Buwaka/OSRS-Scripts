@@ -4,9 +4,9 @@ import Cycles.SimpleTasks.Bank.BankItemsTask;
 import Cycles.SimpleTasks.ItemProcessing.InteractInventoryTask;
 import Cycles.SimpleTasks.TravelTask;
 import OSRSDatabase.WoodDB;
-import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.tpircSScript;
+import io.vavr.Function2;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
@@ -25,30 +25,29 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class InteractOnPositionCycle extends SimpleCycle
 {
-    public            Predicate<Tile>            TileChecker                 = null;
-    private           String                     Action                      = null;
-    private           int[]                      SourceItemID;
-    private           Integer                    Tool                        = null;
-    private           List<Tile>                 PossibleTiles               = null;
-    private           Function<Tile, List<Tile>> GeneratePossibleTiles       = null;
-    private           boolean                    WaitInteract                = false;
-    private           boolean                    InOrder                     = true;
-    private           boolean                    WithdrawSourceItemsFromBank = true;
-    private transient InteractInventoryTask      InteractTask                = null;
-    private transient BankItemsTask              BankTask                    = null;
-    private transient boolean                    InteractComplete            = false;
-    private transient boolean                    Complete;
-    private transient Thread                     TileListener;
-    private transient Semaphore                  TileReady                   = new Semaphore(1);
-    private transient Tile                       TargetTile                  = null;
-    private transient Iterator<Tile>             TileIterator;
-    private transient long                       InteractTimeout;
-    private transient int                        Timout                      = 10000;
-    private transient TravelTask                 Traveltask                  = null;
+    public            Function2<Tile, Tile, Boolean> TileChecker                 = null;
+    private           String                         Action                      = null;
+    private           int[]                          SourceItemID;
+    private           Integer                        Tool                        = null;
+    private           List<Tile>                     PossibleTiles               = null;
+    private           Function<Tile, List<Tile>>     GeneratePossibleTiles       = null;
+    private           boolean                        WaitInteract                = false;
+    private           boolean                        InOrder                     = true;
+    private           boolean                        WithdrawSourceItemsFromBank = true;
+    private transient InteractInventoryTask          InteractTask                = null;
+    private transient BankItemsTask                  BankTask                    = null;
+    private transient boolean                        InteractComplete            = false;
+    private transient boolean                        Complete;
+    private transient Thread                         TileListener;
+    private transient Semaphore                      TileReady                   = new Semaphore(1);
+    private transient Tile                           TargetTile                  = null;
+    private transient Iterator<Tile>                 TileIterator;
+    private transient long                           InteractTimeout;
+    private transient int                            Timout                      = 10000;
+    private transient TravelTask                     Traveltask                  = null;
 
     public InteractOnPositionCycle(String name, Tile[] tiles, int... ItemIDs)
     {
@@ -96,49 +95,6 @@ public class InteractOnPositionCycle extends SimpleCycle
         GeneratePossibleTiles = tileGenerator;
     }
 
-    public List<Tile> GetPossibleTiles(boolean Regenerate)
-    {
-        List<Tile> out = PossibleTiles;
-        if(PossibleTiles == null || PossibleTiles.isEmpty() || Regenerate)
-        {
-            if(GeneratePossibleTiles != null)
-            {
-                out = GeneratePossibleTiles.apply(Players.getLocal().getTile());
-
-            }
-            if(out == null || out.isEmpty())
-            {
-                Logger.log(
-                        "InteractOnPositionCycle: getPossibleTiles: No PossibleTiles and generation function is null or returned null");
-                return null;
-            }
-        }
-
-        if(!InOrder)
-        {
-            out.sort((x, y) -> (int) ((y.walkingDistance(Players.getLocal().getTile()) -
-                                       x.walkingDistance(Players.getLocal().getTile())) * 100));
-        }
-        PossibleTiles = out;
-
-        TileIterator = PossibleTiles.iterator();
-        return PossibleTiles;
-    }
-
-    public List<Tile> GetSurroundingArea(Tile tile)
-    {
-        return Arrays.stream(Players.getLocal().getTile().getArea(3).getTiles())
-                     .sorted((x, y) -> (int) (y.walkingDistance(tile) - x.walkingDistance(tile)))
-                     .toList();
-    }
-
-    public boolean isValidTile(Tile tile)
-    {
-        Logger.log("InteractOnPositionCycle: isValidTile: Tile " + tile + " " +
-                   TileChecker.test(tile) + " " + TileChecker + " ");
-        return tile != null && (TileChecker == null || TileChecker.test(tile));
-    }
-
     public void setInOrder(boolean inOrder)
     {
         InOrder = inOrder;
@@ -149,17 +105,35 @@ public class InteractOnPositionCycle extends SimpleCycle
         WithdrawSourceItemsFromBank = withdrawSourceItemsFromBank;
     }
 
-    private InteractInventoryTask CreateInteractTask()
+    /**
+     * will be called once there are no active tasks anymore, aka a single cycle has been completed
+     *
+     * @param Script
+     *
+     * @return true when Cycle is completed, ready for a restart
+     */
+    @Override
+    public boolean isCycleComplete(tpircSScript Script)
     {
-        InteractTask = new InteractInventoryTask(
-                "Interacting with items " + SourceItemID + " " + Action, Action, SourceItemID);
-        if(Tool != null)
-        {
-            InteractTask.setTool(Tool);
-        }
-        InteractTask.AcceptCondition = () -> !BankTask.isActive();
-        InteractTask.onComplete.Subscribe(this, () -> InteractComplete = true);
-        return InteractTask;
+        return !Inventory.contains(SourceItemID);
+    }
+
+    @Override
+    public boolean isCycleFinished(tpircSScript Script)
+    {
+        return !Bank.contains(SourceItemID) && !Inventory.contains(SourceItemID);
+    }
+
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    @Override
+    public boolean onStart(tpircSScript Script)
+    {
+        StartCycle(Script);
+        return super.onStart(Script);
     }
 
     private void StartCycle(tpircSScript Script)
@@ -179,16 +153,21 @@ public class InteractOnPositionCycle extends SimpleCycle
 
         if(BankHasSource || InventoryisFullButNoSource || ToolCheck)
         {
-            if(!OSRSUtilities.CanReachBank())
-            {
-                TravelTask Travel = new TravelTask("", BankLocation.getNearest().getTile());
-                Travel.SetTaskName("IOPC Travel To Bank For ItemRequirements");
-                Travel.SetTaskPriority(0);
-                Travel.CompleteCondition = OSRSUtilities::CanReachBank;
-                Script.addNodes(Travel);
-            }
+            //            if(!OSRSUtilities.CanReachBank())
+            //            {
+            TravelTask Travel = new TravelTask("", BankLocation.getNearest().getTile());
+            Travel.SetTaskName("IOPC Travel To Bank For ItemRequirements");
+            Travel.SetTaskPriority(0);
+            //Travel.CompleteCondition = OSRSUtilities::CanReachBank;
+            Script.addNodes(Travel);
+            //}
 
             BankTask = new BankItemsTask("InteractOnPositionCycle Grab items to interact with");
+            Logger.log(
+                    "InteractOnPositionCycle: StartCycle: Inventory has items besides necessities: " +
+                    Inventory.except(t -> t == null || t.getID() == Tool ||
+                                          Arrays.stream(SourceItemID).anyMatch(x -> x == t.getID()))
+                             .isEmpty());
             if(!Inventory.except(t -> t == null || t.getID() == Tool ||
                                       Arrays.stream(SourceItemID).anyMatch(x -> x == t.getID()))
                          .isEmpty())
@@ -251,37 +230,6 @@ public class InteractOnPositionCycle extends SimpleCycle
             }
             Sleep.sleep(100);
         }
-    }
-
-    /**
-     * will be called once there are no active tasks anymore, aka a single cycle has been completed
-     *
-     * @param Script
-     *
-     * @return true when Cycle is completed, ready for a restart
-     */
-    @Override
-    public boolean isCycleComplete(tpircSScript Script)
-    {
-        return !Inventory.contains(SourceItemID);
-    }
-
-    @Override
-    public boolean isCycleFinished(tpircSScript Script)
-    {
-        return !Bank.contains(SourceItemID) && !Inventory.contains(SourceItemID);
-    }
-
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        StartCycle(Script);
-        return super.onStart(Script);
     }
 
     @Override
@@ -499,6 +447,63 @@ public class InteractOnPositionCycle extends SimpleCycle
             }
         }
         return super.onLoop(Script);
+    }
+
+    public List<Tile> GetPossibleTiles(boolean Regenerate)
+    {
+        List<Tile> out = PossibleTiles;
+        if(PossibleTiles == null || PossibleTiles.isEmpty() || Regenerate)
+        {
+            if(GeneratePossibleTiles != null)
+            {
+                out = GeneratePossibleTiles.apply(Players.getLocal().getTile());
+
+            }
+            if(out == null || out.isEmpty())
+            {
+                Logger.log(
+                        "InteractOnPositionCycle: getPossibleTiles: No PossibleTiles and generation function is null or returned null");
+                return null;
+            }
+        }
+
+        if(!InOrder)
+        {
+            out.sort((x, y) -> (int) ((y.walkingDistance(Players.getLocal().getTile()) -
+                                       x.walkingDistance(Players.getLocal().getTile())) * 100));
+        }
+        PossibleTiles = out;
+
+        TileIterator = PossibleTiles.iterator();
+        return PossibleTiles;
+    }
+
+    public List<Tile> GetSurroundingArea(Tile tile)
+    {
+        return Arrays.stream(Players.getLocal().getTile().getArea(3).getTiles())
+                     .sorted((x, y) -> (int) (y.walkingDistance(tile) - x.walkingDistance(tile)))
+                     .toList();
+    }
+
+    public boolean isValidTile(Tile tile)
+    {
+        Logger.log("InteractOnPositionCycle: isValidTile: Tile " + tile + " " +
+                   TileChecker.apply(Players.getLocal().getTile(), tile) + " " + TileChecker + " ");
+        return tile != null &&
+               (TileChecker == null || TileChecker.apply(Players.getLocal().getTile(), tile));
+    }
+
+    private InteractInventoryTask CreateInteractTask()
+    {
+        InteractTask = new InteractInventoryTask(
+                "Interacting with items " + SourceItemID + " " + Action, Action, SourceItemID);
+        if(Tool != null)
+        {
+            InteractTask.setTool(Tool);
+        }
+        InteractTask.AcceptCondition = () -> !BankTask.isActive();
+        InteractTask.onComplete.Subscribe(this, () -> InteractComplete = true);
+        return InteractTask;
     }
 
     /**

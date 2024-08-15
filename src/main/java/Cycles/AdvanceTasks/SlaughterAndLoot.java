@@ -32,10 +32,11 @@ public class SlaughterAndLoot extends SimpleTask
     private TravelTask                                      Travel           = null;
     private MinimumHealthTask                               MinimumHealth    = null;
     private int                                             RerouteRetries   = 5;
-    private int                                             Retries          = 5;
+    private int                                             Retries          = 10;
     private int                                             AttemptCount     = 0;
     private int[]                                           IgnoreLoot       = null;
-    private boolean                                         PrayBones;
+    private boolean                                         PrayBones        = false;
+    private boolean                                         EscapeLowHP      = true;
 
     public SlaughterAndLoot(String Name, Area[] Areas, int[] Targets, List<AbstractMap.SimpleEntry<Integer, Integer>> ItemRequirements)
     {
@@ -45,23 +46,19 @@ public class SlaughterAndLoot extends SimpleTask
         this.ItemRequirements = ItemRequirements;
     }
 
-    public int GetMaxHit()
+    public void setEscapeLowHP(boolean escapeLowHP)
     {
-        int                   HighestHit = 0;
-        MonsterDB.MonsterData Strongest  = null;
-        for(int i : TargetIDs)
-        {
-            var monster = MonsterDB.GetMonsterData(i);
-            if(monster != null && monster.max_hit > HighestHit)
-            {
-                Strongest  = monster;
-                HighestHit = monster.max_hit;
-            }
-        }
+        EscapeLowHP = escapeLowHP;
+    }
 
-        Logger.log("SlaughterAndLoot: GetMaxHit: " + HighestHit + " by " + Strongest);
+    void SetAreas(Area... Areas)
+    {
+        this.Areas = Areas;
+    }
 
-        return HighestHit;
+    void SetTarget(int... target)
+    {
+        TargetIDs = target;
     }
 
     public void setIgnoreLoot(int[] ignoreLoot)
@@ -83,6 +80,16 @@ public class SlaughterAndLoot extends SimpleTask
     @Override
     public int Loop()
     {
+        final String BuryAction    = "Bury";
+        final String ScatterAction = "Scatter";
+        if((Inventory.contains(t -> t.hasAction(BuryAction)) ||
+            Inventory.contains(t -> t.hasAction(ScatterAction)) && PrayBones))
+        {
+            List<Item> Items = Inventory.all(t -> t.hasAction(BuryAction) ||
+                                                  t.hasAction(ScatterAction));
+            OSRSUtilities.PrayAll(3000, Items.stream().distinct().mapToInt(Item::getID).toArray());
+        }
+
         if(Inventory.isFull())
         {
             Logger.log("Inventory full, stopping task");
@@ -95,7 +102,7 @@ public class SlaughterAndLoot extends SimpleTask
             MinimumHealth.Loop();
         }
         else if(Players.getLocal().getHealthPercent() <
-                OSRSUtilities.HPtoPercent(MinimumHealth.GetMinimumHealth()))
+                OSRSUtilities.HPtoPercent(MinimumHealth.GetMinimumHealth()) && EscapeLowHP)
         {
             Logger.log("Too low health and no more food, exiting task");
             return 0;
@@ -105,14 +112,6 @@ public class SlaughterAndLoot extends SimpleTask
         {
             Logger.log("SLA: Travel");
             return super.Loop();
-        }
-
-        final String BuryAction    = "Bury";
-        final String ScatterAction = "Scatter";
-        if(Inventory.contains(t -> t.hasAction(BuryAction, ScatterAction)) && PrayBones)
-        {
-            List<Item> Items = Inventory.all(t -> t.hasAction(BuryAction, ScatterAction));
-            OSRSUtilities.PrayAll(3000, Items.stream().distinct().mapToInt(Item::getID).toArray());
         }
 
         if(LootTask.Ready())
@@ -193,21 +192,30 @@ public class SlaughterAndLoot extends SimpleTask
         return true;
     }
 
+    public int GetMaxHit()
+    {
+        int                   HighestHit = 0;
+        MonsterDB.MonsterData Strongest  = null;
+        for(int i : TargetIDs)
+        {
+            var monster = MonsterDB.GetMonsterData(i);
+            if(monster != null && monster.max_hit > HighestHit)
+            {
+                Strongest  = monster;
+                HighestHit = monster.max_hit;
+            }
+        }
+
+        Logger.log("SlaughterAndLoot: GetMaxHit: " + HighestHit + " by " + Strongest);
+
+        return HighestHit;
+    }
+
     @Override
     public boolean onStopTask(tpircSScript Script)
     {
         Script.removePersistentNodes(LootTask);
         return super.onStopTask(Script);
-    }
-
-    void SetAreas(Area... Areas)
-    {
-        this.Areas = Areas;
-    }
-
-    void SetTarget(int... target)
-    {
-        TargetIDs = target;
     }
 
     void SetTarget(String target)
