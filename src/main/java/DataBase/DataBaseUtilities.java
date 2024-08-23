@@ -14,7 +14,9 @@ import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 
@@ -23,7 +25,7 @@ public class DataBaseUtilities
     String MDBUser     = "ScriptUser";
     String MDBPassword = "tb482uLsd2gX7Hse";
 
-    private static final List<String> POJOPackages = new ArrayList<>();
+    private static final Set<String> POJOPackages = new HashSet<>();
 
     public static <T> MongoCollection<T> GetCollection(MongoDatabase database, String Name, Class<T> clazz)
     {

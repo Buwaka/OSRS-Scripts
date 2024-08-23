@@ -1,8 +1,8 @@
 package Scripts.Private;
 
 
-import Cycles.CombineCycle;
-import Cycles.SimpleInventoryProcessCycle;
+import Cycles.General.CombineCycle;
+import Cycles.General.SimpleInventoryProcessCycle;
 import OSRSDatabase.HerbDB;
 import Utilities.Scripting.tpircSScript;
 import io.vavr.Tuple2;

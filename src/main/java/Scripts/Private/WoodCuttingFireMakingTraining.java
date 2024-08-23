@@ -1,6 +1,7 @@
 package Scripts.Private;
 
-import Cycles.CycleLibrary;
+import Cycles.CycleGenerators.CycleLibrary;
+import Cycles.CycleGenerators.FireMakingCycleGenerator;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
@@ -21,7 +22,7 @@ public class WoodCuttingFireMakingTraining extends tpircSScript
 
     private void CreateCycles()
     {
-        AddCycle(CycleLibrary::FireMakingWoodCuttingTraining);
+        AddCycle(FireMakingCycleGenerator::FireMakingWoodCuttingTraining);
     }
 
 

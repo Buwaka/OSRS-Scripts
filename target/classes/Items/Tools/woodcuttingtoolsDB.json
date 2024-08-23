@@ -237,7 +237,7 @@
     ],
     "tags": [
       "special",
-      "FireMaking"
+      "fire_making_exp"
     ]
   },
   {
@@ -347,7 +347,7 @@
       }
     ],
     "tags": [
-      "expensive"
+      "expensive","special"
     ]
   },
   {
@@ -379,7 +379,7 @@
       }
     ],
     "tags": [
-      "expensive"
+      "expensive","special"
     ]
   },
   {
@@ -405,7 +405,7 @@
       }
     ],
     "tags": [
-      "WoodCuttingEXP"
+      "wood_cutting_exp"
     ]
   },
   {
@@ -440,7 +440,7 @@
       }
     ],
     "tags": [
-      "WoodCuttingEXP"
+      "wood_cutting_exp"
     ]
   },
   {
@@ -466,7 +466,7 @@
       }
     ],
     "tags": [
-      "WoodCuttingEXP"
+      "wood_cutting_exp"
     ]
   },
   {
@@ -492,7 +492,7 @@
       }
     ],
     "tags": [
-      "WoodCuttingEXP"
+      "wood_cutting_exp"
     ]
   },
   {
@@ -518,7 +518,7 @@
       }
     ],
     "tags": [
-      "WoodCuttingEXP"
+      "wood_cutting_exp"
     ]
   },
   {
@@ -545,7 +545,7 @@
     ],
     "tags": [
       "expensive",
-      "WoodCuttingEXP"
+      "wood_cutting_exp"
     ]
   },
   {
@@ -572,7 +572,7 @@
     ],
     "tags": [
       "expensive",
-      "WoodCuttingEXP"
+      "wood_cutting_exp"
     ]
   },
   {
@@ -599,7 +599,7 @@
     ],
     "tags": [
       "expensive",
-      "WoodCuttingEXP"
+      "wood_cutting_exp"
     ]
   },
   {
@@ -652,7 +652,7 @@
     ],
     "tags": [
       "expensive",
-      "WoodCuttingEXP"
+      "wood_cutting_exp"
     ]
   }
 ]

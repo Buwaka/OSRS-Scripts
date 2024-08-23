@@ -1,9 +1,8 @@
 package Scripts.Private;
 
-import Cycles.CombatLootBankCycle;
+import Cycles.General.CombatLootBankCycle;
 import OSRSDatabase.ItemDB;
 import OSRSDatabase.MonsterDB;
-import Utilities.Scripting.ICycle;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.combat.Combat;
 import org.dreambot.api.methods.map.Area;

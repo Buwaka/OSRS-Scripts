@@ -23,7 +23,7 @@ public class ToolDB
         public           boolean        members;
         public           boolean        ge_tradable;
         public @Nullable IRequirement[] requirements;
-        public @Nullable String[] tags;
+        public @Nullable DBTags[] tags;
 
         public enum Type
         {

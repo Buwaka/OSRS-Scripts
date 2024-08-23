@@ -1,6 +1,6 @@
 package Utilities.Scripting;
 
-import Cycles.CombineCycle;
+import Cycles.General.CombineCycle;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 

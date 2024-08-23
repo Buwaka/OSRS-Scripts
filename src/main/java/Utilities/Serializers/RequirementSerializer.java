@@ -4,6 +4,7 @@ import OSRSDatabase.ItemDB;
 import Utilities.Requirement.*;
 import com.google.gson.*;
 import org.dreambot.api.methods.quest.book.FreeQuest;
+import org.dreambot.api.methods.quest.book.PaidQuest;
 import org.dreambot.api.methods.skills.Skill;
 
 import java.io.Serial;
@@ -109,7 +110,7 @@ public class RequirementSerializer
         List<IRequirement> reqs = new ArrayList<>();
 
         reqs.add(new LevelRequirement(Skill.WOODCUTTING, 25));
-        reqs.add(new QuestRequirement(FreeQuest.BELOW_ICE_MOUNTAIN));
+        reqs.add(new QuestRequirement(PaidQuest.SHADES_OF_MORTTON));
         reqs.add(new MemberRequirement());
 
         var OSRSGsonBuilder = new GsonBuilder().setPrettyPrinting()

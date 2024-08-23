@@ -1,8 +1,8 @@
 package Utilities.Patterns;
 
+import Utilities.OSRSUtilities;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.bank.Bank;
-import org.dreambot.api.methods.container.impl.equipment.Equipment;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.tabs.Tab;
 import org.dreambot.api.methods.tabs.Tabs;
@@ -11,6 +11,7 @@ import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 
 import java.awt.*;
+import java.time.Duration;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -19,39 +20,54 @@ public class Playtime
 {
     public static long GetPlaytimeLong()
     {
-        return ParseTimePlayed(GetPlaytime());
+        String result = GetPlaytime();
+        long   res    = ParseTimePlayed(result);
+        Logger.log(
+                "GetPlaytimeLong: " + result + Duration.ofNanos(res).toHours() + " hours, " + res);
+        return res;
     }
+
+
     public static String GetPlaytime()
     {
-        if(Bank.isOpen())
-        {
-            Bank.close();
-        }
-        if(!Tabs.isOpen(Tab.QUEST))
-        {
-            Logger.log("GetPlaytime: Opening Quest tab");
-            Tabs.open(Tab.QUEST);
-        }
-
-        var rand                   = new Random();
-        var CharacterSummaryWidget = Widgets.get(629, 3);
-        var TimePlayedWidget       = Widgets.get(712, 2, 100);
         int attempts               = 0;
         int maxAttempts            = 10;
 
-        if(CharacterSummaryWidget == null)
+        while(Bank.isOpen() && attempts < maxAttempts)
+        {
+            Bank.close();
+            attempts++;
+        }
+        attempts = 0;
+
+        Logger.log("GetPlaytime: Current Tab: " + Tabs.getOpen());
+        while(!Tabs.isOpen(Tab.QUEST) && attempts < maxAttempts)
+        {
+            Logger.log("GetPlaytime: Opening Quest tab");
+            Tabs.open(Tab.QUEST);
+            Sleep.sleepTicks(2);
+            attempts++;
+        }
+        attempts = 0;
+
+        var rand                   = OSRSUtilities.rand;
+        var CharacterSummaryWidget = Widgets.get(629, 3);
+        var TimePlayedWidget       = Widgets.get(712, 2, 100);
+
+        if(CharacterSummaryWidget == null || !CharacterSummaryWidget.isVisible())
         {
             Logger.log("GetPlaytime: CharacterSummaryWidget is null, exiting");
             return "GetPlaytime: CharacterSummaryWidget is null, exiting";
         }
 
-        while(TimePlayedWidget == null && attempts < maxAttempts)
+        while((TimePlayedWidget == null || !TimePlayedWidget.isVisible()) && attempts < maxAttempts)
         {
             Logger.log("GetPlaytime: TimePlayedWidget is null, trying to open CharacterSummary");
 
             var rect = CharacterSummaryWidget.getRectangle();
-            Point randomPoint = new Point(rect.x + rand.nextInt(rect.width),
-                                          rect.y + rand.nextInt(rect.height));
+            Logger.log("GetPlaytime: rect: " + rect);
+            Point randomPoint = new Point(rect.x + rand.nextInt(Math.min(1, rect.width)),
+                                          rect.y + rand.nextInt(Math.min(1, rect.height)));
 
             Mouse.click(randomPoint);
             Sleep.sleepTicks(2);
@@ -65,14 +81,17 @@ public class Playtime
             return "GetPlaytime: failed to get TimePlayedWidget too many times, exiting";
         }
 
-        var text = TimePlayedWidget.getText().replace("Time Played:", "");
+        var text = TimePlayedWidget.getText()
+                                   .replace("Time Played:", "")
+                                   .replaceAll("<\\/?[a-z][a-z0-9]*[^<>]*>|<!--.*?-->", "");
         attempts = 0;
         while(text.toLowerCase().contains("reveal") && attempts < maxAttempts)
         {
             Logger.log("GetPlaytime: Time played is not revealed, trying to reveal");
             var rect = TimePlayedWidget.getRectangle();
-            Point randomPoint = new Point(rect.x + rand.nextInt(rect.width),
-                                          rect.y + rand.nextInt(rect.height));
+            Logger.log("GetPlaytime: rect: " + rect);
+            Point randomPoint = new Point(rect.x + rand.nextInt(Math.min(1, rect.width)),
+                                          rect.y + rand.nextInt(Math.min(1, rect.height)));
             Mouse.click(randomPoint);
             Sleep.sleepTicks(2);
 
@@ -84,7 +103,10 @@ public class Playtime
             }
 
             TimePlayedWidget = Widgets.get(712, 2, 100);
-            text             = TimePlayedWidget.getText().replace("Time Played:", "").replaceAll("<\\/?[a-z][a-z0-9]*[^<>]*>|<!--.*?-->", "");
+            text             = TimePlayedWidget.getText()
+                                               .replace("Time Played:", "")
+                                               .replaceAll("<\\/?[a-z][a-z0-9]*[^<>]*>|<!--.*?-->",
+                                                           "");
             attempts++;
         }
 

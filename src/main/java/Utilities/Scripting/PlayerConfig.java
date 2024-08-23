@@ -83,7 +83,12 @@ public class PlayerConfig implements Serializable, GameStateListener
 
     public static Path GetScriptConfigFolder()
     {
-        return Path.of(System.getProperty("scripts.path") + "\\" + ConfigFolderName);
+        String TargetFolder = System.getProperty("scripts.path");
+        if(TargetFolder == null)
+        {
+            TargetFolder = System.getProperty("user.dir");
+        }
+        return Path.of( TargetFolder + "\\" + ConfigFolderName);
     }
 
     public void SaveState(String ObjectID, Object object)

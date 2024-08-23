@@ -1,8 +1,8 @@
 package Scripts.OldScripts;
 
-import Cycles.MineCycle;
-import Cycles.SmeltCycle;
-import Cycles.SmithCycle;
+import Cycles.Skilling.MineCycle;
+import Cycles.Skilling.SmeltCycle;
+import Cycles.Skilling.SmithCycle;
 import Utilities.OSRSUtilities;
 import Utilities.Requirement.ItemRequirement;
 import Utilities.Requirement.LevelRequirement;

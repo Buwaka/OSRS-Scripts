@@ -1,6 +1,6 @@
 package Scripts.OldScripts;
 
-import Cycles.CombatLootBankCycle;
+import Cycles.General.CombatLootBankCycle;
 import OSRSDatabase.MonsterDB;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.ICycle;

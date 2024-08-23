@@ -1,10 +1,9 @@
 package Scripts.Private;
 
-import Cycles.CombatLootBankCycle;
-import Cycles.SimpleProcessCycle;
-import Cycles.SimpleTasks.Bank.BankItemsTask;
-import Cycles.SimpleTasks.Bank.GETask;
-import Cycles.SimpleTasks.ItemProcessing.TanTask;
+import Cycles.General.CombatLootBankCycle;
+import Cycles.General.SimpleProcessCycle;
+import Cycles.Tasks.SimpleTasks.Bank.GETask;
+import Cycles.Tasks.SimpleTasks.ItemProcessing.TanTask;
 import OSRSDatabase.ItemDB;
 import OSRSDatabase.MonsterDB;
 import Utilities.GrandExchange.GEInstance;

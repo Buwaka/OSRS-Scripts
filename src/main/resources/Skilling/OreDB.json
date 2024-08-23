@@ -1,0 +1,292 @@
+{
+  "7936": {
+    "id": 7936,
+    "name": "Pure essence",
+    "general_name": "Pure essence",
+    "level": 30,
+    "exp": 5.0,
+    "members": true
+  },
+  "449": {
+    "id": 449,
+    "name": "Adamantite ore",
+    "general_name": "Adamantite",
+    "level": 70,
+    "exp": 95.0,
+    "members": false
+  },
+  "24706": {
+    "id": 24706,
+    "name": "Daeyalt shard",
+    "general_name": "Daeyalt shard",
+    "level": 60,
+    "exp": 5.0,
+    "members": true
+  },
+  "13571": {
+    "id": 13571,
+    "name": "Volcanic sulphur",
+    "general_name": "Volcanic sulphur",
+    "level": 42,
+    "exp": 25.0,
+    "members": true
+  },
+  "451": {
+    "id": 451,
+    "name": "Runite ore",
+    "general_name": "Runite",
+    "level": 85,
+    "exp": 125.0,
+    "members": false
+  },
+  "6979": {
+    "id": 6979,
+    "variations": [
+      6981,
+      6983
+    ],
+    "name": "Granite (500g)",
+    "general_name": "Granite",
+    "level": 45,
+    "exp": 50.0,
+    "members": true
+  },
+  "453": {
+    "id": 453,
+    "name": "Coal",
+    "general_name": "Coal",
+    "level": 30,
+    "exp": 50.0,
+    "members": false
+  },
+  "13445": {
+    "id": 13445,
+    "name": "Dense essence block",
+    "general_name": "Dense essence block",
+    "level": 38,
+    "exp": 12.0,
+    "members": true
+  },
+  "13575": {
+    "id": 13575,
+    "name": "Blasted ore",
+    "general_name": "Blasted ore",
+    "level": 43,
+    "exp": 20.0,
+    "members": true
+  },
+  "3211": {
+    "id": 3211,
+    "name": "Limestone",
+    "general_name": "Limestone",
+    "level": 10,
+    "exp": 26.5,
+    "members": true
+  },
+  "22603": {
+    "id": 22603,
+    "variations": [
+      22593,
+      22595,
+      22597
+    ],
+    "name": "Basalt",
+    "general_name": "Salts",
+    "level": 72,
+    "exp": 5.0,
+    "members": true
+  },
+  "1625": {
+    "id": 1625,
+    "variations": [
+      1627,
+      1629,
+      1623,
+      1621,
+      1619,
+      1617
+    ],
+    "name": "Uncut opal",
+    "general_name": "Gem rocks",
+    "level": 40,
+    "exp": 65.0,
+    "members": true
+  },
+  "1436": {
+    "id": 1436,
+    "name": "Rune essence",
+    "general_name": "Rune essence",
+    "level": 1,
+    "exp": 5.0,
+    "members": false
+  },
+  "668": {
+    "id": 668,
+    "name": "Blurite ore",
+    "general_name": "Blurite",
+    "level": 10,
+    "exp": 17.5,
+    "members": false
+  },
+  "9632": {
+    "id": 9632,
+    "name": "Daeyalt ore",
+    "general_name": "Daeyalt",
+    "level": 20,
+    "exp": 17.5,
+    "members": true
+  },
+  "27616": {
+    "id": 27616,
+    "name": "Ancient essence",
+    "general_name": "Ancient essence",
+    "level": 75,
+    "exp": 13.5,
+    "members": true
+  },
+  "29088": {
+    "id": 29088,
+    "variations": [
+      29088,
+      29381
+    ],
+    "name": "Calcified deposit",
+    "general_name": "Calcified rocks",
+    "level": 41,
+    "exp": 33.0,
+    "members": true
+  },
+  "1761": {
+    "id": 1761,
+    "name": "Soft clay",
+    "general_name": "Soft clay",
+    "level": 70,
+    "exp": 5.0,
+    "members": true
+  },
+  "21347": {
+    "id": 21347,
+    "name": "Amethyst",
+    "general_name": "Amethyst",
+    "level": 92,
+    "exp": 240.0,
+    "members": true
+  },
+  "28390": {
+    "id": 28390,
+    "name": "Barricade",
+    "general_name": "Barronite",
+    "level": 14,
+    "exp": 16.0,
+    "members": false
+  },
+  "12011": {
+    "id": 12011,
+    "name": "Pay-dirt",
+    "general_name": "Pay-dirt",
+    "level": 30,
+    "exp": 60.0,
+    "members": true
+  },
+  "13356": {
+    "id": 13356,
+    "name": "Lovakite ore",
+    "general_name": "Lovakite",
+    "level": 65,
+    "exp": 60.0,
+    "members": true
+  },
+  "434": {
+    "id": 434,
+    "name": "Clay",
+    "general_name": "Clay",
+    "level": 1,
+    "exp": 5.0,
+    "members": false
+  },
+  "436": {
+    "id": 436,
+    "name": "Copper ore",
+    "general_name": "Copper",
+    "level": 1,
+    "exp": 17.5,
+    "members": false
+  },
+  "9076": {
+    "id": 9076,
+    "name": "Lunar ore",
+    "general_name": "Lunar",
+    "level": 60,
+    "exp": 0.0,
+    "members": true
+  },
+  "438": {
+    "id": 438,
+    "name": "Tin ore",
+    "general_name": "Tin",
+    "level": 1,
+    "exp": 17.5,
+    "members": false
+  },
+  "21622": {
+    "id": 21622,
+    "name": "Volcanic ash",
+    "general_name": "Volcanic ash",
+    "level": 22,
+    "exp": 10.0,
+    "members": true
+  },
+  "25527": {
+    "id": 25527,
+    "name": "Stardust",
+    "general_name": "Stardust",
+    "level": 33147,
+    "exp": 32.0,
+    "members": false
+  },
+  "440": {
+    "id": 440,
+    "name": "Iron ore",
+    "general_name": "Iron",
+    "level": 15,
+    "exp": 35.0,
+    "members": false
+  },
+  "442": {
+    "id": 442,
+    "name": "Silver ore",
+    "general_name": "Silver",
+    "level": 20,
+    "exp": 40.0,
+    "members": false
+  },
+  "6971": {
+    "id": 6971,
+    "variations": [
+      6973,
+      6975,
+      6977
+    ],
+    "name": "Sandstone (1kg)",
+    "general_name": "Sandstone",
+    "level": 35,
+    "exp": 30.0,
+    "members": true
+  },
+  "444": {
+    "id": 444,
+    "name": "Gold ore",
+    "general_name": "Gold",
+    "level": 40,
+    "exp": 65.0,
+    "members": false
+  },
+  "447": {
+    "id": 447,
+    "name": "Mithril ore",
+    "general_name": "Mithril",
+    "level": 55,
+    "exp": 80.0,
+    "members": false
+  }
+}

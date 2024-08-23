@@ -264,7 +264,7 @@ public class WoodDB extends OSRSDataBase
         return WoodDBMap.get(ID);
     }
 
-    public static WoodCuttingTool GetBestWoodCuttingTool(boolean isMember, String... TagPreferences)
+    public static WoodCuttingTool GetBestWoodCuttingTool(boolean isMember, DBTags... TagPreferences)
     {
         ReadWoodCuttingToolsDB();
 
@@ -278,7 +278,7 @@ public class WoodDB extends OSRSDataBase
                 for(var tag : TagPreferences)
                 {
                     if(tool.tags != null && tool.tags.length > 0 && (isMember || !tool.members) &&
-                       Arrays.stream(tool.tags).anyMatch((t) -> t.equalsIgnoreCase(tag)))
+                       Arrays.stream(tool.tags).anyMatch((t) -> t == tag))
                     {
                         bonus += 100;
                     }
@@ -289,7 +289,7 @@ public class WoodDB extends OSRSDataBase
         return results.lastEntry().getValue();
     }
 
-    public static WoodCuttingTool GetBestWoodCuttingTool(boolean isMember,int[] Options, String... TagPreferences)
+    public static WoodCuttingTool GetBestWoodCuttingTool(boolean isMember,int[] Options, DBTags... TagPreferences)
     {
         ReadWoodCuttingToolsDB();
 
@@ -304,7 +304,7 @@ public class WoodDB extends OSRSDataBase
                 for(var tag : TagPreferences)
                 {
                     if(tool.tags != null && tool.tags.length > 0 &&
-                       Arrays.stream(tool.tags).anyMatch((t) -> t.equalsIgnoreCase(tag)))
+                       Arrays.stream(tool.tags).anyMatch((t) -> t == tag))
                     {
                         bonus += 100;
                     }

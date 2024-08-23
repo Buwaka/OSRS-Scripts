@@ -1,7 +1,8 @@
 package Scripts.Private;
 
 
-import Cycles.CycleLibrary;
+import Cycles.CycleGenerators.CycleLibrary;
+import Cycles.CycleGenerators.FishingCycleGenerator;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
@@ -17,7 +18,7 @@ public class FishingScript extends tpircSScript
     public void onStart()
     {
 
-        AddCycle(CycleLibrary.GetFishingCycle());
+        AddCycle(FishingCycleGenerator.GetFishingCycle());
         super.onStart();
     }
 }

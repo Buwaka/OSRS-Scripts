@@ -1,0 +1,1186 @@
+{
+  "133": {
+    "id": 133,
+    "name": "Defence potion",
+    "portion_ids": [
+      133,
+      135,
+      137,
+      2432
+    ],
+    "base": 99,
+    "base_count": 1,
+    "ingredient": 239,
+    "ingredient_count": 1,
+    "level": 30,
+    "experience": 75.0
+  },
+  "23688": {
+    "id": 23688,
+    "name": "Divine super combat potion",
+    "portion_ids": [
+      23685,
+      23688,
+      23691,
+      23694
+    ],
+    "base": 23549,
+    "base_count": 4,
+    "ingredient": 23964,
+    "ingredient_count": 4,
+    "level": 97,
+    "experience": 2.0
+  },
+  "139": {
+    "id": 139,
+    "name": "Prayer potion",
+    "portion_ids": [
+      139,
+      141,
+      143,
+      2434
+    ],
+    "base": 99,
+    "base_count": 1,
+    "ingredient": 231,
+    "ingredient_count": 1,
+    "level": 38,
+    "experience": 87.5
+  },
+  "9741": {
+    "id": 9741,
+    "name": "Combat potion",
+    "portion_ids": [
+      9739,
+      9741,
+      9743,
+      9745
+    ],
+    "base": 97,
+    "base_count": 1,
+    "ingredient": 9736,
+    "ingredient_count": 1,
+    "level": 36,
+    "experience": 84.0
+  },
+  "10000": {
+    "id": 10000,
+    "name": "Hunter potion",
+    "portion_ids": [
+      9998,
+      10000,
+      10002,
+      10004
+    ],
+    "base": 103,
+    "base_count": 1,
+    "ingredient": 10111,
+    "ingredient_count": 1,
+    "level": 53,
+    "experience": 120.0
+  },
+  "145": {
+    "id": 145,
+    "name": "Super attack",
+    "portion_ids": [
+      145,
+      147,
+      149,
+      2436
+    ],
+    "base": 101,
+    "base_count": 1,
+    "ingredient": 221,
+    "ingredient_count": 1,
+    "level": 45,
+    "experience": 100.0
+  },
+  "23700": {
+    "id": 23700,
+    "name": "Divine super attack potion",
+    "portion_ids": [
+      23697,
+      23700,
+      23703,
+      23706
+    ],
+    "base": 2436,
+    "base_count": 4,
+    "ingredient": 23964,
+    "ingredient_count": 4,
+    "level": 70,
+    "experience": 2.0
+  },
+  "2454": {
+    "id": 2454,
+    "name": "Antifire potion",
+    "portion_ids": [
+      2452,
+      2454,
+      2456,
+      2458
+    ],
+    "base": 2483,
+    "base_count": 1,
+    "ingredient": 241,
+    "ingredient_count": 1,
+    "level": 69,
+    "experience": 157.5
+  },
+  "151": {
+    "id": 151,
+    "name": "Fishing potion",
+    "portion_ids": [
+      151,
+      153,
+      155,
+      2438
+    ],
+    "base": 103,
+    "base_count": 1,
+    "ingredient": 231,
+    "ingredient_count": 1,
+    "level": 50,
+    "experience": 112.5
+  },
+  "12697": {
+    "id": 12697,
+    "name": "Super combat potion",
+    "portion_ids": [
+      12695,
+      12697,
+      12699,
+      12701
+    ],
+    "base": 2436,
+    "base_count": 1,
+    "ingredient": 269,
+    "ingredient_count": 1,
+    "extra_ingredient": [
+      2436,
+      2440,
+      2442
+    ],
+    "level": 90,
+    "experience": 150.0
+  },
+  "157": {
+    "id": 157,
+    "name": "Super strength",
+    "portion_ids": [
+      157,
+      159,
+      161,
+      2440
+    ],
+    "base": 105,
+    "base_count": 1,
+    "ingredient": 225,
+    "ingredient_count": 1,
+    "level": 55,
+    "experience": 125.0
+  },
+  "6687": {
+    "id": 6687,
+    "name": "Saradomin brew",
+    "portion_ids": [
+      6685,
+      6687,
+      6689,
+      6691
+    ],
+    "base": 3002,
+    "base_count": 1,
+    "ingredient": 6693,
+    "ingredient_count": 1,
+    "level": 81,
+    "experience": 180.0
+  },
+  "10911": {
+    "id": 10911,
+    "name": "Mixture - step 1(4)",
+    "portion_ids": [
+      10909,
+      10911,
+      10913,
+      10915
+    ],
+    "base": 23573,
+    "base_count": 1,
+    "ingredient": 235,
+    "ingredient_count": 1,
+    "level": 65,
+    "experience": 57.0,
+    "extra_requirement": [
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "ZOGRE_FLESH_EATERS"
+        }
+      },
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "JUNGLE_POTION"
+        }
+      }
+    ]
+  },
+  "23712": {
+    "id": 23712,
+    "name": "Divine super strength potion",
+    "portion_ids": [
+      23709,
+      23712,
+      23715,
+      23718
+    ],
+    "base": 2440,
+    "base_count": 4,
+    "ingredient": 23964,
+    "ingredient_count": 4,
+    "level": 70,
+    "experience": 2.0
+  },
+  "163": {
+    "id": 163,
+    "name": "Super defence",
+    "portion_ids": [
+      163,
+      165,
+      167,
+      2442
+    ],
+    "base": 107,
+    "base_count": 1,
+    "ingredient": 239,
+    "ingredient_count": 1,
+    "level": 66,
+    "experience": 150.0
+  },
+  "10919": {
+    "id": 10919,
+    "name": "Mixture - step 2(4)",
+    "portion_ids": [
+      10917,
+      10919,
+      10921,
+      10923
+    ],
+    "base": 10909,
+    "base_count": 4,
+    "ingredient": 1526,
+    "ingredient_count": 1,
+    "level": 65,
+    "experience": 63.0,
+    "extra_requirement": [
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "ZOGRE_FLESH_EATERS"
+        }
+      },
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "JUNGLE_POTION"
+        }
+      }
+    ]
+  },
+  "169": {
+    "id": 169,
+    "name": "Ranging potion",
+    "portion_ids": [
+      169,
+      171,
+      173,
+      2444
+    ],
+    "base": 109,
+    "base_count": 1,
+    "ingredient": 23489,
+    "ingredient_count": 1,
+    "level": 72,
+    "experience": 162.5
+  },
+  "22443": {
+    "id": 22443,
+    "name": "Cadantine blood potion (unf)",
+    "base": 22446,
+    "base_count": 1,
+    "ingredient": 265,
+    "ingredient_count": 1,
+    "level": 80,
+    "experience": 0.0
+  },
+  "23724": {
+    "id": 23724,
+    "name": "Divine super defence potion",
+    "portion_ids": [
+      23721,
+      23724,
+      23727,
+      23730
+    ],
+    "base": 2442,
+    "base_count": 4,
+    "ingredient": 23964,
+    "ingredient_count": 4,
+    "level": 70,
+    "experience": 2.0
+  },
+  "1582": {
+    "id": 1582,
+    "name": "Blamish oil",
+    "base": 97,
+    "base_count": 1,
+    "ingredient": 1581,
+    "ingredient_count": 1,
+    "level": 25,
+    "experience": 80.0
+  },
+  "175": {
+    "id": 175,
+    "name": "Antipoison",
+    "portion_ids": [
+      175,
+      177,
+      179,
+      2446
+    ],
+    "base": 93,
+    "base_count": 1,
+    "ingredient": 235,
+    "ingredient_count": 1,
+    "level": 5,
+    "experience": 37.5
+  },
+  "10927": {
+    "id": 10927,
+    "name": "Sanfew serum",
+    "portion_ids": [
+      10925,
+      10927,
+      10929,
+      10931
+    ],
+    "base": 10917,
+    "base_count": 4,
+    "ingredient": 10937,
+    "ingredient_count": 1,
+    "level": 65,
+    "experience": 72.0,
+    "extra_requirement": [
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "ZOGRE_FLESH_EATERS"
+        }
+      }
+    ]
+  },
+  "5936": {
+    "id": 5936,
+    "name": "Weapon poison+ (unf)",
+    "base": 5935,
+    "base_count": 1,
+    "ingredient": 6016,
+    "ingredient_count": 1,
+    "level": 73,
+    "experience": 0.0
+  },
+  "11953": {
+    "id": 11953,
+    "name": "Extended antifire",
+    "portion_ids": [
+      11951,
+      11953,
+      11955,
+      11957
+    ],
+    "base": 2458,
+    "base_count": 1,
+    "ingredient": 11994,
+    "ingredient_count": 1,
+    "level": 84,
+    "experience": 110.0
+  },
+  "5937": {
+    "id": 5937,
+    "name": "Weapon poison+",
+    "base": 5936,
+    "base_count": 1,
+    "ingredient": 223,
+    "ingredient_count": 1,
+    "level": 73,
+    "experience": 190.0
+  },
+  "24626": {
+    "id": 24626,
+    "name": "Divine battlemage potion",
+    "portion_ids": [
+      24623,
+      24626,
+      24629,
+      24632
+    ],
+    "base": 22458,
+    "base_count": 4,
+    "ingredient": 23964,
+    "ingredient_count": 4,
+    "level": 86,
+    "experience": 2.0
+  },
+  "2483": {
+    "id": 2483,
+    "name": "Lantadyme potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 2481,
+    "ingredient_count": 1,
+    "level": 69,
+    "experience": 0.0
+  },
+  "5939": {
+    "id": 5939,
+    "name": "Weapon poison++ (unf)",
+    "base": 5935,
+    "base_count": 1,
+    "ingredient": 2398,
+    "ingredient_alternatives": [{"_1": 27790,"_2": 1}],
+    "ingredient_count": 1,
+    "level": 82,
+    "experience": 0.0
+  },
+  "22452": {
+    "id": 22452,
+    "name": "Battlemage potion",
+    "portion_ids": [
+      22449,
+      22452,
+      22455,
+      22458
+    ],
+    "base": 22443,
+    "base_count": 1,
+    "ingredient": 3138,
+    "ingredient_count": 1,
+    "level": 80,
+    "experience": 155.0
+  },
+  "5940": {
+    "id": 5940,
+    "name": "Weapon poison++",
+    "base": 5939,
+    "base_count": 1,
+    "ingredient": 6018,
+    "ingredient_count": 1,
+    "level": 82,
+    "experience": 190.0
+  },
+  "181": {
+    "id": 181,
+    "name": "Superantipoison",
+    "portion_ids": [
+      181,
+      183,
+      185,
+      2448
+    ],
+    "base": 101,
+    "base_count": 1,
+    "ingredient": 235,
+    "ingredient_count": 1,
+    "level": 48,
+    "experience": 106.3
+  },
+  "5942": {
+    "id": 5942,
+    "name": "Antidote+ (unf)",
+    "base": 5935,
+    "base_count": 1,
+    "ingredient": 2998,
+    "ingredient_count": 1,
+    "level": 68,
+    "experience": 0.0
+  },
+  "23736": {
+    "id": 23736,
+    "name": "Divine ranging potion",
+    "portion_ids": [
+      23733,
+      23736,
+      23739,
+      23742
+    ],
+    "base": 23557,
+    "base_count": 4,
+    "ingredient": 23964,
+    "ingredient_count": 4,
+    "level": 74,
+    "experience": 2.0
+  },
+  "5945": {
+    "id": 5945,
+    "name": "Antidote+",
+    "portion_ids": [
+      5943,
+      5945,
+      5947,
+      5949
+    ],
+    "base": 5942,
+    "base_count": 1,
+    "ingredient": 6049,
+    "ingredient_count": 1,
+    "level": 68,
+    "experience": 155.0
+  },
+  "3002": {
+    "id": 3002,
+    "name": "Toadflax potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 2998,
+    "ingredient_count": 1,
+    "level": 34,
+    "experience": 0.0
+  },
+  "3004": {
+    "id": 3004,
+    "name": "Snapdragon potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 3000,
+    "ingredient_count": 1,
+    "level": 63,
+    "experience": 0.0
+  },
+  "189": {
+    "id": 189,
+    "name": "Zamorak brew",
+    "portion_ids": [
+      189,
+      191,
+      193,
+      2450
+    ],
+    "base": 111,
+    "base_count": 1,
+    "ingredient": 247,
+    "ingredient_count": 1,
+    "level": 78,
+    "experience": 175.0
+  },
+  "24638": {
+    "id": 24638,
+    "name": "Divine bastion potion",
+    "portion_ids": [
+      24635,
+      24638,
+      24641,
+      24644
+    ],
+    "base": 22470,
+    "base_count": 4,
+    "ingredient": 23964,
+    "ingredient_count": 4,
+    "level": 86,
+    "experience": 2.0
+  },
+  "5951": {
+    "id": 5951,
+    "name": "Antidote++ (unf)",
+    "base": 5935,
+    "base_count": 1,
+    "ingredient": 259,
+    "ingredient_count": 1,
+    "level": 79,
+    "experience": 0.0
+  },
+  "22464": {
+    "id": 22464,
+    "name": "Bastion potion",
+    "portion_ids": [
+      22461,
+      22464,
+      22467,
+      22470
+    ],
+    "base": 22443,
+    "base_count": 1,
+    "ingredient": 23489,
+    "ingredient_count": 1,
+    "level": 80,
+    "experience": 155.0
+  },
+  "3010": {
+    "id": 3010,
+    "name": "Energy potion",
+    "portion_ids": [
+      3008,
+      3010,
+      3012,
+      3014
+    ],
+    "base": 97,
+    "base_count": 1,
+    "ingredient": 1975,
+    "ingredient_count": 1,
+    "level": 26,
+    "experience": 67.5
+  },
+  "5954": {
+    "id": 5954,
+    "name": "Antidote++",
+    "portion_ids": [
+      5952,
+      5954,
+      5956,
+      5958
+    ],
+    "base": 5951,
+    "base_count": 1,
+    "ingredient": 6051,
+    "ingredient_count": 1,
+    "level": 79,
+    "experience": 177.5
+  },
+  "23748": {
+    "id": 23748,
+    "name": "Divine magic potion",
+    "portion_ids": [
+      23745,
+      23748,
+      23751,
+      23754
+    ],
+    "base": 3046,
+    "base_count": 4,
+    "ingredient": 23964,
+    "ingredient_count": 4,
+    "level": 78,
+    "experience": 2.0
+  },
+  "22212": {
+    "id": 22212,
+    "name": "Extended super antifire",
+    "portion_ids": [
+      22209,
+      22212,
+      22215,
+      22218
+    ],
+    "base": 11957,
+    "base_count": 4,
+    "ingredient": 21975,
+    "ingredient_alternatives": [{"_1": 11994, "_2": 4 }],
+    "ingredient_count": 1,
+    "level": 98,
+    "experience": 180.0,
+    "extra_requirement": [
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "DRAGON_SLAYER_2"
+        }
+      }
+    ]
+  },
+  "11204": {
+    "id": 11204,
+    "name": "Shrink-me-quick",
+    "base": 95,
+    "base_count": 1,
+    "ingredient": 11205,
+    "ingredient_count": 1,
+    "level": 52,
+    "experience": 6.0
+  },
+  "27205": {
+    "id": 27205,
+    "name": "Menaphite remedy",
+    "portion_ids": [
+      27202,
+      27205,
+      27208,
+      27211
+    ],
+    "base": 109,
+    "base_count": 1,
+    "ingredient": 27272,
+    "ingredient_count": 1,
+    "level": 88,
+    "experience": 200.0
+  },
+  "6472": {
+    "id": 6472,
+    "name": "Compost potion",
+    "portion_ids": [
+      6470,
+      6472,
+      6474,
+      6476
+    ],
+    "base": 97,
+    "base_count": 1,
+    "ingredient": 21622,
+    "ingredient_count": 1,
+    "level": 22,
+    "experience": 60.0
+  },
+  "3018": {
+    "id": 3018,
+    "name": "Super energy",
+    "portion_ids": [
+      3016,
+      3018,
+      3020,
+      3022
+    ],
+    "base": 103,
+    "base_count": 1,
+    "ingredient": 2970,
+    "ingredient_count": 1,
+    "level": 52,
+    "experience": 117.5
+  },
+  "3026": {
+    "id": 3026,
+    "name": "Super restore",
+    "portion_ids": [
+      3024,
+      3026,
+      3028,
+      3030
+    ],
+    "base": 3004,
+    "base_count": 1,
+    "ingredient": 223,
+    "ingredient_count": 1,
+    "level": 63,
+    "experience": 142.5
+  },
+  "3410": {
+    "id": 3410,
+    "name": "Serum 207",
+    "portion_ids": [
+      3408,
+      3410,
+      3412,
+      3414
+    ],
+    "base": 95,
+    "base_count": 1,
+    "ingredient": 592,
+    "ingredient_count": 1,
+    "level": 15,
+    "experience": 50.0,
+    "extra_requirement": [
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "SHADES_OF_MORTTON"
+        }
+      }
+    ]
+  },
+  "12627": {
+    "id": 12627,
+    "name": "Stamina potion",
+    "portion_ids": [
+      12625,
+      12627,
+      12629,
+      12631
+    ],
+    "base": 20551,
+    "base_count": 4,
+    "ingredient": 12640,
+    "ingredient_count": 4,
+    "level": 77,
+    "experience": 102.0
+  },
+  "26583": {
+    "id": 26583,
+    "name": "Goblin potion",
+    "portion_ids": [
+      26581,
+      26583,
+      26585,
+      26587
+    ],
+    "base": 3002,
+    "base_count": 1,
+    "ingredient": 26569,
+    "ingredient_count": 1,
+    "level": 47,
+    "experience": 55.0,
+    "extra_requirement": [
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "LAND_OF_THE_GOBLINS"
+        }
+      }
+    ]
+  },
+  "3034": {
+    "id": 3034,
+    "name": "Agility potion",
+    "portion_ids": [
+      3032,
+      3034,
+      3036,
+      3038
+    ],
+    "base": 3002,
+    "base_count": 1,
+    "ingredient": 2152,
+    "ingredient_count": 1,
+    "level": 34,
+    "experience": 80.0
+  },
+  "91": {
+    "id": 91,
+    "name": "Guam potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 249,
+    "ingredient_count": 1,
+    "level": 3,
+    "experience": 0.0
+  },
+  "21981": {
+    "id": 21981,
+    "name": "Super antifire potion",
+    "portion_ids": [
+      21978,
+      21981,
+      21984,
+      21987
+    ],
+    "base": 2458,
+    "base_count": 4,
+    "ingredient": 6693,
+    "ingredient_count": 1,
+    "level": 92,
+    "experience": 130.0
+  },
+  "93": {
+    "id": 93,
+    "name": "Marrentill potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 251,
+    "ingredient_count": 1,
+    "level": 5,
+    "experience": 0.0
+  },
+  "95": {
+    "id": 95,
+    "name": "Tarromin potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 253,
+    "ingredient_count": 1,
+    "level": 12,
+    "experience": 0.0
+  },
+  "97": {
+    "id": 97,
+    "name": "Harralander potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 255,
+    "ingredient_count": 1,
+    "level": 22,
+    "experience": 0.0
+  },
+  "3042": {
+    "id": 3042,
+    "name": "Magic potion",
+    "portion_ids": [
+      3040,
+      3042,
+      3044,
+      3046
+    ],
+    "base": 2483,
+    "base_count": 1,
+    "ingredient": 3138,
+    "ingredient_count": 1,
+    "level": 76,
+    "experience": 172.5
+  },
+  "99": {
+    "id": 99,
+    "name": "Ranarr potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 257,
+    "ingredient_count": 1,
+    "level": 30,
+    "experience": 0.0
+  },
+  "101": {
+    "id": 101,
+    "name": "Irit potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 259,
+    "ingredient_count": 1,
+    "level": 45,
+    "experience": 0.0
+  },
+  "26342": {
+    "id": 26342,
+    "name": "Ancient brew",
+    "portion_ids": [
+      26340,
+      26342,
+      26344,
+      26346
+    ],
+    "base": 109,
+    "base_count": 1,
+    "ingredient": 26368,
+    "ingredient_count": 1,
+    "level": 85,
+    "experience": 190.0
+  },
+  "103": {
+    "id": 103,
+    "name": "Avantoe potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 261,
+    "ingredient_count": 1,
+    "level": 50,
+    "experience": 0.0
+  },
+  "4840": {
+    "id": 4840,
+    "name": "Unfinished potion",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 1534,
+    "ingredient_count": 1,
+    "level": 8,
+    "experience": 0.0,
+    "extra_requirement": [
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "ZOGRE_FLESH_EATERS"
+        }
+      }
+    ]
+  },
+  "105": {
+    "id": 105,
+    "name": "Kwuarm potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 263,
+    "ingredient_count": 1,
+    "level": 55,
+    "experience": 0.0
+  },
+  "7658": {
+    "id": 7658,
+    "name": "Guthix balance (unf)",
+    "portion_ids": [
+      7652,
+      7654,
+      7656,
+      7658
+    ],
+    "base": 2430,
+    "base_count": 4,
+    "ingredient": 1550,
+    "ingredient_count": 1,
+    "level": 22,
+    "experience": 25.0
+  },
+  "12907": {
+    "id": 12907,
+    "name": "Anti-venom",
+    "portion_ids": [
+      12905,
+      12907,
+      12909,
+      12911
+    ],
+    "base": 5958,
+    "base_count": 4,
+    "ingredient": 12934,
+    "ingredient_count": 20,
+    "level": 87,
+    "experience": 120.0
+  },
+  "107": {
+    "id": 107,
+    "name": "Cadantine potion (unf)",
+    "portion_ids": [
+      107,
+      23800
+    ],
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 265,
+    "ingredient_count": 1,
+    "level": 66,
+    "experience": 0.0
+  },
+  "4844": {
+    "id": 4844,
+    "name": "Relicym's balm",
+    "portion_ids": [
+      4842,
+      4844,
+      4846,
+      4848
+    ],
+    "base": 0,
+    "base_count": 1,
+    "ingredient": 1526,
+    "ingredient_count": 1,
+    "level": 8,
+    "experience": 40.0,
+    "extra_requirement": [
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "ZOGRE_FLESH_EATERS"
+        }
+      }
+    ]
+  },
+  "109": {
+    "id": 109,
+    "name": "Dwarf weed potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 267,
+    "ingredient_count": 1,
+    "level": 72,
+    "experience": 0.0
+  },
+  "7662": {
+    "id": 7662,
+    "name": "Guthix balance",
+    "portion_ids": [
+      7660,
+      7662,
+      7664,
+      7666
+    ],
+    "base": 7658,
+    "base_count": 1,
+    "ingredient": 7650,
+    "ingredient_count": 1,
+    "level": 22,
+    "experience": 25.0,
+    "extra_requirement": [
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "IN_AID_OF_THE_MYREQUE"
+        }
+      }
+    ]
+  },
+  "111": {
+    "id": 111,
+    "name": "Torstol potion (unf)",
+    "base": 227,
+    "base_count": 1,
+    "ingredient": 269,
+    "ingredient_count": 1,
+    "level": 78,
+    "experience": 0.0
+  },
+  "27632": {
+    "id": 27632,
+    "name": "Forgotten brew",
+    "portion_ids": [
+      27629,
+      27632,
+      27635,
+      27638
+    ],
+    "base": 27369,
+    "base_count": 4,
+    "ingredient": 27616,
+    "ingredient_count": 80,
+    "level": 91,
+    "experience": 145.0
+  },
+  "115": {
+    "id": 115,
+    "name": "Strength potion",
+    "portion_ids": [
+      113,
+      115,
+      117,
+      119
+    ],
+    "base": 95,
+    "base_count": 1,
+    "ingredient": 225,
+    "ingredient_count": 1,
+    "level": 12,
+    "experience": 50.0
+  },
+  "12915": {
+    "id": 12915,
+    "name": "Anti-venom+",
+    "portion_ids": [
+      12913,
+      12915,
+      12917,
+      12919
+    ],
+    "base": 12911,
+    "base_count": 4,
+    "ingredient": 269,
+    "ingredient_alternatives": [{"_1": 111, "_2": 1 }],
+    "ingredient_count": 1,
+    "level": 94,
+    "experience": 125.0
+  },
+  "121": {
+    "id": 121,
+    "name": "Attack potion",
+    "portion_ids": [
+      121,
+      123,
+      125,
+      2428
+    ],
+    "base": 91,
+    "base_count": 1,
+    "ingredient": 221,
+    "ingredient_count": 1,
+    "level": 3,
+    "experience": 25.0
+  },
+  "127": {
+    "id": 127,
+    "name": "Restore potion",
+    "portion_ids": [
+      127,
+      129,
+      131,
+      2430
+    ],
+    "base": 97,
+    "base_count": 1,
+    "ingredient": 223,
+    "ingredient_count": 1,
+    "level": 22,
+    "experience": 62.5
+  }
+}

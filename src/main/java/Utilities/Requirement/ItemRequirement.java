@@ -1,7 +1,6 @@
 package Utilities.Requirement;
 
 import io.vavr.Tuple2;
-import org.apache.commons.logging.Log;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.utilities.Logger;

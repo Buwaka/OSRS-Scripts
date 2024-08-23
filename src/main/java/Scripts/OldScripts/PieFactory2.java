@@ -1,6 +1,6 @@
 package Scripts.OldScripts;
 
-import Cycles.CombineCycle;
+import Cycles.General.CombineCycle;
 import Utilities.Scripting.ICycle;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.script.Category;

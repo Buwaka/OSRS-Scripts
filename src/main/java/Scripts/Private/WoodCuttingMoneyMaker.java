@@ -1,6 +1,7 @@
 package Scripts.Private;
 
-import Cycles.CycleLibrary;
+import Cycles.CycleGenerators.CycleLibrary;
+import Cycles.CycleGenerators.FireMakingCycleGenerator;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
@@ -18,7 +19,6 @@ public class WoodCuttingMoneyMaker extends tpircSScript
     {
         //        printVersion(org.apache.commons.math3.util.MathArrays.class);
         //        printVersion(org.apache.hc.client5.http.impl.classic.HttpClients.class);
-        System.out.print(CycleLibrary.FireMakingWoodCuttingTraining().toString());
 
     }
 
@@ -52,7 +52,7 @@ public class WoodCuttingMoneyMaker extends tpircSScript
 
     private void CreateCycles()
     {
-        AddCycle(CycleLibrary::FireMakingWoodCuttingTraining);
+        AddCycle(FireMakingCycleGenerator::FireMakingWoodCuttingTraining);
 
 
         // AddCycle(CycleLibrary.GetWoodCuttingCycle(WoodDB.WoodType.Yew));

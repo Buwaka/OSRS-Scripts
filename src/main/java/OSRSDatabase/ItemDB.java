@@ -507,7 +507,7 @@ public class ItemDB extends OSRSDataBase
                     continue;
                 }
 
-                if((" " + Obj.name + " ").toLowerCase().contains(" " + keyword.toLowerCase() + " "))
+                if((Obj.name).toLowerCase().contains(keyword.toLowerCase()))
                 {
                     out.add(Obj);
                 }
@@ -523,7 +523,7 @@ public class ItemDB extends OSRSDataBase
             {
                 ItemDBLock.unlock();
             }
-            throw new RuntimeException(e);
+            return new ItemData[0];
         }
 
         ItemDBLock.unlock();
@@ -581,7 +581,7 @@ public class ItemDB extends OSRSDataBase
         }
 
         ItemDBLock.unlock();
-        return out.firstEntry().getValue();
+        return out.isEmpty() ? null : out.firstEntry().getValue();
     }
 
     public static int GetProfitAlch(int ID)

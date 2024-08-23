@@ -1,0 +1,452 @@
+{
+  "25376": {
+    "ticks": 2.83,
+    "id": 25376,
+    "type": "Pickaxe",
+    "name": "Dragon pickaxe (or) (Trailblazer)",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "cosmetic"
+    ]
+  },
+  "25063": {
+    "ticks": 2.83,
+    "id": 25063,
+    "type": "Pickaxe",
+    "name": "Infernal pickaxe (or)",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 61
+        }
+      },
+      {
+        "Level": {
+          "skill": "Smithing",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "cosmetic",
+      "special"
+    ]
+  },
+  "12297": {
+    "ticks": 5.0,
+    "id": 12297,
+    "type": "Pickaxe",
+    "name": "Black pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 10
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 11
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  "23276": {
+    "ticks": 3.0,
+    "id": 23276,
+    "type": "Pickaxe",
+    "name": "Gilded pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 40
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 41
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "cosmetic"
+    ]
+  },
+  "20014": {
+    "ticks": 2.83,
+    "id": 20014,
+    "type": "Pickaxe",
+    "name": "3rd age pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 65
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "cosmetic"
+    ]
+  },
+  "11920": {
+    "ticks": 2.83,
+    "id": 11920,
+    "type": "Pickaxe",
+    "name": "Dragon pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  "1265": {
+    "ticks": 8.0,
+    "id": 1265,
+    "type": "Pickaxe",
+    "name": "Bronze pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 1
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 1
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  "1267": {
+    "ticks": 7.0,
+    "id": 1267,
+    "type": "Pickaxe",
+    "name": "Iron pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 1
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 1
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  "1269": {
+    "ticks": 6.0,
+    "id": 1269,
+    "type": "Pickaxe",
+    "name": "Steel pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 5
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 6
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  "1271": {
+    "ticks": 4.0,
+    "id": 1271,
+    "type": "Pickaxe",
+    "name": "Adamant pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 30
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 31
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  "23863": {
+    "ticks": 2.75,
+    "id": 23863,
+    "type": "Pickaxe",
+    "name": "Crystal pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 70
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 71
+        }
+      },
+      {
+        "Level": {
+          "skill": "Agility",
+          "level": 50
+        }
+      },
+      {
+        "Quest": {
+          "QuestType": "P2P",
+          "QuestName": "SONG_OF_THE_ELVES"
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "special"
+    ]
+  },
+  "1273": {
+    "ticks": 5.0,
+    "id": 1273,
+    "type": "Pickaxe",
+    "name": "Mithril pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 20
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 21
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  "1275": {
+    "ticks": 3.0,
+    "id": 1275,
+    "type": "Pickaxe",
+    "name": "Rune pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": true,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 40
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 41
+        }
+      }
+    ],
+    "tags": [
+      "cheap"
+    ]
+  },
+  "13243": {
+    "ticks": 2.83,
+    "id": 13243,
+    "type": "Pickaxe",
+    "name": "Infernal pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 61
+        }
+      },
+      {
+        "Level": {
+          "skill": "Smithing",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "special",
+      null
+    ]
+  },
+  "23677": {
+    "ticks": 2.83,
+    "id": 23677,
+    "type": "Pickaxe",
+    "name": "Dragon pickaxe (or)",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "cosmetic"
+    ]
+  },
+  "12797": {
+    "ticks": 2.83,
+    "id": 12797,
+    "type": "Pickaxe",
+    "name": "Dragon pickaxe",
+    "equipable": true,
+    "members": false,
+    "ge_tradable": false,
+    "requirements": [
+      {
+        "Level": {
+          "skill": "Attack",
+          "level": 60
+        }
+      },
+      {
+        "Level": {
+          "skill": "Mining",
+          "level": 61
+        }
+      }
+    ],
+    "tags": [
+      "expensive",
+      "cosmetic"
+    ]
+  }
+}

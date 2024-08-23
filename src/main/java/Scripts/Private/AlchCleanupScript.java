@@ -1,6 +1,6 @@
 package Scripts.Private;
 
-import Cycles.AlchCycle;
+import Cycles.Skilling.AlchCycle;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;

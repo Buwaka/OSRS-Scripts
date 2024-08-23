@@ -1,6 +1,6 @@
 package Scripts.OldScripts;
 
-import Cycles.AdvanceTasks.OpenBankTask;
+import Cycles.Tasks.AdvanceTasks.OpenBankTask;
 import Utilities.Scripting.CycleUtilities;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.bank.Bank;

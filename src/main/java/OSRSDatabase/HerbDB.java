@@ -1,16 +1,19 @@
 package OSRSDatabase;
 
+import Utilities.OSRSUtilities;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import org.dreambot.api.utilities.Logger;
 
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HerbDB extends OSRSDataBase
 {
-    final private static String                               HerbDBPath = "Skilling/herbDB.json";
-    private static       ConcurrentHashMap<Integer, HerbData> HerbDBMap  = null;
+    final private static String                     HerbDBPath = "Skilling/herbDB.json";
+    private static       HashMap<Integer, HerbData> HerbDBMap  = null;
 
     public static class HerbData
     {
@@ -47,13 +50,18 @@ public class HerbDB extends OSRSDataBase
 
     private static void ReadHerbDB()
     {
-        HerbDBMap = new ConcurrentHashMap<>();
+        if(HerbDBMap != null)
+        {
+            return;
+        }
+
+        HerbDBMap = new HashMap<>();
 
         try
         {
             InputStreamReader File   = new InputStreamReader(GetInputStream(HerbDBPath));
             JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
+            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
             Reader.setLenient(true);
 
             Reader.beginObject();
@@ -105,6 +113,40 @@ public class HerbDB extends OSRSDataBase
         return HerbDBMap.keySet().stream().mapToInt(t -> t).toArray();
     }
 
+    /**
+     * @param ID of clean herb
+     *
+     * @return
+     */
+    public static HerbData GetGrimyHerb(int ID)
+    {
+        HerbData herb = GetHerbData(ID);
+
+        if(herb == null)
+        {
+            return null;
+        }
+
+        return GetHerbData(herb.grimy_id);
+    }
+
+    /**
+     * @param ID of clean herb
+     *
+     * @return
+     */
+    public static HerbData GetCleanHerb(int ID)
+    {
+        HerbData herb = GetHerbData(ID);
+
+        if(herb == null)
+        {
+            return null;
+        }
+
+        return GetHerbData(herb.id);
+    }
+
     public static boolean isCleanHerb(int ID)
     {
         return !isGrimyHerb(ID);
@@ -127,6 +169,6 @@ public class HerbDB extends OSRSDataBase
             ReadHerbDB();
         }
 
-        return HerbDBMap.search(1, (key, val) -> val.name.equalsIgnoreCase(name)) != null;
+        return HerbDBMap.entrySet().stream().anyMatch((entry) -> entry.getValue().name.equalsIgnoreCase(name));
     }
 }

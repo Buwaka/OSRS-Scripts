@@ -90,6 +90,16 @@ public abstract class SimpleCycle implements ICycle, Serializable
         StartUpTaskGenerators.addAll(List.of(TaskGenerator));
     }
 
+//    public void AddStartUpTask(Supplier<SimpleTask>... TaskGenerator)
+//    {
+//        if(StartUpTaskGenerators == null)
+//        {
+//            StartUpTaskGenerators = new ArrayList<>();
+//        }
+//
+//        StartUpTaskGenerators.addAll(TaskGenerator);
+//    }
+
     public void AddEndTask(Supplier<SimpleTask[]>... TaskGenerator)
     {
         if(EndTaskGenerators == null)

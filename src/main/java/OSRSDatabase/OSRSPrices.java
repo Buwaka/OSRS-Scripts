@@ -1,6 +1,7 @@
 package OSRSDatabase;
 
 import Utilities.GrandExchange.GEInstance;
+import Utilities.OSRSUtilities;
 import Utilities.Patterns.SYMaths;
 import Utilities.Scripting.ExternalLambdaUsage;
 import com.google.gson.Gson;
@@ -14,8 +15,8 @@ import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.hc.core5.net.URIBuilder;
 import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
+import org.mapdb.HTreeMap;
+import org.mapdb.Serializer;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
@@ -23,6 +24,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -32,12 +34,49 @@ public class OSRSPrices implements Serializable
     @Serial
     private static final long serialVersionUID = -5940381882555771355L;
 
-    private static final String AllItemsEndPoint   = "https://prices.runescape.wiki/api/v1/osrs/latest";
-    private static final String TimeSeriesEndPoint = "https://prices.runescape.wiki/api/v1/osrs/timeseries";
+    private static final String                       AllItemsEndPoint   = "https://prices.runescape.wiki/api/v1/osrs/latest";
+    private static final HTreeMap<Integer, GELatestData> AllItemsCache      = OSRSUtilities.CacheDB.hashMap("OSRSPrices-Latest").keySerializer(
+            Serializer.INTEGER).valueSerializer(Serializer.JAVA).expireAfterGet(6, TimeUnit.HOURS).createOrOpen();
+//private static           Cache<Integer, GELatestData> AllItemsCache      = OSRSUtilities.GetCache("GELatest", Integer.class, GELatestData.class);
+    //private static final HashMap<Integer, GELatestData> AllItemsCache  = new HashMap<>();
+    private static final String                       TimeSeriesEndPoint = "https://prices.runescape.wiki/api/v1/osrs/timeseries";
+    private static final HTreeMap<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache      = OSRSUtilities.CacheDB.hashMap("OSRSPrices-TimeSeries").keySerializer(
+            Serializer.JAVA).valueSerializer(Serializer.JAVA).hashSeed(5).expireAfterGet(5, TimeUnit.MINUTES).createOrOpen();
+    //private static final HashMap<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache  = new HashMap<>();
+//    private static Cache<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache = OSRSUtilities.GetCache("TimeSeries", TimeSeriesKey.class, GETimeSeriesData[].class);
 
     public static final int CoinID = 995;
 
-    enum TimeSeriesFormat
+    public static class TimeSeriesKey implements Serializable
+    {
+        @Serial
+        private static final long serialVersionUID = -97952331964844432L;
+        public int ID;
+        public TimeSeriesFormat format;
+
+        public TimeSeriesKey(int ID, TimeSeriesFormat format)
+        {
+            this.ID     = ID;
+            this.format = format;
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if(this == o) {return true;}
+            if(o == null || getClass() != o.getClass()) {return false;}
+            TimeSeriesKey that = (TimeSeriesKey) o;
+            return ID == that.ID && format.ordinal() == that.format.ordinal();
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash(ID, format.ordinal());
+        }
+    }
+
+    public enum TimeSeriesFormat implements Serializable
     {
         m5("5m"),
         h1("1h"),
@@ -63,18 +102,22 @@ public class OSRSPrices implements Serializable
         }
     }
 
-    public static class GETimeSeriesData
+    public static class GETimeSeriesData implements Serializable
     {
-        public           long    timestamp;
+        @Serial
+        private static final long serialVersionUID = -3670655454795683108L;
+        public long timestamp;
         public @Nullable Integer avgHighPrice;
         public @Nullable Integer avgLowPrice;
         public           int     highPriceVolume;
         public           int     lowPriceVolume;
     }
 
-    public static class GELatestData
+    public static class GELatestData implements Serializable
     {
-//        public int     id;
+        @Serial
+        private static final long serialVersionUID = 3260809249295661528L;
+        //        public int     id;
         @Nullable
         public Integer high;
         @Nullable
@@ -86,32 +129,35 @@ public class OSRSPrices implements Serializable
     }
 
     @ExternalLambdaUsage
-    public static int GetAverageHighPrice(int ID)
+    public static Integer GetAverageHighPrice(int ID)
     {
         return GetHighAveragePrice(ID, TimeSeriesFormat.h6);
     }
 
-    @Cacheable("GEPrices")
-    public static int GetHighAveragePrice(int ID, TimeSeriesFormat format)
+    public static Integer GetHighAveragePrice(int ID, TimeSeriesFormat format)
     {
         var Timeseries = GetTimeSeries(ID, format);
         if(Timeseries == null || Timeseries.length == 0)
         {
-            return -1;
+            return null;
         }
 
         var Avg = TrimmedAveragePrice(Timeseries);
         if(Avg == null || Avg._3 == null)
         {
-            return -1;
+            return null;
         }
 
         return Avg._3;
     }
 
-    @Cacheable("LatestGEPrices")
-    public static Map<Integer, GELatestData> GetLatest()
+    public static GELatestData GetLatest(int ID)
     {
+        if(AllItemsCache.containsKey(ID))
+        {
+            return AllItemsCache.get(ID);
+        }
+
         final int MaxAttempts = 5;
         int       attempt     = 0;
         while(attempt < MaxAttempts)
@@ -147,9 +193,9 @@ public class OSRSPrices implements Serializable
                                                                                         Reader.beginObject();
                                                                                         while(Reader.hasNext())
                                                                                         {
-                                                                                            int ID = Integer.parseInt(Reader.nextName());
+                                                                                            int id = Integer.parseInt(Reader.nextName());
                                                                                             var data = (GELatestData) gson.fromJson(Reader, GELatestData.class);
-                                                                                            All.put(ID, data);
+                                                                                            All.put(id, data);
                                                                                         }
                                                                                         Reader.endObject();
                                                                                         Reader.endObject();
@@ -157,13 +203,20 @@ public class OSRSPrices implements Serializable
 
                                                                                         return All;
                                                                                     });
+                AllItemsCache.putAll(AllItems);
 
                 if(Code.get() >= 300)
                 {
                     attempt++;
                     continue;
                 }
-                return AllItems;
+                if(!AllItemsCache.containsKey(ID))
+                {
+                    Logger.log("OSRSPrices: GetLatest: Can't find item with ID " + ID);
+                    return null;
+                }
+
+                return AllItemsCache.get(ID);
             } catch(Exception e)
             {
                 Logger.log("OSRSPrices: " + e);
@@ -173,9 +226,13 @@ public class OSRSPrices implements Serializable
         return null;
     }
 
-    @Cacheable("GETimeData")
-    public static GETimeSeriesData[] GetTimeSeries(int ID, TimeSeriesFormat format)
+    private static GETimeSeriesData[] GetTimeSeries(int ID, TimeSeriesFormat format)
     {
+        TimeSeriesKey Key = new TimeSeriesKey(ID, format);
+        if(TimeSeriesCache.containsKey(Key))
+        {
+            return TimeSeriesCache.get(Key);
+        }
         final int MaxAttempts = 5;
         int       attempt     = 0;
         while(attempt < MaxAttempts)
@@ -218,6 +275,8 @@ public class OSRSPrices implements Serializable
                                                                                         return series;
                                                                                     });
 
+                TimeSeriesCache.put(Key, TimeSeries);
+
                 if(Code.get() >= 300)
                 {
                     attempt++;
@@ -235,7 +294,6 @@ public class OSRSPrices implements Serializable
 
     public static long GetTotalValue(List<Item> allItems)
     {
-        var AllItems = GetLatest();
         long total = 0;
 
         for(var item : allItems)
@@ -245,7 +303,7 @@ public class OSRSPrices implements Serializable
                 continue;
             }
 
-            var latest = AllItems.get(item.getID());
+            var latest = GetLatest(item.getID());
             if(latest != null)
             {
                 if(latest.high != null)
@@ -297,46 +355,46 @@ public class OSRSPrices implements Serializable
     }
 
     @ExternalLambdaUsage
-    public static int GetAverageLowPrice(int ID)
+    public static Integer GetAverageLowPrice(int ID)
     {
         return GetAverageLowPrice(ID, TimeSeriesFormat.h6);
     }
 
-    public static int GetAverageLowPrice(int ID, TimeSeriesFormat format)
+    public static Integer GetAverageLowPrice(int ID, TimeSeriesFormat format)
     {
         var Timeseries = GetTimeSeries(ID, format);
         if(Timeseries == null || Timeseries.length == 0)
         {
-            return -1;
+            return null;
         }
 
         var Avg = TrimmedAveragePrice(Timeseries);
         if(Avg == null || Avg._1 == null)
         {
-            return -1;
+            return null;
         }
 
         return Avg._1;
     }
 
     @ExternalLambdaUsage
-    public static int GetAveragePrice(int ID)
+    public static Integer GetAveragePrice(int ID)
     {
         return GetAveragePrice(ID, TimeSeriesFormat.h6);
     }
 
-    public static int GetAveragePrice(int ID, TimeSeriesFormat format)
+    public static Integer GetAveragePrice(int ID, TimeSeriesFormat format)
     {
         var Timeseries = GetTimeSeries(ID, format);
         if(Timeseries == null || Timeseries.length == 0)
         {
-            return -1;
+            return null;
         }
 
         var Avg = TrimmedAveragePrice(Timeseries);
         if(Avg == null || Avg._2 == null)
         {
-            return -1;
+            return null;
         }
 
         return Avg._2;
@@ -374,12 +432,12 @@ public class OSRSPrices implements Serializable
     //    {
     //        return GetVolume(ID, TimeSeriesFormat.h6);
     //    }
-    public static int GetDailyVolume(int ID)
+    public static Integer GetDailyVolume(int ID)
     {
         var series = GetTimeSeries(ID, TimeSeriesFormat.h24);
         if(series == null || series.length == 0)
         {
-            return -1;
+            return null;
         }
 
         return series[series.length - 1].highPriceVolume + series[series.length - 1].lowPriceVolume;

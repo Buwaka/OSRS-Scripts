@@ -1,8 +1,8 @@
 package Utilities.Scripting;
 
-import Cycles.AdvanceTasks.GraveStoneTask;
-import Cycles.AdvanceTasks.OpenBankTask;
-import Cycles.CycleLibrary;
+import Cycles.Tasks.AdvanceTasks.GraveStoneTask;
+import Cycles.Tasks.AdvanceTasks.OpenBankTask;
+import Cycles.CycleGenerators.CycleLibrary;
 import Utilities.GrandExchange.GEInstance;
 import Utilities.OSRSUtilities;
 import Utilities.Patterns.Delegates.Delegate;
@@ -71,18 +71,17 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             false);
     private        AtomicBoolean                     isGameStateChanging    = new AtomicBoolean(
             false);
-    private        AtomicBoolean                     GameTicked             = new AtomicBoolean(
+    private              AtomicBoolean      GameTicked            = new AtomicBoolean(
             false);
-    private        AtomicBoolean                     isPaused               = new AtomicBoolean(true);
-    private        AtomicInteger                     PauseTime              = new AtomicInteger(
+    private              AtomicBoolean      isPaused              = new AtomicBoolean(true);
+    private              AtomicInteger      PauseTime             = new AtomicInteger(
             GetRandom().nextInt(5000) + 5000); // is pause on the start
-    private        long                              StopTaskTimeout        = 10000;
-    private        OpenBankTask                      CacheBank              = null;
-    private        GraveStoneListener                GraveListener          = new GraveStoneListener();
-    private        GEInstance                        GrandExchangeInstance  = null;
-    private        PlayerConfig                      Config                 = new PlayerConfig();
-    private ProfitTracker PTracker = new ProfitTracker();
-
+    private              long               StopTaskTimeout       = 10000;
+    private              OpenBankTask       CacheBank             = null;
+    private              GraveStoneListener GraveListener         = new GraveStoneListener();
+    private              GEInstance         GrandExchangeInstance = null;
+    private              PlayerConfig       Config                = new PlayerConfig();
+    private              ProfitTracker      PTracker              = new ProfitTracker();
     private boolean DebugPaint = true;
 
 
@@ -96,6 +95,7 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
 
     public tpircSScript()
     {
+        ResetRandomizer();
         ScriptManager.getScriptManager().addListener(PTracker);
         GraveListener.onDeath.Subscribe(this, this::onDeath);
         CycleLibrary.init(this);

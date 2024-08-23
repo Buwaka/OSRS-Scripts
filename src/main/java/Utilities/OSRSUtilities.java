@@ -5,6 +5,7 @@ import OSRSDatabase.ItemDB;
 import Utilities.Combat.CombatManager;
 import Utilities.Patterns.GameTickDelegate;
 import Utilities.Requirement.IRequirement;
+import Utilities.Scripting.PlayerConfig;
 import Utilities.Scripting.tpircSScript;
 import Utilities.Serializers.*;
 import com.google.gson.GsonBuilder;
@@ -12,7 +13,6 @@ import io.vavr.Tuple2;
 import org.dreambot.api.Client;
 import org.dreambot.api.data.consumables.Food;
 import org.dreambot.api.input.Mouse;
-import org.dreambot.api.methods.combat.Combat;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
@@ -42,12 +42,18 @@ import org.dreambot.api.wrappers.interactive.Character;
 import org.dreambot.api.wrappers.interactive.*;
 import org.dreambot.api.wrappers.items.GroundItem;
 import org.dreambot.api.wrappers.widgets.WidgetChild;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
+
 
 import java.awt.*;
+import java.io.File;
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
+import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
@@ -68,8 +74,9 @@ public class OSRSUtilities
                                                                                               .excludeFieldsWithModifiers(
                                                                                                       Modifier.STATIC,
                                                                                                       Modifier.TRANSIENT);
-    // TODO make function to equip best combat gear, perhaps even splitting it up into combat/magic/ranged
-    public static        Random                        rand                = new Random();
+    public static     Random rand                = new Random();
+//    private static       HashMap<String, CacheManager> CacheManagers       = new HashMap<>();
+        public static DB     CacheDB;
 
     static
     {
@@ -83,7 +90,45 @@ public class OSRSUtilities
         OSRSGsonBuilder.registerTypeAdapter(SerializableRunnable.class,
                                             new SerializableRunnableSerializer());
 
+        Path ScriptFolder = PlayerConfig.GetScriptConfigFolder();
+                CacheDB = DBMaker.fileDB(ScriptFolder + "\\Cache.db").closeOnJvmShutdown().fileChannelEnable().executorEnable().fileLockDisable().make();
     }
+
+//    public static <Key, Value> Cache<Key, Value> GetCache(String Alias, Class<Key> key, Class<Value> value)
+//    {
+//        CacheManager cacheManager;
+//        if(CacheManagers.containsKey(Alias))
+//        {
+//            cacheManager = CacheManagers.get(Alias);
+//        }
+//        else
+//        {
+//            Path ScriptFolder = PlayerConfig.GetScriptConfigFolder();
+//            File CacheFile    = new File(String.valueOf(ScriptFolder), Alias);
+//            Logger.log("OSRSUtilities: GetCache: ScriptFolder:" + CacheFile + " '" + ScriptFolder +
+//                       "'");
+//            var builder = CacheManagerBuilder.newCacheManagerBuilder()
+//                                             .with(CacheManagerBuilder.persistence(CacheFile))
+//                                             .using(new DefaultLocalPersistenceService(new DefaultPersistenceConfiguration(
+//                                                     CacheFile)));
+//            var resourcePool = ResourcePoolsBuilder.heap(256).disk(128, MemoryUnit.MB).build();
+//            var ExpiryPolicy = ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofHours(6));
+//            var WriteBehindService = WriteBehindConfigurationBuilder.newBatchedWriteBehindConfiguration(
+//                    1,
+//                    TimeUnit.SECONDS,
+//                    4).build();
+//            var CacheConfiguration = CacheConfigurationBuilder.newCacheConfigurationBuilder(key,
+//                                                                                            value,
+//                                                                                            resourcePool)
+//                                                              .withExpiry(ExpiryPolicy)
+//                                                              .withService(WriteBehindService)
+//                                                              .build();
+//            cacheManager = builder.withCache(Alias, CacheConfiguration).build(true);
+//            CacheManagers.put(Alias, cacheManager);
+//            cacheManager.close();
+//        }
+//        return cacheManager.getCache(Alias, key, value);
+//    }
 
 
     public enum ScriptIntenity
@@ -929,10 +974,10 @@ public class OSRSUtilities
 
     public static Boolean PrayAll(int Timeout, int... IDs)
     {
-        final String BonesAction = "Bury";
+        final String BonesAction   = "Bury";
         final String ScatterAction = "Scatter";
-        boolean      result      = true;
-        long         start       = System.nanoTime();
+        boolean      result        = true;
+        long         start         = System.nanoTime();
 
         Logger.log("PrayAll: Trying to Bury bones");
 

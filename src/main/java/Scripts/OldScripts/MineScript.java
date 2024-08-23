@@ -1,6 +1,6 @@
 package Scripts.OldScripts;
 
-import Cycles.MineCycle;
+import Cycles.Skilling.MineCycle;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.ICycle;
 import Utilities.Scripting.tpircSScript;

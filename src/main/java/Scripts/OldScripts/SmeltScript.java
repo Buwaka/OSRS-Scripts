@@ -1,7 +1,7 @@
 package Scripts.OldScripts;
 
 
-import Cycles.SmeltCycle;
+import Cycles.Skilling.SmeltCycle;
 import Utilities.Scripting.ICycle;
 import Utilities.Scripting.tpircSScript;
 import io.vavr.Tuple2;
