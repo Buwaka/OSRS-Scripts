@@ -10,6 +10,8 @@ import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.dialogues.Dialogues;
+import org.dreambot.api.utilities.Logger;
+import org.dreambot.api.wrappers.items.Item;
 
 public class SimpleInventoryProcessCycle extends SimpleCycle
 {
@@ -19,7 +21,10 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
     private transient InteractInventoryTask InteractTask     = null;
     private transient BankItemsTask         BankTask         = null;
     private transient boolean               InteractComplete = false;
-    private transient boolean               Complete;
+    private transient boolean InteractEveryItem = false;
+    private transient boolean Complete;
+
+
 
     public SimpleInventoryProcessCycle(String name, int ItemID)
     {
@@ -41,6 +46,11 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
         SourceItemID = ItemID;
     }
 
+    public void SetInteractEveryItem(boolean interactEveryItem)
+    {
+        InteractEveryItem = interactEveryItem;
+    }
+
     /**
      * @param Script
      *
@@ -51,13 +61,21 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
     {
         if(InteractComplete)
         {
+            Logger.log("SimpleInventoryProcessCycle: onLoop: Interact Complete");
+            if(InteractEveryItem && Inventory.contains(SourceItemID))
+            {
+                Logger.log("SimpleInventoryProcessCycle: onLoop: Interact every item, creating new task");
+                Script.addNodes(CreateInteractTask());
+            }
             if(Dialogues.inDialogue())
             {
+                Logger.log("SimpleInventoryProcessCycle: onLoop: In Dialogue, creating new interact task");
                 InteractComplete = false;
                 Script.addNodes(CreateInteractTask());
             }
             else if(!Inventory.contains(SourceItemID))
             {
+                Logger.log("SimpleInventoryProcessCycle: onLoop: no more source items in enventory, done");
                 return 0;
             }
         }
@@ -66,7 +84,29 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
 
     private InteractInventoryTask CreateInteractTask()
     {
-        InteractTask = new InteractInventoryTask("Interacting with items", Action, SourceItemID);
+        Item item = Inventory.get(SourceItemID);
+        if(item == null)
+        {
+            InteractTask = new InteractInventoryTask("Interacting with items", Action, SourceItemID);
+        }
+        else
+        {
+            if(InteractEveryItem)
+            {
+                for(var inv : Inventory.all())
+                {
+                    if(inv != null && inv.getID() == SourceItemID)
+                    {
+                        InteractTask = new InteractInventoryTask("Interacting with items", Action, inv);
+                    }
+                }
+            }
+            else
+            {
+                InteractTask = new InteractInventoryTask("Interacting with items", Action, item);
+            }
+        }
+
         if(Tool != null)
         {
             InteractTask.setTool(Tool);

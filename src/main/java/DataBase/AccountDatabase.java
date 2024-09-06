@@ -34,10 +34,15 @@ public class AccountDatabase
         NewAccount.LastUsed     = Date.from(Instant.now());
 
         var db = DataBaseUtilities.GetDataBase(DatabaseName);
+        if(db == null)
+        {
+            return false;
+        }
 
         var collection = DataBaseUtilities.GetCollection(db,
                                                          AccountCollectionName,
                                                          AccountData.class);
+
 
         var result = collection.insertOne(NewAccount);
 

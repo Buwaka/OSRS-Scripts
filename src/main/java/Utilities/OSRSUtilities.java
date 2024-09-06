@@ -41,19 +41,15 @@ import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.Character;
 import org.dreambot.api.wrappers.interactive.*;
 import org.dreambot.api.wrappers.items.GroundItem;
+import org.dreambot.api.wrappers.items.Item;
 import org.dreambot.api.wrappers.widgets.WidgetChild;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-
 
 import java.awt.*;
-import java.io.File;
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
@@ -74,9 +70,9 @@ public class OSRSUtilities
                                                                                               .excludeFieldsWithModifiers(
                                                                                                       Modifier.STATIC,
                                                                                                       Modifier.TRANSIENT);
-    public static     Random rand                = new Random();
-//    private static       HashMap<String, CacheManager> CacheManagers       = new HashMap<>();
-        public static DB     CacheDB;
+    public static        Random                        rand                = new Random();
+    //    private static       HashMap<String, CacheManager> CacheManagers       = new HashMap<>();
+    //        public static DB     CacheDB;
 
     static
     {
@@ -91,44 +87,44 @@ public class OSRSUtilities
                                             new SerializableRunnableSerializer());
 
         Path ScriptFolder = PlayerConfig.GetScriptConfigFolder();
-                CacheDB = DBMaker.fileDB(ScriptFolder + "\\Cache.db").closeOnJvmShutdown().fileChannelEnable().executorEnable().fileLockDisable().make();
+        //                CacheDB = DBMaker.fileDB(ScriptFolder + "\\Cache.db").closeOnJvmShutdown().fileChannelEnable().executorEnable().fileLockDisable().make();
     }
 
-//    public static <Key, Value> Cache<Key, Value> GetCache(String Alias, Class<Key> key, Class<Value> value)
-//    {
-//        CacheManager cacheManager;
-//        if(CacheManagers.containsKey(Alias))
-//        {
-//            cacheManager = CacheManagers.get(Alias);
-//        }
-//        else
-//        {
-//            Path ScriptFolder = PlayerConfig.GetScriptConfigFolder();
-//            File CacheFile    = new File(String.valueOf(ScriptFolder), Alias);
-//            Logger.log("OSRSUtilities: GetCache: ScriptFolder:" + CacheFile + " '" + ScriptFolder +
-//                       "'");
-//            var builder = CacheManagerBuilder.newCacheManagerBuilder()
-//                                             .with(CacheManagerBuilder.persistence(CacheFile))
-//                                             .using(new DefaultLocalPersistenceService(new DefaultPersistenceConfiguration(
-//                                                     CacheFile)));
-//            var resourcePool = ResourcePoolsBuilder.heap(256).disk(128, MemoryUnit.MB).build();
-//            var ExpiryPolicy = ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofHours(6));
-//            var WriteBehindService = WriteBehindConfigurationBuilder.newBatchedWriteBehindConfiguration(
-//                    1,
-//                    TimeUnit.SECONDS,
-//                    4).build();
-//            var CacheConfiguration = CacheConfigurationBuilder.newCacheConfigurationBuilder(key,
-//                                                                                            value,
-//                                                                                            resourcePool)
-//                                                              .withExpiry(ExpiryPolicy)
-//                                                              .withService(WriteBehindService)
-//                                                              .build();
-//            cacheManager = builder.withCache(Alias, CacheConfiguration).build(true);
-//            CacheManagers.put(Alias, cacheManager);
-//            cacheManager.close();
-//        }
-//        return cacheManager.getCache(Alias, key, value);
-//    }
+    //    public static <Key, Value> Cache<Key, Value> GetCache(String Alias, Class<Key> key, Class<Value> value)
+    //    {
+    //        CacheManager cacheManager;
+    //        if(CacheManagers.containsKey(Alias))
+    //        {
+    //            cacheManager = CacheManagers.get(Alias);
+    //        }
+    //        else
+    //        {
+    //            Path ScriptFolder = PlayerConfig.GetScriptConfigFolder();
+    //            File CacheFile    = new File(String.valueOf(ScriptFolder), Alias);
+    //            Logger.log("OSRSUtilities: GetCache: ScriptFolder:" + CacheFile + " '" + ScriptFolder +
+    //                       "'");
+    //            var builder = CacheManagerBuilder.newCacheManagerBuilder()
+    //                                             .with(CacheManagerBuilder.persistence(CacheFile))
+    //                                             .using(new DefaultLocalPersistenceService(new DefaultPersistenceConfiguration(
+    //                                                     CacheFile)));
+    //            var resourcePool = ResourcePoolsBuilder.heap(256).disk(128, MemoryUnit.MB).build();
+    //            var ExpiryPolicy = ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofHours(6));
+    //            var WriteBehindService = WriteBehindConfigurationBuilder.newBatchedWriteBehindConfiguration(
+    //                    1,
+    //                    TimeUnit.SECONDS,
+    //                    4).build();
+    //            var CacheConfiguration = CacheConfigurationBuilder.newCacheConfigurationBuilder(key,
+    //                                                                                            value,
+    //                                                                                            resourcePool)
+    //                                                              .withExpiry(ExpiryPolicy)
+    //                                                              .withService(WriteBehindService)
+    //                                                              .build();
+    //            cacheManager = builder.withCache(Alias, CacheConfiguration).build(true);
+    //            CacheManagers.put(Alias, cacheManager);
+    //            cacheManager.close();
+    //        }
+    //        return cacheManager.getCache(Alias, key, value);
+    //    }
 
 
     public enum ScriptIntenity
@@ -314,6 +310,20 @@ public class OSRSUtilities
         return true;
     }
 
+    public static boolean CheckRequirements(List<Tuple2<Integer, Integer>> itemRequirements, boolean CheckBank)
+    {
+        for(var req : itemRequirements)
+        {
+            int bankCount = CheckBank ? Bank.count(req._1) : 0;
+            int invCount  = Inventory.count(req._1);
+            if(invCount + bankCount < req._2)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static Point GetCenterPointRectangle(Rectangle rect, boolean randomize)
     {
         Point point = new Point((int) rect.getCenterX(), (int) rect.getCenterY());
@@ -487,7 +497,7 @@ public class OSRSUtilities
 
     public static boolean CheckInventory(List<AbstractMap.SimpleEntry<Integer, Integer>> Requirements, boolean OnlyRequirements)
     {
-        if(Requirements == null)
+        if(Requirements == null || Requirements.isEmpty())
         {
             return true;
         }
@@ -1024,7 +1034,7 @@ public class OSRSUtilities
                     Withdraws == null ? new ArrayList<>() : new ArrayList<>(Withdraws);
             if(!_withdraws.isEmpty())
             {
-                _withdraws.sort((x, y) -> x.GetCount() - y.GetCount());
+                _withdraws.sort(Comparator.comparingInt(BankEntry::GetCount));
             }
 
 
@@ -1098,7 +1108,8 @@ public class OSRSUtilities
                     {
                         Bank.openTab(withdraw.BankTab);
                     }
-                    if(withdraw.Amount > InventorySpace)
+                    if(withdraw.Amount > InventorySpace &&
+                       !(new Item(withdraw.ItemID, withdraw.Amount).isStackable()))
                     {
                         success = Bank.withdrawAll(withdraw.ItemID);
                     }
@@ -1411,7 +1422,7 @@ public class OSRSUtilities
             }
             case Bot ->
             {
-                Wait(100, 500);
+                Wait(10, 20);
             }
         }
     }
@@ -1452,24 +1463,29 @@ public class OSRSUtilities
         {
             case Lax ->
             {
-                return rand.nextInt(1500) + 1500;
+                return WaitTime(1500, 1500);
             }
             case Normal ->
             {
-                return rand.nextInt(1000) + 1000;
+                return WaitTime(1000, 1000);
             }
             case Sweating ->
             {
-                return rand.nextInt(1000) + 300;
+                return WaitTime(1000, 300);
             }
             case Bot ->
             {
-                return rand.nextInt(500) + 100;
+                return 1;
             }
         }
         Logger.log(
                 "public static int WaitTime(ScriptIntenity Intensity): Something went wrong, not supposed to reach this");
         return 500;
+    }
+
+    public static int WaitTime(int min, int max)
+    {
+        return rand.nextInt(max) + min;
     }
 
     public static void WalkTo(Tile Destination)

@@ -1,6 +1,7 @@
 package Utilities.GrandExchange.Orders;
 
 import Utilities.Serializers.SerializableSupplier;
+import org.dreambot.api.methods.quest.book.PaidQuest;
 import org.json.JSONPropertyName;
 
 import javax.annotation.Nonnull;
@@ -9,6 +10,7 @@ import java.io.Serializable;
 
 public class BaseOrder implements GEOrder, Comparable<BaseOrder>, Serializable
 {
+
     @Serial
     private static final long                          serialVersionUID = 3343306652600915000L;
     public               SerializableSupplier<Integer> PriceGenerator;
@@ -26,7 +28,7 @@ public class BaseOrder implements GEOrder, Comparable<BaseOrder>, Serializable
         OType = otype;
     }
 
-    public <T extends BaseOrder> BaseOrder(T other)
+    public <T extends GEOrder> BaseOrder(T other)
     {
         ID             = other.GetID();
         Count          = other.GetQuantity();

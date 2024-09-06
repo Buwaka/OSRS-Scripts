@@ -134,9 +134,13 @@ public class CombatLootBankCycle extends SimpleCycle
 
 
         var           equipment      = EquipmentManager.SetEXPFocus(EXPType);
-        EquipmentTask EquipEquipment = new EquipmentTask("Equipment Test", equipment);
-        EquipEquipment.SetTaskPriority(1);
-        Script.addNodes(EquipEquipment);
+        if(!equipment.isEquipped())
+        {
+            EquipmentTask EquipEquipment = new EquipmentTask("Set Equipment", equipment);
+            EquipEquipment.SetTaskPriority(1);
+            Script.addNodes(EquipEquipment);
+        }
+
 
         if(!OSRSUtilities.CheckInventory(ItemRequirements, false) || !equipment.isEquipped())
         {

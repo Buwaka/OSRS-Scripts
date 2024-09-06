@@ -19,6 +19,8 @@ public class PerformanceReport extends AbstractScript
     long wait      = 0;
 
     String Activity = "";
+    private int UploadAttempt     = 0;
+    private int MaxUploadAttempts = 10;
 
 
     @Override
@@ -51,11 +53,17 @@ public class PerformanceReport extends AbstractScript
     @Override
     public int onLoop()
     {
-        Logger.log(System.nanoTime()  + "-" +  startTime + "<" + wait);
+        Logger.log(System.nanoTime() + "-" + startTime + "<" + wait);
         if(System.nanoTime() - startTime < wait)
         {
             Logger.log("Waiting to prevent concurrency, " + TimeUnit.NANOSECONDS.toSeconds(wait));
             return 10;
+        }
+
+        if(UploadAttempt > MaxUploadAttempts)
+        {
+            Logger.log("Failed to generate and/or upload performance report too many times, exiting");
+            this.stop();
         }
 
 
@@ -68,6 +76,10 @@ public class PerformanceReport extends AbstractScript
             {
                 this.stop();
             }
+            else
+            {
+                UploadAttempt++;
+            }
         }
         else
         {
@@ -75,6 +87,6 @@ public class PerformanceReport extends AbstractScript
         }
 
 
-        return 0;
+        return OSRSUtilities.WaitTime(OSRSUtilities.ScriptIntenity.Lax);
     }
 }

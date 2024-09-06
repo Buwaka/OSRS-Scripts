@@ -4,6 +4,7 @@ import Utilities.OSRSUtilities;
 import Utilities.Patterns.Delegates.Delegate;
 import com.google.gson.Gson;
 import org.dreambot.api.data.GameState;
+import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.script.listener.GameStateListener;
 import org.dreambot.api.utilities.AccountManager;
 import org.dreambot.api.utilities.Logger;
@@ -22,6 +23,7 @@ public class PlayerConfig implements Serializable, GameStateListener
     private static final String ConfigFolderName = "IF-Scripts";
     //public static int Hash;
     public static        String Hash;
+    public static        String PlayerName;
 
     static
     {
@@ -78,7 +80,7 @@ public class PlayerConfig implements Serializable, GameStateListener
 
     public static Path GetPlayerConfigFolder()
     {
-        return Path.of(GetScriptConfigFolder() + "\\" + Hash);
+        return Path.of(GetScriptConfigFolder() + "\\" + PlayerName);
     }
 
     public static Path GetScriptConfigFolder()
@@ -168,5 +170,6 @@ public class PlayerConfig implements Serializable, GameStateListener
     private static void RefreshHash()
     {
         Hash = AccountManager.getAccountHash();
+        PlayerName = Players.getLocal().getName();
     }
 }

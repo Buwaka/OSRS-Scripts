@@ -2,6 +2,7 @@ package Cycles.General;
 
 import Cycles.Tasks.SimpleTasks.Bank.InventoryCheckTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
+import Utilities.OSRSUtilities;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.SimpleTask;
 import Utilities.Scripting.tpircSScript;
@@ -48,7 +49,7 @@ public class SimpleProcessCycle extends SimpleCycle
     }
 
 
-    private void StartCycle(tpircSScript Script)
+    private boolean StartCycle(tpircSScript Script)
     {
         //CurrentProcessTask = GetNewTask();
         Script.addNodes(ProcessTaskTemplate);
@@ -71,6 +72,7 @@ public class SimpleProcessCycle extends SimpleCycle
                 Script.addNodes(Check);
             }
         }
+        return true;
     }
 
 
@@ -82,8 +84,7 @@ public class SimpleProcessCycle extends SimpleCycle
     @Override
     public boolean onStart(tpircSScript Script)
     {
-        StartCycle(Script);
-        return super.onStart(Script);
+        return StartCycle(Script);
     }
 
     /**
@@ -94,8 +95,7 @@ public class SimpleProcessCycle extends SimpleCycle
     @Override
     public boolean onRestart(tpircSScript Script)
     {
-        StartCycle(Script);
-        return super.onRestart(Script);
+        return StartCycle(Script);
     }
 
     /**
@@ -106,11 +106,10 @@ public class SimpleProcessCycle extends SimpleCycle
     @Override
     public int onLoop(tpircSScript Script)
     {
-        //        if(CurrentProcessTask.isFinished())
-        //        {
-        //            CurrentProcessTask = GetNewTask();
-        //            Script.addNodes(CurrentProcessTask);
-        //        }
+        if(!OSRSUtilities.CheckRequirements(ItemRequirements, true))
+        {
+            return 0;
+        }
 
         return super.onLoop(Script);
     }

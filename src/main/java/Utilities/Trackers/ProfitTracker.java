@@ -3,16 +3,54 @@ package Utilities.Trackers;
 import Utilities.Scripting.Listeners.GrandExchangeListener.GrandExchangeItemWrapper;
 import Utilities.Scripting.Listeners.GrandExchangeListener.GrandExchangeListener;
 import Utilities.Scripting.Listeners.InventoryListener;
-import org.dreambot.api.script.listener.ItemContainerListener;
 import org.dreambot.api.script.listener.PaintListener;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
 
 import java.awt.*;
 
-public class ProfitTracker implements PaintListener, ItemContainerListener, GrandExchangeListener
+public class ProfitTracker implements PaintListener
 {
+    private long UnrealizedProfit = 0;
+    private long RealizedProfit   = 0;
+    private long NetWorth         = 0;
 
+    private GrandExchangeListener GEListener   = null;
+    private InventoryListener     ItemListener = null;
+
+
+    public ProfitTracker(GrandExchangeListener GEListener, InventoryListener ItemListener)
+    {
+        this.GEListener   = GEListener;
+        this.ItemListener = ItemListener;
+    }
+
+    private void Init()
+    {
+//        GEListener.onItemBought.Subscribe(this, this::onItemBought);
+//        GEListener.onItemSold.Subscribe(this, this::onItemSold);
+
+//        ItemListener.
+    }
+
+//    private boolean onItemNew(Item item)
+//    {
+//
+//    }
+//
+//    private boolean onItemRemoved(Item item)
+//    {
+//
+//    }
+//
+//    private boolean onItemSold(GrandExchangeItemWrapper item)
+//    {
+//
+//    }
+//
+//    private boolean onItemBought(GrandExchangeItemWrapper item)
+//    {
+//
+//    }
 
     /**
      * @param graphics
@@ -33,120 +71,8 @@ public class ProfitTracker implements PaintListener, ItemContainerListener, Gran
     }
 
 
-    /**
-     * @param incoming
-     * @param existing
-     */
-    @Override
-    public void onInventoryItemChanged(Item incoming, Item existing)
-    {
-        ItemContainerListener.super.onInventoryItemChanged(incoming, existing);
-    }
-
-    /**
-     * @param item
-     */
-    @Override
-    public void onInventoryItemAdded(Item item)
-    {
-        ItemContainerListener.super.onInventoryItemAdded(item);
-    }
-
-    /**
-     * @param item
-     */
-    @Override
-    public void onInventoryItemRemoved(Item item)
-    {
-        ItemContainerListener.super.onInventoryItemRemoved(item);
-    }
-
-    /**
-     * @param incoming
-     * @param outgoing
-     */
-    @Override
-    public void onInventoryItemSwapped(Item incoming, Item outgoing)
-    {
-        ItemContainerListener.super.onInventoryItemSwapped(incoming, outgoing);
-    }
-
-    /**
-     * @param incoming
-     * @param existing
-     */
-    @Override
-    public void onBankItemChanged(Item incoming, Item existing)
-    {
-        ItemContainerListener.super.onBankItemChanged(incoming, existing);
-    }
-
-    /**
-     * @param item
-     */
-    @Override
-    public void onBankItemAdded(Item item)
-    {
-        ItemContainerListener.super.onBankItemAdded(item);
-    }
-
-    /**
-     * @param item
-     */
-    @Override
-    public void onBankItemRemoved(Item item)
-    {
-        ItemContainerListener.super.onBankItemRemoved(item);
-    }
-
-    /**
-     * @param incoming
-     * @param outgoing
-     */
-    @Override
-    public void onBankItemSwapped(Item incoming, Item outgoing)
-    {
-        ItemContainerListener.super.onBankItemSwapped(incoming, outgoing);
-    }
-
-    /**
-     * @param item
-     */
-    @Override
-    public void onItemBought(GrandExchangeItemWrapper item)
-    {
-        Logger.log("GE, onItemBought " + item);
-    }
-
-    /**
-     * @param item
-     */
-    @Override
-    public void onBuyOrder(GrandExchangeItemWrapper item)
-    {
-        Logger.log("GE, onBuyOrder " + item);
-    }
-
-    /**
-     * @param item
-     */
-    @Override
-    public void onSellOrder(GrandExchangeItemWrapper item)
-    {
-        Logger.log("GE, onSellOrder " + item);
-    }
-
-    /**
-     * @param item
-     */
-    @Override
-    public void onItemSold(GrandExchangeItemWrapper item)
-    {
-        Logger.log("GE, onItemSold " + item);
-    }
-
     // basically when we get an item, get prices, add to unrealized profit
-    // remove profit when when item is removed
+    // remove profit when item is removed
     // expenditures on GE purchases or removal of money (taht isn't the bank)
     // when we sell on the GE, we turn the unrealized profit into real profit
 

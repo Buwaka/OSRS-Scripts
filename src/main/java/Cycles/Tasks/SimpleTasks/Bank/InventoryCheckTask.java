@@ -1,6 +1,7 @@
 package Cycles.Tasks.SimpleTasks.Bank;
 
 import OSRSDatabase.ItemDB;
+import Utilities.OSRSUtilities;
 import Utilities.Scripting.tpircSScript;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.Inventory;
@@ -10,12 +11,13 @@ import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class InventoryCheckTask extends BankItemsTask
 {
-    List<Tuple2<Integer, Integer>> Items                 = new ArrayList<>();
-    boolean                        DepositEverythingElse = true;
+    List<Tuple2<Integer, Integer>> Items             = new ArrayList<>();
+    boolean                        DepositEverything = true;
 
     public InventoryCheckTask(String Name, Tuple2<Integer, Integer>... items)
     {
@@ -41,9 +43,9 @@ public class InventoryCheckTask extends BankItemsTask
         SetTaskPriority(-1);
     }
 
-    public void setDepositEverythingElse(boolean depositEverythingElse)
+    public void setDepositEverything(boolean depositEverything)
     {
-        DepositEverythingElse = depositEverythingElse;
+        DepositEverything = depositEverything;
     }
 
     /**
@@ -70,7 +72,9 @@ public class InventoryCheckTask extends BankItemsTask
     @Override
     public boolean onStartTask(tpircSScript Script)
     {
-        if(DepositEverythingElse && !Inventory.onlyContains(Items.stream().mapToInt( (t) -> t._1).toArray()))
+        var difference = GetDifference();
+        if(DepositEverything || (difference.length > 0 && Inventory.getEmptySlots() >
+                                                          Arrays.stream(difference).mapToInt((t) -> t._2).sum()))
         {
             AddDepositAll();
             for(var item : Items)
@@ -97,6 +101,31 @@ public class InventoryCheckTask extends BankItemsTask
     public TaskType GetTaskType()
     {
         return TaskType.InventoryCheck;
+    }
+
+    public Tuple2<Integer, Integer>[] GetDifference()
+    {
+        List<Tuple2<Integer, Integer>> out = new ArrayList<>();
+        for(var req : Items)
+        {
+            if(req == null)
+            {
+                continue;
+            }
+            if(Inventory.count(req._1) < req._2)
+            {
+                var item = ItemDB.GetItemData(req._1);
+                if(item != null && item.stackable)
+                {
+                    out.add(new Tuple2<>(req._1, 1));
+                }
+                else
+                {
+                    out.add(new Tuple2<>(req._1, req._2 - Inventory.count(req._1)));
+                }
+            }
+        }
+        return out.toArray(new Tuple2[0]);
     }
 
     /**

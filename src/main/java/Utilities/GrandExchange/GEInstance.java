@@ -21,23 +21,27 @@ import java.util.concurrent.TimeUnit;
 
 public class GEInstance implements Serializable
 {
-    public static final  int                      CoinID                 = 995;
-    public static final  String                   ConfigID               = "GrandExchangeOrders";
+    public static final  int                    CoinID                 = 995;
+    public static final  String                 ConfigID               = "GrandExchangeOrders";
     @Serial
-    private static final long                     serialVersionUID       = 6064461425258339028L;
-    private final        long                     MarketOrderGracePeriod = TimeUnit.SECONDS.toNanos(
-            10);
-    private final        long                     LimitOrderGracePeriod  = TimeUnit.DAYS.toNanos(7);
-    private final        int                      MaxAttempts            = 5;
-    private              PriorityQueue<BaseOrder> Orders                 = new PriorityQueue<>();
-    private              Map<Integer, GESlot>     ActiveOrders           = new HashMap<>();
-    private              List<BaseOrder> OrdersToCancel                = new ArrayList<>();
-    private transient    int                      Attempts               = 0;
-    private transient    tpircSScript             OwnerScript;
+    private static final long                   serialVersionUID       = 6064461425258339028L;
+    private final        long                   MarketOrderGracePeriod = TimeUnit.SECONDS.toNanos(10);
+    private final        long                   LimitOrderGracePeriod  = TimeUnit.DAYS.toNanos(7);
+    private final        int                    MaxAttempts            = 5;
+    private transient    PriorityQueue<GEOrder> Orders                 = new PriorityQueue<>();
+    private              Map<Integer, GESlot>   ActiveOrders           = new HashMap<>();
+    private              List<BaseOrder>        OrdersToCancel         = new ArrayList<>();
+    private transient    int                    Attempts               = 0;
+    private transient    tpircSScript           OwnerScript;
 
     public GEInstance(tpircSScript owner)
     {
         init(owner);
+    }
+
+    public boolean ReadyToCollect()
+    {
+        return GrandExchange.isReadyToCollect();
     }
 
     public void init(tpircSScript owner)
@@ -78,9 +82,13 @@ public class GEInstance implements Serializable
         var existingOrder = GetOrderWithID(order.GetID(),
                                            order.GetOrderType(),
                                            order.GetTransactionType());
-        if(existingOrder != null)
+        if(existingOrder == null)
         {
             AddOrder(order);
+        }
+        else
+        {
+            existingOrder.AddQuantity(order.GetQuantity());
         }
     }
 
@@ -98,9 +106,8 @@ public class GEInstance implements Serializable
         if(existingActiveOrder != null)
         {
             order.AddQuantity(existingActiveOrder.GetQuantity());
-            var base = new BaseOrder(order);
-            Logger.log("GEInstance: AddOrder: Overwrite and update existing order: " + base);
-            Orders.add(base);
+            Logger.log("GEInstance: AddOrder: Overwrite and update existing order: " + order);
+            Orders.add(order);
         }
         else if(existingOrder != null)
         {
@@ -109,15 +116,14 @@ public class GEInstance implements Serializable
         }
         else
         {
-            var base = new BaseOrder(order);
-            Logger.log("GEInstance: AddOrder: " + base);
-            Orders.add(base);
+            Logger.log("GEInstance: AddOrder: " + order);
+            Orders.add(order);
         }
 
         SaveState();
     }
 
-    public BaseOrder GetOrderWithID(int ID, GEOrder.OrderType OType, GEOrder.TransactionType TType)
+    public GEOrder GetOrderWithID(int ID, GEOrder.OrderType OType, GEOrder.TransactionType TType)
     {
         for(var order : Orders)
         {
@@ -170,11 +176,13 @@ public class GEInstance implements Serializable
 
         if(!GrandExchange.isOpen())
         {
+            Logger.log("GEInstance: tick: opening GE");
             GrandExchange.open();
         }
 
         if(GrandExchange.isReadyToCollect())
         {
+            Logger.log("GEInstance: tick: Collecting to bank");
             GrandExchange.collectToBank();
         }
 
@@ -223,12 +231,13 @@ public class GEInstance implements Serializable
                 }
             }
 
-            if(freeSlot == -1)
+            if(freeSlot == -1 || order == null)
             {
                 return GetGEWaitTime();
             }
 
-            GESlot NewSlot = ProcessOrder(freeSlot, order);
+            BaseOrder base = new BaseOrder(order);
+            GESlot NewSlot = ProcessOrder(freeSlot, base);
 
             if(NewSlot != null)
             {
@@ -313,6 +322,14 @@ public class GEInstance implements Serializable
         return AllItems;
     }
 
+    public static List<Item> GetAllTradableItems()
+    {
+        var AllItems = Bank.all(Item::isTradable);
+        AllItems.addAll(Inventory.all(Item::isTradable));
+        AllItems.addAll(Equipment.all(Item::isTradable));
+        return AllItems;
+    }
+
     public static int[] GetAllItemsID()
     {
         var AllItems = Bank.all();
@@ -328,8 +345,11 @@ public class GEInstance implements Serializable
         {
             if(order.GetTransactionType() == GEOrder.TransactionType.Sell)
             {
-                out.add(new Tuple2<>(order.GetID(), order.GetQuantity()));
-
+                int quantity = Math.min(order.GetQuantity(), Bank.count(order.GetID()));
+                Logger.log("GEInstance: GetAllOrderRequirements: ID (" + order.GetID() +
+                           ") BankCount(" + Bank.count(order.GetID()) + ") orderQuantity(" +
+                           order.GetQuantity() + ")");
+                out.add(new Tuple2<>(order.GetID(), quantity));
             }
         }
 
@@ -383,6 +403,8 @@ public class GEInstance implements Serializable
 
     public boolean HasQueuedActions()
     {
+        Logger.log("GEInstance: HasQueuedActions: " +
+                   (!Orders.isEmpty() || !OrdersToCancel.isEmpty()));
         return !Orders.isEmpty() || !OrdersToCancel.isEmpty();
     }
 

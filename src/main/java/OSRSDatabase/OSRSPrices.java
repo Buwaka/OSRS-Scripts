@@ -1,7 +1,6 @@
 package OSRSDatabase;
 
 import Utilities.GrandExchange.GEInstance;
-import Utilities.OSRSUtilities;
 import Utilities.Patterns.SYMaths;
 import Utilities.Scripting.ExternalLambdaUsage;
 import com.google.gson.Gson;
@@ -15,8 +14,6 @@ import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.hc.core5.net.URIBuilder;
 import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
-import org.mapdb.HTreeMap;
-import org.mapdb.Serializer;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
@@ -24,7 +21,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -34,25 +30,25 @@ public class OSRSPrices implements Serializable
     @Serial
     private static final long serialVersionUID = -5940381882555771355L;
 
-    private static final String                       AllItemsEndPoint   = "https://prices.runescape.wiki/api/v1/osrs/latest";
-    private static final HTreeMap<Integer, GELatestData> AllItemsCache      = OSRSUtilities.CacheDB.hashMap("OSRSPrices-Latest").keySerializer(
-            Serializer.INTEGER).valueSerializer(Serializer.JAVA).expireAfterGet(6, TimeUnit.HOURS).createOrOpen();
-//private static           Cache<Integer, GELatestData> AllItemsCache      = OSRSUtilities.GetCache("GELatest", Integer.class, GELatestData.class);
-    //private static final HashMap<Integer, GELatestData> AllItemsCache  = new HashMap<>();
-    private static final String                       TimeSeriesEndPoint = "https://prices.runescape.wiki/api/v1/osrs/timeseries";
-    private static final HTreeMap<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache      = OSRSUtilities.CacheDB.hashMap("OSRSPrices-TimeSeries").keySerializer(
-            Serializer.JAVA).valueSerializer(Serializer.JAVA).hashSeed(5).expireAfterGet(5, TimeUnit.MINUTES).createOrOpen();
-    //private static final HashMap<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache  = new HashMap<>();
-//    private static Cache<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache = OSRSUtilities.GetCache("TimeSeries", TimeSeriesKey.class, GETimeSeriesData[].class);
+    private static final String                                     AllItemsEndPoint   = "https://prices.runescape.wiki/api/v1/osrs/latest";
+    //    private static final HTreeMap<Integer, GELatestData> AllItemsCache      = OSRSUtilities.CacheDB.hashMap("OSRSPrices-Latest").keySerializer(
+    //            Serializer.INTEGER).valueSerializer(Serializer.JAVA).expireAfterGet(6, TimeUnit.HOURS).createOrOpen();
+    //private static           Cache<Integer, GELatestData> AllItemsCache      = OSRSUtilities.GetCache("GELatest", Integer.class, GELatestData.class);
+    private static final HashMap<Integer, GELatestData>             AllItemsCache      = new HashMap<>();
+    private static final String                                     TimeSeriesEndPoint = "https://prices.runescape.wiki/api/v1/osrs/timeseries";
+    //    private static final HTreeMap<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache      = OSRSUtilities.CacheDB.hashMap("OSRSPrices-TimeSeries").keySerializer(
+    //            Serializer.JAVA).valueSerializer(Serializer.JAVA).hashSeed(5).expireAfterGet(5, TimeUnit.MINUTES).createOrOpen();
+    private static final HashMap<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache    = new HashMap<>();
+    //    private static Cache<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache = OSRSUtilities.GetCache("TimeSeries", TimeSeriesKey.class, GETimeSeriesData[].class);
 
     public static final int CoinID = 995;
 
     public static class TimeSeriesKey implements Serializable
     {
         @Serial
-        private static final long serialVersionUID = -97952331964844432L;
-        public int ID;
-        public TimeSeriesFormat format;
+        private static final long             serialVersionUID = -97952331964844432L;
+        public               int              ID;
+        public               TimeSeriesFormat format;
 
         public TimeSeriesKey(int ID, TimeSeriesFormat format)
         {
@@ -105,27 +101,27 @@ public class OSRSPrices implements Serializable
     public static class GETimeSeriesData implements Serializable
     {
         @Serial
-        private static final long serialVersionUID = -3670655454795683108L;
-        public long timestamp;
-        public @Nullable Integer avgHighPrice;
-        public @Nullable Integer avgLowPrice;
-        public           int     highPriceVolume;
-        public           int     lowPriceVolume;
+        private static final long    serialVersionUID = -3670655454795683108L;
+        public               long    timestamp;
+        public @Nullable     Integer avgHighPrice;
+        public @Nullable     Integer avgLowPrice;
+        public               int     highPriceVolume;
+        public               int     lowPriceVolume;
     }
 
     public static class GELatestData implements Serializable
     {
         @Serial
-        private static final long serialVersionUID = 3260809249295661528L;
+        private static final long    serialVersionUID = 3260809249295661528L;
         //        public int     id;
         @Nullable
-        public Integer high;
+        public               Integer high;
         @Nullable
-        public Integer highTime;
+        public               Integer highTime;
         @Nullable
-        public Integer low;
+        public               Integer low;
         @Nullable
-        public Integer lowTime;
+        public               Integer lowTime;
     }
 
     @ExternalLambdaUsage
@@ -151,6 +147,31 @@ public class OSRSPrices implements Serializable
         return Avg._3;
     }
 
+    public static Integer GetLatestPrice(int ID)
+    {
+        Integer price  = null;
+        var     latest = GetLatest(ID);
+        if(latest != null)
+        {
+            if(latest.high != null)
+            {
+                if(latest.low != null)
+                {
+                    price = (latest.high + latest.low) / 2;
+                }
+                else
+                {
+                    price = latest.high;
+                }
+            }
+            else if(latest.low != null)
+            {
+                price = latest.low;
+            }
+        }
+        return price;
+    }
+
     public static GELatestData GetLatest(int ID)
     {
         if(AllItemsCache.containsKey(ID))
@@ -171,38 +192,35 @@ public class OSRSPrices implements Serializable
                 request.setUri(uri);
                 AtomicInteger Code = new AtomicInteger(400);
                 Gson          gson = new Gson().newBuilder().create();
-                Map<Integer, GELatestData> AllItems = (Map<Integer, GELatestData>) client.execute(request,
-                                                                                    httpResponse -> {
-                                                                                        Code.set(
-                                                                                                httpResponse.getCode());
-                                                                                        if(httpResponse.getCode() >=
-                                                                                           300)
-                                                                                        {
-                                                                                            return null;
-                                                                                        }
-                                                                                        var content = httpResponse.getEntity()
-                                                                                                                  .getContent();
-                                                                                        InputStreamReader File = new InputStreamReader(
-                                                                                                content);
-                                                                                        JsonReader Reader = new JsonReader(
-                                                                                                File);
-                                                                                        Map<Integer, GELatestData> All = new HashMap<>();
+                Map<Integer, GELatestData> AllItems = (Map<Integer, GELatestData>) client.execute(
+                        request,
+                        httpResponse -> {
+                            Code.set(httpResponse.getCode());
+                            if(httpResponse.getCode() >= 300)
+                            {
+                                return null;
+                            }
+                            var                        content = httpResponse.getEntity()
+                                                                             .getContent();
+                            InputStreamReader          File    = new InputStreamReader(content);
+                            JsonReader                 Reader  = new JsonReader(File);
+                            Map<Integer, GELatestData> All     = new HashMap<>();
 
-                                                                                        Reader.beginObject();
-                                                                                        Reader.nextName(); //data
-                                                                                        Reader.beginObject();
-                                                                                        while(Reader.hasNext())
-                                                                                        {
-                                                                                            int id = Integer.parseInt(Reader.nextName());
-                                                                                            var data = (GELatestData) gson.fromJson(Reader, GELatestData.class);
-                                                                                            All.put(id, data);
-                                                                                        }
-                                                                                        Reader.endObject();
-                                                                                        Reader.endObject();
-                                                                                        Reader.close();
+                            Reader.beginObject();
+                            Reader.nextName(); //data
+                            Reader.beginObject();
+                            while(Reader.hasNext())
+                            {
+                                int id   = Integer.parseInt(Reader.nextName());
+                                var data = (GELatestData) gson.fromJson(Reader, GELatestData.class);
+                                All.put(id, data);
+                            }
+                            Reader.endObject();
+                            Reader.endObject();
+                            Reader.close();
 
-                                                                                        return All;
-                                                                                    });
+                            return All;
+                        });
                 AllItemsCache.putAll(AllItems);
 
                 if(Code.get() >= 300)
@@ -303,26 +321,11 @@ public class OSRSPrices implements Serializable
                 continue;
             }
 
-            var latest = GetLatest(item.getID());
+            var latest = GetLatestPrice(item.getID());
             if(latest != null)
             {
-                if(latest.high != null)
-                {
-                    if(latest.low != null)
-                    {
-                        total += (latest.high + latest.low) / 2;
-                    }
-                    else
-                    {
-                        total += latest.high;
-                    }
-                }
-                else if(latest.low != null)
-                {
-                    total += latest.low;
-                }
+                total += latest;
             }
-
         }
         return total;
     }
@@ -406,8 +409,7 @@ public class OSRSPrices implements Serializable
     }
 
     /**
-     * @param ID
-     * Basically just adds up all the snapshots we get, which are 365 snapshots, so 365 * 5m, 365 * 24h,...
+     * @param ID Basically just adds up all the snapshots we get, which are 365 snapshots, so 365 * 5m, 365 * 24h,...
      *
      * @return
      */
@@ -478,7 +480,7 @@ public class OSRSPrices implements Serializable
 
     public static long GetNetWorth()
     {
-        return GetTotalValue(GEInstance.GetAllItems()) + GEInstance.GetLiquidMoney();
+        return GetTotalValue(GEInstance.GetAllTradableItems()) + GEInstance.GetLiquidMoney();
     }
 
 

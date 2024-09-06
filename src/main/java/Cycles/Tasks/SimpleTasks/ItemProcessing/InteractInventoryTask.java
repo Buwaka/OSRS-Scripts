@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 public class InteractInventoryTask extends SimpleTask
 {
     private int[]  ItemID = null;
+    private Item ItemRef = null;
     private String Action = null;
 
     private Integer Tool = null;
@@ -19,6 +20,19 @@ public class InteractInventoryTask extends SimpleTask
     {
         super(Name);
         ItemID = ItemIDs;
+        Action = InteractAction;
+    }
+
+    public InteractInventoryTask(String Name, Item Item)
+    {
+        super(Name);
+        ItemRef = Item;
+    }
+
+    public InteractInventoryTask(String Name, String InteractAction, Item Item)
+    {
+        super(Name);
+        ItemRef = Item;
         Action = InteractAction;
     }
 
@@ -46,7 +60,7 @@ public class InteractInventoryTask extends SimpleTask
     @Override
     public boolean Ready()
     {
-        return Inventory.contains(ItemID);
+        return ItemRef != null || (ItemID != null && Inventory.contains(ItemID));
     }
 
     /**
@@ -56,23 +70,26 @@ public class InteractInventoryTask extends SimpleTask
     protected int Loop()
     {
         boolean success = false;
-        Item    item    = Inventory.get(ItemID);
+        if(ItemRef == null)
+        {
+            ItemRef    = Inventory.get(ItemID);
+        }
 
-        if(item != null)
+        if(ItemRef != null)
         {
             if(Tool == null)
             {
                 if(Action != null)
                 {
                     Logger.log(
-                            "InteractInventoryTask: Loop: Interact on " + item + " with Action " +
+                            "InteractInventoryTask: Loop: Interact on " + ItemRef + " with Action " +
                             Action);
-                    success = item.interact(Action);
+                    success = ItemRef.interact(Action);
                 }
                 else
                 {
-                    Logger.log("InteractInventoryTask: Loop: Interact on " + item);
-                    success = item.interact();
+                    Logger.log("InteractInventoryTask: Loop: Interact on " + ItemRef);
+                    success = ItemRef.interact();
                 }
             }
             else
@@ -80,8 +97,8 @@ public class InteractInventoryTask extends SimpleTask
                 var tool = Inventory.get(Tool);
                 if(tool != null)
                 {
-                    Logger.log("InteractInventoryTask: Loop: Use tool " + tool + " on " + item);
-                    success = tool.useOn(item);
+                    Logger.log("InteractInventoryTask: Loop: Use tool " + tool + " on " + ItemRef);
+                    success = tool.useOn(ItemRef);
                 }
                 else
                 {

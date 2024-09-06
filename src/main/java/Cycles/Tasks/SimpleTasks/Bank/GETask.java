@@ -24,7 +24,7 @@ public class GETask extends SimpleTask
     @Override
     public boolean Ready()
     {
-        return GetScript().GetGEInstance().HasQueuedActions() && super.Ready();
+        return (GetScript().GetGEInstance().HasQueuedActions() || GetScript().GetGEInstance().ReadyToCollect()) && super.Ready();
     }
 
     /**
@@ -33,9 +33,17 @@ public class GETask extends SimpleTask
     @Override
     protected int Loop()
     {
-        if(GetItems != null && GetItems.isActive())
+        if(GetItems != null)
         {
-            return super.Loop();
+            int result = GetItems.Loop();
+            if(result == 0)
+            {
+                GetItems = null;
+            }
+            else
+            {
+                return result;
+            }
         }
 
         if(!GrandExchange.isOpen())
@@ -71,13 +79,15 @@ public class GETask extends SimpleTask
         if(GetItems == null && ItemRequirements != null && ItemRequirements.length > 0)
         {
             GetItems = new BankItemsTask("Noted items for GE");
+            GetItems.Init(Script);
+            GetItems.AddDepositAll();
             for(var item : ItemRequirements)
             {
                 GetItems.AddWithdrawNoted(item._1, item._2);
             }
-            GetItems.SetTaskPriority(priority() - 1);
+            GetItems.SetTaskPriority(priority() - 2);
             GetItems.AcceptCondition = () -> BankLocation.getNearest().distance(Players.getLocal().getTile()) < 10;
-            GetScript().addNodes(GetItems);
+            //GetScript().addNodes(GetItems);
         }
 
         return super.onStartTask(Script);

@@ -1,5 +1,7 @@
 package Utilities.Scripting.Listeners;
 
+import Utilities.Patterns.Delegates.Delegate1;
+import Utilities.Patterns.Delegates.Delegate2;
 import Utilities.Patterns.Delegates.Delegate3;
 import org.dreambot.api.script.listener.ItemContainerListener;
 import org.dreambot.api.utilities.Logger;
@@ -7,15 +9,27 @@ import org.dreambot.api.wrappers.items.Item;
 
 public class InventoryListener implements ItemContainerListener
 {
-    public Delegate3<ItemAction, Item, Item> onInventoryAdded = new Delegate3<>();
+    public Delegate1<Item> onNewItem = new Delegate1<>();
+    public Delegate1<Item> onLostItem = new Delegate1<>();
 
-    public enum ItemAction
-    {
-        Added,
-        Removed,
-        Changed,
-        Swapped
-    }
+
+    public Delegate2</*incoming*/Item,/*existing*/ Item> onInventoryItemChanged = new Delegate2<>();
+    public Delegate2</*incoming*/Item,/*outgoing*/ Item> onInventoryItemSwapped = new Delegate2<>();
+    public Delegate2</*incoming*/Item,/*outgoing*/ Item> onEquipmentItemChanged = new Delegate2<>();
+    public Delegate2</*incoming*/Item,/*outgoing*/ Item> onEquipmentItemSwapped = new Delegate2<>();
+    public Delegate2</*incoming*/Item,/*outgoing*/ Item> onBankItemChanged = new Delegate2<>();
+    public Delegate2</*incoming*/Item,/*outgoing*/ Item> onBankItemSwapped = new Delegate2<>();
+    public Delegate2</*incoming*/Item,/*outgoing*/ Item> onLootBagItemUpdated = new Delegate2<>();
+
+    public Delegate1<Item> onInventoryAdded = new Delegate1<>();
+    public Delegate1<Item> onInventoryItemRemoved = new Delegate1<>();
+    public Delegate1<Item> onEquipmentItemAdded = new Delegate1<>();
+    public Delegate1<Item> onEquipmentItemRemoved = new Delegate1<>();
+    public Delegate1<Item> onBankItemAdded = new Delegate1<>();
+    public Delegate1<Item> onBankItemRemoved = new Delegate1<>();
+    public Delegate1<Item> onLootBagItemAdded = new Delegate1<>();
+    public Delegate1<Item> onLootBagItemRemoved = new Delegate1<>();
+
 
     @Override
     public void onInventoryItemChanged(Item incoming, Item existing)

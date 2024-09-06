@@ -176,54 +176,53 @@ public class InteractTask extends SimpleTask
             return Target;
         }
 
+        Target = GetTargetStatic(TargetFilter, Action, ObjectIDs);
+        return Target;
+    }
+
+    public static Entity GetTargetStatic(EnumSet<InteractableFilter> TargetFilter, String Action, Integer... IDs)
+    {
         List<Entity> toFilter = new ArrayList<>();
 
         if(TargetFilter.contains(InteractableFilter.GameObjects))
         {
-            toFilter.addAll(GameObjects.all(ObjectIDs));
+            toFilter.addAll(GameObjects.all());
         }
         if(TargetFilter.contains(InteractableFilter.NPCs))
         {
-            toFilter.addAll(NPCs.all(ObjectIDs));
+            toFilter.addAll(NPCs.all());
         }
         if(TargetFilter.contains(InteractableFilter.GroundItems))
         {
-            toFilter.addAll(GroundItems.all(ObjectIDs));
+            toFilter.addAll(GroundItems.all());
         }
         if(TargetFilter.contains(InteractableFilter.Players))
         {
-            toFilter.addAll(Players.all(ObjectIDs));
+            toFilter.addAll(Players.all());
         }
 
 
         Logger.log(toFilter);
         var first = toFilter.stream()
-                            .filter(t -> t.canReach() && (Action == null || t.hasAction(Action)) &&
-                                         t.distance() < 10)
+                            .filter(t -> (IDs == null ||
+                                          Arrays.stream(IDs).anyMatch((x) -> x == t.getID())) &&
+                                         (Action == null || t.hasAction(Action))
+                                         && t.canReach() && t.distance() < 10)
                             .sorted((x, y) -> (int) (
                                     x.walkingDistance(Players.getLocal().getTile()) -
                                     y.walkingDistance(Players.getLocal().getTile())))
                             .findFirst();
         Logger.log(first);
-        if(first.isPresent())
-        {
-            Target = first.get();
-            return first.get();
-        }
-        //        for(var rock : ObjectsWithID)
-        //        {
-        //            //Logger.log("InteractTask: GetTarget: Possible Target: " + rock);
-        //            //                boolean NoPlayersPossiblyMining = Players.all(x -> rock.getTile().getArea(2).contains(x.getTile()) &&
-        //            //                                                                   x.isAnimating() &&
-        //            //                                                                   x != Players.getLocal()).isEmpty();
-        //            boolean distance = rock.getTile().distance() < 10.0;
-        //            boolean canReach = rock.canReach();
-        //            if(distance && canReach)
-        //            {
-        //                return rock;
-        //            }
-        //        }
+        return first.orElse(null);
+    }
 
-        return null;
+    public static Entity GetTargetStatic(Integer... IDs)
+    {
+        return GetTargetStatic(EnumSet.allOf(InteractableFilter.class), null, IDs);
+    }
+
+    public static Entity GetTargetByActionStatic(String Action)
+    {
+        return GetTargetStatic(EnumSet.allOf(InteractableFilter.class), Action, null);
     }
 }

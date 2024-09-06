@@ -28,53 +28,20 @@
           </execution>
         </executions>
         <configuration>
-          <transformers>
-            <transformer />
-          </transformers>
           <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
           <shadeSourcesContent>true</shadeSourcesContent>
-          <artifactSet>
-            <excludes>
-              <exclude>org.dreambot:com.**</exclude>
-            </excludes>
-          </artifactSet>
           <filters>
-            <filter>
-              <artifact>org.dreambot:*</artifact>
-              <excludes>
-                <exclude>com/*.*</exclude>
-              </excludes>
-            </filter>
-            <filter>
-              <artifact>org.slf4j</artifact>
-              <includes>
-                <include>**</include>
-              </includes>
-            </filter>
             <filter>
               <artifact>*:*</artifact>
               <excludes>
                 <exclude>META-INF/*.*</exclude>
               </excludes>
             </filter>
-            <filter>
-              <artifact>org.mapdb</artifact>
-              <includes>
-                <include>**</include>
-              </includes>
-            </filter>
-            <filter>
-              <artifact>com.google.guava</artifact>
-              <includes>
-                <include>**</include>
-              </includes>
-            </filter>
           </filters>
         </configuration>
       </plugin>
     </plugins>
   </build>
-  <dependencyManagement />
   <properties>
     <maven.compiler.target>21</maven.compiler.target>
     <maven.compiler.source>21</maven.compiler.source>

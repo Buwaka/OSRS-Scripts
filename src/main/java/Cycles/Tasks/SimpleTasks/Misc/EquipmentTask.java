@@ -24,7 +24,7 @@ public class EquipmentTask extends SimpleTask
     boolean                         UnEquipAll = false;
     private int Fails   = 0;
     private int Retries = 5;
-    private boolean DepositPreviousEquipment = false;
+    private boolean DepositPreviousEquipment = true;
 
     public EquipmentTask(String Name)
     {
@@ -42,7 +42,7 @@ public class EquipmentTask extends SimpleTask
             {
                 continue;
             }
-            ToEquip.put(slot.getKey().GetDreamBotSkill(), slot.getValue().id);
+            ToEquip.put(slot.getKey().GetDreamBotEquipmentSlot(), slot.getValue().id);
         }
 
         Logger.log(ToEquip);

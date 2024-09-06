@@ -14,7 +14,6 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.quest.Quests;
 import org.dreambot.api.methods.skills.Skills;
-import org.dreambot.api.utilities.AccountManager;
 import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nullable;
@@ -58,10 +57,12 @@ public class PerformanceDatabase
         int  EXPGained       = 0;
         if(recent != null)
         {
+            Logger.log("GeneratePerformanceReport: Recent found " + recent);
             AddedTimePlayed = TotalPlayTime - recent.playtime;
             ValueGained     = (int) (NetWorth - recent.networth);
             QPointsGained   = QPoints - recent.total_questpoints;
             EXPGained       = (int) (TotalEXP - recent.total_exp);
+            Logger.log("GeneratePerformanceReport: " + ValueGained);
         }
 
 
@@ -84,14 +85,22 @@ public class PerformanceDatabase
     {
         Logger.log(data);
         var db = DataBaseUtilities.GetDataBase(DatabaseName);
+        if(db == null)
+        {
+            return false;
+        }
 
         var collection = DataBaseUtilities.GetCollection(db,
                                                          AccountCollectionName,
                                                          PerformanceData.class);
 
         var result = collection.insertOne(data);
-
-        return result.wasAcknowledged();
+        if(result.wasAcknowledged())
+        {
+            DataBaseUtilities.CloseClient();
+            return true;
+        }
+        return false;
     }
 
     public static PerformanceData GetMostRecentData(String Nickname)
@@ -99,6 +108,10 @@ public class PerformanceDatabase
         RegisterTypes();
         Logger.log(Nickname);
         var db = DataBaseUtilities.GetDataBase(DatabaseName);
+        if(db == null)
+        {
+            return null;
+        }
 
         var collection = DataBaseUtilities.GetCollection(db,
                                                          AccountCollectionName,
@@ -144,39 +157,22 @@ public class PerformanceDatabase
 
         }
 
-        public PerformanceData(String AccountName, long playtime, long total_playtime, String strPlaytime, int value_gained, int liquid_gold, long networth, long total_exp, int total_exp_gain, SkillsDB exp_gain_skill, int total_questpoints, int questpoints_gained)
+        public PerformanceData(String accountName, long playtime, long total_playtime, String playtime_string, int value_gained, int liquid_gold, long networth, long total_exp, int total_exp_gain, SkillsDB skill_levels, int total_questpoints, int questpoints_gained, @Nullable String activity)
         {
-            this.AccountName        = AccountName;
+            timestamp               = LocalDateTime.now();
+            AccountName             = accountName;
             this.playtime           = playtime;
             this.total_playtime     = total_playtime;
-            this.playtime_string    = strPlaytime;
+            this.playtime_string    = playtime_string;
             this.value_gained       = value_gained;
             this.liquid_gold        = liquid_gold;
             this.networth           = networth;
             this.total_exp          = total_exp;
             this.total_exp_gain     = total_exp_gain;
-            this.skill_levels       = exp_gain_skill;
-            this.total_questpoints  = total_questpoints;
-            this.questpoints_gained = questpoints_gained;
-            this.activity           = "";
-            timestamp               = LocalDateTime.now();
-        }
-
-        public PerformanceData(String AccountName, long playtime, long total_playtime, String strPlaytime,int value_gained, int liquid_gold, long networth, long total_exp, int total_exp_gain, SkillsDB exp_gain_skill, int total_questpoints, int questpoints_gained, String activity)
-        {
-            this.AccountName        = AccountName;
-            this.playtime           = playtime;
-            this.total_playtime     = total_playtime;
-            this.playtime_string    = strPlaytime;
-            this.liquid_gold        = liquid_gold;
-            this.networth           = networth;
-            this.total_exp          = total_exp;
-            this.total_exp_gain     = total_exp_gain;
-            this.skill_levels       = exp_gain_skill;
+            this.skill_levels       = skill_levels;
             this.total_questpoints  = total_questpoints;
             this.questpoints_gained = questpoints_gained;
             this.activity           = activity;
-            timestamp               = LocalDateTime.now();
         }
 
         public Duration GetPlayTime()

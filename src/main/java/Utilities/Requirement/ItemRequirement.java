@@ -53,7 +53,7 @@ public class ItemRequirement implements IRequirement
             {
                 if(item._2 <= 0)
                 {
-                    if(Bank.count(item._1) < Math.abs(item._2))
+                    if(Bank.count(item._1) <= Math.abs(item._2))
                     {
                         Logger.log("ItemRequirement: isRequirementMet: less than requirement bank, true " + item._1);
                         Logger.log("count: " + Bank.count(item._1) + " < " +  Math.abs(item._2));
@@ -71,7 +71,7 @@ public class ItemRequirement implements IRequirement
             }
             else if(item._2 <= 0)
             {
-                if(Inventory.count(item._1) < Math.abs(item._2))
+                if(Inventory.count(item._1) <= Math.abs(item._2))
                 {
                     Logger.log("ItemRequirement: isRequirementMet: less than requirement Inventory, true " + item._1);
                     Logger.log("count: " + Inventory.count(item._1) + " < " +  Math.abs(item._2));
@@ -92,9 +92,11 @@ public class ItemRequirement implements IRequirement
         {
             if(!check)
             {
+                Logger.log("ItemRequirement: failed a check, exiting, false");
                 return false;
             }
         }
+        Logger.log("ItemRequirement: Succeeded all checks, exiting, true");
         return true;
     }
 }

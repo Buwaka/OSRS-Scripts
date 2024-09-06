@@ -1,19 +1,20 @@
 package Utilities.Scripting;
 
+import Cycles.CycleGenerators.CycleLibrary;
 import Cycles.Tasks.AdvanceTasks.GraveStoneTask;
 import Cycles.Tasks.AdvanceTasks.OpenBankTask;
-import Cycles.CycleGenerators.CycleLibrary;
 import Utilities.GrandExchange.GEInstance;
 import Utilities.OSRSUtilities;
 import Utilities.Patterns.Delegates.Delegate;
 import Utilities.Patterns.Delegates.Delegate3;
 import Utilities.Patterns.GameTickDelegate;
 import Utilities.Scripting.Listeners.GraveStoneListener;
-import Utilities.Trackers.ProfitTracker;
 import org.dreambot.api.Client;
 import org.dreambot.api.data.GameState;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.map.Tile;
+import org.dreambot.api.methods.skills.Skill;
+import org.dreambot.api.methods.skills.Skills;
 import org.dreambot.api.script.ScriptManager;
 import org.dreambot.api.script.TaskNode;
 import org.dreambot.api.script.impl.TaskScript;
@@ -71,18 +72,18 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             false);
     private        AtomicBoolean                     isGameStateChanging    = new AtomicBoolean(
             false);
-    private              AtomicBoolean      GameTicked            = new AtomicBoolean(
+    private        AtomicBoolean                     GameTicked             = new AtomicBoolean(
             false);
-    private              AtomicBoolean      isPaused              = new AtomicBoolean(true);
-    private              AtomicInteger      PauseTime             = new AtomicInteger(
+    private        AtomicBoolean                     isPaused               = new AtomicBoolean(true);
+    private        AtomicInteger                     PauseTime              = new AtomicInteger(
             GetRandom().nextInt(5000) + 5000); // is pause on the start
-    private              long               StopTaskTimeout       = 10000;
-    private              OpenBankTask       CacheBank             = null;
-    private              GraveStoneListener GraveListener         = new GraveStoneListener();
-    private              GEInstance         GrandExchangeInstance = null;
-    private              PlayerConfig       Config                = new PlayerConfig();
-    private              ProfitTracker      PTracker              = new ProfitTracker();
-    private boolean DebugPaint = true;
+    private        long                              StopTaskTimeout        = 10000;
+    private        OpenBankTask                      CacheBank              = null;
+    public         GraveStoneListener                GraveListener          = new GraveStoneListener();
+    private        GEInstance                        GrandExchangeInstance  = null;
+    private        PlayerConfig                      Config                 = new PlayerConfig();
+    //private              ProfitTracker      PTracker              = new ProfitTracker();
+    private        boolean                           DebugPaint             = true;
 
 
     public enum ItemAction
@@ -95,8 +96,11 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
 
     public tpircSScript()
     {
+        Logger.log("Levels at init: " + Skills.getRealLevel(Skill.HITPOINTS));
+        //        org.burningwave.core.assembler.StaticComponentContainer.Modules.exportAllToAll();
         ResetRandomizer();
-        ScriptManager.getScriptManager().addListener(PTracker);
+        //ScriptManager.getScriptManager().addListener(PTracker);
+        ScriptManager.getScriptManager().addListener(GraveListener);
         GraveListener.onDeath.Subscribe(this, this::onDeath);
         CycleLibrary.init(this);
         if(Client.getGameState() != GameState.LOGGED_IN)
@@ -143,12 +147,14 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             {
                 Logger.log("Script: GetGEInstance: GEInstance file found and loaded");
                 instance.init(this);
+                GrandExchangeInstance = instance;
                 return instance;
             }
             else
             {
                 Logger.log("Script: GetGEInstance: new GEInstance");
-                return new GEInstance(this);
+                GrandExchangeInstance = new GEInstance(this);
+                return GrandExchangeInstance;
             }
         }
         return GrandExchangeInstance;
@@ -331,32 +337,8 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
 
         if(CycleSetup != null)
         {
-            Logger.log("Script: _startCycle: Start Cycle setup");
-            if(CycleSetup.hasStartUpTasks())
-            {
-                Logger.log("Script: _startCycle: Cycle has Startup Tasks");
-                if(!IsActiveTaskLeft())
-                {
-                    Logger.log(
-                            "Script: _startCycle: Startup tasks are not active, rejecting cycle, " +
-                            CycleSetup.toString());
-                    CycleSetup = null;
-                }
-                return;
-            }
-            else
-            {
-                Logger.log(
-                        "Script: _startCycle: Startup tasks have been completed, trying to start cycle, " +
-                        CycleSetup.toString());
-                if(CycleSetup.Start(this))
-                {
-                    Logger.log("Script: _startCycle: Starting Cycle, " + CycleSetup.toString());
-                    CurrentCycle = CycleSetup;
-                    CycleSetup   = null;
-                }
-                return;
-            }
+            HandleStartUpTasks();
+            return;
         }
 
         Logger.log("Script: _startCycle: Start next cycle in queue");
@@ -365,56 +347,108 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             int length = CycleQueue.size();
             for(int i = 0; i < length; i++)
             {
+                if(CycleQueue.peek() == null)
+                {
+                    CycleQueue.poll();
+                    continue;
+                }
+
                 SimpleCycle cycle = CycleQueue.poll();
+                cycle.init(this);
                 Logger.log("Script: _startCycle: Checking if we can start " + cycle.GetName());
                 if(_setCurrentCycle(cycle))
                 {
                     Logger.log("Script: _startCycle: starting " + cycle.GetName());
                     return;
                 }
-                CycleQueue.add(cycle);
+                //CycleQueue.add(cycle);
             }
         }
         else
         {
-            Logger.log("Script: _startCycle: generating new cycles");
-            for(var ToGen : Cycles)
+            GenerateNewCycles();
+        }
+    }
+
+    private void HandleStartUpTasks()
+    {
+        Logger.log("Script: HandleStartUpTasks: Start Cycle setup");
+        if(CycleSetup.hasStartUpTasks())
+        {
+            Logger.log("Script: HandleStartUpTasks: Cycle has Startup Tasks");
+            if(!IsActiveTaskLeft())
             {
-                if(ToGen == null)
-                {
-                    continue;
-                }
-
-                SimpleCycle[] nextCycles = ToGen.get();
-                if(nextCycles == null)
-                {
-                    continue;
-                }
-
-                CycleQueue = new ArrayDeque<>();
-                for(int i = 0; i < nextCycles.length; i++)
-                {
-                    var cycle = nextCycles[i];
-                    cycle.init(this);
-                    Logger.log("Script: _startCycle: Trying to start newly generated cycle " + cycle);
-                    if(_setCurrentCycle(cycle))
-                    {
-                        Logger.log("Script: _startCycle: cycle " + cycle + " has started, adding remaining cycles to the queue");
-                        if(i != nextCycles.length - 1)
-                        {
-                            CycleQueue.addAll(List.of(Arrays.copyOfRange(nextCycles,
-                                                                         i,
-                                                                         nextCycles.length)));
-                        }
-
-                        return;
-                    }
-                    CycleQueue.add(cycle);
-                }
+                Logger.log("Script: HandleStartUpTasks: Startup tasks are not active, rejecting cycle, " +
+                           CycleSetup.toString());
+                CycleSetup = null;
             }
+        }
+        else
+        {
+            Logger.log(
+                    "Script: HandleStartUpTasks: Startup tasks have been completed, trying to start cycle, " +
+                    CycleSetup.toString());
+            if(CycleSetup.Start(this))
+            {
+                Logger.log("Script: HandleStartUpTasks: Starting Cycle, " + CycleSetup.toString());
+                CurrentCycle = CycleSetup;
+                CycleSetup   = null;
+            }
+        }
+    }
+
+
+    private static int CycleGenerationAttempts = 0;
+    private static int CycleGenerationMaxAttempts = 10;
+
+    private void GenerateNewCycles()
+    {
+        if(CycleGenerationAttempts > CycleGenerationMaxAttempts)
+        {
+            Logger.log("Script: GenerateNewCycles: Failed too many times trying to generate new cycles, exiting");
+            this.stop();
+            return;
         }
 
 
+        Logger.log("Script: GenerateNewCycles: generating new cycles");
+        for(var ToGen : Cycles)
+        {
+            if(ToGen == null)
+            {
+                continue;
+            }
+
+            SimpleCycle[] nextCycles = ToGen.get();
+            if(nextCycles == null)
+            {
+                CycleGenerationAttempts++;
+                continue;
+            }
+
+            CycleQueue = new ArrayDeque<>();
+            for(int i = 0; i < nextCycles.length; i++)
+            {
+                var cycle = nextCycles[i];
+                cycle.init(this);
+                Logger.log("Script: GenerateNewCycles: Trying to start newly generated cycle " + cycle);
+                if(_setCurrentCycle(cycle))
+                {
+                    Logger.log("Script: GenerateNewCycles: cycle " + cycle +
+                               " has started, adding remaining cycles to the queue");
+                    if(i != nextCycles.length - 1)
+                    {
+                        CycleQueue.addAll(List.of(Arrays.copyOfRange(nextCycles,
+                                                                     i,
+                                                                     nextCycles.length)));
+                    }
+                    CycleGenerationAttempts = 0;
+                    return;
+                }
+                CycleGenerationAttempts++;
+                CycleQueue.add(cycle);
+            }
+        }
     }
 
     public boolean IsActiveTaskLeft()
@@ -436,7 +470,8 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
     {
         if(next.Ready() && !next.isGoalMet())
         {
-            Logger.log("Script: _setCurrentCycle: " +  next.GetName() + " goal hasn't been met, starting");
+            Logger.log("Script: _setCurrentCycle: " + next.GetName() +
+                       " goal hasn't been met, starting");
 
             if(next.hasStartUpTasks())
             {
@@ -544,6 +579,11 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         Logger.log("Script: addNodes: Adding nodes: " + Arrays.toString(nodes));
         for(var node : nodes)
         {
+            if(node == null)
+            {
+                continue;
+            }
+
             if(SimpleTask.class.isAssignableFrom(node.getClass()))
             {
                 SimpleTask Task = (SimpleTask) node;
@@ -570,6 +610,11 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
 
         for(var node : nodes)
         {
+            if(node == null)
+            {
+                continue;
+            }
+
             if(SimpleTask.class.isAssignableFrom(node.getClass()))
             {
                 SimpleTask Task = (SimpleTask) node;
@@ -587,8 +632,9 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             }
             else
             {
-                Logger.log("Script: removeNodes: Trying to remove Tasknode instead of SimpleTask: " +
-                           node.getClass().getName());
+                Logger.log(
+                        "Script: removeNodes: Trying to remove Tasknode instead of SimpleTask: " +
+                        node.getClass().getName());
             }
         }
     }
@@ -611,7 +657,8 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
 
         if(isSolving.get() || isGameStateChanging.get() || !GameTicked.get())
         {
-            Logger.log("Script: onLoop: client is busy " + isSolving.get() + isGameStateChanging.get() + !GameTicked.get() );
+            Logger.log("Script: onLoop: client is busy " + isSolving.get() +
+                       isGameStateChanging.get() + !GameTicked.get());
             return 50;
         }
 
@@ -621,6 +668,8 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             {
                 Logger.log("Script: onLoop: Fail limit exceeded, exiting, " +
                            this.getClass().getName());
+                GameTicked.set(true);
+                isLooping.set(false);
                 return -1;
             }
         }
@@ -630,7 +679,7 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
         GameTicked.set(false);
 
         int CycleResult = 0;
-        if(CurrentCycle != null && CurrentCycle != null)
+        if(CurrentCycle != null)
         {
             Logger.log("Script: onLoop: ticking Cycle");
             CycleResult = CurrentCycle.Loop(this);
@@ -663,9 +712,8 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
                 // Notifying task if they've been replaced
                 if(CurrentTask.get() != null && !CurrentTask.get().equals(task))
                 {
-                    Logger.log(
-                            "Script: onLoop: Replacing old task (" + CurrentTask.toString() +
-                            " with new task(" + task + ")");
+                    Logger.log("Script: onLoop: Replacing old task (" + CurrentTask.toString() +
+                               " with new task(" + task + ")");
                     CurrentTask.get().ReplaceTask(this, task);
                 }
                 CurrentTask.set(task);
@@ -676,18 +724,16 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
                 FailCount = 0;
 
                 // Executing task
-                Logger.log(
-                        "Script: onLoop: Executing task: " + CurrentTask.get().GetTaskName() +
-                        " (" + CurrentTask.get().getClass().getName() + ")");
+                Logger.log("Script: onLoop: Executing task: " + CurrentTask.get().GetTaskName() +
+                           " (" + CurrentTask.get().getClass().getName() + ")");
 
                 int result = CurrentTask.get().execute();
                 Logger.log("Script: onLoop: Task result is: " + result);
                 if(result <= 0)
                 {
                     // Stopping task
-                    Logger.log(
-                            "Script: onLoop: " + CurrentTask.get().toString() + " return " +
-                            result + ", stopping task");
+                    Logger.log("Script: onLoop: " + CurrentTask.get().toString() + " return " +
+                               result + ", stopping task");
                     if(!Sleep.sleepUntil(() -> StopTask(CurrentTask.get()), StopTaskTimeout))
                     {
                         StopTaskNow(CurrentTask.get());
@@ -748,18 +794,19 @@ public abstract class tpircSScript extends TaskScript implements GameTickListene
             Logger.log("Script: onLoop: Starting new cycle because current cycle is empty");
             _startCycle();
         }
-        else
-        {
-            Logger.log("Script: onLoop: something went wrong");
-            FailCount++;
-        }
+        //        else if(CurrentCycle != null && CurrentCycle.isCycleComplete(this))
+        //        {
+        //            Logger.log("Script: onLoop: something went wrong");
+        //            FailCount++;
+        //            StopCurrentCycle();
+        //        }
 
         isLooping.set(false);
         GameTicked.set(false);
         return OSRSUtilities.WaitTime(GetScriptIntensity());
     }
 
-    public OSRSUtilities.ScriptIntenity GetScriptIntensity() {return OSRSUtilities.ScriptIntenity.Sweating;}
+    public OSRSUtilities.ScriptIntenity GetScriptIntensity() {return OSRSUtilities.ScriptIntenity.Normal;}
 
     public void StopCurrentCycle()
     {

@@ -12,16 +12,17 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.dreambot.api.utilities.Logger;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 
 public class DataBaseUtilities
 {
+    private static MongoClient Client = null;
     String MDBUser     = "ScriptUser";
     String MDBPassword = "tb482uLsd2gX7Hse";
 
@@ -93,6 +94,13 @@ public class DataBaseUtilities
 
     }
 
+    public static void CloseClient()
+    {
+        if(Client != null)
+        {
+            Client.close();
+        }
+    }
 
     public static MongoClient GetClient()
     {
@@ -102,8 +110,14 @@ public class DataBaseUtilities
                          "osrs-database.ehnphrp.mongodb.net",
                          "retryWrites=true&w=majority&appName=OSRS-Database");
     }
+
     public static MongoClient GetClient(String Protocol, String Username, String Password, String Host, String Options)
     {
+        if(Client != null)
+        {
+            return Client;
+        }
+
         //String connectionString = "mongodb+srv://ScriptUser:<password>@osrs-database.ehnphrp.mongodb.net/?retryWrites=true&w=majority&appName=OSRS-Database";
         String URI = Protocol + "://" + Username + ":" + Password + "@" + Host +
                      (Options.isEmpty() ? "" : "/?" + Options);
@@ -111,6 +125,15 @@ public class DataBaseUtilities
         ServerApi serverApi = ServerApi.builder().version(ServerApiVersion.V1).build();
 
         MongoClientSettings settings = MongoClientSettings.builder()
+                                                          .applyToSocketSettings((builder) -> builder.connectTimeout(
+                                                                                                             10,
+                                                                                                             TimeUnit.SECONDS)
+                                                                                                     .readTimeout(
+                                                                                                             10,
+                                                                                                             TimeUnit.SECONDS))
+                                                          .applyToConnectionPoolSettings((builder) -> builder.maxConnectionIdleTime(
+                                                                  10,
+                                                                  TimeUnit.SECONDS))
                                                           .applyConnectionString(new ConnectionString(
                                                                   URI))
                                                           .serverApi(serverApi)
@@ -118,7 +141,8 @@ public class DataBaseUtilities
         // Create a new client and connect to the server
         try
         {
-            return MongoClients.create(settings);
+            Client = MongoClients.create(settings);
+            return Client;
         } catch(Exception e)
         {
             System.out.print("DataBaseUtilities: ConnectToDataBase: Exception " + e);
@@ -133,22 +157,35 @@ public class DataBaseUtilities
     public static MongoDatabase GetDataBase(String DataBaseID)
     {
         MongoDatabase database = GetClient().getDatabase(DataBaseID);
-        database.runCommand(new Document("ping", 1));
-        System.out.print(
+        try
+        {
+            database.runCommand(new Document("ping", 1));
+        } catch(Exception e)
+        {
+            Logger.log(
+                    "DataBaseUtilities: GetDataBase: Failed to ping database, closing connection and returning null");
+            CloseClient();
+            return null;
+        }
+
+        Logger.log(
                 "DataBaseUtilities: GetDataBase: Pinged your deployment. You successfully connected to MongoDB!");
-        //        Logger.log(
-        //                "DataBaseUtilities: GetDataBase: Pinged your deployment. You successfully connected to MongoDB!");
         return database;
     }
 
     public static MongoDatabase GetDataBase(MongoClient Client, String DataBaseID)
     {
         MongoDatabase database = Client.getDatabase(DataBaseID);
-        database.runCommand(new Document("ping", 1));
-        System.out.print(
-                "DataBaseUtilities: GetDataBase: Pinged your deployment. You successfully connected to MongoDB!");
-        //        Logger.log(
-        //                "DataBaseUtilities: GetDataBase: Pinged your deployment. You successfully connected to MongoDB!");
+        try
+        {
+            database.runCommand(new Document("ping", 1));
+        } catch(Exception e)
+        {
+            Logger.log(
+                    "DataBaseUtilities: GetDataBase: Failed to ping database, closing connection and returning null");
+            CloseClient();
+            return null;
+        }
         return database;
     }
 

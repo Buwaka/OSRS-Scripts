@@ -6,6 +6,7 @@ import org.dreambot.api.Client;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.utilities.Logger;
+import org.dreambot.api.wrappers.items.Item;
 
 import java.util.*;
 
@@ -51,7 +52,6 @@ public class EquipmentHelper
 
         public Equipment()
         {
-
         }
 
         public Equipment(Map<ItemDB.EquipmentData.EquipmentSlot, ItemDB.ItemData> mapEquipment)
@@ -88,9 +88,12 @@ public class EquipmentHelper
                 if(slot.getValue() != null)
                 {
                     var item = org.dreambot.api.methods.container.impl.equipment.Equipment.getItemInSlot(
-                            slot.getKey().GetDreamBotSkill());
-                    Logger.log("EquipmentHelper: isEquipped: is there an item in slot:  " +
-                               slot.getKey().GetDreamBotSkill().name());
+                            slot.getKey().GetDreamBotEquipmentSlot());
+                    Logger.log(
+                            "EquipmentHelper: isEquipped: Current item (" + item + ") for slot " +
+                            slot.getKey().name());
+                    Logger.log(
+                            "EquipmentHelper: isEquipped: want to equip " + slot.getValue());
                     if(item == null || item.getID() != slot.getValue().id)
                     {
                         Logger.log("EquipmentHelper: isEquipped: item " + slot.getValue().name +
@@ -110,9 +113,9 @@ public class EquipmentHelper
                 if(slot.getValue() != null)
                 {
                     var item = org.dreambot.api.methods.container.impl.equipment.Equipment.getItemInSlot(
-                            slot.getKey().GetDreamBotSkill());
+                            slot.getKey().GetDreamBotEquipmentSlot());
                     if((item == null || item.getID() != slot.getValue().id) &&
-                                       !Inventory.contains(slot.getValue().id))
+                       !Inventory.contains(slot.getValue().id))
                     {
                         out.add(slot.getValue().id);
                     }
@@ -135,7 +138,7 @@ public class EquipmentHelper
         }
 
         var       AllItems = GEInstance.GetAllItems();
-        Equipment equip    = new Equipment();
+        Equipment equip    = Equipment.GetCurrentEquipment();
 
         for(var item : AllItems)
         {
@@ -161,6 +164,10 @@ public class EquipmentHelper
                     continue;
                 }
 
+                if(itemEquipmentSlot == ItemDB.EquipmentData.EquipmentSlot.ammo && (focus.slots.get(itemEquipmentSlot) != StatFocus.Ranged && focus.slots.get(itemEquipmentSlot) != StatFocus.RangedDef))
+                {
+                    continue;
+                }
 
                 //                Logger.log(item);
                 if(equip.equip.containsKey(itemEquipmentSlot))
@@ -335,11 +342,20 @@ public class EquipmentHelper
                     }
                     Logger.log("EquipmentHelper: " + itemData.name + " " + NewStat + " <-> " +
                                OldStat + equip.equip.get(itemEquipmentSlot).name);
+                    Item CurrentForSlot = org.dreambot.api.methods.container.impl.equipment.Equipment.getItemInSlot(
+                            itemEquipmentSlot.GetDreamBotEquipmentSlot());
                     if(NewStat > OldStat)
                     {
                         Logger.log("EquipmentHelper: Chosen " + itemData.name);
                         equip.equip.put(itemEquipmentSlot, itemData);
                     }
+                    //                    else if(NewStat == OldStat && CurrentForSlot != null &&
+                    //                            CurrentForSlot.getID() == itemData.id)
+                    //                    {
+                    //                        Logger.log("EquipmentHelper: same stat, preferring already equipped " +
+                    //                                   itemData.name);
+                    //                        equip.equip.put(itemEquipmentSlot, itemData);
+                    //                    }
                 }
                 else
                 {

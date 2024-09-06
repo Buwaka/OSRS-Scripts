@@ -4,8 +4,8 @@ import OSRSDatabase.ItemDB;
 import Utilities.GrandExchange.GEInstance;
 import io.vavr.Tuple4;
 import org.dreambot.api.methods.combat.CombatStyle;
+import org.dreambot.api.utilities.Logger;
 
-import java.util.Collections;
 import java.util.HashMap;
 
 public class EquipmentManager
@@ -112,7 +112,14 @@ public class EquipmentManager
                                 CurrentFocus = EquipmentHelper.StatFocus.Ranged;
                             }
                         }
+
+                        var current = CurrentEquipment.equip.get(ItemDB.EquipmentData.EquipmentSlot.weapon);
                         if(NewStat > CurrentStat)
+                        {
+                            CurrentChoice = new Tuple4<>(NewStat, stance, CurrentFocus, itemData);
+                        }
+                        else if(NewStat == CurrentStat &&
+                                (current != null && current.id == itemData.id))
                         {
                             CurrentChoice = new Tuple4<>(NewStat, stance, CurrentFocus, itemData);
                         }
@@ -141,6 +148,7 @@ public class EquipmentManager
 
     private static void UpdateEquipment()
     {
+        Logger.log("EquipmentManager: UpdateEquipment:");
         CurrentEquipment = EquipmentHelper.GetBestEquipment(EquipmentFocus);
     }
 }

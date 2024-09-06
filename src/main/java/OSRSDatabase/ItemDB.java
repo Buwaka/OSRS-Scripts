@@ -54,11 +54,14 @@ public class ItemDB extends OSRSDataBase
         @SerializedName("farming") FARMING,
         @SerializedName("runecrafting") RUNECRAFTING,
         @SerializedName("hunter") HUNTER,
-        @SerializedName("construction") CONSTRUCTION;
+        @SerializedName("construction") CONSTRUCTION,
+        @SerializedName("processing") PROCESSING,
+        @SerializedName("misc") MISC,
+        ;
 
         public org.dreambot.api.methods.skills.Skill GetDreamBotSkill()
         {
-            if(this == COMBAT)
+            if(this == COMBAT || this == PROCESSING || this == MISC)
             {
                 return null;
             }
@@ -260,7 +263,7 @@ public class ItemDB extends OSRSDataBase
             ammo,
             @SerializedName("2h") two_handed;
 
-            public org.dreambot.api.methods.container.impl.equipment.EquipmentSlot GetDreamBotSkill()
+            public org.dreambot.api.methods.container.impl.equipment.EquipmentSlot GetDreamBotEquipmentSlot()
             {
                 switch(this)
                 {

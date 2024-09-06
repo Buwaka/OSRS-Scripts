@@ -461,7 +461,7 @@ public class WoodDB extends OSRSDataBase
         if(tile == null) {return false;}
 
         var objs = GameObjects.getObjectsOnTile(tile);
-        boolean nonematch = Arrays.stream(objs)
+        boolean nonematch = objs == null || objs.length == 0 ? true : Arrays.stream(objs)
                                   .noneMatch((t) -> t.getClass()
                                                      .isAssignableFrom(SceneObject.class) ||
                                                     t.getClass()

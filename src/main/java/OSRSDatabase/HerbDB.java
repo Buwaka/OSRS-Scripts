@@ -7,8 +7,6 @@ import org.dreambot.api.utilities.Logger;
 
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class HerbDB extends OSRSDataBase
 {
@@ -36,6 +34,14 @@ public class HerbDB extends OSRSDataBase
         }
 
         return HerbDBMap.keySet().stream().filter(t -> !isGrimyHerb(t)).mapToInt(t -> t).toArray();
+    }
+
+    public static boolean isDegrimeProfitable(int base) 
+    {
+        HerbData herb = GetHerbData(base);
+        int GrimyPrice = OSRSPrices.GetAveragePrice(herb.grimy_id);
+        int CleanPrice = OSRSPrices.GetAveragePrice(herb.id);
+        return GrimyPrice < CleanPrice;
     }
 
     public static boolean isGrimyHerb(int ID)
