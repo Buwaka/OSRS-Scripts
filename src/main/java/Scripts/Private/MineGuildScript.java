@@ -23,8 +23,7 @@ public class MineGuildScript extends tpircSScript
         MGCycle.SetCycleType(ICycle.CycleType.Endless);
         AddCycle(MGCycle);
         MGCycle.AddStartUpTask(() -> new TravelTask[]{
-                new TravelTask("Travel to mineguild",
-                               new Tile(3754, 5670, 0))});
+                new TravelTask("Travel to mineguild", new Tile(3754, 5670, 0))});
 
         super.onStart();
     }

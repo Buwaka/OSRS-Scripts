@@ -1,38 +1,27 @@
 package Cycles.Tasks.SimpleTasks.Combat;
 
 import OSRSDatabase.MonsterDB;
-import Utilities.Combat.CombatManager;
-import Utilities.OSRSUtilities;
+import Utilities.Patterns.Delegates.Delegate2;
 import Utilities.Scripting.SimpleTask;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
-import org.dreambot.api.methods.walking.impl.Walking;
-import org.dreambot.api.utilities.Logger;
-import org.dreambot.api.utilities.Sleep;
-import org.dreambot.api.wrappers.interactive.Character;
+import org.dreambot.api.wrappers.interactive.Entity;
 import org.dreambot.api.wrappers.interactive.NPC;
 
 import javax.annotation.Nonnull;
-import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.PriorityQueue;
 
 public class SlaughterTask extends SimpleTask
 {
-    public PropertyChangeSupport onKill        = new PropertyChangeSupport(this);
-    public AtomicInteger         TaskTimeout   = new AtomicInteger(120000);
-    public AtomicInteger         CombatTimeout = new AtomicInteger(1000);
-    public AtomicInteger         CacheTimeout  = new AtomicInteger(300);
-    NPC _closestTarget = null;
-    private Area[]                             KillingAreas      = null;
-    private int[]                              TargetIDs         = null;
-    private long                               _taskTimeoutStart = 0;
-    private ConcurrentHashMap<Integer, Thread> TargetListeners   = new ConcurrentHashMap<>();
+    public  Delegate2<Integer, Tile> onKill = new Delegate2<>();
+    private Area[]                   KillingAreas;
+    private int[]                    TargetIDs;
+
+    private Integer CurrentTargetHash = null;
 
     public SlaughterTask(String Name, Area[] TargetAreas, String TargetName, boolean Exact)
     {
@@ -60,109 +49,91 @@ public class SlaughterTask extends SimpleTask
         return null;
     }
 
+    PriorityQueue<NPC> GetTargetList()
+    {
+        // create a list of all viable targets, ordered by their distance
+        var AllOfID = NPCs.all(t -> {
+            boolean IDComp = Arrays.stream(TargetIDs).anyMatch((x) -> x == t.getID());
+            return t.canAttack() && IDComp;
+        });
+
+
+        PriorityQueue<NPC> list = new PriorityQueue<>((x, y) -> {
+            int HealthComp = Integer.compare(x.getHealthPercent(), y.getHealthPercent());
+            int DistComp   = Double.compare(x.distance(), y.distance());
+            int InteractComp = Boolean.compare(x.isInteracting(Players.getLocal()),
+                                               y.isInteracting(Players.getLocal()));
+
+            if(HealthComp == 0)
+            {
+                if(DistComp == 0)
+                {
+                    return InteractComp;
+                }
+                else
+                {
+                    return DistComp;
+                }
+            }
+            else
+            {
+                return HealthComp;
+            }
+        });
+
+        list.addAll(AllOfID);
+        list.removeIf(t -> t == null);
+        return list;
+    }
+
+    NPC GetCurrentTarget()
+    {
+        return CurrentTargetHash == null
+                ? null
+                : NPCs.closest(t -> t.hashCode() == CurrentTargetHash);
+    }
+
+    private Boolean HitSplatChecker(Entity entity, int type, int damage, int id, int special, int gameCycle)
+    {
+        if(entity instanceof NPC)
+        {
+            NPC npc = (NPC) entity;
+            if(npc.isInteracting(Players.getLocal()) && npc.getHealthPercent() == 0)
+            {
+                onKill(npc.getID(), npc.getTile());
+                CurrentTargetHash = null;
+            }
+        }
+        return true;
+    }
+
+    private void onKill(int ID, Tile DeathTile)
+    {
+        onKill.Fire(ID, DeathTile);
+    }
+
     @Override
     public boolean Ready()
     {
-        return GetTarget() != null;
+        return !GetTargetList().isEmpty();
     }
 
     @Override
     public int Loop()
     {
-        var allTargets = OSRSUtilities.GetAllCharactersInteractingWith(Players.getLocal());
-        for(var target : allTargets)
+        NPC Target = GetCurrentTarget();
+        if(Target == null)
         {
-            Integer hashcode = target.hashCode();
-            if(!TargetListeners.containsKey(hashcode) && target.canAttack())
-            {
-                //TODO for some reason, the map gets reset after every update
-                Logger.log("New Enemy found, listening, UID: " + hashcode);
-                Thread TargetListener = new Thread(() -> TargetListener(hashcode));
-                TargetListener.start();
-                Thread th = new Thread(TargetListener);
-                TargetListeners.put(hashcode, th);
-            }
-            Logger.log("SlaughterTask: Loop: EnemyCount " + TargetListeners.size());
+            Target            = GetTargetList().peek();
+            CurrentTargetHash = Target.hashCode();
         }
 
-        var Target = GetTarget();
-
-        if(Target != null && (Players.getLocal().getInteractingCharacter() != Target ||
-                              !Players.getLocal().isHealthBarVisible()))
+        if(!Players.getLocal().isInteracting(Target))
         {
-            if(Target.distance() > 10)
-            {
-                Walking.walk(Target.getTile());
-            }
-            else
-            {
-                CombatManager.GetInstance(Players.getLocal()).Fight(Target);
-            }
+            Target.interact();
         }
 
         return super.Loop();
-    }
-
-    private void TargetListener(int TargetHash)
-    {
-        Character Target = NPCs.closest(t -> t.hashCode() == TargetHash);
-        Logger.log("SlaughterTask: TargetListener: Starting to listen to target: " +
-                   Target.toString() + " hashcode: " + Target.hashCode());
-        if(Sleep.sleepUntil(() -> !Target.exists(), Long.MAX_VALUE))
-        {
-            Logger.log(
-                    "SlaughterTask: TargetListener: Target has ceased to exist or has been defeated, waiting for end of animation for loot");
-            Sleep.sleepUntil(() -> !Target.isAnimating(), 10000);
-            Sleep.sleepTicks(3);
-            onKill(Target.getID(), Target.getTile());
-        }
-        else
-        {
-            Logger.log("SlaughterTask: TargetListener: Target Timeout");
-        }
-        Logger.log("SlaughterTask: TargetListener: Stop listening to target: " + Target.toString() +
-                   " hashcode: " + Target.hashCode());
-        TargetListeners.remove(Target.hashCode());
-    }
-
-    private void onKill(int ID, Tile DeathTile)
-    {
-        onKill.firePropertyChange("Kill", ID, DeathTile);
-    }
-
-    public Character GetTarget()
-    {
-        if(!TargetListeners.isEmpty())
-        {
-            Character    weakest    = GetNearestTarget();
-            int          healthperc = 100;
-            Set<Integer> keys       = TargetListeners.keySet();
-            var          Targets    = NPCs.all(y -> keys.contains(y.hashCode()));
-
-            for(var target : Targets)
-            {
-                if(target.getHealthPercent() <= healthperc)
-                {
-                    weakest    = target;
-                    healthperc = target.getHealthPercent();
-                }
-            }
-            return weakest;
-        }
-        else
-        {
-            return GetNearestTarget();
-        }
-    }
-
-    public NPC GetNearestTarget()
-    {
-        //        if(_closestTarget == null)
-        //             // ||OSRSUtilities.IsTimeElapsed(Players.getLocal().getUID(), CacheTimeout.get()))
-        //        {
-        //            _closestTarget = OSRSUtilities.GetClosestAttackableEnemy(TargetIDs);
-        //        }
-        return OSRSUtilities.GetClosestAttackableEnemy(TargetIDs);
     }
 
     @Nonnull
@@ -173,9 +144,15 @@ public class SlaughterTask extends SimpleTask
     }
 
     @Override
+    public boolean onStartTask(tpircSScript Script)
+    {
+        GetScript().onHitSplat.Subscribe(this, this::HitSplatChecker);
+        return super.onStartTask(Script);
+    }
+
+    @Override
     public boolean onStopTask(tpircSScript Script)
     {
-        TargetListeners.clear();
         return super.onStopTask(Script);
     }
 }

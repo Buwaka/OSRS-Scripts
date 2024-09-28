@@ -29,11 +29,6 @@ public class SimpleProcessCycle extends SimpleCycle
         TargetArea          = targetArea;
     }
 
-    public void SetItemRequirements(List<Tuple2<Integer, Integer>> itemRequirements)
-    {
-        ItemRequirements = itemRequirements;
-    }
-
     public void AddItemRequirements(Tuple2<Integer, Integer>... itemRequirements)
     {
         if(ItemRequirements == null)
@@ -43,11 +38,26 @@ public class SimpleProcessCycle extends SimpleCycle
         ItemRequirements.addAll(List.of(itemRequirements));
     }
 
+    public void SetItemRequirements(List<Tuple2<Integer, Integer>> itemRequirements)
+    {
+        ItemRequirements = itemRequirements;
+    }
+
     private SimpleTask GetNewTask()
     {
         return ProcessTaskTemplate.Copy();
     }
 
+    /**
+     * @param Script
+     *
+     * @return if cycle has successfully started
+     */
+    @Override
+    public boolean onStart(tpircSScript Script)
+    {
+        return StartCycle(Script);
+    }
 
     private boolean StartCycle(tpircSScript Script)
     {
@@ -75,29 +85,6 @@ public class SimpleProcessCycle extends SimpleCycle
         return true;
     }
 
-
-    /**
-     * @param Script
-     *
-     * @return if cycle has successfully started
-     */
-    @Override
-    public boolean onStart(tpircSScript Script)
-    {
-        return StartCycle(Script);
-    }
-
-    /**
-     * When a cycle has been completed, this will be called
-     *
-     * @param Script
-     */
-    @Override
-    public boolean onRestart(tpircSScript Script)
-    {
-        return StartCycle(Script);
-    }
-
     /**
      * @param Script
      *
@@ -112,5 +99,16 @@ public class SimpleProcessCycle extends SimpleCycle
         }
 
         return super.onLoop(Script);
+    }
+
+    /**
+     * When a cycle has been completed, this will be called
+     *
+     * @param Script
+     */
+    @Override
+    public boolean onRestart(tpircSScript Script)
+    {
+        return StartCycle(Script);
     }
 }

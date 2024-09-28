@@ -11,7 +11,7 @@ import org.dreambot.api.methods.skills.Skill;
 
 public class WoodCuttingCycleGenerator extends CycleLibrary
 {
-    final          String       WoodCuttingCycleDBPath = "WoodCuttingCycles.json";
+    final String WoodCuttingCycleDBPath = "WoodCuttingCycles.json";
 
     public static SimpleCycle GetWoodCuttingCycle(WoodDB.WoodType type)
     {

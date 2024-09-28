@@ -18,27 +18,27 @@ public abstract class SimpleCycle implements ICycle, Serializable
     /**
      * When a cycle is completed, this is called, the goal might not have been met yet
      */
-    public transient  Delegate                   onCompleteCycle = new Delegate();
+    public transient  Delegate                     onCompleteCycle       = new Delegate();
     /**
      * When the cycle is complete and will exit
      */
-    public transient  Delegate                   onCycleEnd      = new Delegate();
+    public transient  Delegate                     onCycleEnd            = new Delegate();
     /**
      * returns true when goal is met
      */
-    private @Nullable List<IRequirement>         Goal            = null;
-    private @Nullable List<IRequirement>         Requirements    = null;
-    private           String                     CycleName       = "";
-    private           boolean                    NeedsCachedBank       = true;
+    private @Nullable List<IRequirement>           Goal                  = null;
+    private @Nullable List<IRequirement>           Requirements          = null;
+    private           String                       CycleName             = "";
+    private           boolean                      NeedsCachedBank       = true;
     private           List<Supplier<SimpleTask[]>> StartUpTaskGenerators = null;
     private           List<Supplier<SimpleTask[]>> EndTaskGenerators     = null;
-    private boolean StartUpTasksCreated = false;
-    private boolean EndTasksCreated = false;
-    private transient CycleType                  Type                  = CycleType.NaturalEnd;
-    private transient int                        CycleCount      = 0;
-    private @Nullable Integer                    CycleCountLimit = null;
-    private transient boolean                    Started         = false;
-    private           EnumSet<ECycleTags>        Tags            = EnumSet.noneOf(ECycleTags.class);
+    private           boolean                      StartUpTasksCreated   = false;
+    private           boolean                      EndTasksCreated       = false;
+    private transient CycleType                    Type                  = CycleType.NaturalEnd;
+    private transient int                          CycleCount            = 0;
+    private @Nullable Integer                      CycleCountLimit       = null;
+    private transient boolean                      Started               = false;
+    private           EnumSet<ECycleTags>          Tags                  = EnumSet.noneOf(ECycleTags.class);
 
     private transient WeakReference<tpircSScript> ParentScript = null;
 
@@ -52,6 +52,16 @@ public abstract class SimpleCycle implements ICycle, Serializable
     public SimpleCycle(String name)
     {
         CycleName = name;
+    }
+
+    public void AddEndTask(Supplier<SimpleTask[]>... TaskGenerator)
+    {
+        if(EndTaskGenerators == null)
+        {
+            EndTaskGenerators = new ArrayList<>();
+        }
+
+        EndTaskGenerators.addAll(List.of(TaskGenerator));
     }
 
     public void AddGoal(IRequirement... requirement)
@@ -80,6 +90,16 @@ public abstract class SimpleCycle implements ICycle, Serializable
         Collections.addAll(Requirements, requirement);
     }
 
+    //    public void AddStartUpTask(Supplier<SimpleTask>... TaskGenerator)
+    //    {
+    //        if(StartUpTaskGenerators == null)
+    //        {
+    //            StartUpTaskGenerators = new ArrayList<>();
+    //        }
+    //
+    //        StartUpTaskGenerators.addAll(TaskGenerator);
+    //    }
+
     public void AddStartUpTask(Supplier<SimpleTask[]>... TaskGenerator)
     {
         if(StartUpTaskGenerators == null)
@@ -88,83 +108,6 @@ public abstract class SimpleCycle implements ICycle, Serializable
         }
 
         StartUpTaskGenerators.addAll(List.of(TaskGenerator));
-    }
-
-//    public void AddStartUpTask(Supplier<SimpleTask>... TaskGenerator)
-//    {
-//        if(StartUpTaskGenerators == null)
-//        {
-//            StartUpTaskGenerators = new ArrayList<>();
-//        }
-//
-//        StartUpTaskGenerators.addAll(TaskGenerator);
-//    }
-
-    public void AddEndTask(Supplier<SimpleTask[]>... TaskGenerator)
-    {
-        if(EndTaskGenerators == null)
-        {
-            EndTaskGenerators = new ArrayList<>();
-        }
-
-        EndTaskGenerators.addAll(List.of(TaskGenerator));
-    }
-
-    protected SimpleTask[] GenerateEndTasks()
-    {
-        List<SimpleTask> out = new ArrayList<>();
-
-        for(var gen : EndTaskGenerators)
-        {
-            if(gen == null)
-            {
-                continue;
-            }
-            var gens = gen.get();
-            Logger.log("SimpleCycle: GenerateEndTasks: " + Arrays.toString(gens));
-            out.addAll(List.of(gens));
-        }
-        EndTasksCreated = true;
-        return out.toArray(new SimpleTask[0]);
-    }
-
-    protected SimpleTask[] GenerateStartupTasks()
-    {
-        List<SimpleTask> out = new ArrayList<>();
-
-        for(var gen : StartUpTaskGenerators)
-        {
-            if(gen == null)
-            {
-                continue;
-            }
-            var gens = gen.get();
-            Logger.log("SimpleCycle: GenerateStartupTasks: " + Arrays.toString(gens));
-            out.addAll(List.of(gens));
-        }
-
-        StartUpTasksCreated = true;
-        return out.toArray(new SimpleTask[0]);
-    }
-
-    public boolean hasEndTasks()
-    {
-        if(EndTaskGenerators == null || EndTaskGenerators.isEmpty() || EndTasksCreated)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public boolean hasStartUpTasks()
-    {
-        if(StartUpTaskGenerators == null || StartUpTaskGenerators.isEmpty() || StartUpTasksCreated)
-        {
-            return false;
-        }
-
-        return true;
     }
 
     public void AddTag(EnumSet<ECycleTags> tags)
@@ -205,14 +148,14 @@ public abstract class SimpleCycle implements ICycle, Serializable
             CycleCount = 0;
         }
         StartUpTasksCreated = false;
-        EndTasksCreated = false;
+        EndTasksCreated     = false;
         onReset(Script);
     }
 
     public final boolean Restart(tpircSScript Script)
     {
         StartUpTasksCreated = false;
-        EndTasksCreated = false;
+        EndTasksCreated     = false;
         return onRestart(Script);
     }
 
@@ -222,6 +165,26 @@ public abstract class SimpleCycle implements ICycle, Serializable
     }
 
     public void SetName(String name) {CycleName = name;}
+
+    public boolean hasEndTasks()
+    {
+        if(EndTaskGenerators == null || EndTaskGenerators.isEmpty() || EndTasksCreated)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean hasStartUpTasks()
+    {
+        if(StartUpTaskGenerators == null || StartUpTaskGenerators.isEmpty() || StartUpTasksCreated)
+        {
+            return false;
+        }
+
+        return true;
+    }
 
     public boolean isNeedsCachedBank()
     {
@@ -316,6 +279,43 @@ public abstract class SimpleCycle implements ICycle, Serializable
     public tpircSScript GetScript()
     {
         return ParentScript.get();
+    }
+
+    protected SimpleTask[] GenerateEndTasks()
+    {
+        List<SimpleTask> out = new ArrayList<>();
+
+        for(var gen : EndTaskGenerators)
+        {
+            if(gen == null)
+            {
+                continue;
+            }
+            var gens = gen.get();
+            Logger.log("SimpleCycle: GenerateEndTasks: " + Arrays.toString(gens));
+            out.addAll(List.of(gens));
+        }
+        EndTasksCreated = true;
+        return out.toArray(new SimpleTask[0]);
+    }
+
+    protected SimpleTask[] GenerateStartupTasks()
+    {
+        List<SimpleTask> out = new ArrayList<>();
+
+        for(var gen : StartUpTaskGenerators)
+        {
+            if(gen == null)
+            {
+                continue;
+            }
+            var gens = gen.get();
+            Logger.log("SimpleCycle: GenerateStartupTasks: " + Arrays.toString(gens));
+            out.addAll(List.of(gens));
+        }
+
+        StartUpTasksCreated = true;
+        return out.toArray(new SimpleTask[0]);
     }
 
     protected final int Loop(tpircSScript Script)

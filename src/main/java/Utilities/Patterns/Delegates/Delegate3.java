@@ -23,6 +23,7 @@ public class Delegate3<A, B, C>
     {
         Subscribers.put(caller, function);
     }
+
     public int SubscribeCount()
     {
         return Subscribers.size();

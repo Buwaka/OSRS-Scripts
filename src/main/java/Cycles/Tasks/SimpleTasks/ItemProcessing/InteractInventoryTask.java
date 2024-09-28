@@ -10,9 +10,9 @@ import javax.annotation.Nonnull;
 
 public class InteractInventoryTask extends SimpleTask
 {
-    private int[]  ItemID = null;
-    private Item ItemRef = null;
-    private String Action = null;
+    private int[]  ItemID  = null;
+    private Item   ItemRef = null;
+    private String Action  = null;
 
     private Integer Tool = null;
 
@@ -33,7 +33,7 @@ public class InteractInventoryTask extends SimpleTask
     {
         super(Name);
         ItemRef = Item;
-        Action = InteractAction;
+        Action  = InteractAction;
     }
 
     public InteractInventoryTask(String Name, int... ItemIDs)
@@ -72,7 +72,7 @@ public class InteractInventoryTask extends SimpleTask
         boolean success = false;
         if(ItemRef == null)
         {
-            ItemRef    = Inventory.get(ItemID);
+            ItemRef = Inventory.get(ItemID);
         }
 
         if(ItemRef != null)
@@ -81,9 +81,8 @@ public class InteractInventoryTask extends SimpleTask
             {
                 if(Action != null)
                 {
-                    Logger.log(
-                            "InteractInventoryTask: Loop: Interact on " + ItemRef + " with Action " +
-                            Action);
+                    Logger.log("InteractInventoryTask: Loop: Interact on " + ItemRef +
+                               " with Action " + Action);
                     success = ItemRef.interact(Action);
                 }
                 else

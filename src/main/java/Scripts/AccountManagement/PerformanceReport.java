@@ -3,25 +3,47 @@ package Scripts.AccountManagement;
 import DataBase.PerformanceDatabase;
 import Utilities.OSRSUtilities;
 import org.dreambot.api.methods.container.impl.bank.Bank;
+import org.dreambot.api.methods.magic.Magic;
+import org.dreambot.api.methods.magic.Normal;
 import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
+import org.dreambot.api.script.listener.ActionListener;
 import org.dreambot.api.utilities.AccountManager;
 import org.dreambot.api.utilities.Logger;
+import org.dreambot.api.utilities.Sleep;
+import org.dreambot.api.wrappers.widgets.MenuRow;
 
 import java.util.concurrent.TimeUnit;
 
 @ScriptManifest(name = "PerformanceReport", description = "Upload current performance", author = "Semanresu", version = 1.0, category = Category.MISC, image = "")
 
-public class PerformanceReport extends AbstractScript
+public class PerformanceReport extends AbstractScript implements ActionListener
 {
     long startTime = 0;
     long wait      = 0;
 
     String Activity = "";
+    long LastAction;
     private int UploadAttempt     = 0;
     private int MaxUploadAttempts = 10;
 
+    @Override
+    public void onAction(MenuRow eventRow, int mouseX, int mouseY)
+    {
+        LastAction = System.nanoTime();
+    }
+
+    @Override
+    public void onStart()
+    {
+        // wait a random amount of secs, so we don't send these reports all at once
+        long seed = AccountManager.getAccountNickname().hashCode();
+        LastAction = System.nanoTime();
+        OSRSUtilities.rand.setSeed(seed);
+        startTime = System.nanoTime();
+        wait      = OSRSUtilities.rand.nextLong(TimeUnit.MINUTES.toMillis(5)) * 1000;
+    }
 
     @Override
     public void onStart(String... params)
@@ -32,16 +54,7 @@ public class PerformanceReport extends AbstractScript
         }
         // wait a random amount of secs, so we don't send these reports all at once
         long seed = AccountManager.getAccountNickname().hashCode();
-        OSRSUtilities.rand.setSeed(seed);
-        startTime = System.nanoTime();
-        wait      = OSRSUtilities.rand.nextLong(TimeUnit.MINUTES.toMillis(5)) * 1000;
-    }
-
-    @Override
-    public void onStart()
-    {
-        // wait a random amount of secs, so we don't send these reports all at once
-        long seed = AccountManager.getAccountNickname().hashCode();
+        LastAction = System.nanoTime();
         OSRSUtilities.rand.setSeed(seed);
         startTime = System.nanoTime();
         wait      = OSRSUtilities.rand.nextLong(TimeUnit.MINUTES.toMillis(5)) * 1000;
@@ -58,6 +71,20 @@ public class PerformanceReport extends AbstractScript
         {
             Logger.log("Waiting to prevent concurrency, " + TimeUnit.NANOSECONDS.toSeconds(wait));
             return 10;
+        }
+
+        if(System.nanoTime() - LastAction > TimeUnit.MINUTES.toNanos(3))
+        {
+            Magic.castSpell(Normal.HOME_TELEPORT);
+            Sleep.sleepTicks(25);
+            return 10;
+        }
+
+        if(System.nanoTime() - LastAction > TimeUnit.MINUTES.toNanos(31))
+        {
+            Logger.log("Player is stuck, cannot reach bank");
+            //TODO minimal report with only available info
+            this.stop();
         }
 
         if(UploadAttempt > MaxUploadAttempts)

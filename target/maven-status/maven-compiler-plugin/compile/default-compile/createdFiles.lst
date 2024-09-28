@@ -3,6 +3,7 @@ Scripts\OldScripts\ShearScript$States.class
 Utilities\Scripting\PlayerConfig.class
 OSRSDatabase\ItemDB$WeaponData.class
 Utilities\Serializers\RequirementSerializer$1.class
+Cycles\Skilling\AgilityCycle.class
 Cycles\Skilling\SmithCycle.class
 OSRSDatabase\MonsterDB$MonsterData$MonsterAttribute.class
 Scripts\OldScripts\ClayWatering$States.class
@@ -21,8 +22,10 @@ Cycles\Tasks\SimpleTasks\Bank\BankItemsTask.class
 OSRSDatabase\OSRSDataBase.class
 Cycles\Tasks\SimpleTasks\Bank\GETask.class
 Utilities\GrandExchange\Orders\MarketSellOrder.class
+Cycles\Tasks\SimpleTasks\Skill\AgilityTask.class
 OSRSDatabase\ItemDB$StanceData.class
 OSRSDatabase\PotionDB$PotionStep.class
+Cycles\CycleGenerators\CycleGenerator$CycleRequirement.class
 Cycles\Tasks\SimpleTasks\Combat\MinimumHealthTask.class
 OSRSDatabase\WoodDB$WoodType.class
 Cycles\Tasks\SimpleTasks\Bank\BankEquipmentTask.class
@@ -43,6 +46,7 @@ DataBase\PerformanceDatabase$PerformanceData.class
 Scripts\Private\MoneyMakingScript.class
 OSRSDatabase\PotionDB.class
 Utilities\Scripting\Listeners\GrandExchangeListener\GrandExchangeItemWrapper.class
+Scripts\AccountManagement\MouseTester.class
 Scripts\OldScripts\ClayWatering.class
 OSRSDatabase\CookingDB.class
 Utilities\Patterns\Runnables\Runnable1.class
@@ -90,6 +94,7 @@ Scripts\OldScripts\ClayFiringScript.class
 Scripts\OldScripts\CombineScript.class
 Utilities\Scripting\ITask.class
 Utilities\Requirement\QuestRequirement$1.class
+JFrames\MouseParameterTester$2.class
 Scripts\Private\CowHideCombatScript.class
 OSRSDatabase\ItemDB$EquipmentData.class
 OSRSDatabase\OSRSPrices$TimeSeriesKey.class
@@ -104,8 +109,11 @@ Cycles\CycleGenerators\SmithingCycleGenerator.class
 randomhandler\RandomHandler$Event.class
 Utilities\NameDictionary.class
 Cycles\CycleGenerators\CombineCycleGenerator.class
+JFrames\AIOActivityMenu$CycleGeneratorConfiguration.class
 Utilities\Serializers\SerializableRunnableSerializer.class
 Cycles\CycleGenerators\FireMakingCycleGenerator.class
+JFrames\MouseParameterTester$1.class
+Utilities\Patterns\Delegates\Delegate6.class
 Utilities\Requirement\ORRequirement.class
 Scripts\Private\AlchCleanupScript.class
 Cycles\General\CombatLootBankCycle.class
@@ -117,11 +125,11 @@ Utilities\Scripting\SimpleStrategy.class
 Scripts\OldScripts\PieFactory$States.class
 Cycles\Tasks\SimpleTasks\ItemProcessing\InteractInventoryTask.class
 Utilities\Scripting\tpircSScript$ItemAction.class
-JFrames\FrameTester.class
 Utilities\GrandExchange\Orders\GEOrder$OrderType.class
 Scripts\Private\FishingScript.class
 randomhandler\FreakyForesterSolver.class
 Utilities\Patterns\GameTickDelegate.class
+Utilities\Patterns\Delegates\Delegate5.class
 Cycles\Skilling\MineCycle.class
 OSRSDatabase\MiningDB$MineToolData.class
 randomhandler\DismissSolver.class
@@ -144,6 +152,7 @@ Scripts\AccountManagement\ProxyGrabber.class
 Scripts\OldScripts\SalmonScript$States.class
 OSRSDatabase\RuneCraftingDB$Runes.class
 Utilities\GrandExchange\Orders\LimitSellOrder.class
+Cycles\Tasks\SimpleTasks\Combat\OldSlaughterTask.class
 OSRSDatabase\ItemDB$WeaponData$WeaponType.class
 OSRSDatabase\PotionDB$PotionData.class
 Cycles\CycleGenerators\MiningCycleGenerator.class
@@ -165,6 +174,7 @@ Utilities\GrandExchange\Orders\GEOrder$TransactionType.class
 Utilities\GrandExchange\GEInstance.class
 Utilities\Trackers\ProfitTracker.class
 Cycles\Specifics\GiantsFoundaryCycle.class
+JFrames\AIOActivityMenu$SkillLabelMouseAdapter.class
 randomhandler\RandomHandler$1.class
 OSRSDatabase\SmithingDB$SmeltData.class
 Scripts\OldScripts\SpinningScript.class
@@ -177,6 +187,7 @@ OSRSDatabase\MiningDB$OreData.class
 OSRSDatabase\PrayerDB.class
 Utilities\Scripting\SerializedPredicate.class
 Utilities\GrandExchange\GEInstance$GESlot.class
+Scripts\Private\TutorialIsland$BehaviorParameters.class
 OSRSDatabase\ItemDB$ItemData.class
 Cycles\CycleGenerators\CycleLibrary.class
 Cycles\Tasks\AdvanceTasks\SlaughterAndLoot.class
@@ -185,6 +196,7 @@ Utilities\Scripting\SimpleTask.class
 Scripts\OldScripts\MineScript.class
 Utilities\Requirement\CombatRequirement.class
 Utilities\Patterns\Playtime.class
+JFrames\MouseParameterTester.class
 Cycles\Tasks\SimpleTasks\Skill\SmithTask.class
 OSRSDatabase\OSRSPrices$TimeSeriesFormat.class
 Cycles\Specifics\BlastFurnaceCycle.class
@@ -194,6 +206,7 @@ Scripts\AccountManagement\RegisterNewAccount.class
 Scripts\Private\CombatTrainingScript.class
 Cycles\Tasks\SimpleTasks\Bank\GetCombatRationsTask.class
 Cycles\Tasks\SimpleTasks\Combat\RestoreFullHealthTask.class
+JFrames\NewJFrame$1.class
 OSRSDatabase\RuneCraftingDB.class
 Utilities\Serializers\TileSerializer$SerializedTile.class
 Cycles\Tasks\SimpleTasks\Misc\FleeOvercrowdTask.class
@@ -208,6 +221,7 @@ Cycles\CycleGenerators\CycleGenerator$CycleData.class
 randomhandler\RandomHandler.class
 Utilities\Patterns\Delegates\Delegate1.class
 Cycles\Tasks\SimpleTasks\Bank\InventoryCheckTask.class
+JFrames\NewJFrame.class
 Scripts\Private\MineGuildScript.class
 Scripts\OldScripts\SalmonScript.class
 Scripts\OldScripts\LeatherTanningScript.class
@@ -218,6 +232,7 @@ Cycles\General\CombineCycle.class
 Utilities\Scripting\SimpleCycle.class
 Scripts\OldScripts\ShearScript.class
 OSRSDatabase\NPCDB.class
+JFrames\NewJFrame$2.class
 OSRSDatabase\CookingDB$CookingData.class
 OSRSDatabase\HerbDB$HerbData.class
 Utilities\Scripting\Listeners\GrandExchangeListener\GrandExchangeListener.class
@@ -239,6 +254,7 @@ OSRSDatabase\MonsterDB$MonsterData$SlayerMaster.class
 Utilities\Serializers\SerializableSupplier.class
 Cycles\Skilling\AlchCycle.class
 Utilities\Scripting\WebObstacleNode.class
+Cycles\CycleGenerators\HerbloreCycleGenerator$PotionCycleGenerator.class
 Utilities\Requirement\LevelRequirement.class
 Scripts\OldScripts\SpinningScript$State.class
 Cycles\Tasks\SimpleTasks\ItemProcessing\DecantTask.class
@@ -253,6 +269,7 @@ Utilities\Scripting\tpircSScript.class
 Scripts\AccountManagement\ProxyGrabber$ProxyData.class
 OSRSDatabase\ItemDB$StanceData$ExperienceType.class
 Utilities\Combat\RangingCombat.class
+JFrames\NewJFrame$3.class
 Utilities\Combat\EquipmentManager$2.class
 Scripts\Private\TutorialIsland.class
 OSRSDatabase\ItemDB$Requirement$RequirementDeserializer.class
@@ -268,9 +285,11 @@ Cycles\Skilling\PotionCycle.class
 Utilities\Serializers\AreaSerializer$SerializedArea.class
 Utilities\Serializers\SerializableSupplierSerializer.class
 Cycles\Tasks\SimpleTasks\Combat\LootAreaTask.class
+Cycles\Tasks\SimpleTasks\Misc\CleanInventoryTask.class
 Scripts\OldScripts\SmithScript.class
 Utilities\Combat\EquipmentManager.class
 Scripts\OldScripts\CowSlaughterScript$States.class
 OSRSDatabase\NPCDB$NPCData.class
 Cycles\Tasks\SimpleTasks\Combat\BossTask.class
 Utilities\Scripting\Listeners\GrandExchangeListener\GrandExchangeListener$1.class
+JFrames\NewJFrame$4.class

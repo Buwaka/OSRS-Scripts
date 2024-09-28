@@ -16,7 +16,7 @@ import java.util.List;
 
 public class SmithingCycleGenerator extends CycleLibrary
 {
-    final          String       SmeltCycleDBPath       = "SmeltCycles.json";
+    final String SmeltCycleDBPath = "SmeltCycles.json";
 
     public static String GenerateJSONSmeltCycles()
     {
@@ -122,7 +122,7 @@ public class SmithingCycleGenerator extends CycleLibrary
         return OSRSUtilities.OSRSGsonBuilder.create().toJson(Smelts);
     }
 
-//    public static String GenerateJSONSmithCycles()
+    //    public static String GenerateJSONSmithCycles()
     //    {
     //        SmithAdamaniteHelm.SetCycleType(ICycle.CycleType.byGoal);
     //        SmithAdamaniteHelm.AddRequirement(new LevelRequirement(Skill.SMITHING, 73, 88));

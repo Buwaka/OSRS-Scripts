@@ -42,321 +42,15 @@ public class PotionDB extends OSRSDataBase
         }
     }
 
-    public static PotionData GetPotion(int ID)
-    {
-        if(PotionDBMap.containsKey(ID))
-        {
-            return PotionDBMap.get(ID);
-        }
-
-        try
-        {
-            InputStreamReader File   = new InputStreamReader(GetInputStream(PotionDBPath));
-            JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
-            Reader.setLenient(true);
-
-            Reader.beginObject();
-
-            while(Reader.hasNext())
-            {
-                int        id  = Integer.parseInt(Reader.nextName());
-                PotionData Obj = gson.fromJson(Reader, PotionData.class);
-                if(id == ID || (Obj.portion_ids != null &&
-                                Arrays.stream(Obj.portion_ids).anyMatch((t) -> t == ID)))
-                {
-                    PotionDBMap.put(id, Obj);
-                    return Obj;
-                }
-            }
-            Reader.endObject();
-            Reader.close();
-
-        } catch(Exception e)
-        {
-            Logger.log("Error reading PotionDB, Exception: " + e);
-            return null;
-        }
-        return null;
-    }
-
-    private static void ReadAll()
-    {
-        try
-        {
-            InputStreamReader File   = new InputStreamReader(GetInputStream(PotionDBPath));
-            JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
-            Reader.setLenient(true);
-
-            Reader.beginObject();
-
-            while(Reader.hasNext())
-            {
-                int        id  = Integer.parseInt(Reader.nextName());
-                PotionData Obj = gson.fromJson(Reader, PotionData.class);
-                PotionDBMap.put(id, Obj);
-            }
-            Reader.endObject();
-            Reader.close();
-
-        } catch(Exception e)
-        {
-            Logger.log("Error reading PotionDB, Exception: " + e);
-            return;
-        }
-        return;
-    }
-
-    public static PotionData[] GetAllPotions()
-    {
-        ReadAll();
-        return PotionDBMap.values().toArray(new PotionData[0]);
-    }
-
-    public static PotionData[] GetAllPotions(boolean includeNonTradable)
-    {
-        ReadAll();
-        if(includeNonTradable)
-        {
-            return PotionDBMap.values().toArray(new PotionData[0]);
-        }
-        else
-        {
-            var              potions = PotionDBMap.values();
-            List<PotionData> out     = new ArrayList<>();
-            for(var potion : potions)
-            {
-                PotionStep PotionPlan  = GetProfitablePotionSteps(potion);
-                var        ingredients = GetAllIngredients(PotionPlan);
-                if(!Arrays.stream(ingredients)
-                          .anyMatch((t) -> !ItemDB.GetItemData(t._1).tradeable_on_ge))
-                {
-                    out.add(potion);
-                }
-            }
-            return out.toArray(out.toArray(new PotionData[0]));
-
-        }
-    }
-
-    public static PotionData[] GetAllPotionsForLV(int level)
-    {
-        ReadAll();
-
-        List<PotionData> out = new ArrayList<>();
-
-        for(var potion : PotionDBMap.entrySet())
-        {
-            if(potion.getValue() == null)
-            {
-                continue;
-            }
-
-            if(IRequirement.IsAllRequirementMet(potion.getValue().extra_requirement))
-            {
-                out.add(potion.getValue());
-            }
-        }
-
-        return out.toArray(new PotionData[0]);
-    }
-
-    public static Tuple2<Integer, Integer>[] GetAllIngredients(PotionStep PotionPlan)
-    {
-        List<Tuple2<Integer, Integer>> out   = new ArrayList<>();
-        Stack<PotionStep>              steps = new Stack<>();
-        steps.push(new PotionStep(PotionPlan));
-
-        while(!steps.isEmpty())
-        {
-            PotionStep next = steps.pop();
-
-            if(next.base == null)
-            {
-                out.add(new Tuple2<>(next.result.base, next.result.base_count));
-            }
-            else
-            {
-                var base = new PotionStep(next.base);
-                base.result.base_count *= next.result.base_count;
-                base.result.ingredient_count *= next.result.ingredient_count;
-                steps.push(base);
-            }
-            if(next.ingredient == null)
-            {
-                out.add(new Tuple2<>(next.result.ingredient, next.result.ingredient_count));
-            }
-            else
-            {
-                var ingredient = new PotionStep(next.ingredient);
-                ingredient.result.base_count *= next.result.ingredient_count;
-                ingredient.result.ingredient_count *= next.result.ingredient_count;
-                steps.push(ingredient);
-            }
-            if(next.result.extra_ingredient != null)
-            {
-                for(var extra : next.result.extra_ingredient)
-                {
-                    out.add(new Tuple2<>(extra, 1));
-                }
-            }
-        }
-
-        return out.toArray(new Tuple2[0]);
-    }
-
-    /**
-     * Amulet of Chemistry
-     */
-    public static boolean IsAoCProfitable(PotionData potion)
-    {
-        if(potion.portion_ids == null || potion.portion_ids.length < 4)
-        {
-            return false;
-        }
-
-        return OSRSPrices.GetAveragePrice(AoCID) / 5 <
-               (OSRSPrices.GetAveragePrice(GetPortion(potion.id, 4).id) -
-                OSRSPrices.GetAveragePrice(GetPortion(potion.id, 3).id));
-    }
-
-    public static PotionData[] GetPotionsWithIngredient(int ID)
-    {
-        ReadAll();
-
-        List<PotionData> out = new ArrayList<>();
-        for(var potion : PotionDBMap.values())
-        {
-            if(potion.ingredient == ID || potion.base == ID ||
-               (potion.ingredient_alternatives != null &&
-                Arrays.stream(potion.ingredient_alternatives).anyMatch((t) -> t._1 == ID)) ||
-               (potion.extra_ingredient != null &&
-                Arrays.stream(potion.extra_ingredient).anyMatch((t) -> t == ID)))
-            {
-                out.add(potion);
-            }
-        }
-        return out.toArray(new PotionData[0]);
-    }
-
-    public static Integer GetEXPToNextPotion()
-    {
-        ReadAll();
-        int CurrentLevel = Skills.getRealLevel(Skill.HERBLORE);
-
-        var next = PotionDBMap.values()
-                              .stream()
-                              .filter((t) -> t.level > CurrentLevel)
-                              .min((x, y) -> Integer.compare(x.level, y.level));
-
-        if(next.isEmpty())
-        {
-            return null;
-        }
-        int targetLevel = next.get().level;
-
-        return Skills.getExperienceForLevel(targetLevel) - Skills.getExperience(Skill.HERBLORE);
-    }
-
-    public static Integer GetPotionCountToNextPotionUnlock(PotionStep PotionPlan)
-    {
-        if(PotionPlan.experience == 0)
-        {
-            return null;
-        }
-        Integer Needed = GetEXPToNextPotion();
-        if(Needed == null || Needed == 0)
-        {
-            return null;
-        }
-        return (int) Math.ceil(Needed / PotionPlan.experience);
-    }
-
-    public static int[] GetPortions(int ID)
-    {
-        // basically any potion id, and the portion being the specific portion variation
-        var potion = GetPotion(ID);
-
-        if(potion != null && potion.portion_ids != null)
-        {
-            Logger.log("PotionDB: GetPortion: Potion with ID " + ID + " found with portions: " +
-                       Arrays.toString(potion.portion_ids));
-            var           portions = potion.portion_ids;
-            List<Integer> out      = new ArrayList<>();
-            for(var portion : portions)
-            {
-                out.add(portion);
-            }
-            return out.stream().mapToInt(Integer::intValue).toArray();
-        }
-        Logger.log("PotionDB: GetPortion: Potion with ID " + ID + " not found");
-        return null;
-    }
-
-    public static ItemDB.ItemData GetPortion(int ID, int Portion)
-    {
-        // basically any potion id, and the portion being the specific portion variation
-        var     portions = GetPortions(ID);
-        Pattern brackets = Pattern.compile("[(](\\d*)[)]");
-
-        if(portions != null)
-        {
-            for(var portion : portions)
-            {
-                ItemDB.ItemData item = ItemDB.GetItemData(portion);
-                if(item != null)
-                {
-                    var match = brackets.matcher(item.name);
-                    if(match.find())
-                    {
-                        var group = match.group(1);
-                        try
-                        {
-                            int amount = Integer.parseInt(group);
-                            if(amount == Portion)
-                            {
-                                return item;
-                            }
-                        } catch(Exception ignored)
-                        {
-
-                        }
-                    }
-
-                }
-                else
-                {
-                    Logger.log("PotionDB: GetPortion: Failed to find item with ID " + portion);
-                }
-
-            }
-        }
-        Logger.log("PotionDB: GetPortion: Potion with ID " + ID +
-                   " does not exist or has no portion of " + Portion);
-        return null;
-    }
-
-    public static boolean isPotion(int ID)
-    {
-        return GetPotion(ID) != null;
-    }
-
-    public static boolean hasPortions(int ID)
-    {
-        var potion = GetPotion(ID);
-        return potion != null && potion.portion_ids != null;
-    }
-
     public static class PotionStep
     {
         public  PotionData result;
         public  PotionStep base       = null;
         public  PotionStep ingredient = null;
-        private Integer    price      = null;
         public  float      experience = 0;
         public  boolean    purchase   = false;
         public  boolean    DeGrime    = false;
+        private Integer    price      = null;
 
         public PotionStep(PotionData result)
         {
@@ -412,37 +106,16 @@ public class PotionDB extends OSRSDataBase
         //                   purchase + '}';
         //        }
 
-        @Override
-        public String toString()
+        private String IngredientString(int id, int count)
         {
-            String out = result.name + "(" + GetProfit() + " = " +
-                         OSRSPrices.GetAveragePrice(result.id) + " - " + GetPrice() + ") = ";
-            if(base != null && !base.purchase)
+            ItemDB.ItemData ingredient = ItemDB.GetItemData(id);
+            Integer         price      = OSRSPrices.GetAveragePrice(id);
+            String          priceStr   = "";
+            if(price != null)
             {
-                out += base.StepString();
+                priceStr = "(" + price + " * " + count + ")";
             }
-            else
-            {
-                out += IngredientString(result.base, result.base_count);
-            }
-            out += " + ";
-            if(ingredient != null && !ingredient.purchase)
-            {
-                out += ingredient.StepString();
-            }
-            else
-            {
-                out += IngredientString(result.ingredient, result.ingredient_count);
-            }
-            if(result.extra_ingredient != null)
-            {
-                for(var extra : result.extra_ingredient)
-                {
-                    out += " + " + IngredientString(extra, 1);
-                }
-            }
-
-            return out + "\n";
+            return ingredient.name + " * " + String.valueOf(count) + priceStr;
         }
 
         private String StepString()
@@ -476,19 +149,143 @@ public class PotionDB extends OSRSDataBase
             return out;
         }
 
-        private String IngredientString(int id, int count)
+        @Override
+        public String toString()
         {
-            ItemDB.ItemData ingredient = ItemDB.GetItemData(id);
-            Integer         price      = OSRSPrices.GetAveragePrice(id);
-            String          priceStr   = "";
-            if(price != null)
+            String out = result.name + "(" + GetProfit() + " = " +
+                         OSRSPrices.GetAveragePrice(result.id) + " - " + GetPrice() + ") = ";
+            if(base != null && !base.purchase)
             {
-                priceStr = "(" + price + " * " + count + ")";
+                out += base.StepString();
             }
-            return ingredient.name + " * " + String.valueOf(count) + priceStr;
+            else
+            {
+                out += IngredientString(result.base, result.base_count);
+            }
+            out += " + ";
+            if(ingredient != null && !ingredient.purchase)
+            {
+                out += ingredient.StepString();
+            }
+            else
+            {
+                out += IngredientString(result.ingredient, result.ingredient_count);
+            }
+            if(result.extra_ingredient != null)
+            {
+                for(var extra : result.extra_ingredient)
+                {
+                    out += " + " + IngredientString(extra, 1);
+                }
+            }
+
+            return out + "\n";
         }
     }
 
+    public static PotionData[] GetAllPotions()
+    {
+        ReadAll();
+        return PotionDBMap.values().toArray(new PotionData[0]);
+    }
+
+    private static void ReadAll()
+    {
+        try
+        {
+            InputStreamReader File   = new InputStreamReader(GetInputStream(PotionDBPath));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
+            Reader.setLenient(true);
+
+            Reader.beginObject();
+
+            while(Reader.hasNext())
+            {
+                int        id  = Integer.parseInt(Reader.nextName());
+                PotionData Obj = gson.fromJson(Reader, PotionData.class);
+                PotionDBMap.put(id, Obj);
+            }
+            Reader.endObject();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            Logger.log("Error reading PotionDB, Exception: " + e);
+            return;
+        }
+        return;
+    }
+
+    public static PotionData[] GetAllPotions(boolean includeNonTradable)
+    {
+        ReadAll();
+        if(includeNonTradable)
+        {
+            return PotionDBMap.values().toArray(new PotionData[0]);
+        }
+        else
+        {
+            var              potions = PotionDBMap.values();
+            List<PotionData> out     = new ArrayList<>();
+            for(var potion : potions)
+            {
+                PotionStep PotionPlan  = GetProfitablePotionSteps(potion);
+                var        ingredients = GetAllIngredients(PotionPlan);
+                if(!Arrays.stream(ingredients)
+                          .anyMatch((t) -> !ItemDB.GetItemData(t._1).tradeable_on_ge))
+                {
+                    out.add(potion);
+                }
+            }
+            return out.toArray(out.toArray(new PotionData[0]));
+
+        }
+    }
+
+    public static Tuple2<Integer, Integer>[] GetAllIngredients(PotionStep PotionPlan)
+    {
+        List<Tuple2<Integer, Integer>> out   = new ArrayList<>();
+        Stack<PotionStep>              steps = new Stack<>();
+        steps.push(new PotionStep(PotionPlan));
+
+        while(!steps.isEmpty())
+        {
+            PotionStep next = steps.pop();
+
+            if(next.base == null)
+            {
+                out.add(new Tuple2<>(next.result.base, next.result.base_count));
+            }
+            else
+            {
+                var base = new PotionStep(next.base);
+                base.result.base_count *= next.result.base_count;
+                base.result.ingredient_count *= next.result.ingredient_count;
+                steps.push(base);
+            }
+            if(next.ingredient == null)
+            {
+                out.add(new Tuple2<>(next.result.ingredient, next.result.ingredient_count));
+            }
+            else
+            {
+                var ingredient = new PotionStep(next.ingredient);
+                ingredient.result.base_count *= next.result.ingredient_count;
+                ingredient.result.ingredient_count *= next.result.ingredient_count;
+                steps.push(ingredient);
+            }
+            if(next.result.extra_ingredient != null)
+            {
+                for(var extra : next.result.extra_ingredient)
+                {
+                    out.add(new Tuple2<>(extra, 1));
+                }
+            }
+        }
+
+        return out.toArray(new Tuple2[0]);
+    }
 
     /**
      * @param Potion
@@ -623,6 +420,208 @@ public class PotionDB extends OSRSDataBase
         }
 
         return top;
+    }
+
+    public static ItemDB.ItemData GetPortion(int ID, int Portion)
+    {
+        // basically any potion id, and the portion being the specific portion variation
+        var     portions = GetPortions(ID);
+        Pattern brackets = Pattern.compile("[(](\\d*)[)]");
+
+        if(portions != null)
+        {
+            for(var portion : portions)
+            {
+                ItemDB.ItemData item = ItemDB.GetItemData(portion);
+                if(item != null)
+                {
+                    var match = brackets.matcher(item.name);
+                    if(match.find())
+                    {
+                        var group = match.group(1);
+                        try
+                        {
+                            int amount = Integer.parseInt(group);
+                            if(amount == Portion)
+                            {
+                                return item;
+                            }
+                        } catch(Exception ignored)
+                        {
+
+                        }
+                    }
+
+                }
+                else
+                {
+                    Logger.log("PotionDB: GetPortion: Failed to find item with ID " + portion);
+                }
+
+            }
+        }
+        Logger.log("PotionDB: GetPortion: Potion with ID " + ID +
+                   " does not exist or has no portion of " + Portion);
+        return null;
+    }
+
+    public static int[] GetPortions(int ID)
+    {
+        // basically any potion id, and the portion being the specific portion variation
+        var potion = GetPotion(ID);
+
+        if(potion != null && potion.portion_ids != null)
+        {
+            Logger.log("PotionDB: GetPortion: Potion with ID " + ID + " found with portions: " +
+                       Arrays.toString(potion.portion_ids));
+            var           portions = potion.portion_ids;
+            List<Integer> out      = new ArrayList<>();
+            for(var portion : portions)
+            {
+                out.add(portion);
+            }
+            return out.stream().mapToInt(Integer::intValue).toArray();
+        }
+        Logger.log("PotionDB: GetPortion: Potion with ID " + ID + " not found");
+        return null;
+    }
+
+    public static PotionData GetPotion(int ID)
+    {
+        if(PotionDBMap.containsKey(ID))
+        {
+            return PotionDBMap.get(ID);
+        }
+
+        try
+        {
+            InputStreamReader File   = new InputStreamReader(GetInputStream(PotionDBPath));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
+            Reader.setLenient(true);
+
+            Reader.beginObject();
+
+            while(Reader.hasNext())
+            {
+                int        id  = Integer.parseInt(Reader.nextName());
+                PotionData Obj = gson.fromJson(Reader, PotionData.class);
+                if(id == ID || (Obj.portion_ids != null &&
+                                Arrays.stream(Obj.portion_ids).anyMatch((t) -> t == ID)))
+                {
+                    PotionDBMap.put(id, Obj);
+                    return Obj;
+                }
+            }
+            Reader.endObject();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            Logger.log("Error reading PotionDB, Exception: " + e);
+            return null;
+        }
+        return null;
+    }
+
+    public static boolean isPotion(int ID)
+    {
+        return GetPotion(ID) != null;
+    }
+
+    public static PotionData[] GetAllPotionsForLV(int level)
+    {
+        ReadAll();
+
+        List<PotionData> out = new ArrayList<>();
+
+        for(var potion : PotionDBMap.entrySet())
+        {
+            if(potion.getValue() == null)
+            {
+                continue;
+            }
+
+            if(IRequirement.IsAllRequirementMet(potion.getValue().extra_requirement))
+            {
+                out.add(potion.getValue());
+            }
+        }
+
+        return out.toArray(new PotionData[0]);
+    }
+
+    public static Integer GetPotionCountToNextPotionUnlock(PotionStep PotionPlan)
+    {
+        if(PotionPlan.experience == 0)
+        {
+            return null;
+        }
+        Integer Needed = GetEXPToNextPotion();
+        if(Needed == null || Needed == 0)
+        {
+            return null;
+        }
+        return (int) Math.ceil(Needed / PotionPlan.experience);
+    }
+
+    public static Integer GetEXPToNextPotion()
+    {
+        ReadAll();
+        int CurrentLevel = Skills.getRealLevel(Skill.HERBLORE);
+
+        var next = PotionDBMap.values()
+                              .stream()
+                              .filter((t) -> t.level > CurrentLevel)
+                              .min((x, y) -> Integer.compare(x.level, y.level));
+
+        if(next.isEmpty())
+        {
+            return null;
+        }
+        int targetLevel = next.get().level;
+
+        return Skills.getExperienceForLevel(targetLevel) - Skills.getExperience(Skill.HERBLORE);
+    }
+
+    public static PotionData[] GetPotionsWithIngredient(int ID)
+    {
+        ReadAll();
+
+        List<PotionData> out = new ArrayList<>();
+        for(var potion : PotionDBMap.values())
+        {
+            if(potion.ingredient == ID || potion.base == ID ||
+               (potion.ingredient_alternatives != null &&
+                Arrays.stream(potion.ingredient_alternatives).anyMatch((t) -> t._1 == ID)) ||
+               (potion.extra_ingredient != null &&
+                Arrays.stream(potion.extra_ingredient).anyMatch((t) -> t == ID)))
+            {
+                out.add(potion);
+            }
+        }
+        return out.toArray(new PotionData[0]);
+    }
+
+    /**
+     * Amulet of Chemistry
+     */
+    public static boolean IsAoCProfitable(PotionData potion)
+    {
+        if(potion.portion_ids == null || potion.portion_ids.length < 4)
+        {
+            return false;
+        }
+
+        return OSRSPrices.GetAveragePrice(AoCID) / 5 <
+               (OSRSPrices.GetAveragePrice(GetPortion(potion.id, 4).id) -
+                OSRSPrices.GetAveragePrice(GetPortion(potion.id, 3).id));
+    }
+
+    public static boolean hasPortions(int ID)
+    {
+        var potion = GetPotion(ID);
+        return potion != null && potion.portion_ids != null;
     }
 
     //    public static void main(String[] args)

@@ -1,8 +1,8 @@
 package Scripts.Private;
 
 import Cycles.Tasks.SimpleTasks.ItemProcessing.InteractTask;
-import OSRSDatabase.ItemDB;
 import OSRSDatabase.WoodDB;
+import Utilities.MouseAlgorithm.IFMouseAlgorithm;
 import Utilities.NameDictionary;
 import Utilities.OSRSUtilities;
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -10,15 +10,14 @@ import org.dreambot.api.ClientSettings;
 import org.dreambot.api.input.Keyboard;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.input.event.impl.keyboard.awt.Key;
-import org.dreambot.api.input.mouse.algorithm.StandardMouseAlgorithm;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.equipment.Equipment;
 import org.dreambot.api.methods.container.impl.equipment.EquipmentSlot;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.input.Camera;
+import org.dreambot.api.methods.input.CameraMode;
 import org.dreambot.api.methods.input.mouse.MouseSettings;
-import org.dreambot.api.methods.input.mouse.MouseTiming;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
@@ -28,8 +27,6 @@ import org.dreambot.api.methods.magic.Normal;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.settings.PlayerSettings;
-import org.dreambot.api.methods.skills.Skill;
-import org.dreambot.api.methods.skills.Skills;
 import org.dreambot.api.methods.tabs.Tab;
 import org.dreambot.api.methods.tabs.Tabs;
 import org.dreambot.api.methods.walking.impl.Walking;
@@ -39,6 +36,7 @@ import org.dreambot.api.methods.widget.helpers.ItemProcessing;
 import org.dreambot.api.methods.widget.helpers.Smithing;
 import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.Category;
+import org.dreambot.api.script.ScriptManager;
 import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.script.listener.PaintListener;
 import org.dreambot.api.utilities.Logger;
@@ -55,244 +53,21 @@ import java.util.concurrent.atomic.AtomicReference;
 @ScriptManifest(name = "IF-TutorialIsland", description = "tut oisland", author = "Semanresu", version = 1.0, category = Category.MISC, image = "")
 public class TutorialIsland extends AbstractScript implements PaintListener
 {
-    final static int TutProgressVarBit = 281;
+    static class BehaviorParameters
+    {
+        int ThinkDelay; // ms
+        int MouseSpeed;
+        
+    }
+
+    final static int                     TutProgressVarBit  = 281;
+    static       int                     ticksSinceContinue = 0;
+    static       AtomicReference<Entity> Target             = new AtomicReference<>(null);
     Thread ProgressThread = null;
     Thread ContinueThread = null;
     Random rand           = new Random();
-    static int ticksSinceContinue = 0;
-    Tile Choice = null;
+    Tile   Choice         = null;
     Thread Randomizer;
-
-
-    static AtomicReference<Entity> Target = new AtomicReference<>(null);
-
-    void CheckProgress()
-    {
-        int     last           = -1;
-        boolean spaceIsPressed = false;
-        while(true)
-        {
-            int TutProgress = PlayerSettings.getConfig(TutProgressVarBit);
-            //            if(Keyboard.isPressed(Key.SPACE) != spaceIsPressed)
-            //            {
-            //                Logger.log("Space is pressed: " + Keyboard.isPressed(Key.SPACE));
-            //                spaceIsPressed = Keyboard.isPressed(Key.SPACE);
-            //            }
-            if(TutProgress != last)
-            {
-                Logger.log("Progress bit: " + TutProgress);
-                last = TutProgress;
-            }
-        }
-    }
-
-    @Override
-    public void onStart(String... params)
-    {
-        Logger.log("onStart");
-        Logger.log(PlayerSettings.getConfig(TutProgressVarBit));
-        ProgressThread = new Thread(this::CheckProgress);
-        ProgressThread.start();
-        ContinueThread = new Thread(this::CanContinueThread);
-        ContinueThread.start();
-        //        Instance.getInstance().setMouseInputEnabled(true);
-        //        Instance.getInstance().setKeyboardInputEnabled(true);
-        MouseSettings.setSpeed(rand.nextInt(10) + 10);
-        ClientSettings.clearLayoutPreferences();
-
-        Randomizer = OSRSUtilities.StartRandomizerThread(5, rand.nextFloat(0.7f,1.5f), 20);
-    }
-
-    @Override
-    public void onStart()
-    {
-        Logger.log("onStart");
-        Logger.log(PlayerSettings.getConfig(TutProgressVarBit));
-        ProgressThread = new Thread(this::CheckProgress);
-        ProgressThread.start();
-        ContinueThread = new Thread(this::CanContinueThread);
-        ContinueThread.start();
-        //        Instance.getInstance().setMouseInputEnabled(true);
-        //        Instance.getInstance().setKeyboardInputEnabled(true);
-        MouseSettings.setSpeed(rand.nextInt(30) + 10);
-        ClientSettings.clearLayoutPreferences();
-
-        Randomizer = OSRSUtilities.StartRandomizerThread(5, rand.nextFloat(0.7f,1.5f), 20);
-    }
-
-    boolean CanContinueWithSleep()
-    {
-        return Sleep.sleepUntil(() -> Dialogues.canContinue(), 2000, 300 + rand.nextInt(300));
-    }
-
-    boolean ClickWidget(WidgetChild widget)
-    {
-        if(widget == null || widget.getRectangle() == null)
-        {
-            return false;
-        }
-
-        Point click  = GetRandomPointInRectangle(widget.getRectangle());
-        var   result = Mouse.click(click, false);
-        if(rand.nextInt(100) > 70)
-        {
-            Mouse.move();
-        }
-        return result;
-    }
-
-    Point GetRandomPointInRectangle(Rectangle rectangle)
-    {
-        Logger.log("GetRandomPointInRectangle: " + rectangle);
-        var x = rectangle.x + rand.nextInt(rectangle.width);
-        var y = rectangle.y + rand.nextInt(rectangle.height);
-
-        return new Point(x, y);
-    }
-
-    Entity GetClosestMatchingEntity(String name)
-    {
-        LevenshteinDistance calc    = new LevenshteinDistance(4);
-        ArrayList<Entity>   Options = new ArrayList<>();
-
-        var npcs = NPCs.all((t) -> t != null && t.getName() != null &&
-                                   !t.getName().equalsIgnoreCase("null"));
-        Options.addAll(npcs);
-
-        var objects = GameObjects.all((t) -> t != null && t.getName() != null &&
-                                             !t.getName().equalsIgnoreCase("null"));
-        Options.addAll(objects);
-
-        SortedMap<Integer, Entity> Why = new TreeMap<>();
-        for(var option : Options)
-        {
-            if(option != null)
-            {
-                int distance = calc.apply(option.getName(), name);
-                if(distance != -1)
-                {
-                    //Logger.log(option.getName() + " " + distance);
-                    Why.put((int) ((distance + 1) * option.distance()), option);
-                }
-            }
-        }
-        //Logger.log(Arrays.toString(npc.toArray()));
-        if(!Why.isEmpty())
-        {
-            var npc = Why.firstEntry().getValue();
-            Logger.log("SimpleInteract: NPC found: " + npc + " " + Why.firstEntry().getKey());
-            Target.set(npc);
-            return npc;
-        }
-        Logger.log("SimpleInteract: NPC not found: " + name);
-        return null;
-    }
-
-    void CanContinueThread()
-    {
-        while(true)
-        {
-            if(Dialogues.canContinue())
-            {
-                ticksSinceContinue = 0;
-            }
-            else
-            {
-                ticksSinceContinue++;
-            }
-            try
-            {
-                Sleep.sleepTick();
-            } catch(Exception ignored)
-            {
-
-            }
-
-        }
-    }
-
-    boolean CanContinueTimeout()
-    {
-        //Logger.log(ticksSinceContinue);
-        if(ticksSinceContinue > rand.nextInt(3) + 3)
-        {
-            Logger.log("DialogueContinue timeout elapsed");
-            return true;
-        }
-        return false;
-    }
-
-    private boolean TalkToOptions(Entity npc, String optionContaining, Tile FallBack)
-    {
-        if(CanContinueWithSleep() || SimpleInteract(npc, FallBack))
-        {
-            Logger.log("TalkToOptions: In Dialogue");
-            ticksSinceContinue = 0;
-            Keyboard.holdSpace(() -> CanContinueTimeout(), rand.nextInt(3000) + 5000);
-            Sleep.sleepUntil(() -> CanContinueTimeout(), 4000, 100 + rand.nextInt(300));
-
-            if(Dialogues.chooseFirstOptionContaining(optionContaining))
-            {
-                if(rand.nextInt(100) > 70)
-                {
-                    Mouse.move();
-                }
-                Logger.log("TalkToOptions: Chosen option " + optionContaining);
-                return TalkToOptions(npc, "", FallBack);
-            }
-            return optionContaining.isBlank();
-        }
-        return false;
-    }
-
-    private boolean TalkToOptions(int ID, String optionContaining, Tile FallBack)
-    {
-        return TalkToOptions(NPCs.closest(ID), optionContaining, FallBack);
-    }
-
-    private boolean TalkToOptions(String name, String optionContaining, Tile FallBack)
-    {
-        var npc = GetClosestMatchingEntity(name);
-        if(npc != null)
-        {
-            return TalkToOptions(npc, optionContaining, FallBack);
-        }
-        return false;
-    }
-
-    private boolean TalkNoOptions(int ID)
-    {
-        return TalkToOptions(ID, "", null);
-    }
-
-    private boolean TalkNoOptions(String name)
-    {
-        return TalkNoOptions(name, "", null);
-    }
-
-    private boolean TalkNoOptions(String name, Tile Fallback)
-    {
-        return TalkNoOptions(name, "", Fallback);
-    }
-
-    private boolean TalkNoOptions(int ID, Tile Fallback)
-    {
-        return TalkToOptions(ID, "", Fallback);
-    }
-
-    private boolean TalkNoOptions(String name, String optionContaining, Tile FallBack)
-    {
-        var npc = GetClosestMatchingEntity(name);
-        if(npc != null)
-        {
-            return TalkToOptions(npc, optionContaining, FallBack);
-        }
-        else if(FallBack != null)
-        {
-            Walk(FallBack);
-        }
-        return false;
-    }
 
     private boolean SimpleInteract(String name, Tile FallBack)
     {
@@ -322,30 +97,6 @@ public class TutorialIsland extends AbstractScript implements PaintListener
     private boolean SimpleInteract(String name)
     {
         return SimpleInteract(name, null);
-    }
-
-    private void Walk(Tile tile)
-    {
-        Logger.log("Walk: Walking to tile: " + tile);
-
-        if(tile.distance() > 15 ||
-           (WoodDB.isUnderRoof(tile) && !WoodDB.isUnderRoof(Players.getLocal().getTile())))
-        {
-            Walking.walk(tile);
-        }
-        else
-        {
-            Walking.walkOnScreen(tile);
-        }
-
-        Sleep.sleepTick();
-        if(rand.nextInt(100) > 70)
-        {
-            Mouse.move();
-        }
-        //        Sleep.sleepUntil(() -> !Players.getLocal().isMoving() || tile.distance() < 3,
-        //                         5000,
-        //                         100 + rand.nextInt(500));
     }
 
     private boolean SimpleInteract(Entity target, Tile FallBack)
@@ -413,209 +164,187 @@ public class TutorialIsland extends AbstractScript implements PaintListener
         return false;
     }
 
-    void WaitForInventoryChange()
+    private boolean TalkNoOptions(int ID)
     {
-        int CurrentSlots = Inventory.getEmptySlots();
-        Sleep.sleepUntil(() -> {
-            if(rand.nextInt(100) > 90)
-            {
-                Mouse.move();
-            }
-            return Inventory.getEmptySlots() != CurrentSlots;
-        }, 5000 + rand.nextInt(1000), rand.nextInt(500) + 500);
+        return TalkToOptions(ID, "", null);
     }
 
-    void WaitForProgressChange()
+    private boolean TalkNoOptions(String name)
     {
-        WaitForProgressChange(3000 + rand.nextInt(3000), 500, 500);
+        return TalkNoOptions(name, "", null);
     }
 
-    void WaitForProgressChange(int timeout, int pollingMax, int pollingMin)
+    private boolean TalkNoOptions(String name, Tile Fallback)
     {
-        int TutProgress = PlayerSettings.getConfig(TutProgressVarBit);
-        Sleep.sleepUntil(() -> {
-            if(rand.nextInt(100) > 90)
-            {
-                Mouse.move();
-            }
-            return PlayerSettings.getConfig(TutProgressVarBit) != TutProgress;
-        }, timeout, rand.nextInt(pollingMax) + pollingMin);
+        return TalkNoOptions(name, "", Fallback);
     }
 
-    WidgetChild GetNameBox()
+    private boolean TalkNoOptions(int ID, Tile Fallback)
     {
-        return Widgets.get(558, 12);
+        return TalkToOptions(ID, "", Fallback);
     }
 
-    WidgetChild GetNameConfirmBox()
+    private boolean TalkNoOptions(String name, String optionContaining, Tile FallBack)
     {
-        return Widgets.get(558, 18);
-    }
-
-    void ChooseName()
-    {
-        int         MaxNameLength = 12;
-        String      CurrentName   = "";
-        String      ToAdd         = NameDictionary.GetRandomWord();
-        WidgetChild Namebox;
-        WidgetChild ConfBox;
-        boolean     delete        = false;
-        do
+        var npc = GetClosestMatchingEntity(name);
+        if(npc != null)
         {
-            if(ToAdd == null)
-            {
-                if(MaxNameLength - CurrentName.length() > 3)
-                {
-                    Logger.log("Adding word");
-                    ToAdd = NameDictionary.GetRandomWord(MaxNameLength - CurrentName.length());
-                }
-                else if(CurrentName.length() >= 12)
-                {
-                    Logger.log("Deleting current name");
-                    CurrentName = "";
-                    ToAdd       = NameDictionary.GetRandomWord();
-                    delete      = true;
-                }
-                else
-                {
-                    Logger.log("Adding random number");
-                    ToAdd = String.valueOf(rand.nextInt(10));
-                }
-            }
-
-
-            Namebox = GetNameBox();
-            if(Namebox.containsMouse())
-            {
-                Mouse.click(false);
-            }
-            else
-            {
-                ClickWidget(Namebox);
-            }
-
-            Sleep.sleepUntil(() -> GetNameBox().getText().contains("*") ||
-                                   GetNameBox().getText().length() >= 12, 5000);
-            if(delete)
-            {
-                Logger.log("Deleting");
-                Keyboard.holdKey(Key.BACKSPACE, () -> GetNameBox().getText().equals("*"));
-                Sleep.sleepUntil(() -> GetNameBox().getText().equals("*"), 5000);
-                delete = false;
-            }
-
-            Keyboard.type(ToAdd, false, true);
-            CurrentName += ToAdd;
-            ToAdd = null;
-            Logger.log("ChoseName: CurrentName: " + CurrentName);
-            Sleep.sleepTicks(rand.nextInt(3) + 3);
-
-            ConfBox = GetNameConfirmBox();
-            if(ConfBox != null)
-            {
-                ClickWidget(GetNameConfirmBox());
-                Logger.log("Waiting for name check");
-                Sleep.sleepTicks(8);
-                Sleep.sleepUntil(() -> GetNameConfirmBox().getActions() != null, 5000);
-            }
-
-            ConfBox = GetNameConfirmBox();
-            if(ConfBox != null && ConfBox.getActions() != null)
-            {
-                Logger.log(Arrays.toString(ConfBox.getActions()));
-            }
+            return TalkToOptions(npc, optionContaining, FallBack);
         }
-        while(ConfBox != null &&
-              (ConfBox.getActions() == null || ConfBox.getActions().length == 0));
-
-        int attempts    = 0;
-        int maxAttempts = 2;
-        while(GetNameConfirmBox() != null && GetNameConfirmBox().isVisible() &&
-              attempts < maxAttempts)
+        else if(FallBack != null)
         {
-            Logger.log("Waiting to submit");
-            Mouse.click(GetRandomPointInRectangle(GetNameConfirmBox().getRectangle()), false);
-            Sleep.sleepTicks(rand.nextInt(3) + 1);
-            attempts++;
+            Walk(FallBack);
         }
-
-        if(attempts > maxAttempts)
-        {
-            Logger.log("Deleting");
-            ClickWidget(GetNameBox());
-            Sleep.sleepTicks(3);
-            Keyboard.holdKey(Key.BACKSPACE, () -> GetNameBox().getText().equals("*"));
-            Sleep.sleepUntil(() -> GetNameBox().getText().equals("*"), 5000);
-        }
+        return false;
     }
 
-    Widget GetAppearanceWidget()
+    private boolean TalkToOptions(Entity npc, String optionContaining, Tile FallBack)
     {
-        return Widgets.getWidget(679);
-    }
-
-    void ChooseAppearance()
-    {
-        var MainWidget = GetAppearanceWidget();
-        if(MainWidget != null && MainWidget.getChildren() != null)
+        if(CanContinueWithSleep() || SimpleInteract(npc, FallBack))
         {
-            var Selectables = MainWidget.getChildren()
-                                        .stream()
-                                        .filter((t) -> t.hasAction("Select"))
-                                        .toList();
-            Logger.log("ChooseAppearance: Start Selectables");
+            Logger.log("TalkToOptions: In Dialogue");
+            ticksSinceContinue = 0;
+            Keyboard.holdSpace(() -> CanContinueTimeout(), rand.nextInt(3000) + 5000);
+            Sleep.sleepUntil(() -> CanContinueTimeout(), 4000, 100 + rand.nextInt(300));
 
-            for(var widget : Selectables)
+            var option = Dialogues.getOptionIndexContaining(optionContaining);
+            if(option != -1 && Dialogues.clickOption(option))
             {
                 if(rand.nextInt(100) > 70)
                 {
-                    continue;
+                    Mouse.move();
                 }
-
-                if(rand.nextInt(100) > 90)
-                {
-                    Sleep.sleepTicks(rand.nextInt(20) + 1);
-                }
-
-                int   pressCount = rand.nextInt(7);
-                Point click      = GetRandomPointInRectangle(widget.getRectangle());
-                for(var i = 0; i < pressCount; i++)
-                {
-                    // do mouse nudge possibly
-                    Mouse.click(click, false);
-                    Sleep.sleepTicks(rand.nextInt(5) + 1);
-                }
+                Logger.log("TalkToOptions: Chosen option " + optionContaining);
+                return TalkToOptions(npc, "", FallBack);
             }
+            return optionContaining.isBlank();
+        }
+        return false;
+    }
 
-            if(rand.nextInt(100) > 30)
+    private boolean TalkToOptions(int ID, String optionContaining, Tile FallBack)
+    {
+        return TalkToOptions(NPCs.closest(ID), optionContaining, FallBack);
+    }
+
+    private boolean TalkToOptions(String name, String optionContaining, Tile FallBack)
+    {
+        var npc = GetClosestMatchingEntity(name);
+        if(npc != null)
+        {
+            return TalkToOptions(npc, optionContaining, FallBack);
+        }
+        return false;
+    }
+
+    private void Walk(Tile tile)
+    {
+        Logger.log("Walk: Walking to tile: " + tile);
+
+        if(tile.distance() > 15 ||
+           (WoodDB.isUnderRoof(tile) && !WoodDB.isUnderRoof(Players.getLocal().getTile())))
+        {
+            Walking.walk(tile);
+        }
+        else
+        {
+            Walking.walkOnScreen(tile);
+        }
+
+        Sleep.sleepTick();
+        if(rand.nextInt(100) > 70)
+        {
+            Mouse.move();
+        }
+        //        Sleep.sleepUntil(() -> !Players.getLocal().isMoving() || tile.distance() < 3,
+        //                         5000,
+        //                         100 + rand.nextInt(500));
+    }
+
+    @Override
+    public void onStart()
+    {
+        var algo = new IFMouseAlgorithm(1000);
+        ScriptManager.getScriptManager().addListener(algo);
+        Mouse.setMouseAlgorithm(algo);
+        Camera.setCameraMode(CameraMode.MOUSE_ONLY);
+
+        Logger.log("onStart");
+        Logger.log(PlayerSettings.getConfig(TutProgressVarBit));
+        ProgressThread = new Thread(this::CheckProgress);
+        ProgressThread.start();
+        ContinueThread = new Thread(this::CanContinueThread);
+        ContinueThread.start();
+        //        Instance.getInstance().setMouseInputEnabled(true);
+        //        Instance.getInstance().setKeyboardInputEnabled(true);
+        MouseSettings.setSpeed(rand.nextInt(30) + 10);
+        ClientSettings.clearLayoutPreferences();
+
+        Randomizer = OSRSUtilities.StartRandomizerThread(5, rand.nextFloat(0.7f, 1.5f), 20);
+    }
+
+    @Override
+    public void onStart(String... params)
+    {
+        var algo = new IFMouseAlgorithm(1000);
+        ScriptManager.getScriptManager().addListener(algo);
+        Mouse.setMouseAlgorithm(algo);
+        Camera.setCameraMode(CameraMode.MOUSE_ONLY);
+
+        Logger.log("onStart");
+        Logger.log(PlayerSettings.getConfig(TutProgressVarBit));
+        ProgressThread = new Thread(this::CheckProgress);
+        ProgressThread.start();
+        ContinueThread = new Thread(this::CanContinueThread);
+        ContinueThread.start();
+        //        Instance.getInstance().setMouseInputEnabled(true);
+        //        Instance.getInstance().setKeyboardInputEnabled(true);
+        MouseSettings.setSpeed(rand.nextInt(10) + 10);
+        ClientSettings.clearLayoutPreferences();
+
+        Randomizer = OSRSUtilities.StartRandomizerThread(5, rand.nextFloat(0.7f, 1.5f), 20);
+    }
+
+    void CheckProgress()
+    {
+        int     last           = -1;
+        boolean spaceIsPressed = false;
+        while(true)
+        {
+            int TutProgress = PlayerSettings.getConfig(TutProgressVarBit);
+            //            if(Keyboard.isPressed(Key.SPACE) != spaceIsPressed)
+            //            {
+            //                Logger.log("Space is pressed: " + Keyboard.isPressed(Key.SPACE));
+            //                spaceIsPressed = Keyboard.isPressed(Key.SPACE);
+            //            }
+            if(TutProgress != last)
             {
-                var B = GetAppearanceWidget().getChildren()
-                                             .stream()
-                                             .filter((t) -> t.hasAction("B"))
-                                             .toList();
-                if(!B.isEmpty())
-                {
-                    var A = GetAppearanceWidget().getChildren()
-                                                 .stream()
-                                                 .filter((t) -> t.hasAction("A"))
-                                                 .toList();
-                    if(rand.nextInt(100) > 80 && !A.isEmpty())
-                    {
-                        ClickWidget(A.getFirst());
-                    }
-                }
+                Logger.log("Progress bit: " + TutProgress);
+                last = TutProgress;
+            }
+        }
+    }
+
+    void CanContinueThread()
+    {
+        while(true)
+        {
+            if(Dialogues.canContinue())
+            {
+                ticksSinceContinue = 0;
+            }
+            else
+            {
+                ticksSinceContinue++;
+            }
+            try
+            {
+                Sleep.sleepTick();
+            } catch(Exception ignored)
+            {
+
             }
 
-            Logger.log("ChooseAppearance: Start Confirm");
-            var Confirm = GetAppearanceWidget().getChildren()
-                                               .stream()
-                                               .filter((t) -> t.hasAction("Confirm"))
-                                               .toList();
-            if(!Confirm.isEmpty())
-            {
-                Logger.log("ChooseAppearance: Confirm found");
-                ClickWidget(Confirm.getFirst());
-            }
         }
     }
 
@@ -625,8 +354,7 @@ public class TutorialIsland extends AbstractScript implements PaintListener
     @Override
     public int onLoop()
     {
-        int TutProgress = PlayerSettings.getConfig(TutProgressVarBit);
-
+        int TutProgress = GetTutorialProgress();
 
         switch(TutProgress)
         {
@@ -736,15 +464,19 @@ public class TutorialIsland extends AbstractScript implements PaintListener
             case 70: // interact with tree that has "chop down" action
             {
                 var Tree = InteractTask.GetTargetByActionStatic("chop down");
-                if(Tree != null && Sleep.sleepUntil(() -> Tree.interact(), 300000, 10000))
+                if(Tree != null && Sleep.sleepUntil(() -> Tree.interact(), 300000, 3000))
                 {
                     Logger.log("70: Interacted");
-                    WaitForInventoryChange();
+                    if(GetTutorialProgress() == 70)
+                    {
+                        WaitForProgressChange();
+                    }
                 }
             }
             break;
             case 80:  // use tinderbox on "logs", use tinderbox as base since ID is correct
             {
+                Logger.log("80: Getting logs and tinderbox");
                 var item      = Inventory.get(2511);
                 var tinderbox = Inventory.get(590);
                 Logger.log("80: " + item + " " + tinderbox);
@@ -878,7 +610,11 @@ public class TutorialIsland extends AbstractScript implements PaintListener
             break;
             case 220: // talk to Quest Guide 3312
             {
-                if(TalkNoOptions("Quest Guide"))
+                if(Players.getLocal().getTile().getZ() == 1)
+                {
+                    SimpleInteract(16673);
+                }
+                else if(TalkNoOptions("Quest Guide", new Tile(3085, 3123, 0)))
                 {
                     WaitForProgressChange();
                 }
@@ -903,7 +639,11 @@ public class TutorialIsland extends AbstractScript implements PaintListener
             break;
             case 240: // talk to Quest Guide 3312
             {
-                if(TalkNoOptions("Quest Guide"))
+                if(Players.getLocal().getTile().getZ() == 1)
+                {
+                    SimpleInteract(16673);
+                }
+                else if(TalkNoOptions("Quest Guide", new Tile(3085, 3123, 0)))
                 {
                     WaitForProgressChange();
                 }
@@ -911,7 +651,11 @@ public class TutorialIsland extends AbstractScript implements PaintListener
             break;
             case 250: // interact Ladder 9726
             {
-                if(SimpleInteract(9726))
+                if(Players.getLocal().getTile().getZ() == 1)
+                {
+                    SimpleInteract(16673);
+                }
+                else if(SimpleInteract(9726))
                 {
                     WaitForProgressChange();
                 }
@@ -1204,7 +948,7 @@ public class TutorialIsland extends AbstractScript implements PaintListener
                 }
                 else
                 {
-                    if(Equipment.isSlotEmpty(EquipmentSlot.ARROWS))
+                    if(Inventory.contains(841) || Inventory.contains(882))
                     {
                         var bow   = Inventory.get(841);
                         var arrow = Inventory.get(882);
@@ -1222,7 +966,7 @@ public class TutorialIsland extends AbstractScript implements PaintListener
                     else
                     {
                         Target.set(GetClosestMatchingEntity("Giant Rat"));
-                        if(SimpleInteract(Target.get(), null))
+                        if(SimpleInteract(Target.get(), new Tile(3112, 9519, 0)))
                         {
                             WaitForProgressChange();
                         }
@@ -1238,9 +982,32 @@ public class TutorialIsland extends AbstractScript implements PaintListener
                     Sleep.sleepTicks(rand.nextInt(3) + 1);
                 }
 
-                if(SimpleInteract(Target.get(), null))
+                if(Target.get() == null || Target.get().distance() > 8)
                 {
-                    WaitForProgressChange();
+                    Target.set(GetClosestMatchingEntity("Giant Rat"));
+                }
+
+                if(Inventory.contains(841) || Inventory.contains(882))
+                {
+                    var bow   = Inventory.get(841);
+                    var arrow = Inventory.get(882);
+                    if(bow != null)
+                    {
+                        bow.interact();
+                    }
+                    Sleep.sleepTicks(3);
+                    if(arrow != null)
+                    {
+                        arrow.interact();
+                    }
+                    //WaitForInventoryChange();
+                }
+                else
+                {
+                    if(SimpleInteract(Target.get(), new Tile(3112, 9519, 0)))
+                    {
+                        WaitForProgressChange();
+                    }
                 }
             }
             break;
@@ -1513,6 +1280,18 @@ public class TutorialIsland extends AbstractScript implements PaintListener
         return OSRSUtilities.WaitTime(500, 1000);
     }
 
+    @Override
+    public void onPaint(Graphics graphics)
+    {
+        if(Target.get() != null)
+        {
+            var tilePoly = Target.get().getTile().getPolygon();
+            if(tilePoly != null)
+            {
+                graphics.drawPolygon(tilePoly);
+            }
+        }
+    }
 
     /**
      * @param graphics
@@ -1530,16 +1309,372 @@ public class TutorialIsland extends AbstractScript implements PaintListener
         }
     }
 
-    @Override
-    public void onPaint(Graphics graphics)
+    boolean CanContinueWithSleep()
     {
-        if(Target.get() != null)
+        return Sleep.sleepUntil(() -> Dialogues.canContinue(), 2000, 300 + rand.nextInt(300));
+    }
+
+    boolean ClickWidget(WidgetChild widget)
+    {
+        if(widget == null || widget.getRectangle() == null)
         {
-            var tilePoly = Target.get().getTile().getPolygon();
-            if(tilePoly != null)
+            return false;
+        }
+
+        Point click  = GetRandomPointInRectangle(widget.getRectangle());
+        var   result = Mouse.click(click, false);
+        if(rand.nextInt(100) > 70)
+        {
+            Mouse.move();
+        }
+        return result;
+    }
+
+    Point GetRandomPointInRectangle(Rectangle rectangle)
+    {
+        Logger.log("GetRandomPointInRectangle: " + rectangle);
+        var x = rectangle.x + rand.nextInt(rectangle.width);
+        var y = rectangle.y + rand.nextInt(rectangle.height);
+
+        return new Point(x, y);
+    }
+
+    Entity GetClosestMatchingEntity(String name)
+    {
+        LevenshteinDistance calc    = new LevenshteinDistance(4);
+        ArrayList<Entity>   Options = new ArrayList<>();
+
+        var npcs = NPCs.all((t) -> t != null && t.getName() != null &&
+                                   !t.getName().equalsIgnoreCase("null"));
+        Options.addAll(npcs);
+
+        var objects = GameObjects.all((t) -> t != null && t.getName() != null &&
+                                             !t.getName().equalsIgnoreCase("null"));
+        Options.addAll(objects);
+
+        SortedMap<Integer, Entity> Why = new TreeMap<>();
+        for(var option : Options)
+        {
+            if(option != null)
             {
-                graphics.drawPolygon(tilePoly);
+                int distance = calc.apply(option.getName(), name);
+                if(distance != -1)
+                {
+                    //Logger.log(option.getName() + " " + distance);
+                    Why.put((int) ((distance + 1) * option.distance()), option);
+                }
             }
         }
+        //Logger.log(Arrays.toString(npc.toArray()));
+        if(!Why.isEmpty())
+        {
+            var npc = Why.firstEntry().getValue();
+            Logger.log("SimpleInteract: NPC found: " + npc + " " + Why.firstEntry().getKey());
+            Target.set(npc);
+            return npc;
+        }
+        Logger.log("SimpleInteract: NPC not found: " + name);
+        return null;
+    }
+
+    boolean CanContinueTimeout()
+    {
+        //Logger.log(ticksSinceContinue);
+        if(ticksSinceContinue > rand.nextInt(3) + 3)
+        {
+            Logger.log("DialogueContinue timeout elapsed");
+            return true;
+        }
+        return false;
+    }
+
+    void WaitForInventoryChange()
+    {
+        int CurrentSlots = Inventory.getEmptySlots();
+        Sleep.sleepUntil(() -> {
+            if(rand.nextInt(100) > 90)
+            {
+                Mouse.move();
+            }
+            return Inventory.getEmptySlots() != CurrentSlots;
+        }, 5000 + rand.nextInt(1000), rand.nextInt(500) + 500);
+    }
+
+    void WaitForProgressChange()
+    {
+        WaitForProgressChange(3000 + rand.nextInt(3000),
+                              rand.nextInt(1000) + 300,
+                              rand.nextInt(300) + 100);
+    }
+
+    void WaitForProgressChange(int timeout, int pollingMax, int pollingMin)
+    {
+        int TutProgress = PlayerSettings.getConfig(TutProgressVarBit);
+        Sleep.sleepUntil(() -> {
+            if(rand.nextInt(100) > 90)
+            {
+                Mouse.move();
+            }
+            return PlayerSettings.getConfig(TutProgressVarBit) != TutProgress;
+        }, timeout, rand.nextInt(pollingMax) + pollingMin);
+    }
+
+    WidgetChild GetNameBox()
+    {
+        return Widgets.get(558, 12);
+    }
+
+    WidgetChild GetNameConfirmBox()
+    {
+        return Widgets.get(558, 18);
+    }
+
+    void ChooseName()
+    {
+        int         MaxNameLength = 12;
+        String      CurrentName   = "";
+        String      ToAdd         = NameDictionary.GetRandomWord();
+        WidgetChild Namebox       = null;
+        WidgetChild ConfBox       = null;
+        boolean     delete        = false;
+
+        Sleep.sleepTicks(rand.nextInt(5));
+
+        do
+        {
+            if(ToAdd == null)
+            {
+                if(MaxNameLength - CurrentName.length() > 3)
+                {
+                    Logger.log("Adding word");
+                    ToAdd = NameDictionary.GetRandomWord(MaxNameLength - CurrentName.length());
+                }
+                else if(CurrentName.length() >= 12)
+                {
+                    Logger.log("Deleting current name");
+                    CurrentName = "";
+                    ToAdd       = NameDictionary.GetRandomWord();
+                    delete      = true;
+                }
+                else
+                {
+                    Logger.log("Adding random number");
+                    ToAdd = String.valueOf(rand.nextInt(10));
+                }
+                char[] CharArr = ToAdd.toCharArray();
+                for(int i = 0; i < CharArr.length; i++)
+                {
+                    char Char = CharArr[i];
+                    if(rand.nextInt(100) > 90)
+                    {
+                        CharArr[i] = Character.toUpperCase(Char);
+                    }
+                }
+                ToAdd = new String(CharArr);
+            }
+
+
+            Namebox = GetNameBox();
+            if(Namebox != null)
+            {
+                while(!Namebox.getText().contains("*"))
+                {
+                    if(Namebox.containsMouse())
+                    {
+                        Mouse.click(false);
+                    }
+                    else
+                    {
+                        ClickWidget(Namebox);
+                    }
+                    Sleep.sleepTicks(rand.nextInt(3) + 1);
+                }
+            }
+
+            if(delete)
+            {
+                Logger.log("Deleting");
+                Keyboard.holdKey(Key.BACKSPACE, () -> GetNameBox().getText().equals("*"));
+                Sleep.sleepUntil(() -> GetNameBox().getText().equals("*"), 5000);
+                delete = false;
+            }
+
+            Keyboard.type(ToAdd, false, true);
+            CurrentName += ToAdd;
+            ToAdd = null;
+            Logger.log("ChoseName: CurrentName: " + CurrentName);
+            Sleep.sleepTicks(rand.nextInt(3) + 3);
+
+            ConfBox = GetNameConfirmBox();
+            if(ConfBox != null)
+            {
+                ClickWidget(GetNameConfirmBox());
+                Logger.log("Waiting for name check");
+                Sleep.sleepTicks(rand.nextInt(5) + 8);
+                Sleep.sleepUntil(() -> GetNameConfirmBox().getActions() != null, 5000);
+            }
+
+            ConfBox = GetNameConfirmBox();
+            if(ConfBox != null && ConfBox.getActions() != null)
+            {
+                Logger.log(Arrays.toString(ConfBox.getActions()));
+            }
+        }
+        while(ConfBox != null &&
+              (ConfBox.getActions() == null || ConfBox.getActions().length == 0));
+
+        int attempts    = 0;
+        int maxAttempts = rand.nextInt(2) + 1;
+        while(GetNameConfirmBox() != null && GetNameConfirmBox().isVisible() &&
+              attempts < maxAttempts)
+        {
+            Logger.log("Waiting to submit");
+            Mouse.click(GetRandomPointInRectangle(GetNameConfirmBox().getRectangle()), false);
+            Sleep.sleepTicks(rand.nextInt(3) + 3);
+            attempts++;
+        }
+    }
+
+    Widget GetAppearanceWidget()
+    {
+        return Widgets.getWidget(679);
+    }
+
+    void ChooseGender()
+    {
+        int chance = 30;
+        while(rand.nextInt(100) > chance)
+        {
+            var B = GetAppearanceWidget().getChildren()
+                                         .stream()
+                                         .filter((t) -> t.hasAction("B"))
+                                         .findAny();
+            if(B.isPresent())
+            {
+                ClickWidget(B.get());
+            }
+            else
+            {
+                var A = GetAppearanceWidget().getChildren()
+                                             .stream()
+                                             .filter((t) -> t.hasAction("A"))
+                                             .findAny();
+                if(A.isPresent())
+                {
+                    ClickWidget(A.get());
+                }
+            }
+            chance += 20;
+            Sleep.sleep(rand.nextInt(5000) + 300);
+        }
+    }
+
+    WidgetChild[] GetPronouns()
+    {
+        var openOptions = Widgets.get(679, 72, 3);
+        if(openOptions != null)
+        {
+            if(ClickWidget(openOptions))
+            {
+                var holder = Widgets.get(679, 78);
+                return holder == null ? null : holder.getChildren();
+            }
+        }
+        return null;
+    }
+
+    void ChoosePronoun()
+    {
+        var pronouns = GetPronouns();
+        if(pronouns != null)
+        {
+            ClickWidget(pronouns[rand.nextInt(pronouns.length)]);
+        }
+    }
+
+    void ChooseAppearance()
+    {
+        var MainWidget = GetAppearanceWidget();
+        if(MainWidget != null && MainWidget.getChildren() != null)
+        {
+            var Selectables = MainWidget.getChildren()
+                                        .stream()
+                                        .filter((t) -> t.hasAction("Select"))
+                                        .toList();
+            Logger.log("ChooseAppearance: Start Selectables");
+            boolean repeat;
+            int leftyrighty = rand.nextInt(2);
+            do
+            {
+                repeat = false;
+                if(rand.nextInt(100) > 0)
+                {
+                    ChooseGender();
+                }
+
+                int changes = 0;
+                for(var widget : Selectables)
+                {
+                    if(rand.nextInt(100) > 70)
+                    {
+                        continue;
+                    }
+
+                    if(rand.nextInt(100) > 90)
+                    {
+                        Sleep.sleepTicks(rand.nextInt(20) + 1);
+                    }
+
+                    int   pressCount = rand.nextInt(7);
+                    if(changes % 2 == leftyrighty)
+                    {
+                        pressCount = rand.nextInt(2) + 1;
+                    }
+
+                    Point click      = GetRandomPointInRectangle(widget.getRectangle());
+                    for(var i = 0; i < pressCount; i++)
+                    {
+                        // do mouse nudge possibly
+                        Mouse.click(click, false);
+                        //Mouse.move();
+                        if(!widget.getRectangle().contains(Mouse.getPosition()))
+                        {
+                            Mouse.move(GetRandomPointInRectangle(widget.getRectangle()));
+                            Sleep.sleepTicks(1);
+                            Mouse.click();
+                        }
+                        Sleep.sleep(rand.nextInt(1000) + 300);
+                    }
+                    changes++;
+                }
+
+                if(rand.nextInt(100) > 50)
+                {
+                    repeat = true;
+                    ChooseGender();
+                }
+            }
+            while(repeat);
+
+            ChoosePronoun();
+            Sleep.sleep(rand.nextInt(1000) + 300);
+
+
+            Logger.log("ChooseAppearance: Start Confirm");
+            var Confirm = GetAppearanceWidget().getChildren()
+                                               .stream()
+                                               .filter((t) -> t.hasAction("Confirm"))
+                                               .toList();
+            if(!Confirm.isEmpty())
+            {
+                Logger.log("ChooseAppearance: Confirm found");
+                ClickWidget(Confirm.getFirst());
+            }
+        }
+    }
+
+    int GetTutorialProgress()
+    {
+        return PlayerSettings.getConfig(TutProgressVarBit);
     }
 }

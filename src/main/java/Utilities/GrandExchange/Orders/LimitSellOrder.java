@@ -6,7 +6,6 @@ import Utilities.Scripting.ExternalLambdaUsage;
 import Utilities.Serializers.SerializableSupplier;
 
 import java.io.Serial;
-import java.util.function.Supplier;
 
 public class LimitSellOrder extends BaseOrder
 {

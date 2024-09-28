@@ -35,6 +35,27 @@ public class EquipmentManager
             DefaultEquipmentFocus);
     private static EquipmentHelper.Equipment          CurrentEquipment  = EquipmentHelper.Equipment.GetCurrentEquipment();
 
+    public static EquipmentHelper.Equipment GetBestEquipment()
+    {
+        UpdateEquipment();
+        return CurrentEquipment;
+    }
+
+    private static void UpdateEquipment()
+    {
+        Logger.log("EquipmentManager: UpdateEquipment:");
+        CurrentEquipment = EquipmentHelper.GetBestEquipment(EquipmentFocus);
+    }
+
+    public static CombatStyle GetDBCombatStyle()
+    {
+        return CurrentDBCStyle;
+    }
+
+    public static EquipmentHelper.Equipment GetEquipment()
+    {
+        return CurrentEquipment;
+    }
 
     public static EquipmentHelper.Equipment GetWeaponOnly()
     {
@@ -43,17 +64,6 @@ public class EquipmentManager
         empty.equip.put(ItemDB.EquipmentData.EquipmentSlot.weapon,
                         best.equip.get(ItemDB.EquipmentData.EquipmentSlot.weapon));
         return empty;
-    }
-
-    public static EquipmentHelper.Equipment GetEquipment()
-    {
-        return CurrentEquipment;
-    }
-
-    public static EquipmentHelper.Equipment GetBestEquipment()
-    {
-        UpdateEquipment();
-        return CurrentEquipment;
     }
 
     public static EquipmentHelper.Equipment SetEXPFocus(ItemDB.StanceData.ExperienceType focus)
@@ -80,8 +90,7 @@ public class EquipmentManager
                 {
                     if(stance.experience == focus)
                     {
-                        int                       CurrentStat  =
-                                CurrentChoice != null ? CurrentChoice._1 : 0;
+                        int CurrentStat = CurrentChoice != null ? CurrentChoice._1 : 0;
                         int                       NewStat      = 0;
                         EquipmentHelper.StatFocus CurrentFocus = EquipmentHelper.StatFocus.StabAtt;
                         switch(stance.attack_type)
@@ -138,17 +147,5 @@ public class EquipmentManager
         }
 
         return CurrentEquipment;
-    }
-
-    public static CombatStyle GetDBCombatStyle()
-    {
-        return CurrentDBCStyle;
-    }
-
-
-    private static void UpdateEquipment()
-    {
-        Logger.log("EquipmentManager: UpdateEquipment:");
-        CurrentEquipment = EquipmentHelper.GetBestEquipment(EquipmentFocus);
     }
 }

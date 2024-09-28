@@ -80,6 +80,16 @@ public class InteractTask extends SimpleTask
         WaitForInventory = wait;
     }
 
+    public static Entity GetTargetByActionStatic(String Action)
+    {
+        return GetTargetStatic(EnumSet.allOf(InteractableFilter.class), Action, null);
+    }
+
+    public static Entity GetTargetStatic(Integer... IDs)
+    {
+        return GetTargetStatic(EnumSet.allOf(InteractableFilter.class), null, IDs);
+    }
+
     @Nonnull
     @Override
     public TaskType GetTaskType()
@@ -206,23 +216,13 @@ public class InteractTask extends SimpleTask
         var first = toFilter.stream()
                             .filter(t -> (IDs == null ||
                                           Arrays.stream(IDs).anyMatch((x) -> x == t.getID())) &&
-                                         (Action == null || t.hasAction(Action))
-                                         && t.canReach() && t.distance() < 10)
+                                         (Action == null || t.hasAction(Action)) && t.canReach() &&
+                                         t.distance() < 10)
                             .sorted((x, y) -> (int) (
                                     x.walkingDistance(Players.getLocal().getTile()) -
                                     y.walkingDistance(Players.getLocal().getTile())))
                             .findFirst();
         Logger.log(first);
         return first.orElse(null);
-    }
-
-    public static Entity GetTargetStatic(Integer... IDs)
-    {
-        return GetTargetStatic(EnumSet.allOf(InteractableFilter.class), null, IDs);
-    }
-
-    public static Entity GetTargetByActionStatic(String Action)
-    {
-        return GetTargetStatic(EnumSet.allOf(InteractableFilter.class), Action, null);
     }
 }

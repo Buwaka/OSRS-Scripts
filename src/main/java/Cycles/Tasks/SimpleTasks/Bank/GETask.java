@@ -24,7 +24,8 @@ public class GETask extends SimpleTask
     @Override
     public boolean Ready()
     {
-        return (GetScript().GetGEInstance().HasQueuedActions() || GetScript().GetGEInstance().ReadyToCollect()) && super.Ready();
+        return (GetScript().GetGEInstance().HasQueuedActions() ||
+                GetScript().GetGEInstance().ReadyToCollect()) && super.Ready();
     }
 
     /**
@@ -86,7 +87,8 @@ public class GETask extends SimpleTask
                 GetItems.AddWithdrawNoted(item._1, item._2);
             }
             GetItems.SetTaskPriority(priority() - 2);
-            GetItems.AcceptCondition = () -> BankLocation.getNearest().distance(Players.getLocal().getTile()) < 10;
+            GetItems.AcceptCondition = () ->
+                    BankLocation.getNearest().distance(Players.getLocal().getTile()) < 10;
             //GetScript().addNodes(GetItems);
         }
 

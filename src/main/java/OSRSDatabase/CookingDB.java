@@ -19,7 +19,6 @@ public class CookingDB extends OSRSDataBase
     private static       ConcurrentHashMap<Integer, CookingData2> CookingDBMap   = null;
 
 
-
     //TODO database for food that just needs to be cooked, and one for food that needs to be combined
 
     public static class CookingData

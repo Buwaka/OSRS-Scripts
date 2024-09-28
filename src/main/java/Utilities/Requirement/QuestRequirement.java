@@ -11,16 +11,16 @@ import java.io.Serial;
 public class QuestRequirement implements IRequirement
 {
     @Serial
-    private static final long serialVersionUID = 8659572019539432254L;
-    private transient Quest quest = null;
-    private Quest.Type QuestType = null;
-    private String QuestName = null;
+    private static final long       serialVersionUID = 8659572019539432254L;
+    private transient    Quest      quest            = null;
+    private              Quest.Type QuestType        = null;
+    private              String     QuestName        = null;
 
     public QuestRequirement(Quest quest)
     {
         this.quest = quest;
-        QuestType = quest.getType();
-        QuestName = quest.toString();
+        QuestType  = quest.getType();
+        QuestName  = quest.toString();
     }
 
     public QuestRequirement(String Name, Quest.Type type)
@@ -29,47 +29,20 @@ public class QuestRequirement implements IRequirement
         QuestName = Name;
         switch(type)
         {
-            case F2P -> {
+            case F2P ->
+            {
                 quest = FreeQuest.valueOf(QuestName);
             }
-            case P2P -> {
+            case P2P ->
+            {
                 quest = PaidQuest.valueOf(QuestName);
             }
-            case MINIQUEST -> {
+            case MINIQUEST ->
+            {
                 quest = MiniQuest.valueOf(QuestName);
             }
         }
     }
-
-   public Quest GetQuest()
-    {
-        if(quest != null)
-        {
-            return quest;
-        }
-
-        if(QuestType != null && QuestName != null)
-        {
-            switch(QuestType)
-            {
-                case F2P -> {
-                    quest = FreeQuest.valueOf(QuestName);
-                }
-                case P2P -> {
-                    quest = PaidQuest.valueOf(QuestName);
-                }
-                case MINIQUEST -> {
-                    quest = MiniQuest.valueOf(QuestName);
-                }
-            }
-            return quest;
-        }
-
-        Logger.log("QuestRequirement: GetQuest: Quest ref, quest type and/or quest name is not defined");
-        return null;
-    }
-
-
 
     /**
      * @return
@@ -88,5 +61,37 @@ public class QuestRequirement implements IRequirement
     {
         var questie = GetQuest();
         return questie != null && questie.isFinished();
+    }
+
+    public Quest GetQuest()
+    {
+        if(quest != null)
+        {
+            return quest;
+        }
+
+        if(QuestType != null && QuestName != null)
+        {
+            switch(QuestType)
+            {
+                case F2P ->
+                {
+                    quest = FreeQuest.valueOf(QuestName);
+                }
+                case P2P ->
+                {
+                    quest = PaidQuest.valueOf(QuestName);
+                }
+                case MINIQUEST ->
+                {
+                    quest = MiniQuest.valueOf(QuestName);
+                }
+            }
+            return quest;
+        }
+
+        Logger.log(
+                "QuestRequirement: GetQuest: Quest ref, quest type and/or quest name is not defined");
+        return null;
     }
 }

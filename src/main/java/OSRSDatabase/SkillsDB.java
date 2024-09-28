@@ -13,6 +13,12 @@ public class SkillsDB implements Serializable
 {
     @Serial
     private static final long serialVersionUID = 593562862959996456L;
+
+    static
+    {
+        DataBaseUtilities.RegisterPOJO(SkillsDB.class);
+    }
+
     public               int  ATTACK           = Skills.getRealLevel(Skill.ATTACK);
     public               int  DEFENCE          = Skills.getRealLevel(Skill.DEFENCE);
     public               int  STRENGTH         = Skills.getRealLevel(Skill.STRENGTH);
@@ -37,10 +43,5 @@ public class SkillsDB implements Serializable
     public               int  RUNECRAFTING     = Skills.getRealLevel(Skill.RUNECRAFTING);
     public               int  HUNTER           = Skills.getRealLevel(Skill.HUNTER);
     public               int  CONSTRUCTION     = Skills.getRealLevel(Skill.CONSTRUCTION);
-
-    static
-    {
-        DataBaseUtilities.RegisterPOJO(SkillsDB.class);
-    }
 
 }

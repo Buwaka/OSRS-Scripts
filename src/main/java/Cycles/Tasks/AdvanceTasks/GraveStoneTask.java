@@ -35,6 +35,15 @@ public class GraveStoneTask extends SimpleTask
      * @return
      */
     @Override
+    public boolean Ready()
+    {
+        return GraveStoneExists() && super.Ready();
+    }
+
+    /**
+     * @return
+     */
+    @Override
     protected int Loop()
     {
         var GraveStone = GetGraveStone();
@@ -75,15 +84,6 @@ public class GraveStoneTask extends SimpleTask
         return super.Loop();
     }
 
-    /**
-     * @return
-     */
-    @Override
-    public boolean Ready()
-    {
-        return GraveStoneExists() && super.Ready();
-    }
-
     NPC GetGraveStone()
     {
         return NPCs.closest((t) -> t.hasAction(LootAction) &&
@@ -95,7 +95,6 @@ public class GraveStoneTask extends SimpleTask
     {
         return PlayerSettings.getBitValue(GraveTimerVarBitID) > 0;
     }
-
 
 
     @Nonnull

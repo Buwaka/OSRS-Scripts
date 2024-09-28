@@ -1,7 +1,6 @@
 package Utilities.GrandExchange.Orders;
 
 import Utilities.Serializers.SerializableSupplier;
-import org.dreambot.api.methods.quest.book.PaidQuest;
 import org.json.JSONPropertyName;
 
 import javax.annotation.Nonnull;

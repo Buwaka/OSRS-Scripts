@@ -26,12 +26,12 @@ public class SlaughterAndLoot extends SimpleTask
     private int[]                                           TargetIDs        = null;
     private Area[]                                          Areas            = null;
     private int                                             FailCount        = 0;
-    private int                                           FailMax        = 10;
-    private Cycles.Tasks.SimpleTasks.Combat.SlaughterTask SlaughterTask  = null;
-    private LootKillsTask                                 LootTask       = null;
-    private TravelTask                                    Travel         = null;
-    private MinimumHealthTask                             MinimumHealth  = null;
-    private int                                           RerouteRetries = 5;
+    private int                                             FailMax          = 10;
+    private SlaughterTask                                   SlaughterTask    = null;
+    private LootKillsTask                                   LootTask         = null;
+    private TravelTask                                      Travel           = null;
+    private MinimumHealthTask                               MinimumHealth    = null;
+    private int                                             RerouteRetries   = 5;
     private int                                             Retries          = 10;
     private int                                             AttemptCount     = 0;
     private int[]                                           IgnoreLoot       = null;
@@ -46,11 +46,6 @@ public class SlaughterAndLoot extends SimpleTask
         this.ItemRequirements = ItemRequirements;
     }
 
-    public void setEscapeLowHP(boolean escapeLowHP)
-    {
-        EscapeLowHP = escapeLowHP;
-    }
-
     void SetAreas(Area... Areas)
     {
         this.Areas = Areas;
@@ -59,6 +54,11 @@ public class SlaughterAndLoot extends SimpleTask
     void SetTarget(int... target)
     {
         TargetIDs = target;
+    }
+
+    public void setEscapeLowHP(boolean escapeLowHP)
+    {
+        EscapeLowHP = escapeLowHP;
     }
 
     public void setIgnoreLoot(int[] ignoreLoot)
@@ -184,7 +184,7 @@ public class SlaughterAndLoot extends SimpleTask
         // Slaughter
         SlaughterTask = new SlaughterTask("Slaughter", Areas, TargetIDs);
         SlaughterTask.SetTaskPriority(priority());
-        SlaughterTask.onKill.addPropertyChangeListener(LootTask);
+        SlaughterTask.onKill.Subscribe(LootTask, LootTask::onKill);
         SlaughterTask.Init(Script);
 
         MinimumHealth = new MinimumHealthTask("Prevent dying", GetMaxHit() + 2);

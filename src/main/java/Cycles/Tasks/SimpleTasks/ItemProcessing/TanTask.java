@@ -32,14 +32,14 @@ public class TanTask extends SimpleTask
 
     private String LeatherName; // Hard leather
     private int    SourceItemID;
-    private int UnitCost;
+    private int    UnitCost;
 
     public TanTask(String Name, String leatherName, int sourceItemID, int unitCost)
     {
         super(Name);
         LeatherName  = leatherName;
         SourceItemID = sourceItemID;
-        UnitCost = unitCost;
+        UnitCost     = unitCost;
     }
 
     /**

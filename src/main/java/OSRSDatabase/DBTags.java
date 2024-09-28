@@ -12,11 +12,11 @@ public enum DBTags
     fire_making_exp("fire_making_exp"),
     wood_cutting_exp("wood_cutting_exp");
 
+    String value;
+
     DBTags(String value)
     {
         this.value = value;
     }
-
-    String value;
 
 }

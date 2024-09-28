@@ -310,20 +310,6 @@ public class OSRSUtilities
         return true;
     }
 
-    public static boolean CheckRequirements(List<Tuple2<Integer, Integer>> itemRequirements, boolean CheckBank)
-    {
-        for(var req : itemRequirements)
-        {
-            int bankCount = CheckBank ? Bank.count(req._1) : 0;
-            int invCount  = Inventory.count(req._1);
-            if(invCount + bankCount < req._2)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static Point GetCenterPointRectangle(Rectangle rect, boolean randomize)
     {
         Point point = new Point((int) rect.getCenterX(), (int) rect.getCenterY());
@@ -520,6 +506,20 @@ public class OSRSUtilities
             return Inv.isEmpty();
         }
 
+        return true;
+    }
+
+    public static boolean CheckRequirements(List<Tuple2<Integer, Integer>> itemRequirements, boolean CheckBank)
+    {
+        for(var req : itemRequirements)
+        {
+            int bankCount = CheckBank ? Bank.count(req._1) : 0;
+            int invCount  = Inventory.count(req._1);
+            if(invCount + bankCount < req._2)
+            {
+                return false;
+            }
+        }
         return true;
     }
 

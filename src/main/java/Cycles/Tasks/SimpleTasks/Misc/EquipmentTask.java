@@ -19,11 +19,11 @@ import java.util.*;
 public class EquipmentTask extends SimpleTask
 {
     HashMap<EquipmentSlot, Integer> ToEquip    = new HashMap<>();
-    Set<EquipmentSlot> ToUnEquip = new HashSet<>();
-    List<Integer>      ToDeposit = new ArrayList<>();
+    Set<EquipmentSlot>              ToUnEquip  = new HashSet<>();
+    List<Integer>                   ToDeposit  = new ArrayList<>();
     boolean                         UnEquipAll = false;
-    private int Fails   = 0;
-    private int Retries = 5;
+    private int     Fails                    = 0;
+    private int     Retries                  = 5;
     private boolean DepositPreviousEquipment = true;
 
     public EquipmentTask(String Name)
@@ -48,6 +48,30 @@ public class EquipmentTask extends SimpleTask
         Logger.log(ToEquip);
     }
 
+    public void SetAtackType(CombatStyle type)
+    {
+        Combat.setCombatStyle(type);
+    }
+
+    public void UnEquip(EquipmentSlot Slot)
+    {
+        if(ToEquip.get(Slot) == null)
+        {
+            ToUnEquip.add(Slot);
+        }
+    }
+
+    //    public void Equip(int id)
+    //    {
+    //        var slot = Equipment.slot(id);
+    //        ToEquip.put(EquipmentSlot.forOriginalSlotId(slot), id);
+    //    }
+
+    public void UnEquipAll()
+    {
+        UnEquipAll = true;
+    }
+
     public static EquipmentTask SimpleEquip(String name, int ID, EquipmentSlot slot)
     {
         EquipmentTask out = new EquipmentTask(name);
@@ -59,35 +83,6 @@ public class EquipmentTask extends SimpleTask
     {
         ToEquip.put(Slot, id);
         ToUnEquip.remove(Slot);
-    }
-
-    //    public void Equip(int id)
-    //    {
-    //        var slot = Equipment.slot(id);
-    //        ToEquip.put(EquipmentSlot.forOriginalSlotId(slot), id);
-    //    }
-
-    public void UnEquip(EquipmentSlot Slot)
-    {
-        if(ToEquip.get(Slot) == null)
-        {
-            ToUnEquip.add(Slot);
-        }
-    }
-
-    public void UnEquipAll()
-    {
-        UnEquipAll = true;
-    }
-
-    public void SetAtackType(CombatStyle type)
-    {
-        Combat.setCombatStyle(type);
-    }
-
-    public void SetAtackType()
-    {
-        Combat.setCombatStyle(EquipmentManager.GetDBCombatStyle());
     }
 
     /**
@@ -182,12 +177,19 @@ public class EquipmentTask extends SimpleTask
             SetAtackType();
             if(DepositPreviousEquipment)
             {
-                GetScript().addNodes(BankItemsTask.SimpleDeposit(ToDeposit.stream().mapToInt(Integer::intValue).toArray()));
+                GetScript().addNodes(BankItemsTask.SimpleDeposit(ToDeposit.stream()
+                                                                          .mapToInt(Integer::intValue)
+                                                                          .toArray()));
             }
             // Done
             return 0;
         }
 
         return super.Loop();
+    }
+
+    public void SetAtackType()
+    {
+        Combat.setCombatStyle(EquipmentManager.GetDBCombatStyle());
     }
 }

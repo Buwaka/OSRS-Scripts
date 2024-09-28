@@ -1,8 +1,6 @@
 package Utilities.Requirement;
 
 import java.io.Serial;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ORRequirement implements IRequirement
 {

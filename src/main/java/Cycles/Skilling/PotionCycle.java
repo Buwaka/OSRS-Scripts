@@ -16,38 +16,23 @@ public class PotionCycle extends SimpleCycle
     private static final long serialVersionUID = 9219489276057601669L;
 
     private PotionDB.PotionStep PotionPlan;
-    private  int Amount;
-    private boolean             SellProduct = true;
-        private boolean DecantProduct = true;
-        private boolean WearNecklaceOfAlchemy = true;
+    private int                 Amount;
+    private boolean             SellProduct           = true;
+    private boolean             DecantProduct         = true;
+    private boolean             WearNecklaceOfAlchemy = true;
 
 
     public PotionCycle(String name, PotionDB.PotionStep steps, int amount)
     {
         super(name);
         PotionPlan = steps;
-        Amount = amount;
-    }
-
-    public void setSellProduct(boolean sellProduct)
-    {
-        SellProduct = sellProduct;
-    }
-
-    public void setDecantProduct(boolean decantProduct)
-    {
-        DecantProduct = decantProduct;
-    }
-
-    public void setWearNecklaceOfAlchemy(boolean wearNecklaceOfAlchemy)
-    {
-        WearNecklaceOfAlchemy = wearNecklaceOfAlchemy;
+        Amount     = amount;
     }
 
     public GEOrder[] GetShoppingList()
     {
-        List<GEOrder> orders = new ArrayList<>();
-        var ingredients = PotionDB.GetAllIngredients(PotionPlan);
+        List<GEOrder> orders      = new ArrayList<>();
+        var           ingredients = PotionDB.GetAllIngredients(PotionPlan);
 
         for(var ingredient : ingredients)
         {
@@ -61,5 +46,20 @@ public class PotionCycle extends SimpleCycle
 
         //if(Bank.contains(Amulet of Chemistry * count))
         return null;
+    }
+
+    public void setDecantProduct(boolean decantProduct)
+    {
+        DecantProduct = decantProduct;
+    }
+
+    public void setSellProduct(boolean sellProduct)
+    {
+        SellProduct = sellProduct;
+    }
+
+    public void setWearNecklaceOfAlchemy(boolean wearNecklaceOfAlchemy)
+    {
+        WearNecklaceOfAlchemy = wearNecklaceOfAlchemy;
     }
 }

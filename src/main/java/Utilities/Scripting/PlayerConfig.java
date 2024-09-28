@@ -34,7 +34,7 @@ public class PlayerConfig implements Serializable, GameStateListener
 
     public <T> T LoadState(String ObjectID, Class<T> type)
     {
-        Path   ObjectPath     = GetObjectPath(ObjectID);
+        Path ObjectPath = GetObjectPath(ObjectID);
 
         if(!Files.exists(ObjectPath))
         {
@@ -90,7 +90,7 @@ public class PlayerConfig implements Serializable, GameStateListener
         {
             TargetFolder = System.getProperty("user.dir");
         }
-        return Path.of( TargetFolder + "\\" + ConfigFolderName);
+        return Path.of(TargetFolder + "\\" + ConfigFolderName);
     }
 
     public void SaveState(String ObjectID, Object object)
@@ -154,6 +154,12 @@ public class PlayerConfig implements Serializable, GameStateListener
         }
     }
 
+    private static void RefreshHash()
+    {
+        Hash       = AccountManager.getAccountHash();
+        PlayerName = Players.getLocal().getName();
+    }
+
     /**
      * @param gameState
      */
@@ -165,11 +171,5 @@ public class PlayerConfig implements Serializable, GameStateListener
             onAccountChanged.Fire();
             RefreshHash();
         }
-    }
-
-    private static void RefreshHash()
-    {
-        Hash = AccountManager.getAccountHash();
-        PlayerName = Players.getLocal().getName();
     }
 }

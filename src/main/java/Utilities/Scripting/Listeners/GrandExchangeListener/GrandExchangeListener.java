@@ -25,11 +25,20 @@ public abstract class GrandExchangeListener implements ChatListener, ItemContain
 
     private Map<Integer, GrandExchangeItemWrapper> current, next = null;
 
+    private boolean shouldStop()
+    {
+        return !Client.getInstance().getScriptManager().isRunning();
+    }
 
-    protected abstract void onItemBought(GrandExchangeItemWrapper item);
-    protected abstract void onBuyOrder(GrandExchangeItemWrapper item);
-    protected abstract void onSellOrder(GrandExchangeItemWrapper item);
-    protected abstract void onItemSold(GrandExchangeItemWrapper item);
+    /**
+     * @param incoming
+     * @param existing
+     */
+    @Override
+    public final void onInventoryItemChanged(Item incoming, Item existing)
+    {
+        Tick();
+    }
 
     private void Tick()
     {
@@ -73,6 +82,14 @@ public abstract class GrandExchangeListener implements ChatListener, ItemContain
             }
         }
     }
+
+    protected abstract void onItemBought(GrandExchangeItemWrapper item);
+
+    protected abstract void onBuyOrder(GrandExchangeItemWrapper item);
+
+    protected abstract void onSellOrder(GrandExchangeItemWrapper item);
+
+    protected abstract void onItemSold(GrandExchangeItemWrapper item);
 
     private List<GrandExchangeItemWrapper> getDifference(Map<Integer, GrandExchangeItemWrapper> before, Map<Integer, GrandExchangeItemWrapper> after)
     {
@@ -125,21 +142,6 @@ public abstract class GrandExchangeListener implements ChatListener, ItemContain
     {
         return Client.isLoggedIn() && !Client.getInstance().getRandomManager().isSolving() &&
                Players.getLocal() != null && Players.getLocal().exists();
-    }
-
-    private boolean shouldStop()
-    {
-        return !Client.getInstance().getScriptManager().isRunning();
-    }
-
-    /**
-     * @param incoming
-     * @param existing
-     */
-    @Override
-    public final void onInventoryItemChanged(Item incoming, Item existing)
-    {
-        Tick();
     }
 
     /**

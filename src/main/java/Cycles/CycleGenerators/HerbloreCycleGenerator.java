@@ -23,15 +23,21 @@ public class HerbloreCycleGenerator
     public class PotionCycleGenerator implements CycleGenerator
     {
         @Override
-        public String GetName()
+        public SimpleCycle[] Generate(CycleData param)
         {
-            return "Make Potions";
+            if(param == null)
+            {
+                return GetProfitablePotionCycle();
+            }
+
+            // make cycles based on param
+            return null;
         }
 
         @Override
-        public EnumSet<ItemDB.Skill> GetTags()
+        public String GetName()
         {
-            return EnumSet.of(ItemDB.Skill.HERBLORE);
+            return "Make Potions";
         }
 
         @Override
@@ -42,18 +48,60 @@ public class HerbloreCycleGenerator
         }
 
         @Override
-        public SimpleCycle[] Generate(CycleData param)
+        public EnumSet<ItemDB.Skill> GetTags()
         {
-           if(param == null)
-           {
-               return GetProfitablePotionCycle();
-           }
-
-           // make cycles based on param
-           return null;
+            return EnumSet.of(ItemDB.Skill.HERBLORE);
         }
     }
 
+    public static SimpleCycle[] GetCleanGrimyHerbsCycle()
+    {
+        List<SimpleCycle> out       = new ArrayList<>();
+        int               herbLevel = Skills.getRealLevel(Skill.HERBLORE);
+
+        List<Tuple2<Item, HerbDB.HerbData>> GrimyHerbs = List.of(GetHerbsFromBank(true));
+
+
+        for(var GrimyHerb : GrimyHerbs)
+        {
+            if(herbLevel >= GrimyHerb._2.level)
+            {
+                // do clean cycle
+                SimpleInventoryProcessCycle CleanHerb = new SimpleInventoryProcessCycle(
+                        "Clean " + GrimyHerb._2.name, GrimyHerb._1.getID());
+                CleanHerb.SetInteractEveryItem(true);
+                out.add(CleanHerb);
+
+                Logger.log(
+                        "Adding Clean Herb cycle for " + GrimyHerb._1.getName() + " " + CleanHerb);
+            }
+        }
+
+        return out.toArray(new SimpleCycle[0]);
+    }
+
+    private static Tuple2<Item, HerbDB.HerbData>[] GetHerbsFromBank(boolean Grimy)
+    {
+        List<Tuple2<Item, HerbDB.HerbData>> GrimyHerbs = new ArrayList<>();
+        List<Tuple2<Item, HerbDB.HerbData>> CleanHerbs = new ArrayList<>();
+        for(var item : Bank.all())
+        {
+            if(item != null && HerbDB.isHerb(item.getID()))
+            {
+                Logger.log("Herb found: " + item.getName());
+                if(HerbDB.isGrimyHerb(item.getID()))
+                {
+                    GrimyHerbs.add(new Tuple2<>(item, HerbDB.GetHerbData(item.getID())));
+                }
+                else
+                {
+                    CleanHerbs.add(new Tuple2<>(item, HerbDB.GetHerbData(item.getID())));
+                }
+            }
+        }
+
+        return Grimy ? GrimyHerbs.toArray(new Tuple2[0]) : CleanHerbs.toArray(new Tuple2[0]);
+    }
 
     @CycleGeneratorID(Name = "Create Profitable Potions", Description = "Checks all possible herblore potions (unf and finished) for the most profitable route and which potion has the largest profit margin (eventually check gp/h)", Skills = {
             ItemDB.Skill.HERBLORE}, Purposes = {
@@ -94,33 +142,6 @@ public class HerbloreCycleGenerator
         return null;
     }
 
-
-    public static SimpleCycle[] GetCleanGrimyHerbsCycle()
-    {
-        List<SimpleCycle> out       = new ArrayList<>();
-        int               herbLevel = Skills.getRealLevel(Skill.HERBLORE);
-
-        List<Tuple2<Item, HerbDB.HerbData>> GrimyHerbs = List.of(GetHerbsFromBank(true));
-
-
-        for(var GrimyHerb : GrimyHerbs)
-        {
-            if(herbLevel >= GrimyHerb._2.level)
-            {
-                // do clean cycle
-                SimpleInventoryProcessCycle CleanHerb = new SimpleInventoryProcessCycle(
-                        "Clean " + GrimyHerb._2.name, GrimyHerb._1.getID());
-                CleanHerb.SetInteractEveryItem(true);
-                out.add(CleanHerb);
-
-                Logger.log(
-                        "Adding Clean Herb cycle for " + GrimyHerb._1.getName() + " " + CleanHerb);
-            }
-        }
-
-        return out.toArray(new SimpleCycle[0]);
-    }
-
     public static SimpleCycle[] GetUnfPotionCycle()
     {
         List<SimpleCycle>                   out        = new ArrayList<>();
@@ -145,30 +166,6 @@ public class HerbloreCycleGenerator
         }
         return out.toArray(new SimpleCycle[0]);
     }
-
-    private static Tuple2<Item, HerbDB.HerbData>[] GetHerbsFromBank(boolean Grimy)
-    {
-        List<Tuple2<Item, HerbDB.HerbData>> GrimyHerbs = new ArrayList<>();
-        List<Tuple2<Item, HerbDB.HerbData>> CleanHerbs = new ArrayList<>();
-        for(var item : Bank.all())
-        {
-            if(item != null && HerbDB.isHerb(item.getID()))
-            {
-                Logger.log("Herb found: " + item.getName());
-                if(HerbDB.isGrimyHerb(item.getID()))
-                {
-                    GrimyHerbs.add(new Tuple2<>(item, HerbDB.GetHerbData(item.getID())));
-                }
-                else
-                {
-                    CleanHerbs.add(new Tuple2<>(item, HerbDB.GetHerbData(item.getID())));
-                }
-            }
-        }
-
-        return Grimy ? GrimyHerbs.toArray(new Tuple2[0]) : CleanHerbs.toArray(new Tuple2[0]);
-    }
-
 
     public static void main(String[] args)
     {

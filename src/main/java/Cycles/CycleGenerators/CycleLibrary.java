@@ -8,7 +8,6 @@ import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Supplier;
@@ -17,12 +16,6 @@ public class CycleLibrary
 {
     // Json Paths
     protected static tpircSScript OwnerScript = null;
-
-    static public void init(tpircSScript owner)
-    {
-        OwnerScript = owner;
-    }
-
 
     public static Map<String, List<Supplier<SimpleCycle[]>>> GetCycleGenerators()
     {
@@ -42,7 +35,9 @@ public class CycleLibrary
                         return (SimpleCycle[]) method.invoke(null);
                     } catch(Exception e)
                     {
-                        Logger.log("CycleLibrary: GetCycleGenerators: Failed to invoke Cycle generator " + annotation);
+                        Logger.log(
+                                "CycleLibrary: GetCycleGenerators: Failed to invoke Cycle generator " +
+                                annotation);
                     }
                     return null;
                 });
@@ -51,6 +46,11 @@ public class CycleLibrary
         }
 
         return out;
+    }
+
+    static public void init(tpircSScript owner)
+    {
+        OwnerScript = owner;
     }
 
 }

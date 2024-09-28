@@ -1,10 +1,8 @@
 package Utilities.Trackers;
 
-import Utilities.Scripting.Listeners.GrandExchangeListener.GrandExchangeItemWrapper;
 import Utilities.Scripting.Listeners.GrandExchangeListener.GrandExchangeListener;
 import Utilities.Scripting.Listeners.InventoryListener;
 import org.dreambot.api.script.listener.PaintListener;
-import org.dreambot.api.wrappers.items.Item;
 
 import java.awt.*;
 
@@ -26,31 +24,31 @@ public class ProfitTracker implements PaintListener
 
     private void Init()
     {
-//        GEListener.onItemBought.Subscribe(this, this::onItemBought);
-//        GEListener.onItemSold.Subscribe(this, this::onItemSold);
+        //        GEListener.onItemBought.Subscribe(this, this::onItemBought);
+        //        GEListener.onItemSold.Subscribe(this, this::onItemSold);
 
-//        ItemListener.
+        //        ItemListener.
     }
 
-//    private boolean onItemNew(Item item)
-//    {
-//
-//    }
-//
-//    private boolean onItemRemoved(Item item)
-//    {
-//
-//    }
-//
-//    private boolean onItemSold(GrandExchangeItemWrapper item)
-//    {
-//
-//    }
-//
-//    private boolean onItemBought(GrandExchangeItemWrapper item)
-//    {
-//
-//    }
+    //    private boolean onItemNew(Item item)
+    //    {
+    //
+    //    }
+    //
+    //    private boolean onItemRemoved(Item item)
+    //    {
+    //
+    //    }
+    //
+    //    private boolean onItemSold(GrandExchangeItemWrapper item)
+    //    {
+    //
+    //    }
+    //
+    //    private boolean onItemBought(GrandExchangeItemWrapper item)
+    //    {
+    //
+    //    }
 
     /**
      * @param graphics

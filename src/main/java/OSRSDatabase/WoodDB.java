@@ -23,8 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WoodDB extends OSRSDataBase
 {
     final private static String                               WoodDBPath      = "Skilling/woodDB.json";
-    private static       ConcurrentHashMap<Integer, WoodData> WoodDBMap       = null;
     final private static String                               WoodToolsDBPath = "Items/Tools/woodcuttingtoolsDB.json";
+    private static       ConcurrentHashMap<Integer, WoodData> WoodDBMap       = null;
     private static       List<WoodCuttingTool>                WoodToolsDBList = null;
 
     public enum WoodType
@@ -71,6 +71,7 @@ public class WoodDB extends OSRSDataBase
     public static class WoodCuttingTool extends ToolDB.ToolData
     {
         public int WoodCuttingStrength;
+
         public String toString()
         {
             return _toString(this, this.getClass());
@@ -170,6 +171,50 @@ public class WoodDB extends OSRSDataBase
         }
     }
 
+    public static WoodData GetBestWoodCuttingLog(int WoodCuttingLevel)
+    {
+        if(WoodDBMap == null)
+        {
+            ReadWoodDB();
+        }
+
+        WoodData out = GetWoodData("Logs");
+
+        for(var wood : WoodDBMap.values())
+        {
+            if(wood.level < WoodCuttingLevel && wood.exp > out.exp)
+            {
+                out = wood;
+            }
+        }
+        return out;
+    }
+
+    public static WoodCuttingTool GetBestWoodCuttingTool(boolean isMember, DBTags... TagPreferences)
+    {
+        ReadWoodCuttingToolsDB();
+
+        SortedMap<Integer, WoodCuttingTool> results = new TreeMap<>();
+        for(var tool : WoodToolsDBList)
+        {
+            if((tool.requirements == null || IRequirement.IsAllRequirementMet(tool.requirements)))
+            {
+                //Tag preference bonus points
+                int bonus = 0;
+                for(var tag : TagPreferences)
+                {
+                    if(tool.tags != null && tool.tags.length > 0 && (isMember || !tool.members) &&
+                       Arrays.stream(tool.tags).anyMatch((t) -> t == tag))
+                    {
+                        bonus += 100;
+                    }
+                }
+                results.put(tool.WoodCuttingStrength + bonus, tool);
+            }
+        }
+        return results.lastEntry().getValue();
+    }
+
     private static void ReadWoodCuttingToolsDB()
     {
         if(WoodToolsDBList != null)
@@ -204,23 +249,30 @@ public class WoodDB extends OSRSDataBase
         }
     }
 
-    public static WoodData GetBestWoodCuttingLog(int WoodCuttingLevel)
+    public static WoodCuttingTool GetBestWoodCuttingTool(boolean isMember, int[] Options, DBTags... TagPreferences)
     {
-        if(WoodDBMap == null)
-        {
-            ReadWoodDB();
-        }
+        ReadWoodCuttingToolsDB();
 
-        WoodData out = GetWoodData("Logs");
-
-        for(var wood : WoodDBMap.values())
+        SortedMap<Integer, WoodCuttingTool> results = new TreeMap<>();
+        for(var tool : WoodToolsDBList)
         {
-            if(wood.level < WoodCuttingLevel && wood.exp > out.exp)
+            if((tool.requirements == null || IRequirement.IsAllRequirementMet(tool.requirements)) &&
+               (isMember || !tool.members) && Arrays.stream(Options).anyMatch((t) -> t == tool.id))
             {
-                out = wood;
+                //Tag preference bonus points
+                int bonus = 0;
+                for(var tag : TagPreferences)
+                {
+                    if(tool.tags != null && tool.tags.length > 0 &&
+                       Arrays.stream(tool.tags).anyMatch((t) -> t == tag))
+                    {
+                        bonus += 100;
+                    }
+                }
+                results.put(tool.WoodCuttingStrength + bonus, tool);
             }
         }
-        return out;
+        return results.lastEntry().getValue();
     }
 
     public static List<WoodData> GetBurnableLogs(int FireMakingLevel, boolean isMember)
@@ -262,57 +314,6 @@ public class WoodDB extends OSRSDataBase
         }
 
         return WoodDBMap.get(ID);
-    }
-
-    public static WoodCuttingTool GetBestWoodCuttingTool(boolean isMember, DBTags... TagPreferences)
-    {
-        ReadWoodCuttingToolsDB();
-
-        SortedMap<Integer, WoodCuttingTool> results = new TreeMap<>();
-        for(var tool : WoodToolsDBList)
-        {
-            if((tool.requirements == null || IRequirement.IsAllRequirementMet(tool.requirements)))
-            {
-                //Tag preference bonus points
-                int bonus = 0;
-                for(var tag : TagPreferences)
-                {
-                    if(tool.tags != null && tool.tags.length > 0 && (isMember || !tool.members) &&
-                       Arrays.stream(tool.tags).anyMatch((t) -> t == tag))
-                    {
-                        bonus += 100;
-                    }
-                }
-                results.put(tool.WoodCuttingStrength + bonus, tool);
-            }
-        }
-        return results.lastEntry().getValue();
-    }
-
-    public static WoodCuttingTool GetBestWoodCuttingTool(boolean isMember,int[] Options, DBTags... TagPreferences)
-    {
-        ReadWoodCuttingToolsDB();
-
-        SortedMap<Integer, WoodCuttingTool> results = new TreeMap<>();
-        for(var tool : WoodToolsDBList)
-        {
-            if((tool.requirements == null || IRequirement.IsAllRequirementMet(tool.requirements)) && (isMember || !tool.members) &&
-               Arrays.stream(Options).anyMatch((t) -> t == tool.id))
-            {
-                //Tag preference bonus points
-                int bonus = 0;
-                for(var tag : TagPreferences)
-                {
-                    if(tool.tags != null && tool.tags.length > 0 &&
-                       Arrays.stream(tool.tags).anyMatch((t) -> t == tag))
-                    {
-                        bonus += 100;
-                    }
-                }
-                results.put(tool.WoodCuttingStrength + bonus, tool);
-            }
-        }
-        return results.lastEntry().getValue();
     }
 
     public static Tile[] GetFireMakingPositions(int FireMakingLevel, Area StartingPosition)
@@ -461,11 +462,11 @@ public class WoodDB extends OSRSDataBase
         if(tile == null) {return false;}
 
         var objs = GameObjects.getObjectsOnTile(tile);
-        boolean nonematch = objs == null || objs.length == 0 ? true : Arrays.stream(objs)
-                                  .noneMatch((t) -> t.getClass()
-                                                     .isAssignableFrom(SceneObject.class) ||
-                                                    t.getClass()
-                                                     .isAssignableFrom(GameObject.class));
+        boolean nonematch = objs == null || objs.length == 0
+                ? true
+                : Arrays.stream(objs)
+                        .noneMatch((t) -> t.getClass().isAssignableFrom(SceneObject.class) ||
+                                          t.getClass().isAssignableFrom(GameObject.class));
 
 
         boolean isUnderRoof = isUnderRoof(tile);

@@ -26,6 +26,23 @@ public class HerbDB extends OSRSDataBase
         }
     }
 
+    /**
+     * @param ID of clean herb
+     *
+     * @return
+     */
+    public static HerbData GetCleanHerb(int ID)
+    {
+        HerbData herb = GetHerbData(ID);
+
+        if(herb == null)
+        {
+            return null;
+        }
+
+        return GetHerbData(herb.id);
+    }
+
     public static int[] GetCleanHerbList()
     {
         if(HerbDBMap == null)
@@ -34,14 +51,6 @@ public class HerbDB extends OSRSDataBase
         }
 
         return HerbDBMap.keySet().stream().filter(t -> !isGrimyHerb(t)).mapToInt(t -> t).toArray();
-    }
-
-    public static boolean isDegrimeProfitable(int base) 
-    {
-        HerbData herb = GetHerbData(base);
-        int GrimyPrice = OSRSPrices.GetAveragePrice(herb.grimy_id);
-        int CleanPrice = OSRSPrices.GetAveragePrice(herb.id);
-        return GrimyPrice < CleanPrice;
     }
 
     public static boolean isGrimyHerb(int ID)
@@ -89,36 +98,6 @@ public class HerbDB extends OSRSDataBase
         }
     }
 
-    public static int[] GetGrimyHerbList()
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.keySet().stream().filter(t -> isGrimyHerb(t)).mapToInt(t -> t).toArray();
-    }
-
-    public static HerbData GetHerbData(int ID)
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.get(ID);
-    }
-
-    public static int[] GetHerbList()
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.keySet().stream().mapToInt(t -> t).toArray();
-    }
-
     /**
      * @param ID of clean herb
      *
@@ -136,26 +115,47 @@ public class HerbDB extends OSRSDataBase
         return GetHerbData(herb.grimy_id);
     }
 
-    /**
-     * @param ID of clean herb
-     *
-     * @return
-     */
-    public static HerbData GetCleanHerb(int ID)
+    public static int[] GetGrimyHerbList()
     {
-        HerbData herb = GetHerbData(ID);
-
-        if(herb == null)
+        if(HerbDBMap == null)
         {
-            return null;
+            ReadHerbDB();
         }
 
-        return GetHerbData(herb.id);
+        return HerbDBMap.keySet().stream().filter(t -> isGrimyHerb(t)).mapToInt(t -> t).toArray();
+    }
+
+    public static int[] GetHerbList()
+    {
+        if(HerbDBMap == null)
+        {
+            ReadHerbDB();
+        }
+
+        return HerbDBMap.keySet().stream().mapToInt(t -> t).toArray();
     }
 
     public static boolean isCleanHerb(int ID)
     {
         return !isGrimyHerb(ID);
+    }
+
+    public static boolean isDegrimeProfitable(int base)
+    {
+        HerbData herb       = GetHerbData(base);
+        int      GrimyPrice = OSRSPrices.GetAveragePrice(herb.grimy_id);
+        int      CleanPrice = OSRSPrices.GetAveragePrice(herb.id);
+        return GrimyPrice < CleanPrice;
+    }
+
+    public static HerbData GetHerbData(int ID)
+    {
+        if(HerbDBMap == null)
+        {
+            ReadHerbDB();
+        }
+
+        return HerbDBMap.get(ID);
     }
 
     public static boolean isHerb(int ID)
@@ -175,6 +175,8 @@ public class HerbDB extends OSRSDataBase
             ReadHerbDB();
         }
 
-        return HerbDBMap.entrySet().stream().anyMatch((entry) -> entry.getValue().name.equalsIgnoreCase(name));
+        return HerbDBMap.entrySet()
+                        .stream()
+                        .anyMatch((entry) -> entry.getValue().name.equalsIgnoreCase(name));
     }
 }

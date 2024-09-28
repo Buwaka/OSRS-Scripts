@@ -10,10 +10,8 @@ import org.dreambot.api.utilities.Logger;
 
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class ProxyGrabber
 {
@@ -22,16 +20,16 @@ public class ProxyGrabber
 
     public static class ProxyData
     {
-        public String id;
-        public String username;
-        public String password;
-        public String proxy_address;
-        public String port;
+        public String  id;
+        public String  username;
+        public String  password;
+        public String  proxy_address;
+        public String  port;
         public boolean valid;
-        public Date last_verification;
-        public String country_code;
-        public String city_name;
-        public Date   created_at;
+        public Date    last_verification;
+        public String  country_code;
+        public String  city_name;
+        public Date    created_at;
     }
 
     public static void main(String[] args)
@@ -47,7 +45,9 @@ public class ProxyGrabber
                 URI uri = new URIBuilder(request.getUri()).addParameter("mode", "direct")
                                                           .addParameter("page", String.valueOf(1))
                                                           .addParameter("page_size",
-                                                                        String.valueOf(9999)).addParameter("valid", Boolean.toString(true))
+                                                                        String.valueOf(9999))
+                                                          .addParameter("valid",
+                                                                        Boolean.toString(true))
                                                           .build();
 
                 request.setUri(uri);
@@ -58,10 +58,10 @@ public class ProxyGrabber
                     {
                         return null;
                     }
-                    var               content = httpResponse.getEntity().getContent();
-                    InputStreamReader File    = new InputStreamReader(content);
-                    JsonReader        Reader  = new JsonReader(File);
-                    HashMap<String, String> out = new HashMap<>();
+                    var                     content = httpResponse.getEntity().getContent();
+                    InputStreamReader       File    = new InputStreamReader(content);
+                    JsonReader              Reader  = new JsonReader(File);
+                    HashMap<String, String> out     = new HashMap<>();
 
                     Reader.beginObject();
                     while(Reader.hasNext())
@@ -74,13 +74,15 @@ public class ProxyGrabber
                             for(var proxy : data)
                             {
                                 String nickname = proxy.city_name;
-                                int i = 2;
+                                int    i        = 2;
                                 while(out.containsKey(nickname))
                                 {
                                     nickname = proxy.city_name + i;
                                     i++;
                                 }
-                                String value = nickname + ":" + proxy.proxy_address + ":" + proxy.port + ":" + proxy.username + ":" + proxy.password;
+                                String value =
+                                        nickname + ":" + proxy.proxy_address + ":" + proxy.port +
+                                        ":" + proxy.username + ":" + proxy.password;
 
                                 out.put(nickname, value);
                                 System.out.print(value + "\n");

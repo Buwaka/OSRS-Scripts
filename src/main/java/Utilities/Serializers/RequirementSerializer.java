@@ -3,11 +3,9 @@ package Utilities.Serializers;
 import OSRSDatabase.ItemDB;
 import Utilities.Requirement.*;
 import com.google.gson.*;
-import org.dreambot.api.methods.quest.book.FreeQuest;
 import org.dreambot.api.methods.quest.book.PaidQuest;
 import org.dreambot.api.methods.skills.Skill;
 
-import java.io.Serial;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -16,6 +14,35 @@ import java.util.List;
 public class RequirementSerializer
         implements JsonSerializer<IRequirement>, JsonDeserializer<IRequirement>
 {
+    public static void main(String[] args)
+    {
+        List<IRequirement> reqs = new ArrayList<>();
+
+        reqs.add(new LevelRequirement(Skill.WOODCUTTING, 25));
+        reqs.add(new QuestRequirement(PaidQuest.SHADES_OF_MORTTON));
+        reqs.add(new MemberRequirement());
+
+        var OSRSGsonBuilder = new GsonBuilder().setPrettyPrinting()
+                                               .setLenient()
+                                               .disableHtmlEscaping()
+                                               .excludeFieldsWithModifiers(Modifier.STATIC,
+                                                                           Modifier.TRANSIENT)
+                                               .registerTypeAdapter(IRequirement.class,
+                                                                    new RequirementSerializer())
+                                               .registerTypeAdapter(ItemDB.Requirement.class,
+                                                                    new ItemDB.Requirement.RequirementDeserializer())
+                                               .registerTypeAdapter(SerializableSupplier.class,
+                                                                    new SerializableSupplierSerializer<>())
+                                               .create();
+
+        String json = OSRSGsonBuilder.toJson(reqs.toArray(), IRequirement[].class);
+
+        System.out.print(json);
+
+        IRequirement[] New = OSRSGsonBuilder.fromJson(json, IRequirement[].class);
+        System.out.print(New);
+    }
+
     /**
      * @param jsonElement
      * @param type
@@ -103,34 +130,5 @@ public class RequirementSerializer
         var out     = new JsonObject();
         out.add(iRequirement.GetRequirementType().name(), ObjJson);
         return out;
-    }
-
-    public static void main(String[] args)
-    {
-        List<IRequirement> reqs = new ArrayList<>();
-
-        reqs.add(new LevelRequirement(Skill.WOODCUTTING, 25));
-        reqs.add(new QuestRequirement(PaidQuest.SHADES_OF_MORTTON));
-        reqs.add(new MemberRequirement());
-
-        var OSRSGsonBuilder = new GsonBuilder().setPrettyPrinting()
-                                               .setLenient()
-                                               .disableHtmlEscaping()
-                                               .excludeFieldsWithModifiers(Modifier.STATIC,
-                                                                           Modifier.TRANSIENT)
-                                               .registerTypeAdapter(IRequirement.class,
-                                                                    new RequirementSerializer())
-                                               .registerTypeAdapter(ItemDB.Requirement.class,
-                                                                    new ItemDB.Requirement.RequirementDeserializer())
-                                               .registerTypeAdapter(SerializableSupplier.class,
-                                                                    new SerializableSupplierSerializer<>())
-                                               .create();
-
-        String json = OSRSGsonBuilder.toJson(reqs.toArray(), IRequirement[].class);
-
-        System.out.print(json);
-
-        IRequirement[] New = OSRSGsonBuilder.fromJson(json, IRequirement[].class);
-        System.out.print(New);
     }
 }

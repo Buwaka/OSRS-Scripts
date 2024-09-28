@@ -8,7 +8,7 @@ public class CombatRequirement implements IRequirement
 {
     @Serial
     private static final long serialVersionUID = -3762054831327359432L;
-    public int Level;
+    public               int  Level;
 
     public CombatRequirement(int level)
     {

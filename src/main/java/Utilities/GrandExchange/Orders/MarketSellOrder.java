@@ -16,6 +16,12 @@ public class MarketSellOrder extends BaseOrder
         PriceGenerator = () -> GetInstaSellPrice(id);
     }
 
+    @ExternalLambdaUsage
+    public static int GetInstaSellPrice(int id)
+    {
+        return 1;
+    }
+
     public MarketSellOrder(int id)
     {
         super(id, -1, TransactionType.Sell, OrderType.Market);
@@ -33,12 +39,6 @@ public class MarketSellOrder extends BaseOrder
             return Bank.count(GetID());
         }
         return super.GetQuantity();
-    }
-
-    @ExternalLambdaUsage
-    public static int GetInstaSellPrice(int id)
-    {
-        return 1;
     }
 
 }

@@ -11,19 +11,19 @@ import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.utilities.Logger;
+import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.items.Item;
 
 public class SimpleInventoryProcessCycle extends SimpleCycle
 {
-    private           String                Action           = null;
+    private           String                Action            = null;
     private           int                   SourceItemID;
-    private           Integer               Tool             = null;
-    private transient InteractInventoryTask InteractTask     = null;
-    private transient BankItemsTask         BankTask         = null;
-    private transient boolean               InteractComplete = false;
-    private transient boolean InteractEveryItem = false;
-    private transient boolean Complete;
-
+    private           Integer               Tool              = null;
+    private transient InteractInventoryTask InteractTask      = null;
+    private transient BankItemsTask         BankTask          = null;
+    private transient boolean               InteractComplete  = false;
+    private transient boolean               InteractEveryItem = false;
+    private transient boolean               Complete;
 
 
     public SimpleInventoryProcessCycle(String name, int ItemID)
@@ -59,23 +59,66 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
     @Override
     public int onLoop(tpircSScript Script)
     {
-        if(InteractComplete)
+        if(InteractEveryItem)
+        {
+            final int[][] SlotOrder = new int[4][];
+            SlotOrder[0] = new int[] {4,0,1,5,6,2,3,7,11,10,14,13,9,8,12,16,20,21,17,18,22,23,19,15,24,25,26,27};
+            SlotOrder[1] = new int[] {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27};
+            SlotOrder[2] = new int[] {0,1,2,3,7,6,5,4,8,9,10,11,15,14,13,12,16,17,18,19,23,22,21,20,24,25,26,27};
+            SlotOrder[3] = new int[] {0,4,5,1,2,6,7,3,8,12,13,9,10,14,15,11,16,20,21,17,18,22,23,19,27,26,25,24};
+
+
+            int pick = OSRSUtilities.rand.nextInt(SlotOrder.length);
+            for(int i = 0; i < OSRSUtilities.InventorySpace; i++)
+            {
+                int index = SlotOrder[pick][i];
+                var item = Inventory.getItemInSlot(index);
+                if(item == null || item.getID() != SourceItemID)
+                {
+                    continue;
+                }
+                if(Action == null)
+                {
+                    Sleep.sleepUntil(() -> item.interact(), 1000);
+                }
+                else
+                {
+                    Sleep.sleepUntil(() -> item.interact(Action), 1000);
+                }
+            }
+
+            int Attempts = 0;
+            int MaxAttempt = 5;
+
+            while(Inventory.contains(SourceItemID) && Attempts < MaxAttempt)
+            {
+               var item = Inventory.get(SourceItemID);
+                if(!item.interact())
+                {
+                    Attempts++;
+                }
+            }
+        }
+        else if(InteractComplete)
         {
             Logger.log("SimpleInventoryProcessCycle: onLoop: Interact Complete");
-            if(InteractEveryItem && Inventory.contains(SourceItemID))
-            {
-                Logger.log("SimpleInventoryProcessCycle: onLoop: Interact every item, creating new task");
-                Script.addNodes(CreateInteractTask());
-            }
+            //            if(InteractEveryItem && Inventory.contains(SourceItemID))
+            //            {
+            //                Logger.log(
+            //                        "SimpleInventoryProcessCycle: onLoop: Interact every item, creating new task");
+            //                Script.addNodes(CreateInteractTask());
+            //            }
             if(Dialogues.inDialogue())
             {
-                Logger.log("SimpleInventoryProcessCycle: onLoop: In Dialogue, creating new interact task");
+                Logger.log(
+                        "SimpleInventoryProcessCycle: onLoop: In Dialogue, creating new interact task");
                 InteractComplete = false;
                 Script.addNodes(CreateInteractTask());
             }
             else if(!Inventory.contains(SourceItemID))
             {
-                Logger.log("SimpleInventoryProcessCycle: onLoop: no more source items in enventory, done");
+                Logger.log(
+                        "SimpleInventoryProcessCycle: onLoop: no more source items in enventory, done");
                 return 0;
             }
         }
@@ -87,7 +130,9 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
         Item item = Inventory.get(SourceItemID);
         if(item == null)
         {
-            InteractTask = new InteractInventoryTask("Interacting with items", Action, SourceItemID);
+            InteractTask = new InteractInventoryTask("Interacting with items",
+                                                     Action,
+                                                     SourceItemID);
         }
         else
         {
@@ -97,7 +142,9 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
                 {
                     if(inv != null && inv.getID() == SourceItemID)
                     {
-                        InteractTask = new InteractInventoryTask("Interacting with items", Action, inv);
+                        InteractTask = new InteractInventoryTask("Interacting with items",
+                                                                 Action,
+                                                                 inv);
                     }
                 }
             }

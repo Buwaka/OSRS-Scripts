@@ -27,50 +27,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class OSRSPrices implements Serializable
 {
 
+    public static final int CoinID = 995;
     @Serial
     private static final long serialVersionUID = -5940381882555771355L;
-
     private static final String                                     AllItemsEndPoint   = "https://prices.runescape.wiki/api/v1/osrs/latest";
     //    private static final HTreeMap<Integer, GELatestData> AllItemsCache      = OSRSUtilities.CacheDB.hashMap("OSRSPrices-Latest").keySerializer(
     //            Serializer.INTEGER).valueSerializer(Serializer.JAVA).expireAfterGet(6, TimeUnit.HOURS).createOrOpen();
     //private static           Cache<Integer, GELatestData> AllItemsCache      = OSRSUtilities.GetCache("GELatest", Integer.class, GELatestData.class);
     private static final HashMap<Integer, GELatestData>             AllItemsCache      = new HashMap<>();
     private static final String                                     TimeSeriesEndPoint = "https://prices.runescape.wiki/api/v1/osrs/timeseries";
+    //    private static Cache<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache = OSRSUtilities.GetCache("TimeSeries", TimeSeriesKey.class, GETimeSeriesData[].class);
     //    private static final HTreeMap<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache      = OSRSUtilities.CacheDB.hashMap("OSRSPrices-TimeSeries").keySerializer(
     //            Serializer.JAVA).valueSerializer(Serializer.JAVA).hashSeed(5).expireAfterGet(5, TimeUnit.MINUTES).createOrOpen();
     private static final HashMap<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache    = new HashMap<>();
-    //    private static Cache<TimeSeriesKey, GETimeSeriesData[]> TimeSeriesCache = OSRSUtilities.GetCache("TimeSeries", TimeSeriesKey.class, GETimeSeriesData[].class);
-
-    public static final int CoinID = 995;
-
-    public static class TimeSeriesKey implements Serializable
-    {
-        @Serial
-        private static final long             serialVersionUID = -97952331964844432L;
-        public               int              ID;
-        public               TimeSeriesFormat format;
-
-        public TimeSeriesKey(int ID, TimeSeriesFormat format)
-        {
-            this.ID     = ID;
-            this.format = format;
-        }
-
-        @Override
-        public boolean equals(Object o)
-        {
-            if(this == o) {return true;}
-            if(o == null || getClass() != o.getClass()) {return false;}
-            TimeSeriesKey that = (TimeSeriesKey) o;
-            return ID == that.ID && format.ordinal() == that.format.ordinal();
-        }
-
-        @Override
-        public int hashCode()
-        {
-            return Objects.hash(ID, format.ordinal());
-        }
-    }
 
     public enum TimeSeriesFormat implements Serializable
     {
@@ -95,6 +64,35 @@ public class OSRSPrices implements Serializable
         public String toString()
         {
             return this.name;
+        }
+    }
+
+    public static class TimeSeriesKey implements Serializable
+    {
+        @Serial
+        private static final long             serialVersionUID = -97952331964844432L;
+        public               int              ID;
+        public               TimeSeriesFormat format;
+
+        public TimeSeriesKey(int ID, TimeSeriesFormat format)
+        {
+            this.ID     = ID;
+            this.format = format;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash(ID, format.ordinal());
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if(this == o) {return true;}
+            if(o == null || getClass() != o.getClass()) {return false;}
+            TimeSeriesKey that = (TimeSeriesKey) o;
+            return ID == that.ID && format.ordinal() == that.format.ordinal();
         }
     }
 
@@ -145,103 +143,6 @@ public class OSRSPrices implements Serializable
         }
 
         return Avg._3;
-    }
-
-    public static Integer GetLatestPrice(int ID)
-    {
-        Integer price  = null;
-        var     latest = GetLatest(ID);
-        if(latest != null)
-        {
-            if(latest.high != null)
-            {
-                if(latest.low != null)
-                {
-                    price = (latest.high + latest.low) / 2;
-                }
-                else
-                {
-                    price = latest.high;
-                }
-            }
-            else if(latest.low != null)
-            {
-                price = latest.low;
-            }
-        }
-        return price;
-    }
-
-    public static GELatestData GetLatest(int ID)
-    {
-        if(AllItemsCache.containsKey(ID))
-        {
-            return AllItemsCache.get(ID);
-        }
-
-        final int MaxAttempts = 5;
-        int       attempt     = 0;
-        while(attempt < MaxAttempts)
-        {
-            try(CloseableHttpClient client = HttpClients.createDefault())
-            {
-                HttpGet request = new HttpGet(AllItemsEndPoint);
-                request.addHeader(new BasicHeader("User-Agent", "Custom runelite plugin deving"));
-                URI uri = new URIBuilder(request.getUri()).build();
-
-                request.setUri(uri);
-                AtomicInteger Code = new AtomicInteger(400);
-                Gson          gson = new Gson().newBuilder().create();
-                Map<Integer, GELatestData> AllItems = (Map<Integer, GELatestData>) client.execute(
-                        request,
-                        httpResponse -> {
-                            Code.set(httpResponse.getCode());
-                            if(httpResponse.getCode() >= 300)
-                            {
-                                return null;
-                            }
-                            var                        content = httpResponse.getEntity()
-                                                                             .getContent();
-                            InputStreamReader          File    = new InputStreamReader(content);
-                            JsonReader                 Reader  = new JsonReader(File);
-                            Map<Integer, GELatestData> All     = new HashMap<>();
-
-                            Reader.beginObject();
-                            Reader.nextName(); //data
-                            Reader.beginObject();
-                            while(Reader.hasNext())
-                            {
-                                int id   = Integer.parseInt(Reader.nextName());
-                                var data = (GELatestData) gson.fromJson(Reader, GELatestData.class);
-                                All.put(id, data);
-                            }
-                            Reader.endObject();
-                            Reader.endObject();
-                            Reader.close();
-
-                            return All;
-                        });
-                AllItemsCache.putAll(AllItems);
-
-                if(Code.get() >= 300)
-                {
-                    attempt++;
-                    continue;
-                }
-                if(!AllItemsCache.containsKey(ID))
-                {
-                    Logger.log("OSRSPrices: GetLatest: Can't find item with ID " + ID);
-                    return null;
-                }
-
-                return AllItemsCache.get(ID);
-            } catch(Exception e)
-            {
-                Logger.log("OSRSPrices: " + e);
-                attempt++;
-            }
-        }
-        return null;
     }
 
     private static GETimeSeriesData[] GetTimeSeries(int ID, TimeSeriesFormat format)
@@ -308,26 +209,6 @@ public class OSRSPrices implements Serializable
             }
         }
         return null;
-    }
-
-    public static long GetTotalValue(List<Item> allItems)
-    {
-        long total = 0;
-
-        for(var item : allItems)
-        {
-            if(item == null)
-            {
-                continue;
-            }
-
-            var latest = GetLatestPrice(item.getID());
-            if(latest != null)
-            {
-                total += latest;
-            }
-        }
-        return total;
     }
 
     private static Tuple3<Integer, Integer, Integer> TrimmedAveragePrice(GETimeSeriesData[] data)
@@ -403,6 +284,127 @@ public class OSRSPrices implements Serializable
         return Avg._2;
     }
 
+    public static long GetNetWorth()
+    {
+        return GetTotalValue(GEInstance.GetAllTradableItems()) + GEInstance.GetLiquidMoney();
+    }
+
+    public static long GetTotalValue(List<Item> allItems)
+    {
+        long total = 0;
+
+        for(var item : allItems)
+        {
+            if(item == null)
+            {
+                continue;
+            }
+
+            var latest = GetLatestPrice(item.getID());
+            if(latest != null)
+            {
+                total += latest;
+            }
+        }
+        return total;
+    }
+
+    public static Integer GetLatestPrice(int ID)
+    {
+        Integer price  = null;
+        var     latest = GetLatest(ID);
+        if(latest != null)
+        {
+            if(latest.high != null)
+            {
+                if(latest.low != null)
+                {
+                    price = (latest.high + latest.low) / 2;
+                }
+                else
+                {
+                    price = latest.high;
+                }
+            }
+            else if(latest.low != null)
+            {
+                price = latest.low;
+            }
+        }
+        return price;
+    }
+
+    public static GELatestData GetLatest(int ID)
+    {
+        if(AllItemsCache.containsKey(ID))
+        {
+            return AllItemsCache.get(ID);
+        }
+
+        final int MaxAttempts = 5;
+        int       attempt     = 0;
+        while(attempt < MaxAttempts)
+        {
+            try(CloseableHttpClient client = HttpClients.createDefault())
+            {
+                HttpGet request = new HttpGet(AllItemsEndPoint);
+                request.addHeader(new BasicHeader("User-Agent", "Custom runelite plugin deving"));
+                URI uri = new URIBuilder(request.getUri()).build();
+
+                request.setUri(uri);
+                AtomicInteger Code = new AtomicInteger(400);
+                Gson          gson = new Gson().newBuilder().create();
+                Map<Integer, GELatestData> AllItems = (Map<Integer, GELatestData>) client.execute(
+                        request,
+                        httpResponse -> {
+                            Code.set(httpResponse.getCode());
+                            if(httpResponse.getCode() >= 300)
+                            {
+                                return null;
+                            }
+                            var content = httpResponse.getEntity().getContent();
+                            InputStreamReader          File   = new InputStreamReader(content);
+                            JsonReader                 Reader = new JsonReader(File);
+                            Map<Integer, GELatestData> All    = new HashMap<>();
+
+                            Reader.beginObject();
+                            Reader.nextName(); //data
+                            Reader.beginObject();
+                            while(Reader.hasNext())
+                            {
+                                int id   = Integer.parseInt(Reader.nextName());
+                                var data = (GELatestData) gson.fromJson(Reader, GELatestData.class);
+                                All.put(id, data);
+                            }
+                            Reader.endObject();
+                            Reader.endObject();
+                            Reader.close();
+
+                            return All;
+                        });
+                AllItemsCache.putAll(AllItems);
+
+                if(Code.get() >= 300)
+                {
+                    attempt++;
+                    continue;
+                }
+                if(!AllItemsCache.containsKey(ID))
+                {
+                    Logger.log("OSRSPrices: GetLatest: Can't find item with ID " + ID);
+                    return null;
+                }
+
+                return AllItemsCache.get(ID);
+            } catch(Exception e)
+            {
+                Logger.log("OSRSPrices: " + e);
+                attempt++;
+            }
+        }
+        return null;
+    }
+
     public static boolean isLowVolume(int ID)
     {
         return GetDailyVolume(ID) < 5000;
@@ -476,11 +478,6 @@ public class OSRSPrices implements Serializable
         }
 
         return new Tuple2<>(Low, High);
-    }
-
-    public static long GetNetWorth()
-    {
-        return GetTotalValue(GEInstance.GetAllTradableItems()) + GEInstance.GetLiquidMoney();
     }
 
 

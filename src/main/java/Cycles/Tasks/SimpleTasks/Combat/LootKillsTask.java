@@ -9,12 +9,10 @@ import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.GroundItem;
 
 import javax.annotation.Nonnull;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class LootKillsTask extends SimpleTask implements PropertyChangeListener
+public class LootKillsTask extends SimpleTask
 {
     //TODO priority based on rarity from itemdb
     private final ConcurrentLinkedQueue<GroundItem> LootItems = new ConcurrentLinkedQueue<>();
@@ -32,13 +30,10 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
         IgnoreLoot = IgnoreItems;
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt)
-    {
-        int  ID       = (int) evt.getOldValue();
-        Tile lootTile = (Tile) evt.getNewValue();
 
-        Logger.log("LootKillsTask: propertyChange: Loot found:" + ID + " " + lootTile);
+    public boolean onKill(Integer ID, Tile lootTile)
+    {
+        Logger.log("LootKillsTask: onKill: Loot found:" + ID + " " + lootTile);
 
         var LootTable = MonsterDB.GetMonsterLootTable(ID);
         var size      = MonsterDB.GetMonsterSize(ID);
@@ -49,6 +44,8 @@ public class LootKillsTask extends SimpleTask implements PropertyChangeListener
             var newItems = OSRSUtilities.GetLootItemsInclude(lootTile.getArea(size), drops);
             LootItems.addAll(newItems);
         }
+
+        return true;
     }
 
     @Override

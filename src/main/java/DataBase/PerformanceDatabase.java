@@ -28,102 +28,6 @@ public class PerformanceDatabase
     private static final String DatabaseName          = "AccountPerformance";
     private static final String AccountCollectionName = "DailyPerformance";
 
-
-    private static void RegisterTypes() // neccesary because static block won't be called until its too late
-    {
-        DataBaseUtilities.RegisterPOJO(PerformanceData.class);
-        DataBaseUtilities.RegisterPOJO(SkillsDB.class);
-    }
-
-
-    public static PerformanceData GeneratePerformanceReport(String Activity)
-    {
-        String name = Players.getLocal().getName();
-
-        long   TotalPlayTime = Playtime.GetPlaytimeLong();
-        String strPlaytime   = Playtime.GetPlaytime();
-        int    LiquidGold    = GEInstance.GetLiquidMoney();
-        long   NetWorth      = OSRSPrices.GetNetWorth();
-        int    QPoints       = Quests.getQuestPoints();
-        long   TotalEXP      = Arrays.stream(Skills.getExperience()).sum();
-        var    SkillMap      = new SkillsDB();
-
-        var recent = GetMostRecentData(name);
-        Logger.log(recent);
-
-        long AddedTimePlayed = 0;
-        int  ValueGained     = 0;
-        int  QPointsGained   = 0;
-        int  EXPGained       = 0;
-        if(recent != null)
-        {
-            Logger.log("GeneratePerformanceReport: Recent found " + recent);
-            AddedTimePlayed = TotalPlayTime - recent.playtime;
-            ValueGained     = (int) (NetWorth - recent.networth);
-            QPointsGained   = QPoints - recent.total_questpoints;
-            EXPGained       = (int) (TotalEXP - recent.total_exp);
-            Logger.log("GeneratePerformanceReport: " + ValueGained);
-        }
-
-
-        return new PerformanceDatabase.PerformanceData(name,
-                                                       AddedTimePlayed,
-                                                       TotalPlayTime,
-                                                       strPlaytime,
-                                                       ValueGained,
-                                                       LiquidGold,
-                                                       NetWorth,
-                                                       TotalEXP,
-                                                       EXPGained,
-                                                       SkillMap,
-                                                       QPoints,
-                                                       QPointsGained,
-                                                       Activity);
-    }
-
-    public static boolean UploadPerformanceData(PerformanceData data)
-    {
-        Logger.log(data);
-        var db = DataBaseUtilities.GetDataBase(DatabaseName);
-        if(db == null)
-        {
-            return false;
-        }
-
-        var collection = DataBaseUtilities.GetCollection(db,
-                                                         AccountCollectionName,
-                                                         PerformanceData.class);
-
-        var result = collection.insertOne(data);
-        if(result.wasAcknowledged())
-        {
-            DataBaseUtilities.CloseClient();
-            return true;
-        }
-        return false;
-    }
-
-    public static PerformanceData GetMostRecentData(String Nickname)
-    {
-        RegisterTypes();
-        Logger.log(Nickname);
-        var db = DataBaseUtilities.GetDataBase(DatabaseName);
-        if(db == null)
-        {
-            return null;
-        }
-
-        var collection = DataBaseUtilities.GetCollection(db,
-                                                         AccountCollectionName,
-                                                         PerformanceData.class);
-
-        var candidates = collection.find(Filters.eq("AccountName", Nickname))
-                                   .sort(Sorts.descending("timestamp"));
-
-        return candidates.first();
-        // get list of nickname, sort by date, get and return latest
-    }
-
     public static class PerformanceData implements Serializable
     {
         @BsonIgnore
@@ -184,6 +88,100 @@ public class PerformanceDatabase
         {
             return Duration.ofNanos(total_playtime);
         }
+    }
+
+    public static PerformanceData GeneratePerformanceReport(String Activity)
+    {
+        String name = Players.getLocal().getName();
+
+        long   TotalPlayTime = Playtime.GetPlaytimeLong();
+        String strPlaytime   = Playtime.GetPlaytime();
+        int    LiquidGold    = GEInstance.GetLiquidMoney();
+        long   NetWorth      = OSRSPrices.GetNetWorth();
+        int    QPoints       = Quests.getQuestPoints();
+        long   TotalEXP      = Arrays.stream(Skills.getExperience()).sum();
+        var    SkillMap      = new SkillsDB();
+
+        var recent = GetMostRecentData(name);
+        Logger.log(recent);
+
+        long AddedTimePlayed = 0;
+        int  ValueGained     = 0;
+        int  QPointsGained   = 0;
+        int  EXPGained       = 0;
+        if(recent != null)
+        {
+            Logger.log("GeneratePerformanceReport: Recent found " + recent);
+            AddedTimePlayed = TotalPlayTime - recent.playtime;
+            ValueGained     = (int) (NetWorth - recent.networth);
+            QPointsGained   = QPoints - recent.total_questpoints;
+            EXPGained       = (int) (TotalEXP - recent.total_exp);
+            Logger.log("GeneratePerformanceReport: " + ValueGained);
+        }
+
+
+        return new PerformanceDatabase.PerformanceData(name,
+                                                       AddedTimePlayed,
+                                                       TotalPlayTime,
+                                                       strPlaytime,
+                                                       ValueGained,
+                                                       LiquidGold,
+                                                       NetWorth,
+                                                       TotalEXP,
+                                                       EXPGained,
+                                                       SkillMap,
+                                                       QPoints,
+                                                       QPointsGained,
+                                                       Activity);
+    }
+
+    public static PerformanceData GetMostRecentData(String Nickname)
+    {
+        RegisterTypes();
+        Logger.log(Nickname);
+        var db = DataBaseUtilities.GetDataBase(DatabaseName);
+        if(db == null)
+        {
+            return null;
+        }
+
+        var collection = DataBaseUtilities.GetCollection(db,
+                                                         AccountCollectionName,
+                                                         PerformanceData.class);
+
+        var candidates = collection.find(Filters.eq("AccountName", Nickname))
+                                   .sort(Sorts.descending("timestamp"));
+
+        return candidates.first();
+        // get list of nickname, sort by date, get and return latest
+    }
+
+    private static void RegisterTypes() // neccesary because static block won't be called until its too late
+    {
+        DataBaseUtilities.RegisterPOJO(PerformanceData.class);
+        DataBaseUtilities.RegisterPOJO(SkillsDB.class);
+    }
+
+    public static boolean UploadPerformanceData(PerformanceData data)
+    {
+        Logger.log(data);
+        var db = DataBaseUtilities.GetDataBase(DatabaseName);
+        if(db == null)
+        {
+            return false;
+        }
+
+        var collection = DataBaseUtilities.GetCollection(db,
+                                                         AccountCollectionName,
+                                                         PerformanceData.class);
+
+        var result = collection.insertOne(data);
+        if(result.wasAcknowledged())
+        {
+            DataBaseUtilities.CloseClient();
+            return true;
+        }
+        return false;
     }
 
 

@@ -1,11 +1,7 @@
 package Utilities.Patterns.Delegates;
 
-import io.vavr.Function1;
 import io.vavr.Function2;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.WeakHashMap;
 
 public class Delegate2<A, B>

@@ -74,28 +74,6 @@ public class ItemDB extends OSRSDataBase
     {
         public List<Tuple2<Skill, Integer>> SkillLevelPair = new ArrayList<>();
 
-        public IRequirement[] GetLevelRequirements()
-        {
-            List<IRequirement> out = new ArrayList<>();
-            for(var pair : SkillLevelPair)
-            {
-                if(pair._1 == null)
-                {
-                    continue;
-                }
-                if(pair._1 == Skill.COMBAT)
-                {
-                    out.add(new CombatRequirement(pair._2));
-                }
-                else
-                {
-                    out.add(new LevelRequirement(pair._1, pair._2));
-                }
-
-            }
-            return out.toArray(new IRequirement[0]);
-        }
-
         public static class RequirementDeserializer implements JsonDeserializer<Requirement>
         {
             public Requirement deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws
@@ -118,6 +96,28 @@ public class ItemDB extends OSRSDataBase
                 }
                 return out;
             }
+        }
+
+        public IRequirement[] GetLevelRequirements()
+        {
+            List<IRequirement> out = new ArrayList<>();
+            for(var pair : SkillLevelPair)
+            {
+                if(pair._1 == null)
+                {
+                    continue;
+                }
+                if(pair._1 == Skill.COMBAT)
+                {
+                    out.add(new CombatRequirement(pair._2));
+                }
+                else
+                {
+                    out.add(new LevelRequirement(pair._1, pair._2));
+                }
+
+            }
+            return out.toArray(new IRequirement[0]);
         }
 
         public boolean isMet()

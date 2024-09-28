@@ -1,7 +1,6 @@
 package Cycles.Tasks.SimpleTasks.Bank;
 
 import OSRSDatabase.ItemDB;
-import Utilities.OSRSUtilities;
 import Utilities.Scripting.tpircSScript;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.Inventory;
@@ -69,63 +68,11 @@ public class InventoryCheckTask extends BankItemsTask
         }
     }
 
-    @Override
-    public boolean onStartTask(tpircSScript Script)
-    {
-        var difference = GetDifference();
-        if(DepositEverything || (difference.length > 0 && Inventory.getEmptySlots() >
-                                                          Arrays.stream(difference).mapToInt((t) -> t._2).sum()))
-        {
-            AddDepositAll();
-            for(var item : Items)
-            {
-                AddWithdraw(item._1, item._2);
-            }
-        }
-        else
-        {
-            for(var item : Items)
-            {
-                int count = Inventory.count(item._1);
-                if(count < item._2)
-                {
-                    AddWithdraw(item._1, item._2 - count);
-                }
-            }
-        }
-        return super.onStartTask(Script);
-    }
-
     @Nonnull
     @Override
     public TaskType GetTaskType()
     {
         return TaskType.InventoryCheck;
-    }
-
-    public Tuple2<Integer, Integer>[] GetDifference()
-    {
-        List<Tuple2<Integer, Integer>> out = new ArrayList<>();
-        for(var req : Items)
-        {
-            if(req == null)
-            {
-                continue;
-            }
-            if(Inventory.count(req._1) < req._2)
-            {
-                var item = ItemDB.GetItemData(req._1);
-                if(item != null && item.stackable)
-                {
-                    out.add(new Tuple2<>(req._1, 1));
-                }
-                else
-                {
-                    out.add(new Tuple2<>(req._1, req._2 - Inventory.count(req._1)));
-                }
-            }
-        }
-        return out.toArray(new Tuple2[0]);
     }
 
     /**
@@ -151,7 +98,8 @@ public class InventoryCheckTask extends BankItemsTask
                     Logger.log("InventoryCheck: HasRequirements: false, stackabale item");
                     return false;
                 }
-                else if(!Inventory.contains(item._1) || (!Inventory.isFull() && Bank.contains(item._1)))
+                else if(!Inventory.contains(item._1) ||
+                        (!Inventory.isFull() && Bank.contains(item._1)))
                 {
                     Logger.log("InventoryCheck: HasRequirements: false, still inventory space");
                     return false;
@@ -167,5 +115,59 @@ public class InventoryCheckTask extends BankItemsTask
         }
         Logger.log("InventoryCheck: HasRequirements: true");
         return true;
+    }
+
+    @Override
+    public boolean onStartTask(tpircSScript Script)
+    {
+        var difference = GetDifference();
+        if(DepositEverything || (difference.length > 0 && Inventory.getEmptySlots() >
+                                                          Arrays.stream(difference)
+                                                                .mapToInt((t) -> t._2)
+                                                                .sum()))
+        {
+            AddDepositAll();
+            for(var item : Items)
+            {
+                AddWithdraw(item._1, item._2);
+            }
+        }
+        else
+        {
+            for(var item : Items)
+            {
+                int count = Inventory.count(item._1);
+                if(count < item._2)
+                {
+                    AddWithdraw(item._1, item._2 - count);
+                }
+            }
+        }
+        return super.onStartTask(Script);
+    }
+
+    public Tuple2<Integer, Integer>[] GetDifference()
+    {
+        List<Tuple2<Integer, Integer>> out = new ArrayList<>();
+        for(var req : Items)
+        {
+            if(req == null)
+            {
+                continue;
+            }
+            if(Inventory.count(req._1) < req._2)
+            {
+                var item = ItemDB.GetItemData(req._1);
+                if(item != null && item.stackable)
+                {
+                    out.add(new Tuple2<>(req._1, 1));
+                }
+                else
+                {
+                    out.add(new Tuple2<>(req._1, req._2 - Inventory.count(req._1)));
+                }
+            }
+        }
+        return out.toArray(new Tuple2[0]);
     }
 }

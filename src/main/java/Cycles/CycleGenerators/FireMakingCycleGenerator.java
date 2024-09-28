@@ -27,8 +27,8 @@ import java.util.Objects;
 
 public class FireMakingCycleGenerator extends CycleLibrary
 {
-    final          String       FireMakingCycleDBPath  = "FireMakingCycles.json";
-    final          String       PyreCycleDBPath        = "PyreCycles.json";
+    final String FireMakingCycleDBPath = "FireMakingCycles.json";
+    final String PyreCycleDBPath       = "PyreCycles.json";
 
 
     public static SimpleCycle[] FireMakingWoodCuttingTraining()
@@ -46,7 +46,6 @@ public class FireMakingCycleGenerator extends CycleLibrary
         var LumbridgeArea    = new Area(3198, 3239, 3148, 3215, 0);
         var LumbridgeOakArea = new Area(3247, 3277, 3215, 3261, 0);
         var VarrockArea      = new Area(3202, 3506, 3223, 3501, 0);
-
 
 
         WoodDB.WoodCuttingTool BestWoodcuttingTool = WoodDB.GetBestWoodCuttingTool(Client.isMembers(),
@@ -71,7 +70,8 @@ public class FireMakingCycleGenerator extends CycleLibrary
                        BestWoodcuttingTool);
             if(OSRSPrices.GetAveragePrice(BestWoodcuttingTool.id) < GEInstance.GetLiquidMoney())
             {
-                OwnerScript.GetGEInstance().AddUniqueOrder(new MarketBuyOrder(BestWoodcuttingTool.id, 1));
+                OwnerScript.GetGEInstance()
+                           .AddUniqueOrder(new MarketBuyOrder(BestWoodcuttingTool.id, 1));
                 var neworder = new GETask("Buy New Woodcutting tool");
                 neworder.SetTaskPriority(-1);
                 OwnerScript.addNodes(neworder);

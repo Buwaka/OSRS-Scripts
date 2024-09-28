@@ -12,7 +12,6 @@ import org.dreambot.api.utilities.Sleep;
 
 import java.awt.*;
 import java.time.Duration;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -30,8 +29,8 @@ public class Playtime
 
     public static String GetPlaytime()
     {
-        int attempts               = 0;
-        int maxAttempts            = 10;
+        int attempts    = 0;
+        int maxAttempts = 10;
 
         while(Bank.isOpen() && attempts < maxAttempts)
         {

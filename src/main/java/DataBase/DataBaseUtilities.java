@@ -22,11 +22,10 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 
 public class DataBaseUtilities
 {
+    private static final Set<String> POJOPackages = new HashSet<>();
     private static MongoClient Client = null;
     String MDBUser     = "ScriptUser";
     String MDBPassword = "tb482uLsd2gX7Hse";
-
-    private static final Set<String> POJOPackages = new HashSet<>();
 
     public static <T> MongoCollection<T> GetCollection(MongoDatabase database, String Name, Class<T> clazz)
     {
@@ -42,14 +41,42 @@ public class DataBaseUtilities
                                               .build());
     }
 
-    public static void RegisterPOJO(Class clazz)
+    public static MongoDatabase GetDataBase(String DataBaseID)
     {
-        POJOPackages.add(clazz.getPackageName());
+        MongoDatabase database = GetClient().getDatabase(DataBaseID);
+        try
+        {
+            database.runCommand(new Document("ping", 1));
+        } catch(Exception e)
+        {
+            Logger.log(
+                    "DataBaseUtilities: GetDataBase: Failed to ping database, closing connection and returning null");
+            CloseClient();
+            return null;
+        }
+
+        Logger.log(
+                "DataBaseUtilities: GetDataBase: Pinged your deployment. You successfully connected to MongoDB!");
+        return database;
+    }
+
+    public static MongoClient GetClient()
+    {
+        return GetClient("mongodb+srv",
+                         "ScriptUser",
+                         "tb482uLsd2gX7Hse",
+                         "osrs-database.ehnphrp.mongodb.net",
+                         "retryWrites=true&w=majority&appName=OSRS-Database");
     }
 
     public static void RegisterPOJO(String PackageName)
     {
         POJOPackages.add(PackageName);
+    }
+
+    public static void RegisterPOJO(Class clazz)
+    {
+        POJOPackages.add(clazz.getPackageName());
     }
 
     public static void main(String[] args)
@@ -92,23 +119,6 @@ public class DataBaseUtilities
         var data = collection.find().first();
         System.out.print(data.ID);
 
-    }
-
-    public static void CloseClient()
-    {
-        if(Client != null)
-        {
-            Client.close();
-        }
-    }
-
-    public static MongoClient GetClient()
-    {
-        return GetClient("mongodb+srv",
-                         "ScriptUser",
-                         "tb482uLsd2gX7Hse",
-                         "osrs-database.ehnphrp.mongodb.net",
-                         "retryWrites=true&w=majority&appName=OSRS-Database");
     }
 
     public static MongoClient GetClient(String Protocol, String Username, String Password, String Host, String Options)
@@ -154,25 +164,6 @@ public class DataBaseUtilities
         return null;
     }
 
-    public static MongoDatabase GetDataBase(String DataBaseID)
-    {
-        MongoDatabase database = GetClient().getDatabase(DataBaseID);
-        try
-        {
-            database.runCommand(new Document("ping", 1));
-        } catch(Exception e)
-        {
-            Logger.log(
-                    "DataBaseUtilities: GetDataBase: Failed to ping database, closing connection and returning null");
-            CloseClient();
-            return null;
-        }
-
-        Logger.log(
-                "DataBaseUtilities: GetDataBase: Pinged your deployment. You successfully connected to MongoDB!");
-        return database;
-    }
-
     public static MongoDatabase GetDataBase(MongoClient Client, String DataBaseID)
     {
         MongoDatabase database = Client.getDatabase(DataBaseID);
@@ -187,6 +178,14 @@ public class DataBaseUtilities
             return null;
         }
         return database;
+    }
+
+    public static void CloseClient()
+    {
+        if(Client != null)
+        {
+            Client.close();
+        }
     }
 
 }

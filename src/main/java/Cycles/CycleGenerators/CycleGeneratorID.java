@@ -12,16 +12,19 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface CycleGeneratorID
 {
-    String Name();
-    String Description();
-    ItemDB.Skill[] Skills();
-    Purpose[] Purposes();
-
     public enum Purpose
     {
         Money,
         Experience
     }
+
+    String Description();
+
+    String Name();
+
+    Purpose[] Purposes();
+
+    ItemDB.Skill[] Skills();
 
 
 }

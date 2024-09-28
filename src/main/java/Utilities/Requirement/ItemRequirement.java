@@ -25,7 +25,7 @@ public class ItemRequirement implements IRequirement
     {
         CheckBank = bank;
         Logger.log("ItemRequirement: " + Arrays.toString(ItemIDAmpuntPair));
-        Items     = ItemIDAmpuntPair;
+        Items = ItemIDAmpuntPair;
     }
 
     /**
@@ -55,16 +55,20 @@ public class ItemRequirement implements IRequirement
                 {
                     if(Bank.count(item._1) <= Math.abs(item._2))
                     {
-                        Logger.log("ItemRequirement: isRequirementMet: less than requirement bank, true " + item._1);
-                        Logger.log("count: " + Bank.count(item._1) + " < " +  Math.abs(item._2));
+                        Logger.log(
+                                "ItemRequirement: isRequirementMet: less than requirement bank, true " +
+                                item._1);
+                        Logger.log("count: " + Bank.count(item._1) + " < " + Math.abs(item._2));
                         Checks[i] = true;
                         continue;
                     }
                 }
                 else if(Bank.count(item._1) > item._2)
                 {
-                    Logger.log("ItemRequirement: isRequirementMet: more than requirement bank, true " + item._1);
-                    Logger.log("count: " + Bank.count(item._1) + " > " +  Math.abs(item._2));
+                    Logger.log(
+                            "ItemRequirement: isRequirementMet: more than requirement bank, true " +
+                            item._1);
+                    Logger.log("count: " + Bank.count(item._1) + " > " + Math.abs(item._2));
                     Checks[i] = true;
                     continue;
                 }
@@ -73,16 +77,20 @@ public class ItemRequirement implements IRequirement
             {
                 if(Inventory.count(item._1) <= Math.abs(item._2))
                 {
-                    Logger.log("ItemRequirement: isRequirementMet: less than requirement Inventory, true " + item._1);
-                    Logger.log("count: " + Inventory.count(item._1) + " < " +  Math.abs(item._2));
+                    Logger.log(
+                            "ItemRequirement: isRequirementMet: less than requirement Inventory, true " +
+                            item._1);
+                    Logger.log("count: " + Inventory.count(item._1) + " < " + Math.abs(item._2));
                     Checks[i] = true;
                     continue;
                 }
             }
             else if(Inventory.count(item._1) > item._2)
             {
-                Logger.log("ItemRequirement: isRequirementMet: more than requirement Inventory, true " + item._1);
-                Logger.log("count: " + Inventory.count(item._1) + " > " +  item._2);
+                Logger.log(
+                        "ItemRequirement: isRequirementMet: more than requirement Inventory, true " +
+                        item._1);
+                Logger.log("count: " + Inventory.count(item._1) + " > " + item._2);
                 Checks[i] = true;
                 continue;
             }

@@ -23,19 +23,19 @@ public final class GrandExchangeItemWrapper
         this.status = item.getStatus() == null ? Status.EMPTY : item.getStatus();
     }
 
+    public int getAmount()
+    {
+        return amount;
+    }
+
     public int getId()
     {
         return id;
     }
 
-    public int getSlot()
+    public String getName()
     {
-        return slot;
-    }
-
-    public int getAmount()
-    {
-        return amount;
+        return name;
     }
 
     public int getPrice()
@@ -43,14 +43,14 @@ public final class GrandExchangeItemWrapper
         return price;
     }
 
+    public int getSlot()
+    {
+        return slot;
+    }
+
     public Status getStatus()
     {
         return status;
-    }
-
-    public String getName()
-    {
-        return name;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package Scripts.Private;
 
 
-import Cycles.CycleGenerators.CycleLibrary;
 import Cycles.CycleGenerators.FishingCycleGenerator;
 import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.script.Category;

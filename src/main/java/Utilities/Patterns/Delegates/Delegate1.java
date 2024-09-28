@@ -2,14 +2,11 @@ package Utilities.Patterns.Delegates;
 
 import io.vavr.Function1;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.WeakHashMap;
 
 public class Delegate1<A>
 {
-    WeakHashMap<Object, Function1<A, Boolean>>          Subscribers = new WeakHashMap<>();
+    WeakHashMap<Object, Function1<A, Boolean>> Subscribers = new WeakHashMap<>();
 
     public void Fire(A var1)
     {

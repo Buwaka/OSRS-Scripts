@@ -73,9 +73,9 @@ public class CombatLootBankCycle extends SimpleCycle
         this.BankingLocation = BankLoc;
     }
 
-    public void SetPray(boolean Pray)
+    public void SetEXPType(ItemDB.StanceData.ExperienceType expType)
     {
-        PrayBones = Pray;
+        EXPType = expType;
     }
 
     public void SetEscapeLowHP(boolean Escape)
@@ -83,9 +83,9 @@ public class CombatLootBankCycle extends SimpleCycle
         EscapeLowHP = Escape;
     }
 
-    public void SetEXPType(ItemDB.StanceData.ExperienceType expType)
+    public void SetPray(boolean Pray)
     {
-        EXPType = expType;
+        PrayBones = Pray;
     }
 
     public void setIgnoreLoot(int... ignoreLoot)
@@ -133,7 +133,7 @@ public class CombatLootBankCycle extends SimpleCycle
         SALTask.setEscapeLowHP(EscapeLowHP);
 
 
-        var           equipment      = EquipmentManager.SetEXPFocus(EXPType);
+        var equipment = EquipmentManager.SetEXPFocus(EXPType);
         if(!equipment.isEquipped())
         {
             EquipmentTask EquipEquipment = new EquipmentTask("Set Equipment", equipment);

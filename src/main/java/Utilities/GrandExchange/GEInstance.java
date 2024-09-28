@@ -39,11 +39,6 @@ public class GEInstance implements Serializable
         init(owner);
     }
 
-    public boolean ReadyToCollect()
-    {
-        return GrandExchange.isReadyToCollect();
-    }
-
     public void init(tpircSScript owner)
     {
         OwnerScript = owner;
@@ -123,19 +118,6 @@ public class GEInstance implements Serializable
         SaveState();
     }
 
-    public GEOrder GetOrderWithID(int ID, GEOrder.OrderType OType, GEOrder.TransactionType TType)
-    {
-        for(var order : Orders)
-        {
-            if(order != null && order.GetID() == ID && order.GetOrderType() == OType &&
-               order.GetTransactionType() == TType)
-            {
-                return order;
-            }
-        }
-        return null;
-    }
-
     /**
      * @param order: based on the item ID of the order, an existing order will be cancelled
      *
@@ -168,6 +150,54 @@ public class GEInstance implements Serializable
             }
         }
         return null;
+    }
+
+    public void SaveState()
+    {
+        OwnerScript.GetConfig().SaveState(ConfigID, this);
+    }
+
+    public GEOrder GetOrderWithID(int ID, GEOrder.OrderType OType, GEOrder.TransactionType TType)
+    {
+        for(var order : Orders)
+        {
+            if(order != null && order.GetID() == ID && order.GetOrderType() == OType &&
+               order.GetTransactionType() == TType)
+            {
+                return order;
+            }
+        }
+        return null;
+    }
+
+    public Tuple2<Integer, Integer>[] GetAllOrderRequirements()
+    {
+        List<Tuple2<Integer, Integer>> out = new ArrayList<>();
+        for(var order : Orders)
+        {
+            if(order.GetTransactionType() == GEOrder.TransactionType.Sell)
+            {
+                int quantity = Math.min(order.GetQuantity(), Bank.count(order.GetID()));
+                Logger.log("GEInstance: GetAllOrderRequirements: ID (" + order.GetID() +
+                           ") BankCount(" + Bank.count(order.GetID()) + ") orderQuantity(" +
+                           order.GetQuantity() + ")");
+                out.add(new Tuple2<>(order.GetID(), quantity));
+            }
+        }
+
+        return out.toArray(new Tuple2[]{});
+    }
+
+    public boolean HasQueuedActions()
+    {
+        Logger.log("GEInstance: HasQueuedActions: " +
+                   (!Orders.isEmpty() || !OrdersToCancel.isEmpty()));
+        return !Orders.isEmpty() || !OrdersToCancel.isEmpty();
+    }
+
+    public boolean ReadyToCollect()
+    {
+        return GrandExchange.isReadyToCollect();
     }
 
     public int tick()
@@ -236,8 +266,8 @@ public class GEInstance implements Serializable
                 return GetGEWaitTime();
             }
 
-            BaseOrder base = new BaseOrder(order);
-            GESlot NewSlot = ProcessOrder(freeSlot, base);
+            BaseOrder base    = new BaseOrder(order);
+            GESlot    NewSlot = ProcessOrder(freeSlot, base);
 
             if(NewSlot != null)
             {
@@ -314,48 +344,6 @@ public class GEInstance implements Serializable
         return inventoryMoney + BankMoney;
     }
 
-    public static List<Item> GetAllItems()
-    {
-        var AllItems = Bank.all();
-        AllItems.addAll(Inventory.all());
-        AllItems.addAll(Equipment.all());
-        return AllItems;
-    }
-
-    public static List<Item> GetAllTradableItems()
-    {
-        var AllItems = Bank.all(Item::isTradable);
-        AllItems.addAll(Inventory.all(Item::isTradable));
-        AllItems.addAll(Equipment.all(Item::isTradable));
-        return AllItems;
-    }
-
-    public static int[] GetAllItemsID()
-    {
-        var AllItems = Bank.all();
-        AllItems.addAll(Inventory.all());
-        AllItems.addAll(Equipment.all());
-        return AllItems.stream().mapToInt(t -> t != null ? t.getID() : 0).toArray();
-    }
-
-    public Tuple2<Integer, Integer>[] GetAllOrderRequirements()
-    {
-        List<Tuple2<Integer, Integer>> out = new ArrayList<>();
-        for(var order : Orders)
-        {
-            if(order.GetTransactionType() == GEOrder.TransactionType.Sell)
-            {
-                int quantity = Math.min(order.GetQuantity(), Bank.count(order.GetID()));
-                Logger.log("GEInstance: GetAllOrderRequirements: ID (" + order.GetID() +
-                           ") BankCount(" + Bank.count(order.GetID()) + ") orderQuantity(" +
-                           order.GetQuantity() + ")");
-                out.add(new Tuple2<>(order.GetID(), quantity));
-            }
-        }
-
-        return out.toArray(new Tuple2[]{});
-    }
-
     /**
      * @param slot: slot to cancel
      *
@@ -401,21 +389,33 @@ public class GEInstance implements Serializable
         return false;
     }
 
-    public boolean HasQueuedActions()
-    {
-        Logger.log("GEInstance: HasQueuedActions: " +
-                   (!Orders.isEmpty() || !OrdersToCancel.isEmpty()));
-        return !Orders.isEmpty() || !OrdersToCancel.isEmpty();
-    }
-
     public int GetGEWaitTime()
     {
         return OSRSUtilities.rand.nextInt(40000);
     }
 
-    public void SaveState()
+    public static List<Item> GetAllItems()
     {
-        OwnerScript.GetConfig().SaveState(ConfigID, this);
+        var AllItems = Bank.all();
+        AllItems.addAll(Inventory.all());
+        AllItems.addAll(Equipment.all());
+        return AllItems;
+    }
+
+    public static int[] GetAllItemsID()
+    {
+        var AllItems = Bank.all();
+        AllItems.addAll(Inventory.all());
+        AllItems.addAll(Equipment.all());
+        return AllItems.stream().mapToInt(t -> t != null ? t.getID() : 0).toArray();
+    }
+
+    public static List<Item> GetAllTradableItems()
+    {
+        var AllItems = Bank.all(Item::isTradable);
+        AllItems.addAll(Inventory.all(Item::isTradable));
+        AllItems.addAll(Equipment.all(Item::isTradable));
+        return AllItems;
     }
 
 }
