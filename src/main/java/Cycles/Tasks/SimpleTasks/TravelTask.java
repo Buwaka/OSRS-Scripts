@@ -2,9 +2,9 @@ package Cycles.Tasks.SimpleTasks;
 
 import Utilities.OSRSUtilities;
 import Utilities.Patterns.Delegates.Delegate;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.Obstacles;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.input.mouse.MouseSettings;
 import org.dreambot.api.methods.interactive.Players;
@@ -48,7 +48,7 @@ public class TravelTask extends SimpleTask
     }
 
     @Override
-    public boolean onStartTask(tpircSScript Script)
+    public boolean onStartTask(IFScript Script)
     {
         super.onStartTask(Script);
         MouseSettings                Setting   = Mouse.getMouseSettings();
@@ -58,53 +58,53 @@ public class TravelTask extends SimpleTask
         Logger.log("TravelTask: onStartTask: Current Tile: " + Players.getLocal().getTile() +
                    ", Destination: " + Destination);
 
-        switch(Intensity)
-        {
-            case Lax ->
-            {
-                Setting.setClick(true);
-                Setting.setOvershoot(true);
-                Setting.setPreferredHand(MouseSettings.Hand.LEFT);
-                Script.SetRandomizerParameters(5, 1.0f, 15);
-            }
-            case Normal ->
-            {
-                Setting.setClick(true);
-                Setting.setOvershoot(true);
-                Setting.setPreferredHand(MouseSettings.Hand.RIGHT);
-                Script.SetRandomizerParameters(15, 1.0f, 20);
-            }
-            case Sweating ->
-            {
-                Setting.setClick(false);
-                Setting.setOvershoot(false);
-                Setting.setWalking(false);
-                Setting.setPreferredHand(MouseSettings.Hand.RIGHT);
-                Setting.setUseMiddleMouseInInteracts(true);
-                Script.SetRandomizerParameters(40, 1.0f, 20);
-            }
-            case Bot ->
-            {
-                Setting.setClick(false);
-                Setting.setOvershoot(false);
-                Setting.setWalking(false);
-                Setting.setPreferredHand(MouseSettings.Hand.RIGHT);
-                Script.SetRandomizerParameters(80, 1.0f, 20);
-            }
-        }
+        //        switch(Intensity)
+        //        {
+        //            case Lax ->
+        //            {
+        //                Setting.setClick(true);
+        //                Setting.setOvershoot(true);
+        //                Setting.setPreferredHand(MouseSettings.Hand.LEFT);
+        //                Script.SetRandomizerParameters(5, 1.0f, 15);
+        //            }
+        //            case Normal ->
+        //            {
+        //                Setting.setClick(true);
+        //                Setting.setOvershoot(true);
+        //                Setting.setPreferredHand(MouseSettings.Hand.RIGHT);
+        //                Script.SetRandomizerParameters(15, 1.0f, 20);
+        //            }
+        //            case Sweating ->
+        //            {
+        //                Setting.setClick(false);
+        //                Setting.setOvershoot(false);
+        //                Setting.setWalking(false);
+        //                Setting.setPreferredHand(MouseSettings.Hand.RIGHT);
+        //                Setting.setUseMiddleMouseInInteracts(true);
+        //                Script.SetRandomizerParameters(40, 1.0f, 20);
+        //            }
+        //            case Bot ->
+        //            {
+        //                Setting.setClick(false);
+        //                Setting.setOvershoot(false);
+        //                Setting.setWalking(false);
+        //                Setting.setPreferredHand(MouseSettings.Hand.RIGHT);
+        //                Script.SetRandomizerParameters(80, 1.0f, 20);
+        //            }
+        //        }
 
         return true;
     }
 
     @Override
-    public boolean onStopTask(tpircSScript Script)
+    public boolean onStopTask(IFScript Script)
     {
         //Script.ResetRandomizer();
         return true;
     }
 
     @Override
-    public void onReplaced(tpircSScript Script, SimpleTask other)
+    public void onReplaced(IFScript Script, SimpleTask other)
     {
         super.onReplaced(Script, other);
         Script.StopTaskNow(this);

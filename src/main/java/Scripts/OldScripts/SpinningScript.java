@@ -1,6 +1,6 @@
 package Scripts.OldScripts;
 
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.input.Keyboard;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.input.event.impl.keyboard.awt.Key;
@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.Random;
 
 @ScriptManifest(name = "SoloScripts.SpinningScript", description = "Lumbridge Spinning script", author = "Semanresu", version = 1.0, category = Category.CRAFTING, image = "")
-public class SpinningScript extends tpircSScript
+public class SpinningScript extends IFScript
 {
 
     // consts

@@ -3,7 +3,7 @@ package Scripts.Private;
 import Cycles.General.CombatLootBankCycle;
 import OSRSDatabase.ItemDB;
 import OSRSDatabase.MonsterDB;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.methods.combat.Combat;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.skills.Skill;
@@ -12,7 +12,7 @@ import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
 
 @ScriptManifest(name = "SoloScripts.CombatTrainingScript", description = "Kill stuff", author = "Semanresu", version = 1.0, category = Category.COMBAT, image = "")
-public class CombatTrainingScript extends tpircSScript
+public class CombatTrainingScript extends IFScript
 {
 
 

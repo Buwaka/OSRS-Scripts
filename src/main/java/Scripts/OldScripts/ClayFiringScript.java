@@ -1,7 +1,7 @@
 package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.Client;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
@@ -20,7 +20,7 @@ import org.dreambot.api.wrappers.interactive.GameObject;
 import java.awt.*;
 
 @ScriptManifest(name = "ClayFiringScript", description = "Pottery Crafting Script, Varrock west bank to barbarian klin", author = "Semanresu", version = 1.0, category = Category.CRAFTING, image = "")
-public class ClayFiringScript extends tpircSScript
+public class ClayFiringScript extends IFScript
 {
 
     final Tile PottersLocation      = new Tile(3086, 3410);

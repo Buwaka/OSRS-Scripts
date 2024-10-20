@@ -2,8 +2,8 @@ package Cycles.Specifics;
 
 import Cycles.Tasks.SimpleTasks.Bank.BankItemsTask;
 import OSRSDatabase.ItemDB;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.utilities.Sleep;
@@ -46,7 +46,7 @@ public class BlastFurnaceCycle extends SimpleCycle
      * @return true when Cycle is completed, ready for a restart
      */
     @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public boolean isCycleComplete(IFScript Script)
     {
         return super.isCycleComplete(Script);
     }
@@ -57,7 +57,7 @@ public class BlastFurnaceCycle extends SimpleCycle
      * @return true when Cycle is completely done and should/will be terminated, typically the same as isCycleComplete
      */
     @Override
-    public boolean isCycleFinished(tpircSScript Script)
+    public boolean isCycleFinished(IFScript Script)
     {
         return super.isCycleFinished(Script);
     }
@@ -68,7 +68,7 @@ public class BlastFurnaceCycle extends SimpleCycle
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         BankItemsTask PreRequisites = new BankItemsTask("Pres");
         PreRequisites.AddDepositAll();
@@ -83,7 +83,7 @@ public class BlastFurnaceCycle extends SimpleCycle
         return super.onStart(Script);
     }
 
-    private Boolean onInventory(tpircSScript.ItemAction action, Item item, Item item1)
+    private Boolean onInventory(IFScript.ItemAction action, Item item, Item item1)
     {
         return false;
     }
@@ -94,7 +94,7 @@ public class BlastFurnaceCycle extends SimpleCycle
      * @return
      */
     @Override
-    public int onLoop(tpircSScript Script)
+    public int onLoop(IFScript Script)
     {
 
         switch(CurrentState)

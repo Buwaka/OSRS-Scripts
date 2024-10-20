@@ -40,7 +40,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
     private transient boolean                      Started               = false;
     private           EnumSet<ECycleTags>          Tags                  = EnumSet.noneOf(ECycleTags.class);
 
-    private transient WeakReference<tpircSScript> ParentScript = null;
+    private transient WeakReference<IFScript> ParentScript = null;
 
     private SimpleCycle()
     {
@@ -115,7 +115,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
         Tags.addAll(tags);
     }
 
-    public final boolean End(tpircSScript Script)
+    public final boolean End(IFScript Script)
     {
         onCycleEnd.Fire();
         return onEnd(Script);
@@ -124,7 +124,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
     /**
      * No excuses, the cycle ends now, doesn't trigger any delegate, be sure to call End first in case you want it to fire
      */
-    public final void EndNow(tpircSScript Script)
+    public final void EndNow(IFScript Script)
     {
         onEndNow(Script);
     }
@@ -141,7 +141,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
         Tags.removeAll(tags);
     }
 
-    public final void Reset(tpircSScript Script)
+    public final void Reset(IFScript Script)
     {
         if(GetCycleType() == CycleType.byCount)
         {
@@ -152,7 +152,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
         onReset(Script);
     }
 
-    public final boolean Restart(tpircSScript Script)
+    public final boolean Restart(IFScript Script)
     {
         StartUpTasksCreated = false;
         EndTasksCreated     = false;
@@ -276,7 +276,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
         return false;
     }
 
-    public tpircSScript GetScript()
+    public IFScript GetScript()
     {
         return ParentScript.get();
     }
@@ -318,7 +318,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
         return out.toArray(new SimpleTask[0]);
     }
 
-    protected final int Loop(tpircSScript Script)
+    protected final int Loop(IFScript Script)
     {
         int result = onLoop(Script);
         return result;
@@ -349,13 +349,13 @@ public abstract class SimpleCycle implements ICycle, Serializable
         CycleCount = 0;
     }
 
-    protected final boolean Start(tpircSScript Script)
+    protected final boolean Start(IFScript Script)
     {
         Started = true;
         return onStart(Script);
     }
 
-    protected final void init(tpircSScript Script)
+    protected final void init(IFScript Script)
     {
         ParentScript = new WeakReference<>(Script);
     }
@@ -391,7 +391,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
      * @return true when Cycle is completed, ready for a restart
      */
     @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public boolean isCycleComplete(IFScript Script)
     {
         return !Script.IsActiveTaskLeft();
     }
@@ -402,7 +402,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
      * @return true when Cycle is completely done and should/will be terminated, typically the same as isCycleComplete
      */
     @Override
-    public boolean isCycleFinished(tpircSScript Script)
+    public boolean isCycleFinished(IFScript Script)
     {
         return isCycleComplete(Script);
     }
@@ -419,7 +419,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         return true;
     }

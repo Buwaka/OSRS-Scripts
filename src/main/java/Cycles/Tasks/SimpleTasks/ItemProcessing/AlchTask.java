@@ -1,7 +1,7 @@
 package Cycles.Tasks.SimpleTasks.ItemProcessing;
 
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.magic.Magic;
 import org.dreambot.api.methods.magic.Normal;
@@ -46,7 +46,7 @@ public class AlchTask extends SimpleTask
      * @return return true if successful, false if we need more time, keep triggering start until it is ready
      */
     @Override
-    public boolean onStartTask(tpircSScript Script)
+    public boolean onStartTask(IFScript Script)
     {
         AlchItem = Inventory.get(AlchItemID);
         Script.onInventory.Subscribe(this, (a, b, c) -> Ready = true);

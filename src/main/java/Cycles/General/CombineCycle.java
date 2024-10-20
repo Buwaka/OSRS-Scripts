@@ -4,8 +4,8 @@ import Cycles.Tasks.SimpleTasks.Bank.BankItemsTask;
 import Cycles.Tasks.SimpleTasks.ItemProcessing.CombineTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
@@ -95,7 +95,7 @@ public class CombineCycle extends SimpleCycle implements Serializable
      * @return Cycle completed, ready for a restart
      */
     @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public boolean isCycleComplete(IFScript Script)
     {
         boolean result =
                 Inventory.count(source) < sourceRatio || Inventory.count(target) < targetRatio;
@@ -107,7 +107,7 @@ public class CombineCycle extends SimpleCycle implements Serializable
      * @return
      */
     @Override
-    public boolean isCycleFinished(tpircSScript Script)
+    public boolean isCycleFinished(IFScript Script)
     {
         boolean result =
                 (Inventory.count(source) < sourceRatio || Inventory.count(target) < targetRatio) &&
@@ -117,13 +117,13 @@ public class CombineCycle extends SimpleCycle implements Serializable
     }
 
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         StartCycle(Script);
         return super.onStart(Script);
     }
 
-    private void StartCycle(tpircSScript script)
+    private void StartCycle(IFScript script)
     {
         if(!OSRSUtilities.CanReachBank())
         {
@@ -152,14 +152,14 @@ public class CombineCycle extends SimpleCycle implements Serializable
     }
 
     @Override
-    public void onReset(tpircSScript Script)
+    public void onReset(IFScript Script)
     {
         bankItemsTask = null;
         combineTask   = null;
     }
 
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onRestart(IFScript Script)
     {
         StartCycle(Script);
         return true;

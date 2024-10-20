@@ -5,15 +5,30 @@
 package JFrames;
 
 /**
- *
  * @author SammyLaptop
  */
-public class MouseParameterTester extends javax.swing.JFrame {
+public class MouseParameterTester extends javax.swing.JFrame
+{
 
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    public  javax.swing.JSpinner DampenThreshold;
+    public  javax.swing.JSpinner GravityValue;
+    public  javax.swing.JSpinner MaxWait;
+    public  javax.swing.JSpinner MinWait;
+    public  javax.swing.JSpinner StepSizeValue;
+    public  javax.swing.JButton  TestBtn;
+    public  javax.swing.JSpinner Wind;
+    private java.awt.Label       label1;
+    private java.awt.Label       label2;
+    private java.awt.Label       label3;
+    private java.awt.Label       label5;
+    private java.awt.Label       label6;
+    private java.awt.Label       label7;
     /**
      * Creates new form MouseParameterTester
      */
-    public MouseParameterTester() {
+    public MouseParameterTester()
+    {
         initComponents();
     }
 
@@ -24,21 +39,22 @@ public class MouseParameterTester extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
-        label1 = new java.awt.Label();
-        label2 = new java.awt.Label();
-        label3 = new java.awt.Label();
-        label5 = new java.awt.Label();
-        label6 = new java.awt.Label();
-        label7 = new java.awt.Label();
-        MinWait = new javax.swing.JSpinner();
-        StepSizeValue = new javax.swing.JSpinner();
-        GravityValue = new javax.swing.JSpinner();
-        Wind = new javax.swing.JSpinner();
+        label1          = new java.awt.Label();
+        label2          = new java.awt.Label();
+        label3          = new java.awt.Label();
+        label5          = new java.awt.Label();
+        label6          = new java.awt.Label();
+        label7          = new java.awt.Label();
+        MinWait         = new javax.swing.JSpinner();
+        StepSizeValue   = new javax.swing.JSpinner();
+        GravityValue    = new javax.swing.JSpinner();
+        Wind            = new javax.swing.JSpinner();
         DampenThreshold = new javax.swing.JSpinner();
-        MaxWait = new javax.swing.JSpinner();
-        TestBtn = new javax.swing.JButton();
+        MaxWait         = new javax.swing.JSpinner();
+        TestBtn         = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,82 +84,198 @@ public class MouseParameterTester extends javax.swing.JFrame {
 
         TestBtn.setActionCommand("Test");
         TestBtn.setLabel("Test");
-        TestBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        TestBtn.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 TestBtnActionPerformed(evt);
             }
         });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(MinWait, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
-                    .addComponent(StepSizeValue)
-                    .addComponent(GravityValue))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(62, 62, 62)
-                        .addComponent(label7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(TestBtn)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(label5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(label6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(Wind, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
-                    .addComponent(DampenThreshold)
-                    .addComponent(MaxWait))
-                .addContainerGap(48, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(78, 78, 78)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(Wind, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGap(49, 49, 49)
-                                    .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(GravityValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(47, 47, 47)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(label6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(StepSizeValue, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(38, 38, 38)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(label7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(MinWait, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(MaxWait, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(2, 2, 2))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(149, 149, 149)
-                        .addComponent(DampenThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(53, 53, 53)
-                .addComponent(TestBtn)
-                .addContainerGap(62, Short.MAX_VALUE))
-        );
+        layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                        .addGap(34, 34, 34)
+                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                        .addComponent(label3,
+                                                                                      javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                      javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                      javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(label2,
+                                                                                      javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                      javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                      javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(label1,
+                                                                                      javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                      javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                      javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                             false)
+                                                                        .addComponent(MinWait,
+                                                                                      javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                      99,
+                                                                                      Short.MAX_VALUE)
+                                                                        .addComponent(StepSizeValue)
+                                                                        .addComponent(GravityValue))
+                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                  layout.createSequentialGroup()
+                                                                                        .addGap(62,
+                                                                                                62,
+                                                                                                62)
+                                                                                        .addComponent(
+                                                                                                label7,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                        .addGroup(layout.createSequentialGroup()
+                                                                                        .addPreferredGap(
+                                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                        .addGroup(
+                                                                                                layout.createParallelGroup(
+                                                                                                              javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                      .addComponent(
+                                                                                                              TestBtn)
+                                                                                                      .addGroup(
+                                                                                                              layout.createParallelGroup(
+                                                                                                                            javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                    .addComponent(
+                                                                                                                            label5,
+                                                                                                                            javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                                            javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                            javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                            javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                    .addComponent(
+                                                                                                                            label6,
+                                                                                                                            javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                                            javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                            javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                            javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,
+                                                                                             false)
+                                                                        .addComponent(Wind,
+                                                                                      javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                      113,
+                                                                                      Short.MAX_VALUE)
+                                                                        .addComponent(
+                                                                                DampenThreshold)
+                                                                        .addComponent(MaxWait))
+                                                        .addContainerGap(48, Short.MAX_VALUE)));
+        layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                      .addGroup(layout.createSequentialGroup()
+                                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                      .addGroup(layout.createSequentialGroup()
+                                                                                      .addGap(78,
+                                                                                              78,
+                                                                                              78)
+                                                                                      .addGroup(
+                                                                                              layout.createParallelGroup(
+                                                                                                            javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                                                    .addGroup(
+                                                                                                            layout.createParallelGroup(
+                                                                                                                          javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                  .addComponent(
+                                                                                                                          Wind,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                          javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                  .addGroup(
+                                                                                                                          layout.createSequentialGroup()
+                                                                                                                                .addGroup(
+                                                                                                                                        layout.createParallelGroup(
+                                                                                                                                                      javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                                                                                              .addComponent(
+                                                                                                                                                      label1,
+                                                                                                                                                      javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                      javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                      javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                                              .addComponent(
+                                                                                                                                                      label5,
+                                                                                                                                                      javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                      javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                      javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                                                                .addGap(49,
+                                                                                                                                        49,
+                                                                                                                                        49)
+                                                                                                                                .addComponent(
+                                                                                                                                        label2,
+                                                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                                                                    .addGroup(
+                                                                                                            layout.createSequentialGroup()
+                                                                                                                  .addComponent(
+                                                                                                                          GravityValue,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                          javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                  .addGap(47,
+                                                                                                                          47,
+                                                                                                                          47)
+                                                                                                                  .addGroup(
+                                                                                                                          layout.createParallelGroup(
+                                                                                                                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                                .addComponent(
+                                                                                                                                        label6,
+                                                                                                                                        javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                                .addComponent(
+                                                                                                                                        StepSizeValue,
+                                                                                                                                        javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                                                                      .addGap(38,
+                                                                                              38,
+                                                                                              38)
+                                                                                      .addGroup(
+                                                                                              layout.createParallelGroup(
+                                                                                                            javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                                                    .addGroup(
+                                                                                                            layout.createParallelGroup(
+                                                                                                                          javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                  .addComponent(
+                                                                                                                          label3,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                          javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                  .addComponent(
+                                                                                                                          label7,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                          javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                  .addComponent(
+                                                                                                                          MinWait,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                          javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                                    .addGroup(
+                                                                                                            layout.createSequentialGroup()
+                                                                                                                  .addComponent(
+                                                                                                                          MaxWait,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                          javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                          javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                  .addGap(2,
+                                                                                                                          2,
+                                                                                                                          2))))
+                                                                      .addGroup(layout.createSequentialGroup()
+                                                                                      .addGap(149,
+                                                                                              149,
+                                                                                              149)
+                                                                                      .addComponent(
+                                                                                              DampenThreshold,
+                                                                                              javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                              javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                              javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                      .addGap(53, 53, 53)
+                                                      .addComponent(TestBtn)
+                                                      .addContainerGap(62, Short.MAX_VALUE)));
 
         label7.getAccessibleContext().setAccessibleName("MaxWait");
         MinWait.getAccessibleContext().setAccessibleName("MinWaitValue");
@@ -156,58 +288,58 @@ public class MouseParameterTester extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void TestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestBtnActionPerformed
+    private void TestBtnActionPerformed(java.awt.event.ActionEvent evt)
+    {//GEN-FIRST:event_TestBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TestBtnActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[])
+    {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+        try
+        {
+            for(javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
+            {
+                if("Nimbus".equals(info.getName()))
+                {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MouseParameterTester.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MouseParameterTester.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MouseParameterTester.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MouseParameterTester.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch(ClassNotFoundException ex)
+        {
+            java.util.logging.Logger.getLogger(MouseParameterTester.class.getName())
+                                    .log(java.util.logging.Level.SEVERE, null, ex);
+        } catch(InstantiationException ex)
+        {
+            java.util.logging.Logger.getLogger(MouseParameterTester.class.getName())
+                                    .log(java.util.logging.Level.SEVERE, null, ex);
+        } catch(IllegalAccessException ex)
+        {
+            java.util.logging.Logger.getLogger(MouseParameterTester.class.getName())
+                                    .log(java.util.logging.Level.SEVERE, null, ex);
+        } catch(javax.swing.UnsupportedLookAndFeelException ex)
+        {
+            java.util.logging.Logger.getLogger(MouseParameterTester.class.getName())
+                                    .log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+        java.awt.EventQueue.invokeLater(new Runnable()
+        {
+            public void run()
+            {
                 new MouseParameterTester().setVisible(true);
             }
         });
     }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JSpinner DampenThreshold;
-    public javax.swing.JSpinner GravityValue;
-    public javax.swing.JSpinner MaxWait;
-    public javax.swing.JSpinner MinWait;
-    public javax.swing.JSpinner StepSizeValue;
-    public javax.swing.JButton TestBtn;
-    public javax.swing.JSpinner Wind;
-    private java.awt.Label label1;
-    private java.awt.Label label2;
-    private java.awt.Label label3;
-    private java.awt.Label label5;
-    private java.awt.Label label6;
-    private java.awt.Label label7;
     // End of variables declaration//GEN-END:variables
 }

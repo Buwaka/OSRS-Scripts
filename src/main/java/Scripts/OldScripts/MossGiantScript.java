@@ -4,7 +4,7 @@ import Cycles.General.CombatLootBankCycle;
 import OSRSDatabase.MonsterDB;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.ICycle;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.script.Category;
@@ -14,7 +14,7 @@ import java.util.AbstractMap;
 import java.util.List;
 
 @ScriptManifest(name = "SoloScripts.MossGiantScript", description = "go kill moss giants", author = "Semanresu", version = 1.0, category = Category.COMBAT, image = "")
-public class MossGiantScript extends tpircSScript
+public class MossGiantScript extends IFScript
 {
     List<AbstractMap.SimpleEntry<Integer, Integer>> ItemRequirements = OSRSUtilities.CreateItemRequirements(
             556,

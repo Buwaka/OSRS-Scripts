@@ -90,7 +90,8 @@ public class EquipmentManager
                 {
                     if(stance.experience == focus)
                     {
-                        int CurrentStat = CurrentChoice != null ? CurrentChoice._1 : 0;
+                        int                       CurrentStat  =
+                                CurrentChoice != null ? CurrentChoice._1 : 0;
                         int                       NewStat      = 0;
                         EquipmentHelper.StatFocus CurrentFocus = EquipmentHelper.StatFocus.StabAtt;
                         switch(stance.attack_type)

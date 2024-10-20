@@ -2,8 +2,8 @@ package Cycles.Tasks.SimpleTasks.Combat;
 
 import OSRSDatabase.MonsterDB;
 import Utilities.Patterns.Delegates.Delegate2;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
@@ -49,6 +49,12 @@ public class SlaughterTask extends SimpleTask
         return null;
     }
 
+    @Override
+    public boolean Ready()
+    {
+        return !GetTargetList().isEmpty();
+    }
+
     PriorityQueue<NPC> GetTargetList()
     {
         // create a list of all viable targets, ordered by their distance
@@ -86,11 +92,43 @@ public class SlaughterTask extends SimpleTask
         return list;
     }
 
+    @Override
+    public int Loop()
+    {
+        NPC Target = GetCurrentTarget();
+        if(Target == null)
+        {
+            Target            = GetTargetList().peek();
+            CurrentTargetHash = Target.hashCode();
+        }
+
+        if(!Players.getLocal().isInteracting(Target))
+        {
+            Target.interact();
+        }
+
+        return super.Loop();
+    }
+
     NPC GetCurrentTarget()
     {
         return CurrentTargetHash == null
                 ? null
                 : NPCs.closest(t -> t.hashCode() == CurrentTargetHash);
+    }
+
+    @Nonnull
+    @Override
+    public TaskType GetTaskType()
+    {
+        return TaskType.Slaughter;
+    }
+
+    @Override
+    public boolean onStartTask(IFScript Script)
+    {
+        GetScript().onHitSplat.Subscribe(this, this::HitSplatChecker);
+        return super.onStartTask(Script);
     }
 
     private Boolean HitSplatChecker(Entity entity, int type, int damage, int id, int special, int gameCycle)
@@ -113,45 +151,7 @@ public class SlaughterTask extends SimpleTask
     }
 
     @Override
-    public boolean Ready()
-    {
-        return !GetTargetList().isEmpty();
-    }
-
-    @Override
-    public int Loop()
-    {
-        NPC Target = GetCurrentTarget();
-        if(Target == null)
-        {
-            Target            = GetTargetList().peek();
-            CurrentTargetHash = Target.hashCode();
-        }
-
-        if(!Players.getLocal().isInteracting(Target))
-        {
-            Target.interact();
-        }
-
-        return super.Loop();
-    }
-
-    @Nonnull
-    @Override
-    public TaskType GetTaskType()
-    {
-        return TaskType.Slaughter;
-    }
-
-    @Override
-    public boolean onStartTask(tpircSScript Script)
-    {
-        GetScript().onHitSplat.Subscribe(this, this::HitSplatChecker);
-        return super.onStartTask(Script);
-    }
-
-    @Override
-    public boolean onStopTask(tpircSScript Script)
+    public boolean onStopTask(IFScript Script)
     {
         return super.onStopTask(Script);
     }

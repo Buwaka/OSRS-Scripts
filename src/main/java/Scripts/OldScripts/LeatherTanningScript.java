@@ -1,7 +1,7 @@
 package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -18,7 +18,7 @@ import org.dreambot.api.wrappers.widgets.Menu;
 import java.awt.*;
 
 @ScriptManifest(name = "SoloScripts.LeatherTanningScript", description = "Clay to soft clay using water vials, needs to be close to a bank", author = "Varrock", version = 1.0, category = Category.CRAFTING, image = "")
-public class LeatherTanningScript extends tpircSScript
+public class LeatherTanningScript extends IFScript
 {
 
     final int    CoinID          = 995;

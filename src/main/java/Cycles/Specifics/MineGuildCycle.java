@@ -1,8 +1,8 @@
 package Cycles.Specifics;
 
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.dialogues.Dialogues;
@@ -62,7 +62,7 @@ public class MineGuildCycle extends SimpleCycle
      * @return Cycle completed, ready for a restart
      */
     @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public boolean isCycleComplete(IFScript Script)
     {
         return Complete;
     }
@@ -73,14 +73,14 @@ public class MineGuildCycle extends SimpleCycle
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         Init(Script);
 
         return super.onStart(Script);
     }
 
-    private void Init(tpircSScript Script)
+    private void Init(IFScript Script)
     {
         Logger.log("MineGuildCycle: Init: ");
         //TODO make sure we have a pickaxe
@@ -114,7 +114,7 @@ public class MineGuildCycle extends SimpleCycle
         return scan.nextInt();
     }
 
-    private void DropInventoryAtBank(tpircSScript Script)
+    private void DropInventoryAtBank(IFScript Script)
     {
         while(!Bank.isOpen())
         {
@@ -158,7 +158,7 @@ public class MineGuildCycle extends SimpleCycle
      * @return
      */
     @Override
-    public int onLoop(tpircSScript Script)
+    public int onLoop(IFScript Script)
     {
         Logger.log("MineGuildCycle: onLoop: State: " + CurrentState.name());
         switch(CurrentState)
@@ -396,7 +396,7 @@ public class MineGuildCycle extends SimpleCycle
      * @param Script
      */
     @Override
-    public void onReset(tpircSScript Script)
+    public void onReset(IFScript Script)
     {
         Init(Script);
         super.onReset(Script);
@@ -408,7 +408,7 @@ public class MineGuildCycle extends SimpleCycle
      * @param Script
      */
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onRestart(IFScript Script)
     {
         Init(Script);
         return super.onRestart(Script);

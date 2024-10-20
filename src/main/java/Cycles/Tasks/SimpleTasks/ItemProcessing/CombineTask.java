@@ -1,8 +1,8 @@
 package Cycles.Tasks.SimpleTasks.ItemProcessing;
 
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.utilities.Logger;
@@ -151,14 +151,14 @@ public class CombineTask extends SimpleTask
     }
 
     @Override
-    public boolean onStartTask(tpircSScript Script)
+    public boolean onStartTask(IFScript Script)
     {
         lastInventoryChange.set(System.nanoTime());
         Script.onInventory.Subscribe(this, this::ResetInventoryTimer);
         return true;
     }
 
-    private Boolean ResetInventoryTimer(tpircSScript.ItemAction action, Item item, Item item1)
+    private Boolean ResetInventoryTimer(IFScript.ItemAction action, Item item, Item item1)
     {
         Logger.log("ResetInventoryTimer");
         lastInventoryChange.set(System.nanoTime());

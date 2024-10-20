@@ -1,8 +1,8 @@
 package Cycles.Tasks.SimpleTasks.ItemProcessing;
 
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.interactive.GameObjects;
@@ -85,6 +85,42 @@ public class InteractTask extends SimpleTask
         return GetTargetStatic(EnumSet.allOf(InteractableFilter.class), Action, null);
     }
 
+    public static Entity GetTargetStatic(EnumSet<InteractableFilter> TargetFilter, String Action, Integer... IDs)
+    {
+        List<Entity> toFilter = new ArrayList<>();
+
+        if(TargetFilter.contains(InteractableFilter.GameObjects))
+        {
+            toFilter.addAll(GameObjects.all());
+        }
+        if(TargetFilter.contains(InteractableFilter.NPCs))
+        {
+            toFilter.addAll(NPCs.all());
+        }
+        if(TargetFilter.contains(InteractableFilter.GroundItems))
+        {
+            toFilter.addAll(GroundItems.all());
+        }
+        if(TargetFilter.contains(InteractableFilter.Players))
+        {
+            toFilter.addAll(Players.all());
+        }
+
+
+        Logger.log(toFilter);
+        var first = toFilter.stream()
+                            .filter(t -> (IDs == null ||
+                                          Arrays.stream(IDs).anyMatch((x) -> x == t.getID())) &&
+                                         (Action == null || t.hasAction(Action)) && t.canReach() &&
+                                         t.distance() < 10)
+                            .sorted((x, y) -> (int) (
+                                    x.walkingDistance(Players.getLocal().getTile()) -
+                                    y.walkingDistance(Players.getLocal().getTile())))
+                            .findFirst();
+        Logger.log(first);
+        return first.orElse(null);
+    }
+
     public static Entity GetTargetStatic(Integer... IDs)
     {
         return GetTargetStatic(EnumSet.allOf(InteractableFilter.class), null, IDs);
@@ -103,13 +139,13 @@ public class InteractTask extends SimpleTask
      * @return return true if successful, false if we need more time, keep triggering start until it is ready
      */
     @Override
-    public boolean onStartTask(tpircSScript Script)
+    public boolean onStartTask(IFScript Script)
     {
         Script.onInventory.Subscribe(this, this::onItem);
         return super.onStartTask(Script);
     }
 
-    private Boolean onItem(tpircSScript.ItemAction action, Item item, Item item1)
+    private Boolean onItem(IFScript.ItemAction action, Item item, Item item1)
     {
         InventorySemaphore.release();
         Logger.log("InteractTask: onItem: released permit");
@@ -188,41 +224,5 @@ public class InteractTask extends SimpleTask
 
         Target = GetTargetStatic(TargetFilter, Action, ObjectIDs);
         return Target;
-    }
-
-    public static Entity GetTargetStatic(EnumSet<InteractableFilter> TargetFilter, String Action, Integer... IDs)
-    {
-        List<Entity> toFilter = new ArrayList<>();
-
-        if(TargetFilter.contains(InteractableFilter.GameObjects))
-        {
-            toFilter.addAll(GameObjects.all());
-        }
-        if(TargetFilter.contains(InteractableFilter.NPCs))
-        {
-            toFilter.addAll(NPCs.all());
-        }
-        if(TargetFilter.contains(InteractableFilter.GroundItems))
-        {
-            toFilter.addAll(GroundItems.all());
-        }
-        if(TargetFilter.contains(InteractableFilter.Players))
-        {
-            toFilter.addAll(Players.all());
-        }
-
-
-        Logger.log(toFilter);
-        var first = toFilter.stream()
-                            .filter(t -> (IDs == null ||
-                                          Arrays.stream(IDs).anyMatch((x) -> x == t.getID())) &&
-                                         (Action == null || t.hasAction(Action)) && t.canReach() &&
-                                         t.distance() < 10)
-                            .sorted((x, y) -> (int) (
-                                    x.walkingDistance(Players.getLocal().getTile()) -
-                                    y.walkingDistance(Players.getLocal().getTile())))
-                            .findFirst();
-        Logger.log(first);
-        return first.orElse(null);
     }
 }

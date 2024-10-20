@@ -5,8 +5,8 @@ import Cycles.Tasks.SimpleTasks.Bank.BankItemsTask;
 import Cycles.Tasks.SimpleTasks.ItemProcessing.UseObjectTask;
 import Cycles.Tasks.SimpleTasks.Misc.EquipmentTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -54,7 +54,7 @@ public class SmeltCycle extends SimpleCycle implements Serializable
     }
 
     @Override
-    public boolean isCycleFinished(tpircSScript Script)
+    public boolean isCycleFinished(IFScript Script)
     {
         boolean itemRequirement = true;
         for(var item : ItemIDRatio)
@@ -81,7 +81,7 @@ public class SmeltCycle extends SimpleCycle implements Serializable
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         if(NeedForgingRing != null && NeedForgingRing.booleanValue() && !HasRingOfForging())
         {
@@ -117,7 +117,7 @@ public class SmeltCycle extends SimpleCycle implements Serializable
         return super.onStart(Script);
     }
 
-    private void StartCycle(tpircSScript Script)
+    private void StartCycle(IFScript Script)
     {
         if(Arrays.stream(ItemIDRatio)
                  .anyMatch(t -> Bank.count(t._1) < t._2 && Inventory.count(t._1) < t._2))
@@ -173,7 +173,7 @@ public class SmeltCycle extends SimpleCycle implements Serializable
      * @return if cycle has successfully ended
      */
     @Override
-    public boolean onEnd(tpircSScript Script)
+    public boolean onEnd(IFScript Script)
     {
         if(Sleep.sleepUntil(() -> Bank.open(), 60000))
         {
@@ -183,7 +183,7 @@ public class SmeltCycle extends SimpleCycle implements Serializable
     }
 
     @Override
-    public void onReset(tpircSScript Script)
+    public void onReset(IFScript Script)
     {
         BackupTravel = null;
         SmeltTask    = null;
@@ -195,7 +195,7 @@ public class SmeltCycle extends SimpleCycle implements Serializable
      * @return
      */
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onRestart(IFScript Script)
     {
         StartCycle(Script);
         return true;

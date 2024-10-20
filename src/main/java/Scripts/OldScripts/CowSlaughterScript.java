@@ -1,7 +1,7 @@
 package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
@@ -21,7 +21,7 @@ import java.util.List;
 
 
 @ScriptManifest(name = "SoloScripts.CowSlaughterScript", description = "Collect Cow remains and slaughter them if necessary", author = "Semanresu", version = 1.0, category = Category.COMBAT, image = "")
-public class CowSlaughterScript extends tpircSScript
+public class CowSlaughterScript extends IFScript
 {
 
     final Boolean FocusCombatEXP     = true;

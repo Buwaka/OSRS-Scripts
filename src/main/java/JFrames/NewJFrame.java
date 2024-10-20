@@ -58,6 +58,7 @@ public class NewJFrame extends javax.swing.JFrame implements OSRSForm
     private javax.swing.JScrollPane       jScrollPane3;
     private javax.swing.JSplitPane        jSplitPane2;
     private javax.swing.JTabbedPane       jTabbedPane1;
+
     /**
      * Creates new form NewJFrame
      */
@@ -550,11 +551,7 @@ public class NewJFrame extends javax.swing.JFrame implements OSRSForm
         jCheckBox1.setText("Enabled");
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
-                "Count",
-                "Endless",
-                "Goal",
-                "Natural End",
-                " "}));
+                "Count", "Endless", "Goal", "Natural End", " "}));
 
         jLabel30.setText("Goal Type");
 

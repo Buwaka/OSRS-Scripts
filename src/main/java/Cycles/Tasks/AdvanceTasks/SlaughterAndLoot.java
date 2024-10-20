@@ -6,8 +6,8 @@ import Cycles.Tasks.SimpleTasks.Combat.SlaughterTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import OSRSDatabase.MonsterDB;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
@@ -161,7 +161,7 @@ public class SlaughterAndLoot extends SimpleTask
     }
 
     @Override
-    public boolean onStartTask(tpircSScript Script)
+    public boolean onStartTask(IFScript Script)
     {
         Logger.log("StartSlaughterLoot task");
         // Loot
@@ -212,7 +212,7 @@ public class SlaughterAndLoot extends SimpleTask
     }
 
     @Override
-    public boolean onStopTask(tpircSScript Script)
+    public boolean onStopTask(IFScript Script)
     {
         Script.removePersistentNodes(LootTask);
         return super.onStopTask(Script);

@@ -1,7 +1,7 @@
 package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.interactive.Players;
@@ -13,7 +13,7 @@ import org.dreambot.api.utilities.Logger;
 
 
 @ScriptManifest(name = "SoloScripts.ClayMiningScript", description = "Varrock Clay mining script, Varrock west bank to Varrock mine", author = "Varrock", version = 1.0, category = Category.MINING, image = "")
-public class ClayMiningScript extends tpircSScript
+public class ClayMiningScript extends IFScript
 {
 
     final Area BankLocation = new Tile(3183, 3437).getArea(2);

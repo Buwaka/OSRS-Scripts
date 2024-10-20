@@ -4,8 +4,8 @@ import Cycles.Tasks.AdvanceTasks.OpenBankTask;
 import Cycles.Tasks.SimpleTasks.Bank.BankItemsTask;
 import Cycles.Tasks.SimpleTasks.Skill.SmithTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.interactive.Players;
@@ -43,7 +43,7 @@ public class SmithCycle extends SimpleCycle
     }
 
     @Override
-    public boolean onEnd(tpircSScript Script)
+    public boolean onEnd(IFScript Script)
     {
         Smithtask    = null;
         BackupTravel = null;
@@ -61,13 +61,13 @@ public class SmithCycle extends SimpleCycle
      * @return
      */
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onRestart(IFScript Script)
     {
         StartCycle(Script);
         return super.onRestart(Script);
     }
 
-    private void StartCycle(tpircSScript Script)
+    private void StartCycle(IFScript Script)
     {
         if(Bank.count(BarID) < MinimumBarCount && Inventory.count(BarID) < MinimumBarCount)
         {
@@ -116,13 +116,13 @@ public class SmithCycle extends SimpleCycle
      * @return true when Cycle is completed, ready for a restart
      */
     @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public boolean isCycleComplete(IFScript Script)
     {
         return Inventory.count(BarID) < MinimumBarCount && Bank.count(BarID) < MinimumBarCount;
     }
 
     @Override
-    public boolean isCycleFinished(tpircSScript Script)
+    public boolean isCycleFinished(IFScript Script)
     {
         return Inventory.count(BarID) < MinimumBarCount;
     }
@@ -133,7 +133,7 @@ public class SmithCycle extends SimpleCycle
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         if(!Bank.isCached())
         {

@@ -27,9 +27,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class OSRSPrices implements Serializable
 {
 
-    public static final int CoinID = 995;
+    public static final  int                                        CoinID             = 995;
     @Serial
-    private static final long serialVersionUID = -5940381882555771355L;
+    private static final long                                       serialVersionUID   = -5940381882555771355L;
     private static final String                                     AllItemsEndPoint   = "https://prices.runescape.wiki/api/v1/osrs/latest";
     //    private static final HTreeMap<Integer, GELatestData> AllItemsCache      = OSRSUtilities.CacheDB.hashMap("OSRSPrices-Latest").keySerializer(
     //            Serializer.INTEGER).valueSerializer(Serializer.JAVA).expireAfterGet(6, TimeUnit.HOURS).createOrOpen();
@@ -362,10 +362,11 @@ public class OSRSPrices implements Serializable
                             {
                                 return null;
                             }
-                            var content = httpResponse.getEntity().getContent();
-                            InputStreamReader          File   = new InputStreamReader(content);
-                            JsonReader                 Reader = new JsonReader(File);
-                            Map<Integer, GELatestData> All    = new HashMap<>();
+                            var                        content = httpResponse.getEntity()
+                                                                             .getContent();
+                            InputStreamReader          File    = new InputStreamReader(content);
+                            JsonReader                 Reader  = new JsonReader(File);
+                            Map<Integer, GELatestData> All     = new HashMap<>();
 
                             Reader.beginObject();
                             Reader.nextName(); //data

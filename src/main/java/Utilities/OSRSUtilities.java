@@ -5,8 +5,7 @@ import OSRSDatabase.ItemDB;
 import Utilities.Combat.CombatManager;
 import Utilities.Patterns.GameTickDelegate;
 import Utilities.Requirement.IRequirement;
-import Utilities.Scripting.PlayerConfig;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import Utilities.Serializers.*;
 import com.google.gson.GsonBuilder;
 import io.vavr.Tuple2;
@@ -49,7 +48,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
@@ -86,7 +84,7 @@ public class OSRSUtilities
         OSRSGsonBuilder.registerTypeAdapter(SerializableRunnable.class,
                                             new SerializableRunnableSerializer());
 
-        Path ScriptFolder = PlayerConfig.GetScriptConfigFolder();
+        //Path ScriptFolder = PlayerConfig.GetScriptConfigFolder();
         //                CacheDB = DBMaker.fileDB(ScriptFolder + "\\Cache.db").closeOnJvmShutdown().fileChannelEnable().executorEnable().fileLockDisable().make();
     }
 
@@ -1022,7 +1020,7 @@ public class OSRSUtilities
      *
      * @return true if successful, false if failed
      */
-    public static boolean ProcessBankEntries(tpircSScript Script, List<BankEntry> Deposits, List<BankEntry> Withdraws, int sleepdelay)
+    public static boolean ProcessBankEntries(IFScript Script, List<BankEntry> Deposits, List<BankEntry> Withdraws, int sleepdelay)
     {
         final int retries = 5;
         int       tries   = 0;

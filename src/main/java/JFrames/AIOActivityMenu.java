@@ -4,7 +4,6 @@ import Cycles.CycleGenerators.CycleGenerator;
 import OSRSDatabase.ItemDB;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

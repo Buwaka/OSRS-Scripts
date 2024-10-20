@@ -1,7 +1,7 @@
 package Cycles.Tasks.SimpleTasks.Bank;
 
 import OSRSDatabase.ItemDB;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -118,7 +118,7 @@ public class InventoryCheckTask extends BankItemsTask
     }
 
     @Override
-    public boolean onStartTask(tpircSScript Script)
+    public boolean onStartTask(IFScript Script)
     {
         var difference = GetDifference();
         if(DepositEverything || (difference.length > 0 && Inventory.getEmptySlots() >

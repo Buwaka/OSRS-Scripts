@@ -30,7 +30,7 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
     private transient boolean                      Active            = true;
     private transient boolean                      Finished          = false;
     private transient boolean                      Paused            = false;
-    private transient WeakReference<tpircSScript>  ParentScript      = null;
+    private transient WeakReference<IFScript>      ParentScript      = null;
 
     public SimpleTask(String Name)
     {
@@ -44,7 +44,7 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
         return deepCopy;
     }
 
-    public tpircSScript GetScript()
+    public IFScript GetScript()
     {
         return ParentScript.get();
     }
@@ -52,7 +52,7 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
     /**
      * Be sure to call this in case you don't add the task to the script using any of the addnode(), aka advanced tasks
      */
-    public void Init(tpircSScript Script)
+    public void Init(IFScript Script)
     {
         ParentScript = new WeakReference<>(Script);
     }
@@ -62,7 +62,7 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
      *
      * @return return true if successfully paused, otherwise false
      */
-    public final boolean PauseTask(tpircSScript Script)
+    public final boolean PauseTask(IFScript Script)
     {
         Paused = true;
         boolean result = onPauseTask(Script);
@@ -85,7 +85,7 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
      *
      * @return return true if successfully paused, otherwise false
      */
-    public final boolean UnPauseTask(tpircSScript Script)
+    public final boolean UnPauseTask(IFScript Script)
     {
         Paused = false;
         boolean result = onUnPauseTask(Script);
@@ -105,7 +105,7 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
 
     public final boolean isPaused() {return Paused;}
 
-    protected final void ReplaceTask(tpircSScript Script, SimpleTask other)
+    protected final void ReplaceTask(IFScript Script, SimpleTask other)
     {
         onReplaced(Script, other);
         onReplaced.Fire(other);
@@ -116,14 +116,14 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
      * @param other  Task that is replacing this one
      *               Is called after the task has been stopped
      */
-    public void onReplaced(tpircSScript Script, SimpleTask other) {}
+    public void onReplaced(IFScript Script, SimpleTask other) {}
 
     /**
      * @param Script Caller script, this basically
      *
      * @return return true if successful, false if we need more time, keep triggering start until it is ready
      */
-    protected final boolean StartTask(tpircSScript Script)
+    protected final boolean StartTask(IFScript Script)
     {
         Active = true;
         SetScriptIntensity(Script.GetScriptIntensity());
@@ -145,7 +145,7 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
      *
      * @return return true if successful, false if we need more time, keep triggering start until it is ready
      */
-    protected final boolean StopTask(tpircSScript Script)
+    protected final boolean StopTask(IFScript Script)
     {
         boolean result = onStopTask(Script);
         if(result)
@@ -157,7 +157,7 @@ public abstract class SimpleTask extends TaskNode implements ITask, Serializable
         return result;
     }
 
-    protected final void StopTaskNOW(tpircSScript Script)
+    protected final void StopTaskNOW(IFScript Script)
     {
         onStopTask(Script);
         Active   = false;

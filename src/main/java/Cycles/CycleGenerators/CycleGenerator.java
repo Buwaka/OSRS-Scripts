@@ -26,6 +26,11 @@ public interface CycleGenerator
         public abstract Optional<Boolean> IsRequirementMet();
     }
 
+    default SimpleCycle[] Generate()
+    {
+        return Generate(null);
+    }
+
     /**
      * @param param abstract data class containing parameters and data to generate the Cycles, null if none are necessary
      *

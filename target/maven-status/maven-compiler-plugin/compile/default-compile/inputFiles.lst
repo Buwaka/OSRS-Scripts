@@ -25,7 +25,6 @@ C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\General\Sim
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\Scripting\CycleUtilities.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\Trackers\EXPTracker.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Tasks\SimpleTasks\ItemProcessing\CombineTask.java
-C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\Scripting\tpircSScript.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Scripts\AccountManagement\ProxyGrabber.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\General\CombatLootBankCycle.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Scripts\Private\TutorialIsland.java
@@ -46,6 +45,7 @@ C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Skilling\Ag
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\OSRSDatabase\PotionDB.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Tasks\SimpleTasks\ItemProcessing\UseObjectTask.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\randomhandler\DismissSolver.java
+C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Specifics\MasteringMixologyCycle.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Tasks\SimpleTasks\Skill\SmithTask.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\Serializers\SerializableRunnable.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\CycleGenerators\CycleGenerator.java
@@ -123,6 +123,7 @@ C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\Requirem
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\OSRSDatabase\OSRSPrices.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Scripts\Private\FishingScript.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\CycleGenerators\SmithingCycleGenerator.java
+C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Scripts\Private\MasteringMixologyCycle.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Scripts\OldScripts\LeatherTanningScript.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Scripts\OldScripts\ClayMiningScript.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\CycleGenerators\CombatCycleGenerator.java
@@ -130,6 +131,7 @@ C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\CycleGenera
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Scripts\Private\MineGuildScript.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Scripts\OldScripts\HillGiantsScript.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\Requirement\ItemRequirement.java
+C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\MouseAlgorithm\WindMouseAttempt.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Tasks\SimpleTasks\Combat\LootLookoutTask.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\GrandExchange\Orders\GEOrder.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\Scripting\Listeners\GraveStoneListener.java
@@ -157,6 +159,7 @@ C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\Serializ
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Tasks\SimpleTasks\Misc\FleeOvercrowdTask.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\OSRSDatabase\WoodDB.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Tasks\SimpleTasks\Combat\SlaughterTask.java
+C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\Scripting\IFScript.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\Patterns\Delegates\Delegate1.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Tasks\SimpleTasks\ItemProcessing\DecantTask.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Tasks\SimpleTasks\Combat\OldSlaughterTask.java
@@ -178,6 +181,7 @@ C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\Scriptin
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\JFrames\FrameUtilities.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Specifics\MineGuildCycle.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Scripts\AccountManagement\RegisterNewAccount.java
+C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\DefaultAuthenticator.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Specifics\GOTRCycle.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Utilities\NameDictionary.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Tasks\SimpleTasks\Bank\InventoryCheckTask.java
@@ -196,3 +200,4 @@ C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\OSRSDatabase\ToolD
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Scripts\Private\CombatTrainingScript.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\Skilling\MineCycle.java
 C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\OSRSDatabase\ItemDB.java
+C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\src\main\java\Cycles\CycleGenerators\MinigameCycleGenerator.java

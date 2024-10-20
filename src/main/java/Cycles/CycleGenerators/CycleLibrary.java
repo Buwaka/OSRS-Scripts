@@ -1,7 +1,7 @@
 package Cycles.CycleGenerators;
 
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.utilities.Logger;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 public class CycleLibrary
 {
     // Json Paths
-    protected static tpircSScript OwnerScript = null;
+    protected static IFScript OwnerScript = null;
 
     public static Map<String, List<Supplier<SimpleCycle[]>>> GetCycleGenerators()
     {
@@ -48,7 +48,7 @@ public class CycleLibrary
         return out;
     }
 
-    static public void init(tpircSScript owner)
+    static public void init(IFScript owner)
     {
         OwnerScript = owner;
     }

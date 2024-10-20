@@ -2,8 +2,8 @@ package Cycles.Tasks.AdvanceTasks;
 
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.interactive.Players;
@@ -63,7 +63,7 @@ public class OpenBankTask extends SimpleTask
     }
 
     @Override
-    public boolean onStartTask(tpircSScript Script)
+    public boolean onStartTask(IFScript Script)
     {
         //        if(!OSRSUtilities.CanReachBank())
         //        {

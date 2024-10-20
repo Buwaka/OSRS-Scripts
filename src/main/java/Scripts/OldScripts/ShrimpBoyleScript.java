@@ -1,7 +1,7 @@
 package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -19,7 +19,7 @@ import java.util.AbstractMap;
 
 
 @ScriptManifest(name = "SoloScripts.ShrimpBoyleScript", description = "Draynor Village Shrimp fishing and baking script", author = "Semanresu", version = 1.0, category = Category.FISHING, image = "")
-public class ShrimpBoyleScript extends tpircSScript
+public class ShrimpBoyleScript extends IFScript
 {
 
     final int     FishSpotID   = 1525;

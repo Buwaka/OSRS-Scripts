@@ -3,9 +3,9 @@ package Cycles.General;
 import Cycles.Tasks.SimpleTasks.Bank.InventoryCheckTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
@@ -54,12 +54,12 @@ public class SimpleProcessCycle extends SimpleCycle
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         return StartCycle(Script);
     }
 
-    private boolean StartCycle(tpircSScript Script)
+    private boolean StartCycle(IFScript Script)
     {
         //CurrentProcessTask = GetNewTask();
         Script.addNodes(ProcessTaskTemplate);
@@ -91,7 +91,7 @@ public class SimpleProcessCycle extends SimpleCycle
      * @return
      */
     @Override
-    public int onLoop(tpircSScript Script)
+    public int onLoop(IFScript Script)
     {
         if(!OSRSUtilities.CheckRequirements(ItemRequirements, true))
         {
@@ -107,7 +107,7 @@ public class SimpleProcessCycle extends SimpleCycle
      * @param Script
      */
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onRestart(IFScript Script)
     {
         return StartCycle(Script);
     }

@@ -1,7 +1,7 @@
 package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.Random;
 
 @ScriptManifest(name = "SoloScripts.ShearScript", description = "Lumbridge Sheep shearing script", author = "Semanresu", version = 1.0, category = Category.CRAFTING, image = "")
-public class ShearScript extends tpircSScript
+public class ShearScript extends IFScript
 {
 
     final int    GateID       = 12987;

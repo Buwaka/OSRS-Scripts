@@ -17,9 +17,11 @@ public class PotionCycle extends SimpleCycle
 
     private PotionDB.PotionStep PotionPlan;
     private int                 Amount;
-    private boolean             SellProduct           = true;
-    private boolean             DecantProduct         = true;
-    private boolean             WearNecklaceOfAlchemy = true;
+    private boolean             SellProduct                 = true;
+    private boolean             DecantProduct               = true;
+    private boolean             WearNecklaceOfAlchemy       = true;
+    private int                 AmuletOfChemistryID         = 21163;
+    private int                 UpgradedAmuletOfChemistryID = -1;
 
 
     public PotionCycle(String name, PotionDB.PotionStep steps, int amount)
@@ -29,7 +31,7 @@ public class PotionCycle extends SimpleCycle
         Amount     = amount;
     }
 
-    public GEOrder[] GetShoppingList()
+    public List<GEOrder> GetShoppingList()
     {
         List<GEOrder> orders      = new ArrayList<>();
         var           ingredients = PotionDB.GetAllIngredients(PotionPlan);
@@ -45,7 +47,7 @@ public class PotionCycle extends SimpleCycle
         }
 
         //if(Bank.contains(Amulet of Chemistry * count))
-        return null;
+        return orders;
     }
 
     public void setDecantProduct(boolean decantProduct)

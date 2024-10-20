@@ -1,7 +1,7 @@
 package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
@@ -10,7 +10,7 @@ import org.dreambot.api.utilities.Logger;
 import java.util.AbstractMap;
 
 @ScriptManifest(name = "SoloScripts.PieFactory", description = "Make Pie shells", author = "Semanresu", version = 1.0, category = Category.CRAFTING, image = "")
-public class PieFactory extends tpircSScript
+public class PieFactory extends IFScript
 {
 
 
@@ -22,18 +22,6 @@ public class PieFactory extends tpircSScript
     {
         Banking,
         Combining
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-
-        if(!OSRSUtilities.CanReachBank())
-        {
-            Logger.log("Not within reach of a bank");
-            this.stop();
-        }
     }
 
     @Override
@@ -76,5 +64,17 @@ public class PieFactory extends tpircSScript
         }
 
         return 0;
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        if(!OSRSUtilities.CanReachBank())
+        {
+            Logger.log("Not within reach of a bank");
+            this.stop();
+        }
     }
 }

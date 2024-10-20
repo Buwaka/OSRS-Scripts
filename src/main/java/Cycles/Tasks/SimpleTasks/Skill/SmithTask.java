@@ -1,7 +1,7 @@
 package Cycles.Tasks.SimpleTasks.Skill;
 
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.filter.impl.IdFilter;
 import org.dreambot.api.methods.interactive.GameObjects;
@@ -83,13 +83,13 @@ public class SmithTask extends SimpleTask
      * @return return true if successful, false if we need more time, keep triggering start until it is ready
      */
     @Override
-    public boolean onStartTask(tpircSScript Script)
+    public boolean onStartTask(IFScript Script)
     {
         Script.onInventory.Subscribe(this, this::CheckInventory);
         return super.onStartTask(Script);
     }
 
-    private Boolean CheckInventory(tpircSScript.ItemAction Action, Item item1, Item item2)
+    private Boolean CheckInventory(IFScript.ItemAction Action, Item item1, Item item2)
     {
         TimeoutTicker.set(DefaultProcessTickTime);
         return true;

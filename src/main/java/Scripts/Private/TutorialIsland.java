@@ -2,7 +2,7 @@ package Scripts.Private;
 
 import Cycles.Tasks.SimpleTasks.ItemProcessing.InteractTask;
 import OSRSDatabase.WoodDB;
-import Utilities.MouseAlgorithm.IFMouseAlgorithm;
+import Utilities.MouseAlgorithm.WindMouseAttempt;
 import Utilities.NameDictionary;
 import Utilities.OSRSUtilities;
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -43,6 +43,7 @@ import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.Entity;
 import org.dreambot.api.wrappers.interactive.GameObject;
+import org.dreambot.api.wrappers.interactive.SceneObject;
 import org.dreambot.api.wrappers.widgets.WidgetChild;
 
 import java.awt.*;
@@ -53,13 +54,6 @@ import java.util.concurrent.atomic.AtomicReference;
 @ScriptManifest(name = "IF-TutorialIsland", description = "tut oisland", author = "Semanresu", version = 1.0, category = Category.MISC, image = "")
 public class TutorialIsland extends AbstractScript implements PaintListener
 {
-    static class BehaviorParameters
-    {
-        int ThinkDelay; // ms
-        int MouseSpeed;
-        
-    }
-
     final static int                     TutProgressVarBit  = 281;
     static       int                     ticksSinceContinue = 0;
     static       AtomicReference<Entity> Target             = new AtomicReference<>(null);
@@ -68,6 +62,13 @@ public class TutorialIsland extends AbstractScript implements PaintListener
     Random rand           = new Random();
     Tile   Choice         = null;
     Thread Randomizer;
+
+    static class BehaviorParameters
+    {
+        int ThinkDelay; // ms
+        int MouseSpeed;
+
+    }
 
     private boolean SimpleInteract(String name, Tile FallBack)
     {
@@ -264,7 +265,7 @@ public class TutorialIsland extends AbstractScript implements PaintListener
     @Override
     public void onStart()
     {
-        var algo = new IFMouseAlgorithm(1000);
+        var algo = new WindMouseAttempt(1000);
         ScriptManager.getScriptManager().addListener(algo);
         Mouse.setMouseAlgorithm(algo);
         Camera.setCameraMode(CameraMode.MOUSE_ONLY);
@@ -286,7 +287,7 @@ public class TutorialIsland extends AbstractScript implements PaintListener
     @Override
     public void onStart(String... params)
     {
-        var algo = new IFMouseAlgorithm(1000);
+        var algo = new WindMouseAttempt(1000);
         ScriptManager.getScriptManager().addListener(algo);
         Mouse.setMouseAlgorithm(algo);
         Camera.setCameraMode(CameraMode.MOUSE_ONLY);
@@ -303,49 +304,6 @@ public class TutorialIsland extends AbstractScript implements PaintListener
         ClientSettings.clearLayoutPreferences();
 
         Randomizer = OSRSUtilities.StartRandomizerThread(5, rand.nextFloat(0.7f, 1.5f), 20);
-    }
-
-    void CheckProgress()
-    {
-        int     last           = -1;
-        boolean spaceIsPressed = false;
-        while(true)
-        {
-            int TutProgress = PlayerSettings.getConfig(TutProgressVarBit);
-            //            if(Keyboard.isPressed(Key.SPACE) != spaceIsPressed)
-            //            {
-            //                Logger.log("Space is pressed: " + Keyboard.isPressed(Key.SPACE));
-            //                spaceIsPressed = Keyboard.isPressed(Key.SPACE);
-            //            }
-            if(TutProgress != last)
-            {
-                Logger.log("Progress bit: " + TutProgress);
-                last = TutProgress;
-            }
-        }
-    }
-
-    void CanContinueThread()
-    {
-        while(true)
-        {
-            if(Dialogues.canContinue())
-            {
-                ticksSinceContinue = 0;
-            }
-            else
-            {
-                ticksSinceContinue++;
-            }
-            try
-            {
-                Sleep.sleepTick();
-            } catch(Exception ignored)
-            {
-
-            }
-
-        }
     }
 
     /**
@@ -1309,6 +1267,49 @@ public class TutorialIsland extends AbstractScript implements PaintListener
         }
     }
 
+    void CheckProgress()
+    {
+        int     last           = -1;
+        boolean spaceIsPressed = false;
+        while(true)
+        {
+            int TutProgress = PlayerSettings.getConfig(TutProgressVarBit);
+            //            if(Keyboard.isPressed(Key.SPACE) != spaceIsPressed)
+            //            {
+            //                Logger.log("Space is pressed: " + Keyboard.isPressed(Key.SPACE));
+            //                spaceIsPressed = Keyboard.isPressed(Key.SPACE);
+            //            }
+            if(TutProgress != last)
+            {
+                Logger.log("Progress bit: " + TutProgress);
+                last = TutProgress;
+            }
+        }
+    }
+
+    void CanContinueThread()
+    {
+        while(true)
+        {
+            if(Dialogues.canContinue())
+            {
+                ticksSinceContinue = 0;
+            }
+            else
+            {
+                ticksSinceContinue++;
+            }
+            try
+            {
+                Sleep.sleepTick();
+            } catch(Exception ignored)
+            {
+
+            }
+
+        }
+    }
+
     boolean CanContinueWithSleep()
     {
         return Sleep.sleepUntil(() -> Dialogues.canContinue(), 2000, 300 + rand.nextInt(300));
@@ -1603,7 +1604,7 @@ public class TutorialIsland extends AbstractScript implements PaintListener
                                         .toList();
             Logger.log("ChooseAppearance: Start Selectables");
             boolean repeat;
-            int leftyrighty = rand.nextInt(2);
+            int     leftyrighty = rand.nextInt(2);
             do
             {
                 repeat = false;
@@ -1625,13 +1626,13 @@ public class TutorialIsland extends AbstractScript implements PaintListener
                         Sleep.sleepTicks(rand.nextInt(20) + 1);
                     }
 
-                    int   pressCount = rand.nextInt(7);
+                    int pressCount = rand.nextInt(7);
                     if(changes % 2 == leftyrighty)
                     {
                         pressCount = rand.nextInt(2) + 1;
                     }
 
-                    Point click      = GetRandomPointInRectangle(widget.getRectangle());
+                    Point click = GetRandomPointInRectangle(widget.getRectangle());
                     for(var i = 0; i < pressCount; i++)
                     {
                         // do mouse nudge possibly

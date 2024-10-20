@@ -2,12 +2,12 @@ package Scripts.OldScripts;
 
 import Cycles.Skilling.SmithCycle;
 import Utilities.Scripting.ICycle;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
 
 @ScriptManifest(name = "SoloScripts.SmithScript", description = "Smith stuff", author = "Semanresu", version = 1.0, category = Category.SMITHING, image = "")
-public class SmithScript extends tpircSScript
+public class SmithScript extends IFScript
 {
     int        SteelBarID        = 2353;
     int        MithrilBar        = 2359;

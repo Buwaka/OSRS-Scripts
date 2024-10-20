@@ -4,8 +4,8 @@ import Cycles.Tasks.SimpleTasks.Bank.BankItemsTask;
 import Cycles.Tasks.SimpleTasks.Bank.InventoryCheckTask;
 import Cycles.Tasks.SimpleTasks.ItemProcessing.InteractTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.Players;
@@ -102,7 +102,7 @@ public class InteractCycle extends SimpleCycle
         return TravelToArea;
     }
 
-    private void StartCycle(tpircSScript Script)
+    private void StartCycle(IFScript Script)
     {
         interactTask = new InteractTask(GetName(), Action, Targets);
         interactTask.SetFilter(TargetFilter);
@@ -132,7 +132,7 @@ public class InteractCycle extends SimpleCycle
      * @return
      */
     @Override
-    public boolean isCycleFinished(tpircSScript Script)
+    public boolean isCycleFinished(IFScript Script)
     {
         return Inventory.isFull();
     }
@@ -143,7 +143,7 @@ public class InteractCycle extends SimpleCycle
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         StartCycle(Script);
         if(InventoryRequirements != null && !hasInventoryRequirements())
@@ -155,7 +155,7 @@ public class InteractCycle extends SimpleCycle
     }
 
     @Override
-    public boolean onEnd(tpircSScript Script)
+    public boolean onEnd(IFScript Script)
     {
         Logger.log("InteractCycle: OnEnd");
         if(DepositInventory)
@@ -178,7 +178,7 @@ public class InteractCycle extends SimpleCycle
      * @return
      */
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onRestart(IFScript Script)
     {
         StartCycle(Script);
         return true;

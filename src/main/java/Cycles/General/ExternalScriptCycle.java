@@ -1,7 +1,7 @@
 package Cycles.General;
 
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.script.ScriptManager;
 
 public class ExternalScriptCycle extends SimpleCycle
@@ -27,7 +27,7 @@ public class ExternalScriptCycle extends SimpleCycle
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         ScriptManager Manager = ScriptManager.getScriptManager();
 
@@ -56,4 +56,46 @@ public class ExternalScriptCycle extends SimpleCycle
 
         return true;
     }
+
+
+    //    private final ScriptManager manager;
+    //    private final String scriptName;
+    //    private final String[] params;
+    //    private final Lock managerLock = new ReentrantLock();
+    //    private final ScriptServer scriptServer;
+    //
+    //    public ScriptLaunch(String scriptName, String[] params, ScriptServer scriptServer) {
+    //        this.manager = Instance.getInstance().getScriptManager();
+    //        this.scriptName = scriptName;
+    //        this.params = params;
+    //        this.scriptServer = scriptServer;
+    //    }
+    //
+    //    @Override
+    //    public synchronized void run() {
+    //        managerLock.lock();
+    //        try {
+    //
+    //            ensureScriptStopped();
+    //            while (true) {
+    //                if (!manager.isRunning()) {
+    //                    if (scriptName != null) {
+    //                        log("Attempting to start script: " + scriptName + " with params: " + Arrays.toString(params));
+    //                        manager.start(scriptName, params);
+    //                        scriptServer.setLastScript(scriptName, params);
+    //                    } else {
+    //                        log("No script name was provided.");
+    //                    }
+    //                }
+    //                try {
+    //                    Thread.sleep(5000);
+    //                } catch (InterruptedException e) {
+    //                    Thread.currentThread().interrupt();
+    //                    return;
+    //                }
+    //            }
+    //        } finally {
+    //            managerLock.unlock();
+    //        }
+    //    }
 }

@@ -10,8 +10,8 @@ import Cycles.Tasks.SimpleTasks.TravelTask;
 import OSRSDatabase.ItemDB;
 import Utilities.Combat.EquipmentManager;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.interactive.Players;
@@ -101,19 +101,19 @@ public class CombatLootBankCycle extends SimpleCycle
      * @return true when Cycle is completed, ready for a restart
      */
     @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public boolean isCycleComplete(IFScript Script)
     {
         return Complete;
     }
 
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         StartCycle(Script);
         return super.onStart(Script);
     }
 
-    void StartCycle(tpircSScript Script)
+    void StartCycle(IFScript Script)
     {
         TravelTask Travel1 = new TravelTask("Travel To Killing Area",
                                             Arrays.stream(KillingArea)
@@ -238,7 +238,7 @@ public class CombatLootBankCycle extends SimpleCycle
     }
 
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onRestart(IFScript Script)
     {
         StartCycle(Script);
         return true;

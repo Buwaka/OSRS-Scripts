@@ -56,26 +56,26 @@ public interface ITask
      *
      * @return true if successful, false if we need more time, keep triggering start until it is ready
      */
-    default boolean onPauseTask(tpircSScript Script) {return true;}
+    default boolean onPauseTask(IFScript Script) {return true;}
 
     /**
      * @param Script
      *
      * @return return true if successful, false if we need more time, keep triggering start until it is ready
      */
-    default boolean onStartTask(tpircSScript Script) {return true;}
+    default boolean onStartTask(IFScript Script) {return true;}
 
     /**
      * @param Script
      *
      * @return true if successful, false if we need more time, keep triggering start until it is ready
      */
-    default boolean onStopTask(tpircSScript Script) {return true;}
+    default boolean onStopTask(IFScript Script) {return true;}
 
     /**
      * @param Script
      *
      * @return true if successful, false if we need more time, keep triggering start until it is ready
      */
-    default boolean onUnPauseTask(tpircSScript Script) {return true;}
+    default boolean onUnPauseTask(IFScript Script) {return true;}
 }

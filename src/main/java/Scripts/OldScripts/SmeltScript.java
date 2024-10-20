@@ -3,13 +3,13 @@ package Scripts.OldScripts;
 
 import Cycles.Skilling.SmeltCycle;
 import Utilities.Scripting.ICycle;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import io.vavr.Tuple2;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
 
 @ScriptManifest(name = "SoloScripts.SmeltScript", description = "Smelt stuff", author = "Semanresu", version = 1.0, category = Category.SMITHING, image = "")
-public class SmeltScript extends tpircSScript
+public class SmeltScript extends IFScript
 {
 
 

@@ -2,7 +2,7 @@ package Scripts.OldScripts;
 
 import Utilities.Combat.CombatManager;
 import Utilities.OSRSUtilities;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ScriptManifest(name = "SoloScripts.HillGiantsScript", description = "Slaughter and loot Hill Giants", author = "Semanresu", version = 1.0, category = Category.COMBAT, image = "")
-public class HillGiantsScript extends tpircSScript
+public class HillGiantsScript extends IFScript
 {
 
     final int     MinimumHP   = 15;

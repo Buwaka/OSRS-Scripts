@@ -5,8 +5,8 @@ import Cycles.Tasks.SimpleTasks.Bank.BankItemsTask;
 import Cycles.Tasks.SimpleTasks.ItemProcessing.InteractTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import OSRSDatabase.ObjectDB;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
@@ -37,13 +37,13 @@ public class MineCycle extends SimpleCycle implements Serializable
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         StartCycle(Script);
         return super.onStart(Script);
     }
 
-    private void StartCycle(tpircSScript Script)
+    private void StartCycle(IFScript Script)
     {
         //TODO check if we have a pickaxe, if not, pick one from the bank
 
@@ -81,7 +81,7 @@ public class MineCycle extends SimpleCycle implements Serializable
     }
 
     @Override
-    public boolean onEnd(tpircSScript Script)
+    public boolean onEnd(IFScript Script)
     {
         if(Sleep.sleepUntil(() -> Bank.open(), 60000))
         {
@@ -96,7 +96,7 @@ public class MineCycle extends SimpleCycle implements Serializable
      * @return
      */
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onRestart(IFScript Script)
     {
         StartCycle(Script);
         return true;

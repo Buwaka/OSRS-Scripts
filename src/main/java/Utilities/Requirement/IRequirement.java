@@ -46,6 +46,8 @@ public interface IRequirement extends Serializable
         return true;
     }
 
+    boolean isRequirementMet();
+
     static boolean IsAnyRequirementMet(IRequirement... requirements)
     {
         if(requirements == null)
@@ -65,8 +67,6 @@ public interface IRequirement extends Serializable
         Logger.log("IRequirement: IsAnyRequirementMet: false, none are met");
         return false;
     }
-
-    boolean isRequirementMet();
 
 }
 

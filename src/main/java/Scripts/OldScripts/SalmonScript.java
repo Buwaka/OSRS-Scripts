@@ -1,7 +1,7 @@
 package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.map.Area;
@@ -14,7 +14,7 @@ import org.dreambot.api.wrappers.interactive.NPC;
 import java.util.AbstractMap;
 
 @ScriptManifest(name = "SoloScripts.SalmonScript", description = "Varrock Salmon Fishing and cooking script", author = "Semanresu", version = 1.0, category = Category.FISHING, image = "")
-public class SalmonScript extends tpircSScript
+public class SalmonScript extends IFScript
 {
 
     final int    FireID       = 43475;

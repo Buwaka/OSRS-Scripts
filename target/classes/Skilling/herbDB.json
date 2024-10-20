@@ -1,9 +1,27 @@
 {
-  "249": {
-    "id": 249,
-    "grimy_id": 199,
-    "name": "Guam leaf",
-    "level": 3
+  "257": {
+    "id": 257,
+    "grimy_id": 207,
+    "name": "Ranarr weed",
+    "level": 25,
+    "paste_type": "Lye",
+    "paste_count": 26
+  },
+  "259": {
+    "id": 259,
+    "grimy_id": 209,
+    "name": "Irit leaf",
+    "level": 40,
+    "paste_type": "Aga",
+    "paste_count": 30
+  },
+  "261": {
+    "id": 261,
+    "grimy_id": 211,
+    "name": "Avantoe",
+    "level": 48,
+    "paste_type": "Lye",
+    "paste_count": 30
   },
   "199": {
     "id": 249,
@@ -11,11 +29,13 @@
     "name": "Grimy Guam leaf",
     "level": 3
   },
-  "251": {
-    "id": 251,
-    "grimy_id": 201,
-    "name": "Marrentill",
-    "level": 5
+  "263": {
+    "id": 263,
+    "grimy_id": 213,
+    "name": "Kwuarm",
+    "level": 54,
+    "paste_type": "Lye",
+    "paste_count": 33
   },
   "201": {
     "id": 251,
@@ -23,11 +43,13 @@
     "name": "Grimy Marrentill",
     "level": 5
   },
-  "253": {
-    "id": 253,
-    "grimy_id": 203,
-    "name": "Tarromin",
-    "level": 11
+  "265": {
+    "id": 265,
+    "grimy_id": 215,
+    "name": "Cadantine",
+    "level": 65,
+    "paste_type": "Aga",
+    "paste_count": 34
   },
   "203": {
     "id": 253,
@@ -35,11 +57,27 @@
     "name": "Grimy Tarromin",
     "level": 11
   },
-  "255": {
-    "id": 255,
-    "grimy_id": 205,
-    "name": "Harralander",
-    "level": 20
+  "30094": {
+    "id": 30097,
+    "grimy_id": 30094,
+    "name": "Grimy huasca",
+    "level": 58
+  },
+  "30097": {
+    "id": 30097,
+    "grimy_id": 30094,
+    "name": "Huasca",
+    "level": 58,
+    "paste_type": "Aga",
+    "paste_count": 20
+  },
+  "267": {
+    "id": 267,
+    "grimy_id": 217,
+    "name": "Dwarf weed",
+    "level": 70,
+    "paste_type": "Aga",
+    "paste_count": 42
   },
   "205": {
     "id": 255,
@@ -47,11 +85,13 @@
     "name": "Grimy Harralander",
     "level": 20
   },
-  "257": {
-    "id": 257,
-    "grimy_id": 207,
-    "name": "Ranarr weed",
-    "level": 25
+  "269": {
+    "id": 269,
+    "grimy_id": 219,
+    "name": "Torstol",
+    "level": 75,
+    "paste_type": "Aga",
+    "paste_count": 44
   },
   "207": {
     "id": 257,
@@ -59,35 +99,11 @@
     "name": "Grimy ranarr weed",
     "level": 25
   },
-  "2998": {
-    "id": 2998,
-    "grimy_id": 3049,
-    "name": "Toadflax",
-    "level": 30
-  },
-  "3049": {
-    "id": 2998,
-    "grimy_id": 3049,
-    "name": "Grimy Toadflax",
-    "level": 30
-  },
-  "259": {
-    "id": 259,
-    "grimy_id": 209,
-    "name": "Irit leaf",
-    "level": 40
-  },
   "209": {
     "id": 259,
     "grimy_id": 209,
     "name": "Grimy Irit leaf",
     "level": 40
-  },
-  "261": {
-    "id": 261,
-    "grimy_id": 211,
-    "name": "Avantoe",
-    "level": 48
   },
   "211": {
     "id": 261,
@@ -95,35 +111,11 @@
     "name": "Grimy Avantoe",
     "level": 48
   },
-  "263": {
-    "id": 263,
-    "grimy_id": 213,
-    "name": "Kwuarm",
-    "level": 54
-  },
   "213": {
     "id": 263,
     "grimy_id": 213,
     "name": "Grimy Kwuarm",
     "level": 54
-  },
-  "3000": {
-    "id": 3000,
-    "grimy_id": 3051,
-    "name": "Snapdragon",
-    "level": 59
-  },
-  "3051": {
-    "id": 3000,
-    "grimy_id": 3051,
-    "name": "Grimy Snapdragon",
-    "level": 59
-  },
-  "265": {
-    "id": 265,
-    "grimy_id": 215,
-    "name": "Cadantine",
-    "level": 65
   },
   "215": {
     "id": 265,
@@ -131,11 +123,37 @@
     "name": "Grimy Cadantine",
     "level": 65
   },
+  "217": {
+    "id": 267,
+    "grimy_id": 217,
+    "name": "Grimy Dwarf weed",
+    "level": 70
+  },
+  "219": {
+    "id": 269,
+    "grimy_id": 219,
+    "name": "Grimy Torstol",
+    "level": 75
+  },
+  "3049": {
+    "id": 2998,
+    "grimy_id": 3049,
+    "name": "Grimy Toadflax",
+    "level": 30
+  },
+  "3051": {
+    "id": 3000,
+    "grimy_id": 3051,
+    "name": "Grimy Snapdragon",
+    "level": 59
+  },
   "2481": {
     "id": 2481,
     "grimy_id": 2485,
     "name": "Lantadyme",
-    "level": 67
+    "level": 67,
+    "paste_type": "Aga",
+    "paste_count": 40
   },
   "2485": {
     "id": 2481,
@@ -143,28 +161,52 @@
     "name": "Grimy Lantadyme",
     "level": 67
   },
-  "267": {
-    "id": 267,
-    "grimy_id": 217,
-    "name": "Dwarf weed",
-    "level": 70
+  "2998": {
+    "id": 2998,
+    "grimy_id": 3049,
+    "name": "Toadflax",
+    "level": 30,
+    "paste_type": "Lye",
+    "paste_count": 32
   },
-  "217": {
-    "id": 267,
-    "grimy_id": 217,
-    "name": "Grimy Dwarf weed",
-    "level": 70
+  "3000": {
+    "id": 3000,
+    "grimy_id": 3051,
+    "name": "Snapdragon",
+    "level": 59,
+    "paste_type": "Lye",
+    "paste_count": 40
   },
-  "269": {
-    "id": 269,
-    "grimy_id": 219,
-    "name": "Torstol",
-    "level": 75
+  "249": {
+    "id": 249,
+    "grimy_id": 199,
+    "name": "Guam leaf",
+    "level": 3,
+    "paste_type": "Mox",
+    "paste_count": 10
   },
-  "219": {
-    "id": 269,
-    "grimy_id": 219,
-    "name": "Grimy Torstol",
-    "level": 75
+  "251": {
+    "id": 251,
+    "grimy_id": 201,
+    "name": "Marrentill",
+    "level": 5,
+    "paste_type": "Mox",
+    "paste_count": 13
+  },
+  "253": {
+    "id": 253,
+    "grimy_id": 203,
+    "name": "Tarromin",
+    "level": 11,
+    "paste_type": "Mox",
+    "paste_count": 15
+  },
+  "255": {
+    "id": 255,
+    "grimy_id": 205,
+    "name": "Harralander",
+    "level": 20,
+    "paste_type": "Mox",
+    "paste_count": 20
   }
 }

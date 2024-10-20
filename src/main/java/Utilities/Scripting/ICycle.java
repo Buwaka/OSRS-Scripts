@@ -26,12 +26,12 @@ public interface ICycle
      *
      * @return true when Cycle is completed, ready for a restart
      */
-    boolean isCycleComplete(tpircSScript Script);
+    boolean isCycleComplete(IFScript Script);
 
     /**
      * @return true when Cycle is completely done and should/will be terminated, typically the same as isCycleComplete
      */
-    boolean isCycleFinished(tpircSScript Script);
+    boolean isCycleFinished(IFScript Script);
 
     boolean isStarted();
 
@@ -44,16 +44,16 @@ public interface ICycle
      *
      * @return if cycle has successfully ended
      */
-    default boolean onEnd(tpircSScript Script) {return true;}
+    default boolean onEnd(IFScript Script) {return true;}
 
     /**
      * End cycle regardless of its situation
      *
      * @return if cycle has successfully ended
      */
-    default boolean onEndNow(tpircSScript Script) {return true;}
+    default boolean onEndNow(IFScript Script) {return true;}
 
-    default int onLoop(tpircSScript Script)   {return 1;}
+    default int onLoop(IFScript Script)       {return 1;}
 
     default void onPaint(Graphics graphics)   {}
 
@@ -62,18 +62,18 @@ public interface ICycle
     /**
      * When all cycles have been completed and we want to do the cycle again, this is called
      */
-    default void onReset(tpircSScript Script) {}
+    default void onReset(IFScript Script) {}
 
     /**
      * When a cycle has been completed, this will be called
      */
-    default boolean onRestart(tpircSScript Script) {return true;}
+    default boolean onRestart(IFScript Script) {return true;}
 
     /**
      * @param Script
      *
      * @return if cycle has successfully started
      */
-    boolean onStart(tpircSScript Script);
+    boolean onStart(IFScript Script);
 
 }

@@ -3,8 +3,8 @@ package Cycles.Tasks.SimpleTasks.Combat;
 import OSRSDatabase.MonsterDB;
 import Utilities.Combat.CombatManager;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
@@ -174,7 +174,7 @@ public class OldSlaughterTask extends SimpleTask
     }
 
     @Override
-    public boolean onStopTask(tpircSScript Script)
+    public boolean onStopTask(IFScript Script)
     {
         TargetListeners.clear();
         return super.onStopTask(Script);

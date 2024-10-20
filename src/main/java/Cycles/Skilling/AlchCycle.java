@@ -4,8 +4,8 @@ import Cycles.Tasks.SimpleTasks.Bank.BankItemsTask;
 import Cycles.Tasks.SimpleTasks.ItemProcessing.AlchTask;
 import OSRSDatabase.ItemDB;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.equipment.Equipment;
@@ -44,7 +44,7 @@ public class AlchCycle extends SimpleCycle
      * @return Cycle completed, ready for a restart
      */
     @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public boolean isCycleComplete(IFScript Script)
     {
         return isDoneAlching();
     }
@@ -67,7 +67,7 @@ public class AlchCycle extends SimpleCycle
      * @return true when Cycle is completely done and should/will be terminated, typically the same as isCycleComplete
      */
     @Override
-    public boolean isCycleFinished(tpircSScript Script)
+    public boolean isCycleFinished(IFScript Script)
     {
         return ItemsToAlch.isEmpty();
     }
@@ -78,7 +78,7 @@ public class AlchCycle extends SimpleCycle
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         ItemsToAlch = GetProfitableAlchs();
 
@@ -158,7 +158,7 @@ public class AlchCycle extends SimpleCycle
      * @return
      */
     @Override
-    public int onLoop(tpircSScript Script)
+    public int onLoop(IFScript Script)
     {
         return super.onLoop(Script);
     }

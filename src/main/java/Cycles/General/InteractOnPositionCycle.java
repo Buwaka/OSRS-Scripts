@@ -4,8 +4,8 @@ import Cycles.Tasks.SimpleTasks.Bank.BankItemsTask;
 import Cycles.Tasks.SimpleTasks.ItemProcessing.InteractInventoryTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import OSRSDatabase.WoodDB;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import io.vavr.Function2;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -113,13 +113,13 @@ public class InteractOnPositionCycle extends SimpleCycle
      * @return true when Cycle is completed, ready for a restart
      */
     @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public boolean isCycleComplete(IFScript Script)
     {
         return !Inventory.contains(SourceItemID);
     }
 
     @Override
-    public boolean isCycleFinished(tpircSScript Script)
+    public boolean isCycleFinished(IFScript Script)
     {
         return !Bank.contains(SourceItemID) && !Inventory.contains(SourceItemID);
     }
@@ -130,13 +130,13 @@ public class InteractOnPositionCycle extends SimpleCycle
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         StartCycle(Script);
         return super.onStart(Script);
     }
 
-    private void StartCycle(tpircSScript Script)
+    private void StartCycle(IFScript Script)
     {
         Complete         = false;
         InteractTask     = null;
@@ -335,7 +335,7 @@ public class InteractOnPositionCycle extends SimpleCycle
      * @return if cycle has successfully ended
      */
     @Override
-    public boolean onEnd(tpircSScript Script)
+    public boolean onEnd(IFScript Script)
     {
         if(TileListener != null)
         {
@@ -353,7 +353,7 @@ public class InteractOnPositionCycle extends SimpleCycle
      * @return if cycle has successfully ended
      */
     @Override
-    public boolean onEndNow(tpircSScript Script)
+    public boolean onEndNow(IFScript Script)
     {
         if(TileListener != null)
         {
@@ -369,7 +369,7 @@ public class InteractOnPositionCycle extends SimpleCycle
      * @return
      */
     @Override
-    public int onLoop(tpircSScript Script)
+    public int onLoop(IFScript Script)
     {
         if(PossibleTiles == null || PossibleTiles.isEmpty())
         {
@@ -564,7 +564,7 @@ public class InteractOnPositionCycle extends SimpleCycle
      * @param Script
      */
     @Override
-    public void onReset(tpircSScript Script)
+    public void onReset(IFScript Script)
     {
         StartCycle(Script);
         super.onReset(Script);
@@ -576,7 +576,7 @@ public class InteractOnPositionCycle extends SimpleCycle
      * @param Script
      */
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onRestart(IFScript Script)
     {
         StartCycle(Script);
         return super.onRestart(Script);

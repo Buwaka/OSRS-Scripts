@@ -4,8 +4,8 @@ import Cycles.Tasks.SimpleTasks.Bank.BankItemsTask;
 import Cycles.Tasks.SimpleTasks.ItemProcessing.InteractInventoryTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
@@ -57,22 +57,134 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
      * @return
      */
     @Override
-    public int onLoop(tpircSScript Script)
+    public int onLoop(IFScript Script)
     {
         if(InteractEveryItem)
         {
             final int[][] SlotOrder = new int[4][];
-            SlotOrder[0] = new int[] {4,0,1,5,6,2,3,7,11,10,14,13,9,8,12,16,20,21,17,18,22,23,19,15,24,25,26,27};
-            SlotOrder[1] = new int[] {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27};
-            SlotOrder[2] = new int[] {0,1,2,3,7,6,5,4,8,9,10,11,15,14,13,12,16,17,18,19,23,22,21,20,24,25,26,27};
-            SlotOrder[3] = new int[] {0,4,5,1,2,6,7,3,8,12,13,9,10,14,15,11,16,20,21,17,18,22,23,19,27,26,25,24};
+            SlotOrder[0] = new int[]{
+                    4,
+                    0,
+                    1,
+                    5,
+                    6,
+                    2,
+                    3,
+                    7,
+                    11,
+                    10,
+                    14,
+                    13,
+                    9,
+                    8,
+                    12,
+                    16,
+                    20,
+                    21,
+                    17,
+                    18,
+                    22,
+                    23,
+                    19,
+                    15,
+                    24,
+                    25,
+                    26,
+                    27};
+            SlotOrder[1] = new int[]{
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23,
+                    24,
+                    25,
+                    26,
+                    27};
+            SlotOrder[2] = new int[]{
+                    0,
+                    1,
+                    2,
+                    3,
+                    7,
+                    6,
+                    5,
+                    4,
+                    8,
+                    9,
+                    10,
+                    11,
+                    15,
+                    14,
+                    13,
+                    12,
+                    16,
+                    17,
+                    18,
+                    19,
+                    23,
+                    22,
+                    21,
+                    20,
+                    24,
+                    25,
+                    26,
+                    27};
+            SlotOrder[3] = new int[]{
+                    0,
+                    4,
+                    5,
+                    1,
+                    2,
+                    6,
+                    7,
+                    3,
+                    8,
+                    12,
+                    13,
+                    9,
+                    10,
+                    14,
+                    15,
+                    11,
+                    16,
+                    20,
+                    21,
+                    17,
+                    18,
+                    22,
+                    23,
+                    19,
+                    27,
+                    26,
+                    25,
+                    24};
 
 
             int pick = OSRSUtilities.rand.nextInt(SlotOrder.length);
             for(int i = 0; i < OSRSUtilities.InventorySpace; i++)
             {
                 int index = SlotOrder[pick][i];
-                var item = Inventory.getItemInSlot(index);
+                var item  = Inventory.getItemInSlot(index);
                 if(item == null || item.getID() != SourceItemID)
                 {
                     continue;
@@ -87,12 +199,12 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
                 }
             }
 
-            int Attempts = 0;
+            int Attempts   = 0;
             int MaxAttempt = 5;
 
             while(Inventory.contains(SourceItemID) && Attempts < MaxAttempt)
             {
-               var item = Inventory.get(SourceItemID);
+                var item = Inventory.get(SourceItemID);
                 if(!item.interact())
                 {
                     Attempts++;
@@ -169,13 +281,13 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
      * @param Script
      */
     @Override
-    public void onReset(tpircSScript Script)
+    public void onReset(IFScript Script)
     {
         StartCycle(Script);
         super.onReset(Script);
     }
 
-    private void StartCycle(tpircSScript Script)
+    private void StartCycle(IFScript Script)
     {
         Complete         = false;
         InteractTask     = null;
@@ -211,7 +323,7 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
      * @param Script
      */
     @Override
-    public boolean onRestart(tpircSScript Script)
+    public boolean onRestart(IFScript Script)
     {
         StartCycle(Script);
         return super.onRestart(Script);
@@ -225,13 +337,13 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
      * @return true when Cycle is completed, ready for a restart
      */
     @Override
-    public boolean isCycleComplete(tpircSScript Script)
+    public boolean isCycleComplete(IFScript Script)
     {
         return !Inventory.contains(SourceItemID);
     }
 
     @Override
-    public boolean isCycleFinished(tpircSScript Script)
+    public boolean isCycleFinished(IFScript Script)
     {
         return !Bank.contains(SourceItemID) && !Inventory.contains(SourceItemID);
     }
@@ -242,7 +354,7 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
      * @return if cycle has successfully started
      */
     @Override
-    public boolean onStart(tpircSScript Script)
+    public boolean onStart(IFScript Script)
     {
         StartCycle(Script);
         return super.onStart(Script);

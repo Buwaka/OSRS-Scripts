@@ -7,7 +7,7 @@ import Utilities.OSRSUtilities;
 import Utilities.Requirement.ItemRequirement;
 import Utilities.Requirement.LevelRequirement;
 import Utilities.Scripting.ICycle;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import com.google.gson.Gson;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -19,7 +19,7 @@ import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.utilities.Sleep;
 
 @ScriptManifest(name = "SoloScripts.MineSmeltSmithScript", description = "Mine, Smelt and Smith stuff", author = "Semanresu", version = 1.0, category = Category.MINING, image = "")
-public class MineSmeltSmithScript extends tpircSScript
+public class MineSmeltSmithScript extends IFScript
 {
     static Area[]    MineArea1       = {new Area(3281, 3370, 3289, 3361)};
     static Area[]    MineArea2       = {

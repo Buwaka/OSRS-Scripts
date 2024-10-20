@@ -10,8 +10,8 @@ import Utilities.GrandExchange.GEInstance;
 import Utilities.Requirement.ItemRequirement;
 import Utilities.Requirement.ORRequirement;
 import Utilities.Scripting.ICycle;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleCycle;
-import Utilities.Scripting.tpircSScript;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.combat.Combat;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ScriptManifest(name = "SoloScripts.CowHideCombatScript", description = "Kill stuff, then tan stuff", author = "Semanresu", version = 1.0, category = Category.COMBAT, image = "")
-public class CowHideCombatScript extends tpircSScript
+public class CowHideCombatScript extends IFScript
 {
 
 

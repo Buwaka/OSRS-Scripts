@@ -24,7 +24,7 @@ public class PerformanceReport extends AbstractScript implements ActionListener
     long wait      = 0;
 
     String Activity = "";
-    long LastAction;
+    long   LastAction;
     private int UploadAttempt     = 0;
     private int MaxUploadAttempts = 10;
 

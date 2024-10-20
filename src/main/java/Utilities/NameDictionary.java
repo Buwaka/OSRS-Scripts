@@ -12,8 +12,8 @@ import java.util.Random;
 
 public class NameDictionary
 {
-    private static final Random random = new Random();
-    public static List<String> Words = null;
+    private static final Random       random = new Random();
+    public static        List<String> Words  = null;
 
     @Range(from = 3, to = 11)
     public static String GetRandomWord(int length)

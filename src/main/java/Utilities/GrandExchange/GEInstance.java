@@ -3,7 +3,7 @@ package Utilities.GrandExchange;
 import Utilities.GrandExchange.Orders.BaseOrder;
 import Utilities.GrandExchange.Orders.GEOrder;
 import Utilities.OSRSUtilities;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import io.vavr.Tuple2;
 import org.dreambot.api.Client;
 import org.dreambot.api.methods.container.impl.Inventory;
@@ -32,14 +32,14 @@ public class GEInstance implements Serializable
     private              Map<Integer, GESlot>   ActiveOrders           = new HashMap<>();
     private              List<BaseOrder>        OrdersToCancel         = new ArrayList<>();
     private transient    int                    Attempts               = 0;
-    private transient    tpircSScript           OwnerScript;
+    private transient    IFScript               OwnerScript;
 
-    public GEInstance(tpircSScript owner)
+    public GEInstance(IFScript owner)
     {
         init(owner);
     }
 
-    public void init(tpircSScript owner)
+    public void init(IFScript owner)
     {
         OwnerScript = owner;
         Logger.log("GEInstance: init: Orders: " + Orders.toString());

@@ -3,7 +3,7 @@ package Scripts.OldScripts;
 import Cycles.Skilling.MineCycle;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.ICycle;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import com.google.gson.Gson;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.map.Area;
@@ -12,7 +12,7 @@ import org.dreambot.api.script.ScriptManifest;
 
 @ScriptManifest(name = "SoloScripts.MineScript", description = "Mine stuff", author = "Semanresu", version = 1.0, category = Category.MINING, image = "")
 
-public class MineScript extends tpircSScript
+public class MineScript extends IFScript
 {
     static Area[]    MineArea1    = {new Area(3281, 3370, 3289, 3361)};
     static Area[]    MineArea2    = {

@@ -4,8 +4,8 @@ import OSRSDatabase.ItemDB;
 import OSRSDatabase.NPCDB;
 import Utilities.GrandExchange.GEInstance;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.Shop;
@@ -159,7 +159,7 @@ public class TanTask extends SimpleTask
      * @return return true if successful, false if we need more time, keep triggering start until it is ready
      */
     @Override
-    public boolean onStartTask(tpircSScript Script)
+    public boolean onStartTask(IFScript Script)
     {
         return super.onStartTask(Script);
     }

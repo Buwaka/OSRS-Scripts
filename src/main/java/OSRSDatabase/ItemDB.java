@@ -587,6 +587,18 @@ public class ItemDB extends OSRSDataBase
         return out.isEmpty() ? null : out.firstEntry().getValue();
     }
 
+    public static int GetItemID(String Name)
+    {
+        var item = GetClosestMatch(Name, 3, true);
+
+        if(item == null)
+        {
+            Logger.log("ItemDB: GetItemID: Item with Name " + Name + " not found");
+            return -1;
+        }
+        return item.id;
+    }
+
     public static int GetProfitAlch(int ID)
     {
         var item = GetItemData(ID);

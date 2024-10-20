@@ -5,7 +5,7 @@ import Cycles.General.SimpleProcessCycle;
 import Cycles.Tasks.SimpleTasks.ItemProcessing.TanTask;
 import OSRSDatabase.ItemDB;
 import OSRSDatabase.MonsterDB;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.script.Category;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ScriptManifest(name = "SoloScripts.MoneyMakingScript", description = "Kill stuff... for money", author = "Semanresu", version = 1.0, category = Category.COMBAT, image = "")
-public class MoneyMakingScript extends tpircSScript
+public class MoneyMakingScript extends IFScript
 {
     final int BeefID = 2132;
     CombatLootBankCycle Cycle = new CombatLootBankCycle("Cow slaughter",

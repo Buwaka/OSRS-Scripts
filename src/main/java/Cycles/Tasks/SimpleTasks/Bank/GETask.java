@@ -1,7 +1,7 @@
 package Cycles.Tasks.SimpleTasks.Bank;
 
+import Utilities.Scripting.IFScript;
 import Utilities.Scripting.SimpleTask;
-import Utilities.Scripting.tpircSScript;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.grandexchange.GrandExchange;
 import org.dreambot.api.methods.interactive.Players;
@@ -74,7 +74,7 @@ public class GETask extends SimpleTask
      * @return return true if successful, false if we need more time, keep triggering start until it is ready
      */
     @Override
-    public boolean onStartTask(tpircSScript Script)
+    public boolean onStartTask(IFScript Script)
     {
         var ItemRequirements = GetScript().GetGEInstance().GetAllOrderRequirements();
         if(GetItems == null && ItemRequirements != null && ItemRequirements.length > 0)

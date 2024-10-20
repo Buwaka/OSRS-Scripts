@@ -1,7 +1,7 @@
 package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.input.Keyboard;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.input.event.impl.keyboard.awt.Key;
@@ -17,7 +17,7 @@ import org.dreambot.api.utilities.Sleep;
 import java.util.Random;
 
 @ScriptManifest(name = "SoloScripts.ClayWatering", description = "Clay to soft clay using water vials, needs to be close to a bank", author = "Semanresu", version = 1.0, category = Category.CRAFTING, image = "")
-public class ClayWatering extends tpircSScript
+public class ClayWatering extends IFScript
 {
 
     final int WaterVialID = 227;
@@ -29,17 +29,6 @@ public class ClayWatering extends tpircSScript
     {
         Watering,
         Banking
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        if(!OSRSUtilities.CanReachBank())
-        {
-            Logger.log("Not within reach of a bank");
-            this.stop();
-        }
     }
 
     public int onLoop()
@@ -109,6 +98,17 @@ public class ClayWatering extends tpircSScript
         }
 
         return 0;
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        if(!OSRSUtilities.CanReachBank())
+        {
+            Logger.log("Not within reach of a bank");
+            this.stop();
+        }
     }
 
 }

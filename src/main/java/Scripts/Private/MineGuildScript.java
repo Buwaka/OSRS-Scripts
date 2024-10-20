@@ -3,14 +3,14 @@ package Scripts.Private;
 import Cycles.Specifics.MineGuildCycle;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import Utilities.Scripting.ICycle;
-import Utilities.Scripting.tpircSScript;
+import Utilities.Scripting.IFScript;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
 
 @ScriptManifest(name = "SoloScripts.MineGuildScript", description = "MineGuild shenanigans", author = "Semanresu", version = 1.0, category = Category.MINING, image = "")
 
-public class MineGuildScript extends tpircSScript
+public class MineGuildScript extends IFScript
 {
     MineGuildCycle MGCycle = new MineGuildCycle("MineGuildCycle");
 

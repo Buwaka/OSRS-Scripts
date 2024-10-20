@@ -23,7 +23,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 public class DataBaseUtilities
 {
     private static final Set<String> POJOPackages = new HashSet<>();
-    private static MongoClient Client = null;
+    private static       MongoClient Client       = null;
     String MDBUser     = "ScriptUser";
     String MDBPassword = "tb482uLsd2gX7Hse";
 
@@ -67,6 +67,57 @@ public class DataBaseUtilities
                          "tb482uLsd2gX7Hse",
                          "osrs-database.ehnphrp.mongodb.net",
                          "retryWrites=true&w=majority&appName=OSRS-Database");
+    }
+
+    public static MongoClient GetClient(String Protocol, String Username, String Password, String Host, String Options)
+    {
+        if(Client != null)
+        {
+            return Client;
+        }
+
+        //String connectionString = "mongodb+srv://ScriptUser:<password>@osrs-database.ehnphrp.mongodb.net/?retryWrites=true&w=majority&appName=OSRS-Database";
+        String URI = Protocol + "://" + Username + ":" + Password + "@" + Host +
+                     (Options.isEmpty() ? "" : "/?" + Options);
+
+        ServerApi serverApi = ServerApi.builder().version(ServerApiVersion.V1).build();
+
+        MongoClientSettings settings = MongoClientSettings.builder()
+                                                          .applyToSocketSettings((builder) -> builder.connectTimeout(
+                                                                                                             10,
+                                                                                                             TimeUnit.SECONDS)
+                                                                                                     .readTimeout(
+                                                                                                             10,
+                                                                                                             TimeUnit.SECONDS))
+                                                          .applyToConnectionPoolSettings((builder) -> builder.maxConnectionIdleTime(
+                                                                  10,
+                                                                  TimeUnit.SECONDS))
+                                                          .applyConnectionString(new ConnectionString(
+                                                                  URI))
+                                                          .serverApi(serverApi)
+                                                          .build();
+        // Create a new client and connect to the server
+        try
+        {
+            Client = MongoClients.create(settings);
+            return Client;
+        } catch(Exception e)
+        {
+            System.out.print("DataBaseUtilities: ConnectToDataBase: Exception " + e);
+            System.out.print("DataBaseUtilities: ConnectToDataBase: URI" + URI);
+            //            Logger.log("DataBaseUtilities: ConnectToDataBase: Exception " + e);
+            //            Logger.log("DataBaseUtilities: ConnectToDataBase: URI" + URI);
+        }
+
+        return null;
+    }
+
+    public static void CloseClient()
+    {
+        if(Client != null)
+        {
+            Client.close();
+        }
     }
 
     public static void RegisterPOJO(String PackageName)
@@ -121,49 +172,6 @@ public class DataBaseUtilities
 
     }
 
-    public static MongoClient GetClient(String Protocol, String Username, String Password, String Host, String Options)
-    {
-        if(Client != null)
-        {
-            return Client;
-        }
-
-        //String connectionString = "mongodb+srv://ScriptUser:<password>@osrs-database.ehnphrp.mongodb.net/?retryWrites=true&w=majority&appName=OSRS-Database";
-        String URI = Protocol + "://" + Username + ":" + Password + "@" + Host +
-                     (Options.isEmpty() ? "" : "/?" + Options);
-
-        ServerApi serverApi = ServerApi.builder().version(ServerApiVersion.V1).build();
-
-        MongoClientSettings settings = MongoClientSettings.builder()
-                                                          .applyToSocketSettings((builder) -> builder.connectTimeout(
-                                                                                                             10,
-                                                                                                             TimeUnit.SECONDS)
-                                                                                                     .readTimeout(
-                                                                                                             10,
-                                                                                                             TimeUnit.SECONDS))
-                                                          .applyToConnectionPoolSettings((builder) -> builder.maxConnectionIdleTime(
-                                                                  10,
-                                                                  TimeUnit.SECONDS))
-                                                          .applyConnectionString(new ConnectionString(
-                                                                  URI))
-                                                          .serverApi(serverApi)
-                                                          .build();
-        // Create a new client and connect to the server
-        try
-        {
-            Client = MongoClients.create(settings);
-            return Client;
-        } catch(Exception e)
-        {
-            System.out.print("DataBaseUtilities: ConnectToDataBase: Exception " + e);
-            System.out.print("DataBaseUtilities: ConnectToDataBase: URI" + URI);
-            //            Logger.log("DataBaseUtilities: ConnectToDataBase: Exception " + e);
-            //            Logger.log("DataBaseUtilities: ConnectToDataBase: URI" + URI);
-        }
-
-        return null;
-    }
-
     public static MongoDatabase GetDataBase(MongoClient Client, String DataBaseID)
     {
         MongoDatabase database = Client.getDatabase(DataBaseID);
@@ -178,14 +186,6 @@ public class DataBaseUtilities
             return null;
         }
         return database;
-    }
-
-    public static void CloseClient()
-    {
-        if(Client != null)
-        {
-            Client.close();
-        }
     }
 
 }
