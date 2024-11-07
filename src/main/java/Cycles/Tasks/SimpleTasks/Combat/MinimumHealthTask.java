@@ -2,18 +2,18 @@ package Cycles.Tasks.SimpleTasks.Combat;
 
 import OSRSDatabase.FoodDB;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.Client;
 import org.dreambot.api.data.consumables.Food;
 import org.dreambot.api.methods.interactive.Players;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 public class MinimumHealthTask extends SimpleTask
 {
-    private int MinimumHealth;
+    private final int MinimumHealth;
 
     public MinimumHealthTask(String Name, int MinHealth)
     {

@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonReader;
 import org.dreambot.api.methods.map.Tile;
 
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -16,7 +17,7 @@ public class PrayerDB extends OSRSDataBase
     final private static ReentrantLock                AltarDBLock  = new ReentrantLock();
     final private static ConcurrentLinkedQueue<Altar> AltarDBCache = new ConcurrentLinkedQueue<>();
 
-    public static class Altar
+    public static class Altar implements Serializable
     {
         public String  Name       = "";
         public Tile    Location;

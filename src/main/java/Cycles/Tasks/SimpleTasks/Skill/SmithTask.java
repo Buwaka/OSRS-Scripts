@@ -1,6 +1,7 @@
 package Cycles.Tasks.SimpleTasks.Skill;
 
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.filter.impl.IdFilter;
@@ -9,7 +10,6 @@ import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.methods.widget.helpers.Smithing;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.GameObject;
 import org.dreambot.api.wrappers.items.Item;
@@ -20,12 +20,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SmithTask extends SimpleTask
 {
     private final int           MaxAttempts            = 10;
+    private final AtomicInteger TimeoutTicker          = new AtomicInteger();
     public        int           DefaultProcessTickTime = 7;
     private       int[]         ObjectID               = null;
     private       String        InteractAction         = null;
     private       String        Choice                 = null;
     private       Integer       Count                  = null;
-    private       AtomicInteger TimeoutTicker          = new AtomicInteger();
     private       boolean       StartedProcessing      = false;
     private       int           Attempts               = 0;
     private       Tile          BackupTile             = null;

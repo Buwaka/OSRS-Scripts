@@ -1,13 +1,14 @@
 package OSRSDatabase;
 
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.Logger;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import io.vavr.Tuple2;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SmithingDB extends OSRSDataBase
@@ -17,7 +18,7 @@ public class SmithingDB extends OSRSDataBase
     private static       ConcurrentHashMap<Integer, SmithData[]> SmithingDBMap = null;
     private static       ConcurrentHashMap<Integer, SmeltData>   SmeltDBMap    = null;
 
-    public static class SmithData
+    public static class SmithData implements Serializable
     {
         public int     id;
         public int     Level;
@@ -32,7 +33,7 @@ public class SmithingDB extends OSRSDataBase
         }
     }
 
-    public static class SmeltData
+    public static class SmeltData implements Serializable
     {
 
         public           int                        id;

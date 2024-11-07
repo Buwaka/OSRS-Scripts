@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface CycleGeneratorID
 {
-    public enum Purpose
+    enum Purpose
     {
         Money,
         Experience

@@ -1,5 +1,6 @@
 package Utilities.MouseAlgorithm;
 
+import Utilities.Scripting.Logger;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.input.event.impl.mouse.MouseButton;
 import org.dreambot.api.input.mouse.algorithm.MouseAlgorithm;
@@ -17,7 +18,6 @@ import org.dreambot.api.methods.input.Camera;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.script.listener.PaintListener;
-import org.dreambot.api.utilities.Logger;
 
 import java.awt.*;
 import java.util.Random;

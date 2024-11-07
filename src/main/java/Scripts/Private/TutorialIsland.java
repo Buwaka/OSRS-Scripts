@@ -2,9 +2,9 @@ package Scripts.Private;
 
 import Cycles.Tasks.SimpleTasks.ItemProcessing.InteractTask;
 import OSRSDatabase.WoodDB;
-import Utilities.MouseAlgorithm.WindMouseAttempt;
 import Utilities.NameDictionary;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.Logger;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.dreambot.api.ClientSettings;
 import org.dreambot.api.input.Keyboard;
@@ -36,14 +36,11 @@ import org.dreambot.api.methods.widget.helpers.ItemProcessing;
 import org.dreambot.api.methods.widget.helpers.Smithing;
 import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.Category;
-import org.dreambot.api.script.ScriptManager;
 import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.script.listener.PaintListener;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.Entity;
 import org.dreambot.api.wrappers.interactive.GameObject;
-import org.dreambot.api.wrappers.interactive.SceneObject;
 import org.dreambot.api.wrappers.widgets.WidgetChild;
 
 import java.awt.*;
@@ -265,9 +262,9 @@ public class TutorialIsland extends AbstractScript implements PaintListener
     @Override
     public void onStart()
     {
-        var algo = new WindMouseAttempt(1000);
-        ScriptManager.getScriptManager().addListener(algo);
-        Mouse.setMouseAlgorithm(algo);
+        //        var algo = new WindMouseAttempt(1000);
+        //        ScriptManager.getScriptManager().addListener(algo);
+        //        Mouse.setMouseAlgorithm(algo);
         Camera.setCameraMode(CameraMode.MOUSE_ONLY);
 
         Logger.log("onStart");
@@ -287,9 +284,9 @@ public class TutorialIsland extends AbstractScript implements PaintListener
     @Override
     public void onStart(String... params)
     {
-        var algo = new WindMouseAttempt(1000);
-        ScriptManager.getScriptManager().addListener(algo);
-        Mouse.setMouseAlgorithm(algo);
+        //        var algo = new WindMouseAttempt(1000);
+        //        ScriptManager.getScriptManager().addListener(algo);
+        //        Mouse.setMouseAlgorithm(algo);
         Camera.setCameraMode(CameraMode.MOUSE_ONLY);
 
         Logger.log("onStart");

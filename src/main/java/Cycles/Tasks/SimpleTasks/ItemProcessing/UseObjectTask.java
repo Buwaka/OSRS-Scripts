@@ -2,6 +2,7 @@ package Cycles.Tasks.SimpleTasks.ItemProcessing;
 
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.filter.impl.IdFilter;
@@ -10,7 +11,6 @@ import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.methods.widget.helpers.ItemProcessing;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.GameObject;
 import org.dreambot.api.wrappers.items.Item;
@@ -21,13 +21,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UseObjectTask extends SimpleTask
 {
     private final int           MaxAttempts            = 10;
+    private final AtomicInteger TimeoutTicker          = new AtomicInteger();
     public        int           DefaultProcessTickTime = 7;
     private       int[]         ObjectID               = null;
     private       Tile          BackupTile             = null;
     private       String        InteractAction         = null;
     private       String        Choice                 = null;
     private       Integer       Count                  = null;
-    private       AtomicInteger TimeoutTicker          = new AtomicInteger();
     private       boolean       StartedProcessing      = false;
     private       int           Attempts               = 0;
 

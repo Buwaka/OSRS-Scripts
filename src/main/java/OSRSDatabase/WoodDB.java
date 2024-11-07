@@ -2,6 +2,7 @@ package OSRSDatabase;
 
 import Utilities.OSRSUtilities;
 import Utilities.Requirement.IRequirement;
+import Utilities.Scripting.Logger;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
@@ -11,12 +12,12 @@ import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.interactive.GameObject;
 import org.dreambot.api.wrappers.interactive.SceneObject;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,7 +28,7 @@ public class WoodDB extends OSRSDataBase
     private static       ConcurrentHashMap<Integer, WoodData> WoodDBMap       = null;
     private static       List<WoodCuttingTool>                WoodToolsDBList = null;
 
-    public enum WoodType
+    public enum WoodType implements Serializable
     {
         @SerializedName("Logs") Logs("Logs"),
         @SerializedName("Oak logs") Oak("Oak logs"),
@@ -47,7 +48,7 @@ public class WoodDB extends OSRSDataBase
         }
     }
 
-    public static class WoodData
+    public static class WoodData implements Serializable
     {
         public           int      id;
         public           String   name;
@@ -462,11 +463,13 @@ public class WoodDB extends OSRSDataBase
         if(tile == null) {return false;}
 
         var objs = GameObjects.getObjectsOnTile(tile);
-        boolean nonematch = objs == null || objs.length == 0
-                ? true
-                : Arrays.stream(objs)
-                        .noneMatch((t) -> t.getClass().isAssignableFrom(SceneObject.class) ||
-                                          t.getClass().isAssignableFrom(GameObject.class));
+        boolean nonematch = objs == null || objs.length == 0 || Arrays.stream(objs)
+                                                                      .noneMatch((t) -> t.getClass()
+                                                                                         .isAssignableFrom(
+                                                                                                 SceneObject.class) ||
+                                                                                        t.getClass()
+                                                                                         .isAssignableFrom(
+                                                                                                 GameObject.class));
 
 
         boolean isUnderRoof = isUnderRoof(tile);
@@ -509,12 +512,7 @@ public class WoodDB extends OSRSDataBase
             return false;
         }
 
-        if((tileSettings[z][x][y] & TILE_FLAG_UNDER_ROOF) == TILE_FLAG_UNDER_ROOF)
-        {
-            return true;
-        }
-
-        return false;
+        return (tileSettings[z][x][y] & TILE_FLAG_UNDER_ROOF) == TILE_FLAG_UNDER_ROOF;
     }
 
     public static boolean isTileWalkable(Tile from, Tile to)

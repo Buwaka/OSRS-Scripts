@@ -1,9 +1,9 @@
 package Utilities.Requirement;
 
+import Utilities.Scripting.Logger;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
-import org.dreambot.api.utilities.Logger;
 
 import java.io.Serial;
 import java.util.Arrays;

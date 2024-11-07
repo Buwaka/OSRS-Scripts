@@ -14,6 +14,25 @@
     </resources>
     <plugins>
       <plugin>
+        <groupId>com.igormaznitsa</groupId>
+        <artifactId>jcp</artifactId>
+        <version>7.1.2</version>
+        <executions>
+          <execution>
+            <id>preprocessSources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>preprocess</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <vars>
+            <CycleAuthentication>${CycleAuthentication}</CycleAuthentication>
+          </vars>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.6.0</version>
         <executions>
@@ -23,7 +42,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <outputFile>C:\Users\SammyLaptop\DreamBot\Scripts\OSRS-Scripts.jar</outputFile>
+              <outputFile>${DBScriptFolder}\OSRS-Scripts.jar</outputFile>
             </configuration>
           </execution>
         </executions>
@@ -42,9 +61,89 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>Obfuscate</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.wvengen</groupId>
+            <artifactId>proguard-maven-plugin</artifactId>
+            <version>2.6.1</version>
+            <executions>
+              <execution>
+                <id>obfuscation-packaging</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>proguard</goal>
+                </goals>
+                <configuration>
+                  <proguardVersion>7.6.0</proguardVersion>
+                  <obfuscate>true</obfuscate>
+                  <attach>true</attach>
+                  <appendClassifier>false</appendClassifier>
+                  <addMavenDescriptor>true</addMavenDescriptor>
+                  <injar>${project.build.finalName}.jar</injar>
+                  <proguardInclude>${basedir}/ProguardConfig.pro</proguardInclude>
+                  <injarNotExistsSkip>true</injarNotExistsSkip>
+                  <options>
+                    <option>-libraryjars
+                                            "${java.home}/jmods/java.base.jmod"</option>
+                    <option>-libraryjars
+                                            "${java.home}/jmods/java.desktop.jmod"</option>
+                    <option>-libraryjars
+                                            "${java.home}/jmods/java.datatransfer.jmod"</option>
+                    <option>-libraryjars
+                                            "${java.home}/jmods/java.logging.jmod"</option>
+                    <option>-allowaccessmodification</option>
+                    <option>-overloadaggressively</option>
+                    <option>-useuniqueclassmembernames</option>
+                    <option>-optimizationpasses 10</option>
+                    <option>-mergeinterfacesaggressively</option>
+                    <option>-optimizeaggressively</option>
+                    <option>-repackageclasses</option>
+                    <option>-flattenpackagehierarchy</option>
+                    <option>-keepattributes
+                                            Signature,*Annotation*,InnerClasses</option>
+                    <option>-verbose</option>
+                    <option>-whyareyoukeeping public class
+                                            OSRSDatabase.ItemDB$EquipmentData</option>
+                  </options>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>com.guardsquare</groupId>
+                <artifactId>proguard-base</artifactId>
+                <version>7.6.0</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>MeleeTrainer</id>
+      <properties>
+        <Scripts.melee>-keepnames public class
+                    Scripts.CommissionScripts.MeleeTrainer { *; }</Scripts.melee>
+      </properties>
+    </profile>
+    <profile>
+      <id>CycleAuthentication</id>
+      <properties>
+        <CycleAuthentication>@Ignored</CycleAuthentication>
+      </properties>
+    </profile>
+  </profiles>
   <properties>
-    <maven.compiler.target>21</maven.compiler.target>
+    <EncryptedResourceDirectory>${project.build.directory}/encrypted-resources</EncryptedResourceDirectory>
     <maven.compiler.source>21</maven.compiler.source>
+    <EncryptionKey>U9&gt;c1D27rdQ38[5c</EncryptionKey>
+    <DBScriptFolder>C:\Users\SammyLaptop\DreamBot\Scripts</DBScriptFolder>
+    <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <CycleAuthentication>//</CycleAuthentication>
   </properties>
 </project>

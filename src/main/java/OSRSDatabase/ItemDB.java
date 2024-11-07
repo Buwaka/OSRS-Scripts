@@ -4,6 +4,7 @@ import Utilities.OSRSUtilities;
 import Utilities.Requirement.CombatRequirement;
 import Utilities.Requirement.IRequirement;
 import Utilities.Requirement.LevelRequirement;
+import Utilities.Scripting.Logger;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
@@ -12,10 +13,11 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.dreambot.api.methods.combat.CombatStyle;
 import org.dreambot.api.methods.grandexchange.LivePrices;
 import org.dreambot.api.methods.skills.Skills;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
+import java.io.Serial;
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,7 +31,7 @@ public class ItemDB extends OSRSDataBase
     final private static ConcurrentHashMap<Integer, ItemData> ItemDBCache = new ConcurrentHashMap<>();
 
 
-    public enum Skill
+    public enum Skill implements Serializable
     {
         @SerializedName("attack") ATTACK,
         @SerializedName("defence") DEFENCE,
@@ -74,16 +76,30 @@ public class ItemDB extends OSRSDataBase
     {
         public List<Tuple2<Skill, Integer>> SkillLevelPair = new ArrayList<>();
 
+        public static class RequirementSerializer implements JsonSerializer<Requirement>
+        {
+            @Override
+            public JsonElement serialize(Requirement src, Type typeOfSrc, JsonSerializationContext context)
+            {
+                JsonObject out = new JsonObject();
+                for(var req : src.SkillLevelPair)
+                {
+                    out.addProperty(req._1.name(), req._2);
+                }
+                return out;
+            }
+        }
         public static class RequirementDeserializer implements JsonDeserializer<Requirement>
         {
             public Requirement deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws
                     JsonParseException
             {
                 Requirement out = new Requirement();
+
                 for(var skill : json.getAsJsonObject().entrySet())
                 {
                     Skill skell;
-                    if(skill.getKey().toUpperCase().equals("RUNECRAFT"))
+                    if(skill.getKey().equalsIgnoreCase("RUNECRAFT"))
                     {
                         skell = Skill.RUNECRAFTING;
                     }
@@ -134,41 +150,43 @@ public class ItemDB extends OSRSDataBase
 
     }
 
-    public static class ItemData
+    public static class ItemData implements Serializable
     {
 
-        public           int           id;
-        public           String        name;
-        public           String        last_updated;
-        public           boolean       incomplete;
-        public           boolean       members;
-        public           boolean       tradeable;
-        public           boolean       tradeable_on_ge;
-        public           boolean       stackable;
-        public @Nullable Integer       stacked;
-        public           boolean       noted;
-        public           boolean       noteable;
-        public @Nullable Integer       linked_id_item;
-        public @Nullable Integer       linked_id_noted;
-        public @Nullable Integer       linked_id_placeholder;
-        public           boolean       placeholder;
-        public           boolean       equipable;
-        public           boolean       equipable_by_player;
-        public           boolean       equipable_weapon;
-        public           int           cost;
-        public @Nullable Integer       highalch;
-        public @Nullable Integer       lowalch;
-        public @Nullable Float         weight;
-        public @Nullable Integer       buy_limit;
-        public           boolean       quest_item;
-        public @Nullable String        release_date;
-        public           boolean       duplicate;
-        public @Nullable String        examine;
-        public           String        icon;
-        public @Nullable String        wiki_name;
-        public @Nullable String        wiki_url;
-        public @Nullable EquipmentData equipment;
-        public @Nullable WeaponData    weapon;
+        @Serial
+        private static final long          serialVersionUID = -1739748470028741864L;
+        public               int           id;
+        public               String        name;
+        public               String        last_updated;
+        public               boolean       incomplete;
+        public               boolean       members;
+        public               boolean       tradeable;
+        public               boolean       tradeable_on_ge;
+        public               boolean       stackable;
+        public @Nullable     Integer       stacked;
+        public               boolean       noted;
+        public               boolean       noteable;
+        public @Nullable     Integer       linked_id_item;
+        public @Nullable     Integer       linked_id_noted;
+        public @Nullable     Integer       linked_id_placeholder;
+        public               boolean       placeholder;
+        public               boolean       equipable;
+        public               boolean       equipable_by_player;
+        public               boolean       equipable_weapon;
+        public               int           cost;
+        public @Nullable     Integer       highalch;
+        public @Nullable     Integer       lowalch;
+        public @Nullable     Float         weight;
+        public @Nullable     Integer       buy_limit;
+        public               boolean       quest_item;
+        public @Nullable     String        release_date;
+        public               boolean       duplicate;
+        public @Nullable     String        examine;
+        public               String        icon;
+        public @Nullable     String        wiki_name;
+        public @Nullable     String        wiki_url;
+        public @Nullable     EquipmentData equipment;
+        public @Nullable     WeaponData    weapon;
 
 
         public double GetDPS(StanceData.Attacktype type)
@@ -229,26 +247,28 @@ public class ItemDB extends OSRSDataBase
         }
     }
 
-    public static class EquipmentData
+    public static class EquipmentData implements Serializable
     {
-        public           int           attack_stab;
-        public           int           attack_slash;
-        public           int           attack_crush;
-        public           int           attack_magic;
-        public           int           attack_ranged;
-        public           int           defence_stab;
-        public           int           defence_slash;
-        public           int           defence_crush;
-        public           int           defence_magic;
-        public           int           defence_ranged;
-        public           int           melee_strength;
-        public           int           ranged_strength;
-        public           int           magic_damage;
-        public           int           prayer;
-        public           EquipmentSlot slot;
-        public @Nullable Requirement   requirements;
+        @Serial
+        private static final long          serialVersionUID = -8608939454072060241L;
+        public               int           attack_stab;
+        public               int           attack_slash;
+        public               int           attack_crush;
+        public               int           attack_magic;
+        public               int           attack_ranged;
+        public               int           defence_stab;
+        public               int           defence_slash;
+        public               int           defence_crush;
+        public               int           defence_magic;
+        public               int           defence_ranged;
+        public               int           melee_strength;
+        public               int           ranged_strength;
+        public               int           magic_damage;
+        public               int           prayer;
+        public               EquipmentSlot slot;
+        public @Nullable     Requirement   requirements;
 
-        public enum EquipmentSlot
+        public enum EquipmentSlot implements Serializable
         {
             head,
             cape,
@@ -328,6 +348,11 @@ public class ItemDB extends OSRSDataBase
             return Math.max(Math.max(attack_crush, attack_stab), attack_slash);
         }
 
+        public boolean isCosmetic()
+        {
+            return GetTotal() == 0;
+        }
+
         public int GetTotal()
         {
             return attack_stab + attack_slash + attack_crush + attack_magic + attack_ranged +
@@ -341,14 +366,16 @@ public class ItemDB extends OSRSDataBase
         }
     }
 
-    public static class WeaponData
+    public static class WeaponData implements Serializable
     {
-        public int          attack_speed;
-        public WeaponType   weapon_type;
+        @Serial
+        private static final long         serialVersionUID = 3997329525277839399L;
+        public               int          attack_speed;
+        public               WeaponType   weapon_type;
         //public JSONObject stances;
-        public StanceData[] stances;
+        public               StanceData[] stances;
 
-        public enum WeaponType
+        public enum WeaponType implements Serializable
         {
             scythe,
             gun,
@@ -376,7 +403,7 @@ public class ItemDB extends OSRSDataBase
             polestaff,
             claw,
             unarmed,
-            bludgeon;
+            bludgeon
         }
 
         public String toString()
@@ -385,16 +412,18 @@ public class ItemDB extends OSRSDataBase
         }
     }
 
-    public static class StanceData
+    public static class StanceData implements Serializable
     {
 
-        public           CombatStyles   combat_style;
-        public @Nullable Attacktype     attack_type;
-        public @Nullable AttackStyles   attack_style;
-        public           ExperienceType experience;
-        public @Nullable String         boosts; //attack range by 2 squares, accuracy and damage, attack speed by 1 tick
+        @Serial
+        private static final long           serialVersionUID = -4488299684437000545L;
+        public               CombatStyles   combat_style;
+        public @Nullable     Attacktype     attack_type;
+        public @Nullable     AttackStyles   attack_style;
+        public               ExperienceType experience;
+        public @Nullable     String         boosts; //attack range by 2 squares, accuracy and damage, attack speed by 1 tick
 
-        public enum CombatStyles
+        public enum CombatStyles implements Serializable
         {
             flare,
             accurate,
@@ -429,10 +458,10 @@ public class ItemDB extends OSRSDataBase
             lash,
             slash,
             bash,
-            scorch;
+            scorch
         }
 
-        public enum Attacktype
+        public enum Attacktype implements Serializable
         {
             stab,
             slash,
@@ -440,20 +469,20 @@ public class ItemDB extends OSRSDataBase
             magic,
             ranged,
             @SerializedName("defensive casting") defensive_casting,
-            spellcasting;
+            spellcasting
         }
 
-        public enum AttackStyles
+        public enum AttackStyles implements Serializable
         {
             controlled,
             magic,
             accurate,
             defensive,
-            aggressive;
+            aggressive
         }
 
 
-        public enum ExperienceType
+        public enum ExperienceType implements Serializable
         {
             magic,
             shared,
@@ -485,6 +514,49 @@ public class ItemDB extends OSRSDataBase
         {
             return _toString(this, this.getClass());
         }
+    }
+
+    public static List<ItemData> GetAllEquipment(boolean ExcludeInstanceUniques)
+    {
+        List<ItemData> out = new ArrayList<>();
+        try
+        {
+            ItemDBLock.lock();
+            InputStreamReader File   = new InputStreamReader(GetInputStream(ItemDB));
+            JsonReader        Reader = new JsonReader(File);
+            Gson              gson   = OSRSUtilities.OSRSGsonBuilder.create();
+            Reader.setLenient(true);
+
+            Reader.beginObject();
+
+            while(Reader.hasNext())
+            {
+                int      ID  = Integer.parseInt(Reader.nextName());
+                ItemData Obj = gson.fromJson(Reader, ItemData.class);
+
+                if(Obj.placeholder || Obj.noted || Obj.duplicate) {continue;}
+
+                if(ExcludeInstanceUniques &&
+                   (Obj.wiki_name == null || Obj.wiki_name.contains("Deadman Mode") ||
+                    Obj.wiki_name.contains("Last Man Standing"))) {continue;}
+
+                if(Obj.equipment != null && Obj.equipable && Obj.equipable_by_player)
+                {
+                    out.add(Obj);
+                }
+            }
+
+            Reader.endObject();
+            Reader.close();
+
+        } catch(Exception e)
+        {
+            Logger.log("ItemDB: GetAllEquipment: Failed to read " + e);
+            //throw new RuntimeException(e);
+        }
+
+        ItemDBLock.unlock();
+        return out;
     }
 
     public static ItemData[] GetAllItemKeywordMatch(String keyword, boolean IgnoreNoteAndPlaceHolder)

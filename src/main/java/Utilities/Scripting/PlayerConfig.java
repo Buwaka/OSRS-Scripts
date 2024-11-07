@@ -7,7 +7,6 @@ import org.dreambot.api.data.GameState;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.script.listener.GameStateListener;
 import org.dreambot.api.utilities.AccountManager;
-import org.dreambot.api.utilities.Logger;
 
 import java.io.Serial;
 import java.io.Serializable;

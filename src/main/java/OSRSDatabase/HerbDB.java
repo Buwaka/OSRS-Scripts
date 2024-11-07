@@ -1,13 +1,14 @@
 package OSRSDatabase;
 
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.Logger;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,14 +18,14 @@ public class HerbDB extends OSRSDataBase
     final private static String                     HerbDBPath = "Skilling/herbDB.json";
     private static       HashMap<Integer, HerbData> HerbDBMap  = null;
 
-    public enum PasteType
+    public enum PasteType implements Serializable
     {
         Mox,
         Aga,
         Lye
     }
 
-    public static class HerbData
+    public static class HerbData implements Serializable
     {
         public int       id;
         public int       grimy_id;
@@ -68,6 +69,16 @@ public class HerbDB extends OSRSDataBase
         return HerbDBMap.keySet().stream().filter(t -> !isGrimyHerb(t)).mapToInt(t -> t).toArray();
     }
 
+    public static boolean isGrimyHerb(int ID)
+    {
+        if(HerbDBMap == null)
+        {
+            ReadHerbDB();
+        }
+
+        return HerbDBMap.containsKey(ID) && HerbDBMap.get(ID).grimy_id == ID;
+    }
+
     public static int[] GetHerbIDs()
     {
         if(HerbDBMap == null)
@@ -76,33 +87,6 @@ public class HerbDB extends OSRSDataBase
         }
 
         return HerbDBMap.keySet().stream().mapToInt(t -> t).toArray();
-    }
-
-    /**
-     * @param ID of clean herb
-     *
-     * @return
-     */
-    public static HerbData GetCleanHerb(int ID)
-    {
-        HerbData herb = GetHerbData(ID);
-
-        if(herb == null)
-        {
-            return null;
-        }
-
-        return GetHerbData(herb.id);
-    }
-
-    public static HerbData GetHerbData(int ID)
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.get(ID);
     }
 
     private static void ReadHerbDB()
@@ -138,6 +122,33 @@ public class HerbDB extends OSRSDataBase
             Logger.log("Error reading HerbDB, Exception: " + e);
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * @param ID of clean herb
+     *
+     * @return
+     */
+    public static HerbData GetCleanHerb(int ID)
+    {
+        HerbData herb = GetHerbData(ID);
+
+        if(herb == null)
+        {
+            return null;
+        }
+
+        return GetHerbData(herb.id);
+    }
+
+    public static HerbData GetHerbData(int ID)
+    {
+        if(HerbDBMap == null)
+        {
+            ReadHerbDB();
+        }
+
+        return HerbDBMap.get(ID);
     }
 
     public static List<HerbData> GetCleanHerbData()
@@ -190,16 +201,6 @@ public class HerbDB extends OSRSDataBase
         }
 
         return HerbDBMap.keySet().stream().filter(t -> isGrimyHerb(t)).mapToInt(t -> t).toArray();
-    }
-
-    public static boolean isGrimyHerb(int ID)
-    {
-        if(HerbDBMap == null)
-        {
-            ReadHerbDB();
-        }
-
-        return HerbDBMap.containsKey(ID) && HerbDBMap.get(ID).grimy_id == ID;
     }
 
     public static HerbData[] GetHerbData()

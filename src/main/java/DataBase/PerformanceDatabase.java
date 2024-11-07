@@ -4,6 +4,7 @@ import OSRSDatabase.OSRSPrices;
 import OSRSDatabase.SkillsDB;
 import Utilities.GrandExchange.GEInstance;
 import Utilities.Patterns.Playtime;
+import Utilities.Scripting.Logger;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import org.bson.BsonType;
@@ -14,7 +15,6 @@ import org.bson.codecs.pojo.annotations.BsonRepresentation;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.quest.Quests;
 import org.dreambot.api.methods.skills.Skills;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nullable;
 import java.io.Serial;

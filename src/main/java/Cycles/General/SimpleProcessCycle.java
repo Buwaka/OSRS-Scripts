@@ -4,12 +4,12 @@ import Cycles.Tasks.SimpleTasks.Bank.InventoryCheckTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleCycle;
 import Utilities.Scripting.SimpleTask;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
-import org.dreambot.api.utilities.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +17,14 @@ import java.util.List;
 
 public class SimpleProcessCycle extends SimpleCycle
 {
-    private List<Tuple2<Integer, Integer>> ItemRequirements = null;
-    private SimpleTask                     ProcessTaskTemplate;
-    private Area                           TargetArea;
+    private final SimpleTask                     ProcessTaskTemplate;
+    private final Area                           TargetArea;
+    private       List<Tuple2<Integer, Integer>> ItemRequirements = null;
     //private transient SimpleTask                    CurrentProcessTask;
 
     public SimpleProcessCycle(String name, SimpleTask processTaskTemplate, Area targetArea)
     {
-        super(name);
+        super(name, null);
         ProcessTaskTemplate = processTaskTemplate;
         TargetArea          = targetArea;
     }

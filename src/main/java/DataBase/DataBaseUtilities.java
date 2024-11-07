@@ -1,5 +1,6 @@
 package DataBase;
 
+import Utilities.Scripting.Logger;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerApi;
@@ -12,7 +13,6 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.dreambot.api.utilities.Logger;
 
 import java.util.HashSet;
 import java.util.Set;

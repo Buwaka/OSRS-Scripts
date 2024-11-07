@@ -1,12 +1,12 @@
 package Scripts.AccountManagement;
 
+import Utilities.Scripting.Logger;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.net.URIBuilder;
-import org.dreambot.api.utilities.Logger;
 
 import java.io.InputStreamReader;
 import java.net.URI;

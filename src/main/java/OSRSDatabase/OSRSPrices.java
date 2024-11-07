@@ -3,6 +3,7 @@ package OSRSDatabase;
 import Utilities.GrandExchange.GEInstance;
 import Utilities.Patterns.SYMaths;
 import Utilities.Scripting.ExternalLambdaUsage;
+import Utilities.Scripting.Logger;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import io.vavr.Tuple2;
@@ -12,7 +13,6 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.hc.core5.net.URIBuilder;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
 
 import javax.annotation.Nullable;
@@ -23,7 +23,7 @@ import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
+@ExternalLambdaUsage
 public class OSRSPrices implements Serializable
 {
 
@@ -354,35 +354,32 @@ public class OSRSPrices implements Serializable
                 request.setUri(uri);
                 AtomicInteger Code = new AtomicInteger(400);
                 Gson          gson = new Gson().newBuilder().create();
-                Map<Integer, GELatestData> AllItems = (Map<Integer, GELatestData>) client.execute(
-                        request,
-                        httpResponse -> {
-                            Code.set(httpResponse.getCode());
-                            if(httpResponse.getCode() >= 300)
-                            {
-                                return null;
-                            }
-                            var                        content = httpResponse.getEntity()
-                                                                             .getContent();
-                            InputStreamReader          File    = new InputStreamReader(content);
-                            JsonReader                 Reader  = new JsonReader(File);
-                            Map<Integer, GELatestData> All     = new HashMap<>();
+                Map<Integer, GELatestData> AllItems = client.execute(request, httpResponse -> {
+                    Code.set(httpResponse.getCode());
+                    if(httpResponse.getCode() >= 300)
+                    {
+                        return null;
+                    }
+                    var                        content = httpResponse.getEntity().getContent();
+                    InputStreamReader          File    = new InputStreamReader(content);
+                    JsonReader                 Reader  = new JsonReader(File);
+                    Map<Integer, GELatestData> All     = new HashMap<>();
 
-                            Reader.beginObject();
-                            Reader.nextName(); //data
-                            Reader.beginObject();
-                            while(Reader.hasNext())
-                            {
-                                int id   = Integer.parseInt(Reader.nextName());
-                                var data = (GELatestData) gson.fromJson(Reader, GELatestData.class);
-                                All.put(id, data);
-                            }
-                            Reader.endObject();
-                            Reader.endObject();
-                            Reader.close();
+                    Reader.beginObject();
+                    Reader.nextName(); //data
+                    Reader.beginObject();
+                    while(Reader.hasNext())
+                    {
+                        int id   = Integer.parseInt(Reader.nextName());
+                        var data = (GELatestData) gson.fromJson(Reader, GELatestData.class);
+                        All.put(id, data);
+                    }
+                    Reader.endObject();
+                    Reader.endObject();
+                    Reader.close();
 
-                            return All;
-                        });
+                    return All;
+                });
                 AllItemsCache.putAll(AllItems);
 
                 if(Code.get() >= 300)
@@ -456,10 +453,10 @@ public class OSRSPrices implements Serializable
         //        System.out.println(temp.GetAveragePrice(6211, TimeSeriesFormat.h1));
         //        System.out.println(temp.GetAveragePrice(6211, TimeSeriesFormat.h6));
         //        System.out.println(temp.GetAveragePrice(6211, TimeSeriesFormat.h24));
-        System.out.println(temp.GetDailyVolume(6211));
-        System.out.println(temp.GetDailyVolume(1141));
-        System.out.println(temp.GetDailyVolume(4587));
-        System.out.println(temp.GetDailyVolume(554));
+        System.out.println(GetDailyVolume(6211));
+        System.out.println(GetDailyVolume(1141));
+        System.out.println(GetDailyVolume(4587));
+        System.out.println(GetDailyVolume(554));
     }
 
     private static Tuple2<Integer, Integer> SumVolume(GETimeSeriesData[] data)

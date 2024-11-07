@@ -2,6 +2,7 @@ package Cycles.Specifics;
 
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleCycle;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -11,7 +12,6 @@ import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.methods.widget.Widgets;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class MineGuildCycle extends SimpleCycle
 
     public MineGuildCycle(String name)
     {
-        super(name);
+        super(name, null);
     }
 
     /**

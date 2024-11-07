@@ -2,6 +2,7 @@ package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
@@ -15,7 +16,6 @@ import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.walking.path.impl.LocalPath;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.GameObject;
 import org.dreambot.api.wrappers.interactive.NPC;
@@ -44,7 +44,7 @@ public class ShearScript extends IFScript
     LocalPath<Tile> Path            = null;
     States          LastState       = States.TravelToSheep;
 
-    public enum States
+    enum States
     {
         TravelToSheep,
         Shearing,

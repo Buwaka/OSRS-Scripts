@@ -2,13 +2,13 @@ package Utilities.Combat;
 
 import OSRSDatabase.ItemDB;
 import Utilities.GrandExchange.GEInstance;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.Client;
-import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EquipmentHelper
 {
@@ -46,89 +46,7 @@ public class EquipmentHelper
     }
 
 
-    public static class Equipment
-    {
-        public Map<ItemDB.EquipmentData.EquipmentSlot, ItemDB.ItemData> equip = new HashMap<>();
-
-        public Equipment()
-        {
-        }
-
-        public Equipment(Map<ItemDB.EquipmentData.EquipmentSlot, ItemDB.ItemData> mapEquipment)
-        {
-            equip = mapEquipment;
-        }
-
-        public Equipment(Equipment other)
-        {
-            equip = other.equip;
-        }
-
-        public int[] GetBankEquipment()
-        {
-            List<Integer> out = new ArrayList<>();
-            for(var slot : equip.entrySet())
-            {
-                if(slot.getValue() != null)
-                {
-                    var item = org.dreambot.api.methods.container.impl.equipment.Equipment.getItemInSlot(
-                            slot.getKey().GetDreamBotEquipmentSlot());
-                    if((item == null || item.getID() != slot.getValue().id) &&
-                       !Inventory.contains(slot.getValue().id))
-                    {
-                        out.add(slot.getValue().id);
-                    }
-                }
-            }
-
-            Logger.log("EquipmentHelper: GetBankEquipment: " + Arrays.toString(out.toArray()));
-
-            return out.stream().mapToInt(Integer::intValue).toArray();
-        }
-
-        public boolean isEquipped()
-        {
-            for(var slot : equip.entrySet())
-            {
-                if(slot.getValue() != null)
-                {
-                    var item = org.dreambot.api.methods.container.impl.equipment.Equipment.getItemInSlot(
-                            slot.getKey().GetDreamBotEquipmentSlot());
-                    Logger.log(
-                            "EquipmentHelper: isEquipped: Current item (" + item + ") for slot " +
-                            slot.getKey().name());
-                    Logger.log("EquipmentHelper: isEquipped: want to equip " + slot.getValue());
-                    if(item == null || item.getID() != slot.getValue().id)
-                    {
-                        Logger.log("EquipmentHelper: isEquipped: item " + slot.getValue().name +
-                                   " is not equipped");
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        public static Equipment GetCurrentEquipment()
-        {
-            Map<ItemDB.EquipmentData.EquipmentSlot, ItemDB.ItemData> out = new HashMap<>();
-            for(var slot : org.dreambot.api.methods.container.impl.equipment.EquipmentSlot.values())
-            {
-                var item = org.dreambot.api.methods.container.impl.equipment.Equipment.getItemInSlot(
-                        slot);
-                if(item != null && item.isValid())
-                {
-                    out.put(ItemDB.EquipmentData.EquipmentSlot.FromDreamBotEquipSlot(slot),
-                            ItemDB.GetItemData(item.getID()));
-                }
-
-            }
-            return new Equipment(out);
-        }
-    }
-
-
-    public static Equipment GetBestEquipment(EquipmentSlotFocus focus)
+    public static EquipmentLoadout GetBestEquipment(EquipmentSlotFocus focus)
     {
         if(!Bank.isCached())
         {
@@ -136,8 +54,8 @@ public class EquipmentHelper
             return null;
         }
 
-        var       AllItems = GEInstance.GetAllItems();
-        Equipment equip    = Equipment.GetCurrentEquipment();
+        var              AllItems = GEInstance.GetAllItems();
+        EquipmentLoadout equip    = EquipmentLoadout.GetCurrentEquipment();
 
         for(var item : AllItems)
         {

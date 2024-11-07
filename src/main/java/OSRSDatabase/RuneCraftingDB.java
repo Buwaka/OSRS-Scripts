@@ -2,9 +2,11 @@ package OSRSDatabase;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 public class RuneCraftingDB
 {
-    public enum Runes
+    public enum Runes implements Serializable
     {
         @SerializedName("Air rune") Air_rune,
         @SerializedName("Mind rune") Mind_rune,

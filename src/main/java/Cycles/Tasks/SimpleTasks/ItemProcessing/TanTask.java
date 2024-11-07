@@ -5,13 +5,13 @@ import OSRSDatabase.NPCDB;
 import Utilities.GrandExchange.GEInstance;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.Shop;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.widget.Widgets;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.NPC;
 import org.dreambot.api.wrappers.widgets.Menu;
@@ -30,9 +30,9 @@ public class TanTask extends SimpleTask
     final int    TannerWidgetID = 324;
 
 
-    private String LeatherName; // Hard leather
-    private int    SourceItemID;
-    private int    UnitCost;
+    private final String LeatherName; // Hard leather
+    private final int    SourceItemID;
+    private final int    UnitCost;
 
     public TanTask(String Name, String leatherName, int sourceItemID, int unitCost)
     {

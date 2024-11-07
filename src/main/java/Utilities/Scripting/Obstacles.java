@@ -2,7 +2,6 @@ package Utilities.Scripting;
 
 import org.dreambot.api.methods.walking.pathfinding.impl.local.LocalPathFinder;
 import org.dreambot.api.methods.walking.pathfinding.impl.obstacle.impl.PassableObstacle;
-import org.dreambot.api.utilities.Logger;
 
 public class Obstacles
 {

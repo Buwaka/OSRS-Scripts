@@ -1,11 +1,12 @@
 package OSRSDatabase;
 
+import Utilities.Scripting.Logger;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.dreambot.api.utilities.Logger;
 
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -16,7 +17,7 @@ public class NPCDB extends OSRSDataBase
     final private static ReentrantLock                           NPCDBLock      = new ReentrantLock();
     final private static ConcurrentHashMap<String, Set<Integer>> NPCByNameCache = new ConcurrentHashMap<>();
 
-    public static class NPCData
+    public static class NPCData implements Serializable
     {
         public int    id;
         public String name;

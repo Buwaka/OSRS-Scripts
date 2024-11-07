@@ -5,6 +5,7 @@ import org.dreambot.api.methods.container.impl.bank.Bank;
 
 import java.io.Serial;
 
+@ExternalLambdaUsage
 public class MarketSellOrder extends BaseOrder
 {
     @Serial

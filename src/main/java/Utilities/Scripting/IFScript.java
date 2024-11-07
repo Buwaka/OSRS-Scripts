@@ -5,13 +5,11 @@ import Cycles.Tasks.AdvanceTasks.GraveStoneTask;
 import Cycles.Tasks.AdvanceTasks.OpenBankTask;
 import Utilities.GrandExchange.GEInstance;
 import Utilities.OSRSUtilities;
-import Utilities.Patterns.Delegates.Delegate;
-import Utilities.Patterns.Delegates.Delegate2;
-import Utilities.Patterns.Delegates.Delegate3;
-import Utilities.Patterns.Delegates.Delegate6;
+import Utilities.Patterns.Delegates.*;
 import Utilities.Patterns.GameTickDelegate;
 import Utilities.Scripting.Listeners.GraveStoneListener;
 import org.dreambot.api.Client;
+import org.dreambot.api.ClientSettings;
 import org.dreambot.api.data.GameState;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.map.Tile;
@@ -19,11 +17,12 @@ import org.dreambot.api.methods.skills.Skill;
 import org.dreambot.api.methods.skills.Skills;
 import org.dreambot.api.script.ScriptManager;
 import org.dreambot.api.script.TaskNode;
+import org.dreambot.api.script.event.impl.ExperienceEvent;
 import org.dreambot.api.script.impl.TaskScript;
 import org.dreambot.api.script.listener.*;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.Entity;
+import org.dreambot.api.wrappers.interactive.NPC;
 import org.dreambot.api.wrappers.items.Item;
 import randomhandler.RandomHandler;
 
@@ -42,54 +41,61 @@ public abstract class IFScript extends TaskScript implements GameTickListener,
         GameStateListener,
         ItemContainerListener,
         PaintListener,
-        HitSplatListener//,ActionListener,AnimationListener, ChatListener,ExperienceListener,,ItemContainerListener,LoginListener, MenuRowListener,PaintListener,ProjectileListener,RegionLoadListener,SpawnListener
+        HitSplatListener,
+        SpawnListener,
+        ExperienceListener//,ActionListener,AnimationListener, ChatListener,ExperienceListener,,ItemContainerListener,LoginListener, MenuRowListener,PaintListener,ProjectileListener,RegionLoadListener,
 {
-    private static Random                                                         rand                       = new Random();
-    private static int                                                            CycleGenerationAttempts    = 0;
-    private static int                                                            CycleGenerationMaxAttempts = 10;
+    private static final Random                                                         rand                       = new Random();
+    private static final int                                                            CycleGenerationMaxAttempts = 10;
+    private static       int                                                            CycleGenerationAttempts    = 0;
     //TODO make this listen to everything and make it accessible through the script variable, perhaps make this calss include subcalsses that implement the listener, perhaps that may also trigger them
     // Simple Delegates for each listener
     // also don't forget to unsubscribe tasks to make sure all objects are cleaned up, perhaps automatically somehow
-    private final  List<SimpleTask>                                               PersistentTasks            = new ArrayList<>();
-    private final  Lock                                                           PersistentTaskListLock     = new ReentrantLock();
-    private final  List<SimpleTask>                                               Tasks                      = new ArrayList<>();
-    private final  Lock                                                           TaskListLock               = new ReentrantLock();
-    private final  List<Supplier<SimpleCycle[]>>                                  Cycles                     = new ArrayList<>();
-    public         AtomicReference<SimpleTask>                                    CurrentTask                = new AtomicReference<>(
-            null);
-    public         AtomicInteger                                                  FailLimit                  = new AtomicInteger(
-            -1);
-    public         Delegate3<ItemAction, Item, Item>                              onInventory                = new Delegate3<>();
-    public         GameTickDelegate                                               onGameTick                 = new GameTickDelegate();
-    public         Delegate                                                       onTaskRemoved              = new Delegate();
-    public         Delegate                                                       onTaskAdded                = new Delegate();
-    public         Delegate                                                       onBankCached               = new Delegate();
-    // Entity, type, damage, id, special, gameCycle
-    public         Delegate6<Entity, Integer, Integer, Integer, Integer, Integer> onHitSplat                 = new Delegate6<>();
-    public         GraveStoneListener                                             GraveListener              = new GraveStoneListener();
-    public         Delegate2<GameState/*last*/, GameState/*current*/>             onGameStateChange          = new Delegate2<>();
-    private        int                                                            FailCount                  = 0;
-    private        int                                                            CycleCounter               = 0;
-    private        SimpleCycle                                                    CycleSetup                 = null;
-    private        SimpleCycle                                                    CurrentCycle               = null;
-    private        Queue<SimpleCycle>                                             CycleQueue                 = null;
-    private        AtomicBoolean                                                  isLooping                  = new AtomicBoolean(
+    private final        List<SimpleTask>                                               PersistentTasks            = new ArrayList<>();
+    private final        Lock                                                           PersistentTaskListLock     = new ReentrantLock();
+    private final        List<SimpleTask>                                               Tasks                      = new ArrayList<>();
+    private final        Lock                                                           TaskListLock               = new ReentrantLock();
+    private final        List<Supplier<SimpleCycle[]>>                                  Cycles                     = new ArrayList<>();
+    private final        int                                                            CycleCounter               = 0;
+    private final        AtomicBoolean                                                  isLooping                  = new AtomicBoolean(
             false);
-    private        AtomicBoolean                                                  isGameStateChanging        = new AtomicBoolean(
+    private final        AtomicBoolean                                                  isGameStateChanging        = new AtomicBoolean(
             false);
-    private        GameState                                                      LastGameState              = GameState.LOADING;
-    private        AtomicBoolean                                                  GameTicked                 = new AtomicBoolean(
+    private final        AtomicBoolean                                                  GameTicked                 = new AtomicBoolean(
             false);
-    private        AtomicBoolean                                                  isPaused                   = new AtomicBoolean(
+    private final        AtomicBoolean                                                  isPaused                   = new AtomicBoolean(
             true);
-    private        AtomicInteger                                                  PauseTime                  = new AtomicInteger(
+    private final        AtomicInteger                                                  PauseTime                  = new AtomicInteger(
             GetRandom().nextInt(5000) + 5000); // is pause on the start
-    private        long                                                           StopTaskTimeout            = 10000;
-    private        OpenBankTask                                                   CacheBank                  = null;
-    private        GEInstance                                                     GrandExchangeInstance      = null;
-    private        PlayerConfig                                                   Config                     = new PlayerConfig();
+    private final        long                                                           StopTaskTimeout            = 10000;
+    private final        PlayerConfig                                                   Config                     = new PlayerConfig();
+    public               AtomicReference<SimpleTask>                                    CurrentTask                = new AtomicReference<>(
+            null);
+    public               AtomicInteger                                                  FailLimit                  = new AtomicInteger(
+            -1);
+    public               Delegate3<ItemAction, Item, Item>                              onInventory                = new Delegate3<>();
+    public               GameTickDelegate                                               onGameTick                 = new GameTickDelegate();
+    public               Delegate                                                       onTaskRemoved              = new Delegate();
+    public               Delegate                                                       onTaskAdded                = new Delegate();
+    public               Delegate                                                       onBankCached               = new Delegate();
+    public               Delegate1<NPC>                                                 onNpcDespawn               = new Delegate1<>();
+    public               Delegate1<NPC>                                                 onNpcSpawn                 = new Delegate1<>();
+    // Entity, type, damage, id, special, gameCycle
+    public               Delegate2<GameState/*last*/, GameState/*current*/>             onGameStateChange          = new Delegate2<>();
+    public               Delegate6<Entity, Integer, Integer, Integer, Integer, Integer> onHitSplat                 = new Delegate6<>();
+    public               Delegate1<ExperienceEvent>                                     onEXPGained                = new Delegate1<>();
+    public               Delegate1<ExperienceEvent>                                     onLevelUp                  = new Delegate1<>();
+    public               Delegate1<ExperienceEvent>                                     onLevelChange              = new Delegate1<>();
+    public               GraveStoneListener                                             GraveListener              = new GraveStoneListener();
+    private              int                                                            FailCount                  = 0;
+    private              SimpleCycle                                                    CycleSetup                 = null;
+    private              SimpleCycle                                                    CurrentCycle               = null;
+    private              Queue<SimpleCycle>                                             CycleQueue                 = null;
+    private              GameState                                                      LastGameState              = GameState.LOADING;
+    private              OpenBankTask                                                   CacheBank                  = null;
+    private              GEInstance                                                     GrandExchangeInstance      = null;
     //private              ProfitTracker      PTracker              = new ProfitTracker();
-    private        boolean                                                        DebugPaint                 = true;
+    private              boolean                                                        DebugPaint                 = true;
 
     public enum ItemAction
     {
@@ -111,10 +117,7 @@ public abstract class IFScript extends TaskScript implements GameTickListener,
         {
             isGameStateChanging.set(true);
         }
-        onInventory.Subscribe(this, (A, B, C) -> {
-            Logger.log(A.name() + B + C);
-            return true;
-        });
+        onInventory.Subscribe(this, (A, B, C) -> Logger.log(A.name() + B + C));
     }
 
     private boolean onDeath(Tile tile)
@@ -224,8 +227,8 @@ public abstract class IFScript extends TaskScript implements GameTickListener,
         {
             if(FailCount > FailLimit.get())
             {
-                Logger.log("Script: onLoop: Fail limit exceeded, exiting, " +
-                           this.getClass().getName());
+                Logger.error("Script: onLoop: Fail limit exceeded, exiting, " +
+                             this.getClass().getName());
                 GameTicked.set(true);
                 isLooping.set(false);
                 return -1;
@@ -237,19 +240,6 @@ public abstract class IFScript extends TaskScript implements GameTickListener,
         GameTicked.set(false);
 
         int CycleResult = 0;
-        if(CurrentCycle != null)
-        {
-            Logger.log("Script: onLoop: ticking Cycle");
-            CycleResult = CurrentCycle.Loop(this);
-        }
-
-        Logger.log("Script: onLoop: CycleNullCheck: " + (CurrentCycle != null));
-        if(CurrentCycle != null)
-        {
-            Logger.log("Script: onLoop: CycleIsStarted Check: " + CurrentCycle.isStarted() +
-                       " CycleResult: " + CycleResult + " CycleIsComplete: " +
-                       CurrentCycle.isCycleComplete(this));
-        }
         if(IsActiveTaskLeft())
         {
             // Task loop
@@ -306,45 +296,55 @@ public abstract class IFScript extends TaskScript implements GameTickListener,
                 return result;
             }
         }
-        else if(CurrentCycle != null && CurrentCycle.isStarted() &&
-                (CycleResult <= 0 || CurrentCycle.isCycleComplete(this)))
+        else if(CurrentCycle != null)
         {
-            Logger.log("Script: onLoop: Cycle is complete, cleaning up, " + CurrentCycle);
-            CurrentCycle.CompleteCycle();
-            CleanUpCycle();
+            Logger.log("Script: onLoop: ticking Cycle");
+            CycleResult = CurrentCycle.Loop(this);
 
-            // restart
-            if(!CurrentCycle.isGoalMet())
+            Logger.log("Script: onLoop: CycleNullCheck: " + (CurrentCycle != null));
+            Logger.log("Script: onLoop: CycleIsStarted Check: " + CurrentCycle.isStarted() +
+                       " CycleResult: " + CycleResult + " CycleIsComplete: " +
+                       CurrentCycle.isCycleComplete(this));
+
+            if(CurrentCycle.isStarted() && (CycleResult <= 0 || CurrentCycle.isCycleComplete(this)))
             {
+                Logger.log("Script: onLoop: Cycle is complete, cleaning up, " + CurrentCycle);
+                CurrentCycle.CompleteCycle();
+                CleanUpCycle();
+
+                // restart
+                if(!CurrentCycle.isGoalMet())
+                {
+                    if(CurrentCycle.hasEndTasks())
+                    {
+                        Logger.log("Script: onLoop: Cycle has end tasks, restart " + CurrentCycle);
+                        addNodes(CurrentCycle.GenerateEndTasks());
+                    }
+                    else
+                    {
+                        Logger.log("Script: onLoop: Restarting cycle " + CurrentCycle);
+                        CurrentCycle.Restart(this);
+                    }
+
+                    isLooping.set(false);
+                    GameTicked.set(false);
+                    return OSRSUtilities.WaitTime(GetScriptIntensity());
+                }
+
+                Logger.log("Script: onLoop: ending cycle " + CurrentCycle);
+                // end
+                while(!CurrentCycle.End(this))
+                {
+                    Logger.log("Script: onLoop: Cycle is not ready to be ended " + CurrentCycle);
+                    OSRSUtilities.Wait(GetScriptIntensity());
+                }
                 if(CurrentCycle.hasEndTasks())
                 {
-                    Logger.log("Script: onLoop: Cycle has end tasks, restart " + CurrentCycle);
+                    Logger.log("Script: onLoop: Cycle has end tasks " + CurrentCycle);
                     addNodes(CurrentCycle.GenerateEndTasks());
                 }
-                else
-                {
-                    Logger.log("Script: onLoop: Restarting cycle " + CurrentCycle);
-                    CurrentCycle.Restart(this);
-                }
-
-                isLooping.set(false);
-                GameTicked.set(false);
-                return OSRSUtilities.WaitTime(GetScriptIntensity());
+                StopCurrentCycle();
             }
-
-            Logger.log("Script: onLoop: ending cycle " + CurrentCycle);
-            // end
-            while(!CurrentCycle.End(this))
-            {
-                Logger.log("Script: onLoop: Cycle is not ready to be ended " + CurrentCycle);
-                OSRSUtilities.Wait(GetScriptIntensity());
-            }
-            if(CurrentCycle.hasEndTasks())
-            {
-                Logger.log("Script: onLoop: Cycle has end tasks " + CurrentCycle);
-                addNodes(CurrentCycle.GenerateEndTasks());
-            }
-            StopCurrentCycle();
         }
         else if(CurrentCycle == null && !Cycles.isEmpty())
         {
@@ -529,45 +529,11 @@ public abstract class IFScript extends TaskScript implements GameTickListener,
     }
 
     @Override
-    public void onHitSplatAdded(Entity entity, int type, int damage, int id, int special, int gameCycle)
-    {
-        Logger.log("Script: Hitsplat: " + entity.getName() + type + " " + damage + " " + special +
-                   " " + gameCycle);
-        onHitSplat.Fire(entity, type, damage, id, special, gameCycle);
-    }
-
-    @Override
-    public void onInventoryItemChanged(Item incoming, Item existing)
-    {
-        onInventory.Fire(ItemAction.Changed, incoming, existing);
-        Logger.log("onInventoryItemChanged");
-    }
-
-    @Override
-    public void onInventoryItemAdded(Item item)
-    {
-        onInventory.Fire(ItemAction.Added, item, null);
-        Logger.log("onInventoryItemAdded");
-    }
-
-    @Override
-    public void onInventoryItemRemoved(Item item)
-    {
-        onInventory.Fire(ItemAction.Removed, item, null);
-        Logger.log("onInventoryItemRemoved");
-    }
-
-    @Override
-    public void onInventoryItemSwapped(Item incoming, Item outgoing)
-    {
-        onInventory.Fire(ItemAction.Swapped, incoming, outgoing);
-        Logger.log("onInventoryItemSwapped");
-    }
-
-    @Override
     public void onStart()
     {
         super.onStart();
+
+        ClientSettings.toggleLevelUpInterface(false);
 
         getScriptManager().addListener(Config);
         Config.onAccountChanged.Subscribe(this, this::onAccountChange);
@@ -696,8 +662,8 @@ public abstract class IFScript extends TaskScript implements GameTickListener,
     {
         if(CycleGenerationAttempts > CycleGenerationMaxAttempts)
         {
-            Logger.log(
-                    "Script: GenerateNewCycles: Failed too many times trying to generate new cycles, exiting");
+            Logger.warn(
+                    "Script: GenerateNewCycles: Failed too many times trying to generate new cycles, Goal has been reached or an error occurred, exiting");
             this.stop();
             return;
         }
@@ -744,32 +710,6 @@ public abstract class IFScript extends TaskScript implements GameTickListener,
         }
     }
 
-    private boolean _setCurrentCycle(SimpleCycle next)
-    {
-        if(next.Ready() && !next.isGoalMet())
-        {
-            Logger.log("Script: _setCurrentCycle: " + next.GetName() +
-                       " goal hasn't been met, starting");
-
-            if(next.hasStartUpTasks())
-            {
-                Logger.log("Script: _startCycle: Cycle has StartupRequirements, adding tasks, " +
-                           next.toString());
-                addNodes(next.GenerateStartupTasks());
-                CycleSetup = next;
-                return true;
-            }
-
-            if(next.Start(this))
-            {
-                Logger.log("Script: _startCycle: Start Cycle, " + next.toString());
-                CurrentCycle = next;
-            }
-            return true;
-        }
-        return false;
-    }
-
     //    @Override
     //    public boolean onSolverStart(RandomSolver solver)
     //    {
@@ -791,6 +731,32 @@ public abstract class IFScript extends TaskScript implements GameTickListener,
     //        Logger.log("Completing Solver Condition");
     //        isSolving.set(false);
     //    }
+
+    private boolean _setCurrentCycle(SimpleCycle next)
+    {
+        if(next.Ready() && !next.isGoalMet())
+        {
+            Logger.log("Script: _setCurrentCycle: " + next.GetName() +
+                       " goal hasn't been met, starting");
+
+            if(next.hasStartUpTasks())
+            {
+                Logger.log("Script: _startCycle: Cycle has StartupRequirements, adding tasks, " +
+                           next);
+                addNodes(next.GenerateStartupTasks());
+                CycleSetup = next;
+                return true;
+            }
+
+            if(next.Start(this))
+            {
+                Logger.log("Script: _startCycle: Start Cycle, " + next);
+                CurrentCycle = next;
+            }
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public void onExit()
@@ -894,6 +860,118 @@ public abstract class IFScript extends TaskScript implements GameTickListener,
         if(!isLooping.get())
         {
             GameTicked.set(true);
+        }
+    }
+
+    @Override
+    public void onGained(ExperienceEvent event)
+    {
+        onEXPGained.Fire(event);
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.onEXPGained.Fire(CurrentCycle, event);
+        }
+    }
+
+    @Override
+    public void onLevelUp(ExperienceEvent event)
+    {
+        onLevelUp.Fire(event);
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.onLevelUp.Fire(CurrentCycle, event);
+        }
+    }
+
+    @Override
+    public void onLevelChange(ExperienceEvent event)
+    {
+        onLevelChange.Fire(event);
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.onLevelChange.Fire(CurrentCycle, event);
+        }
+    }
+
+    @Override
+    public void onNpcSpawn(NPC npc)
+    {
+        onNpcSpawn.Fire(npc);
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.onNpcSpawn.Fire(CurrentCycle, npc);
+        }
+    }
+
+    @Override
+    public void onNpcDespawn(NPC npc)
+    {
+        onNpcDespawn.Fire(npc);
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.onNpcDespawn.Fire(CurrentCycle, npc);
+        }
+    }
+
+    @Override
+    public void onHitSplatAdded(Entity entity, int type, int damage, int id, int special, int gameCycle)
+    {
+        Logger.info("Script: Hitsplat: " + entity + ", " + type + ", " + damage + ", " + special +
+                    ", " + gameCycle + ", " + entity.hashCode());
+        onHitSplat.Fire(entity, type, damage, id, special, gameCycle);
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.onHitSplat.Fire(CurrentCycle,
+                                         entity,
+                                         type,
+                                         damage,
+                                         id,
+                                         special,
+                                         gameCycle);
+        }
+    }
+
+    @Override
+    public void onInventoryItemChanged(Item incoming, Item existing)
+    {
+        onInventory.Fire(ItemAction.Changed, incoming, existing);
+        Logger.log("onInventoryItemChanged");
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.onInventory.Fire(CurrentCycle, ItemAction.Changed, incoming, existing);
+        }
+    }
+
+    @Override
+    public void onInventoryItemAdded(Item item)
+    {
+        onInventory.Fire(ItemAction.Added, item, null);
+        Logger.log("onInventoryItemAdded");
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.onInventory.Fire(CurrentCycle, ItemAction.Added, item, null);
+        }
+    }
+
+    @Override
+    public void onInventoryItemRemoved(Item item)
+    {
+        onInventory.Fire(ItemAction.Removed, item, null);
+        Logger.log("onInventoryItemRemoved");
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.onInventory.Fire(CurrentCycle, ItemAction.Removed, item, null);
+        }
+    }
+
+    @Override
+    public void onInventoryItemSwapped(Item incoming, Item outgoing)
+    {
+        onInventory.Fire(ItemAction.Swapped, incoming, outgoing);
+        Logger.log("onInventoryItemSwapped");
+        if(CurrentCycle != null)
+        {
+            CurrentCycle.onInventory.Fire(CurrentCycle, ItemAction.Swapped, incoming, outgoing);
         }
     }
 

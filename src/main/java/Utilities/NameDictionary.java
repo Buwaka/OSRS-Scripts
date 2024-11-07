@@ -1,6 +1,6 @@
 package Utilities;
 
-import org.dreambot.api.utilities.Logger;
+import Utilities.Scripting.Logger;
 import org.jetbrains.annotations.Range;
 
 import java.io.BufferedReader;

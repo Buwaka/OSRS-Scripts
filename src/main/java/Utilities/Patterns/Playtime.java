@@ -1,13 +1,13 @@
 package Utilities.Patterns;
 
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.tabs.Tab;
 import org.dreambot.api.methods.tabs.Tabs;
 import org.dreambot.api.methods.widget.Widgets;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 
 import java.awt.*;

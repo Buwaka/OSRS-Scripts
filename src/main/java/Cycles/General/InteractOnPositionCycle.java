@@ -5,6 +5,7 @@ import Cycles.Tasks.SimpleTasks.ItemProcessing.InteractInventoryTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import OSRSDatabase.WoodDB;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleCycle;
 import io.vavr.Function2;
 import org.dreambot.api.methods.container.impl.Inventory;
@@ -14,7 +15,6 @@ import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Tile;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 
 import java.awt.*;
@@ -28,37 +28,38 @@ import java.util.function.Function;
 
 public class InteractOnPositionCycle extends SimpleCycle
 {
-    public            Function2<Tile, Tile, Boolean> TileChecker                 = null;
-    private           String                         Action                      = null;
-    private           int[]                          SourceItemID;
-    private           Integer                        Tool                        = null;
-    private           List<Tile>                     PossibleTiles               = null;
-    private           Function<Tile, List<Tile>>     GeneratePossibleTiles       = null;
-    private           boolean                        WaitInteract                = false;
-    private           boolean                        InOrder                     = true;
-    private           boolean                        WithdrawSourceItemsFromBank = true;
-    private transient InteractInventoryTask          InteractTask                = null;
-    private transient BankItemsTask                  BankTask                    = null;
-    private transient boolean                        InteractComplete            = false;
-    private transient boolean                        Complete;
-    private transient Thread                         TileListener;
-    private transient Semaphore                      TileReady                   = new Semaphore(1);
-    private transient Tile                           TargetTile                  = null;
-    private transient Iterator<Tile>                 TileIterator;
-    private transient long                           InteractTimeout;
-    private transient int                            Timout                      = 10000;
-    private transient TravelTask                     Traveltask                  = null;
+    private final           int[]                          SourceItemID;
+    private final           boolean                        WaitInteract                = false;
+    private final transient Semaphore                      TileReady                   = new Semaphore(
+            1);
+    private final transient int                            Timout                      = 10000;
+    public                  Function2<Tile, Tile, Boolean> TileChecker                 = null;
+    private                 String                         Action                      = null;
+    private                 Integer                        Tool                        = null;
+    private                 List<Tile>                     PossibleTiles               = null;
+    private                 Function<Tile, List<Tile>>     GeneratePossibleTiles       = null;
+    private                 boolean                        InOrder                     = true;
+    private                 boolean                        WithdrawSourceItemsFromBank = true;
+    private transient       InteractInventoryTask          InteractTask                = null;
+    private transient       BankItemsTask                  BankTask                    = null;
+    private transient       boolean                        InteractComplete            = false;
+    private transient       boolean                        Complete;
+    private transient       Thread                         TileListener;
+    private transient       Tile                           TargetTile                  = null;
+    private transient       Iterator<Tile>                 TileIterator;
+    private transient       long                           InteractTimeout;
+    private transient       TravelTask                     Traveltask                  = null;
 
     public InteractOnPositionCycle(String name, Tile[] tiles, int... ItemIDs)
     {
-        super(name);
+        super(name, null);
         SourceItemID  = ItemIDs;
         PossibleTiles = new ArrayList<>(List.of(tiles));
     }
 
     public InteractOnPositionCycle(String name, int Tool, Tile[] tiles, int... ItemIDs)
     {
-        super(name);
+        super(name, null);
         SourceItemID  = ItemIDs;
         this.Tool     = Tool;
         PossibleTiles = new ArrayList<>(List.of(tiles));
@@ -66,7 +67,7 @@ public class InteractOnPositionCycle extends SimpleCycle
 
     public InteractOnPositionCycle(String name, String action, Tile[] tiles, int... ItemIDs)
     {
-        super(name);
+        super(name, null);
         Action        = action;
         SourceItemID  = ItemIDs;
         PossibleTiles = new ArrayList<>(List.of(tiles));
@@ -74,14 +75,14 @@ public class InteractOnPositionCycle extends SimpleCycle
 
     public InteractOnPositionCycle(String name, Function<Tile, List<Tile>> tiles, int... ItemIDs)
     {
-        super(name);
+        super(name, null);
         SourceItemID          = ItemIDs;
         GeneratePossibleTiles = tiles;
     }
 
     public InteractOnPositionCycle(String name, int Tool, Function<Tile, List<Tile>> tileGenerator, int... ItemIDs)
     {
-        super(name);
+        super(name, null);
         SourceItemID          = ItemIDs;
         this.Tool             = Tool;
         GeneratePossibleTiles = tileGenerator;
@@ -89,7 +90,7 @@ public class InteractOnPositionCycle extends SimpleCycle
 
     public InteractOnPositionCycle(String name, String action, Function<Tile, List<Tile>> tileGenerator, int... ItemIDs)
     {
-        super(name);
+        super(name, null);
         Action                = action;
         SourceItemID          = ItemIDs;
         GeneratePossibleTiles = tileGenerator;

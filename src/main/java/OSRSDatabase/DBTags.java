@@ -1,6 +1,8 @@
 package OSRSDatabase;
 
-public enum DBTags
+import java.io.Serializable;
+
+public enum DBTags implements Serializable
 {
     cheap("cheap"),
     expensive("expensive"),

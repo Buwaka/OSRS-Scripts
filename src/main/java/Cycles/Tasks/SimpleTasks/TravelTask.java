@@ -3,6 +3,7 @@ package Cycles.Tasks.SimpleTasks;
 import Utilities.OSRSUtilities;
 import Utilities.Patterns.Delegates.Delegate;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.Obstacles;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.input.Mouse;
@@ -12,7 +13,6 @@ import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.methods.walking.pathfinding.impl.local.LocalPathFinder;
 import org.dreambot.api.methods.walking.pathfinding.impl.obstacle.impl.DestructableObstacle;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -31,13 +31,18 @@ public class TravelTask extends SimpleTask
             OSRSUtilities.ScriptIntenity.Bot,
             0);
     private final Tile                                       Destination;
+    private final Random                                     rand                 = new Random();
     public        Delegate                                   onReachedDestination = new Delegate();
-    private       Random                                     rand                 = new Random();
 
     public TravelTask(String Name, Tile Destination)
     {
         super(Name);
         this.Destination = Destination;
+    }
+
+    public Tile GetDestination()
+    {
+        return Destination;
     }
 
     @Nonnull
@@ -118,6 +123,7 @@ public class TravelTask extends SimpleTask
 
         LocalPathFinder.getLocalPathFinder().addObstacle(new DestructableObstacle("Web", "Slash"));
 
+        Logger.info("TravelTask:  walking to " + Destination);
         Walking.walk(Destination);
         //        LocalPathFinder.getLocalPathFinder().addObstacle(new PassableObstacle("Web",
         //                                                                              "Slash"));
@@ -227,6 +233,14 @@ public class TravelTask extends SimpleTask
             Logger.log("Complete Condition fulfilled");
             return 0;
         }
-        return super.Loop();
+        if(Players.getLocal().isMoving())
+        {
+            return super.Loop();
+        }
+        else
+        {
+            return super.Loop() / 8;
+        }
+
     }
 }

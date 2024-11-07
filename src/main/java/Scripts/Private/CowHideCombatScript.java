@@ -1,6 +1,6 @@
 package Scripts.Private;
 
-import Cycles.General.CombatLootBankCycle;
+import Cycles.Combat.CombatLootBankCycle;
 import Cycles.General.SimpleProcessCycle;
 import Cycles.Tasks.SimpleTasks.ItemProcessing.TanTask;
 import DataBase.PerformanceDatabase;
@@ -11,6 +11,7 @@ import Utilities.Requirement.ItemRequirement;
 import Utilities.Requirement.ORRequirement;
 import Utilities.Scripting.ICycle;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleCycle;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.combat.Combat;
@@ -20,7 +21,6 @@ import org.dreambot.api.methods.skills.Skill;
 import org.dreambot.api.methods.skills.Skills;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
-import org.dreambot.api.utilities.Logger;
 
 import java.util.ArrayList;
 import java.util.List;

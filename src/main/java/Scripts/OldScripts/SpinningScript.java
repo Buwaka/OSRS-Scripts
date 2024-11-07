@@ -1,6 +1,7 @@
 package Scripts.OldScripts;
 
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.input.Keyboard;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.input.event.impl.keyboard.awt.Key;
@@ -15,7 +16,6 @@ import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManager;
 import org.dreambot.api.script.ScriptManifest;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.GameObject;
 
@@ -49,7 +49,7 @@ public class SpinningScript extends IFScript
     State  CurrentState = State.WalkingToSpin;
     Random rand         = new Random();
 
-    public enum State
+    enum State
     {
         WalkingToSpin,
         Spinning,

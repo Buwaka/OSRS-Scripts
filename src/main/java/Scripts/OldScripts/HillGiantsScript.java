@@ -3,13 +3,13 @@ package Scripts.OldScripts;
 import Utilities.Combat.CombatManager;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.interactive.Character;
 import org.dreambot.api.wrappers.interactive.NPC;
 import org.dreambot.api.wrappers.items.GroundItem;
@@ -124,7 +124,7 @@ public class HillGiantsScript extends IFScript
                 OSRSUtilities.PickupItems(GetPickups());
                 if(Foe != null && Foe.canAttack())
                 {
-                    Logger.log("Continue fighting " + Foe.toString());
+                    Logger.log("Continue fighting " + Foe);
                     CombatManager.GetInstance(Players.getLocal()).Fight(Foe);
                 }
                 //resume fight if possible

@@ -1,6 +1,6 @@
 package Utilities.Patterns.Delegates;
 
-import io.vavr.Function3;
+import Utilities.Patterns.Runables.Runnable3;
 import org.dreambot.api.utilities.Sleep;
 
 import java.util.WeakHashMap;
@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Delegate3<A, B, C>
 {
-    WeakHashMap<Object, Function3<A, B, C, Boolean>> Subscribers = new WeakHashMap<>();
+    WeakHashMap<Object, Runnable3<A, B, C>> Subscribers = new WeakHashMap<>();
 
     AtomicBoolean WaitForFire = new AtomicBoolean(false);
 
@@ -19,12 +19,12 @@ public class Delegate3<A, B, C>
         {
             if(func.getValue() != null)
             {
-                func.getValue().apply(var1, var2, var3);
+                func.getValue().Run(var1, var2, var3);
             }
         }
     }
 
-    public void Subscribe(Object caller, Function3<A, B, C, Boolean> function)
+    public void Subscribe(Object caller, Runnable3<A, B, C> function)
     {
         Subscribers.put(caller, function);
     }

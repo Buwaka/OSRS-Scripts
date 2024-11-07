@@ -5,12 +5,12 @@ import Cycles.Tasks.SimpleTasks.Bank.InventoryCheckTask;
 import Cycles.Tasks.SimpleTasks.ItemProcessing.InteractTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleCycle;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
-import org.dreambot.api.utilities.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,8 +19,8 @@ import java.util.List;
 
 public class InteractCycle extends SimpleCycle
 {
+    private final     int[]                                    Targets;
     private           Area[]                                   TargetArea            = null;
-    private           int[]                                    Targets;
     private           String                                   Action                = null;
     private           EnumSet<InteractTask.InteractableFilter> TargetFilter          = EnumSet.of(
             InteractTask.InteractableFilter.GameObjects);
@@ -31,13 +31,13 @@ public class InteractCycle extends SimpleCycle
 
     public InteractCycle(String name, int... targets)
     {
-        super(name);
+        super(name, null);
         Targets = targets;
     }
 
     public InteractCycle(String name, String Action, int... targets)
     {
-        super(name);
+        super(name, null);
         Targets     = targets;
         this.Action = Action;
     }

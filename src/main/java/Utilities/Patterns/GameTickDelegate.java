@@ -2,7 +2,7 @@ package Utilities.Patterns;
 
 import Utilities.OSRSUtilities;
 import Utilities.Patterns.Delegates.Delegate;
-import org.dreambot.api.utilities.Logger;
+import Utilities.Scripting.Logger;
 
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;

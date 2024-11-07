@@ -1,6 +1,6 @@
 package Scripts.Private;
 
-import Cycles.General.CombatLootBankCycle;
+import Cycles.Combat.CombatLootBankCycle;
 import OSRSDatabase.ItemDB;
 import OSRSDatabase.MonsterDB;
 import Utilities.Scripting.IFScript;

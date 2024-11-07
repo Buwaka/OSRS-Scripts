@@ -1,13 +1,13 @@
 package Cycles.Tasks.SimpleTasks.Bank;
 
-import Utilities.Combat.EquipmentHelper;
+import Utilities.Combat.EquipmentLoadout;
 import Utilities.GrandExchange.GEInstance;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class BankItemsTask extends SimpleTask
         return Deposits.add(new OSRSUtilities.BankEntry(ID, Integer.MAX_VALUE));
     }
 
-    public void AddEquipment(EquipmentHelper.Equipment equipment)
+    public void AddEquipment(EquipmentLoadout equipment)
     {
         Logger.log("BankItemsTask: AddEquipment: " + equipment);
         for(var equip : equipment.equip.entrySet())

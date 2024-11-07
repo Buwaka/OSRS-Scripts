@@ -1,6 +1,7 @@
 package Scripts.AccountManagement;
 
 import DataBase.AccountDatabase;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.Client;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
@@ -8,7 +9,6 @@ import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.utilities.AccountManager;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.core.Instance;
 
 @ScriptManifest(name = "RegisterNewAccount", description = "Register account in database", author = "Semanresu", version = 1.0, category = Category.MISC, image = "")

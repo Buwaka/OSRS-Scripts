@@ -1,5 +1,6 @@
 package randomhandler;
 
+import Utilities.Scripting.Logger;
 import org.dreambot.api.Client;
 import org.dreambot.api.methods.Calculations;
 import org.dreambot.api.methods.container.impl.Inventory;
@@ -9,7 +10,6 @@ import org.dreambot.api.methods.tabs.Tabs;
 import org.dreambot.api.methods.widget.Widget;
 import org.dreambot.api.methods.widget.Widgets;
 import org.dreambot.api.randoms.RandomEvent;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.widgets.WidgetChild;
 

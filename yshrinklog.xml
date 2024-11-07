@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<yshrink version="4.1.1">
+<!-- parsing C:\Users\SammyLaptop\Documents\Git\OSRS-Scripts\target\Testeroni.jar -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.methods.walking.web.node.AbstractWebNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.randoms.RandomSolver not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.randoms.RandomSolver not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.AbstractScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.AbstractScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.AbstractScript not found! -->
+<!-- WARNING:Unresolved external dependency: io.netty.channel.SimpleChannelInboundHandler not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: io.netty.channel.ChannelInitializer not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.randoms.RandomSolver not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.randoms.RandomSolver not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:error resolving class null -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.randoms.RandomSolver not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.randoms.RandomSolver not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.AbstractScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.randoms.RandomSolver not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.randoms.RandomSolver not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<entrypoints>
+	<class name="org.apache.commons.text.numbers.package-info" />
+	<class name="com.mongodb.client.package-info" />
+	<class name="org.apache.commons.text.similarity.package-info" />
+	<class name="org.apache.commons.lang3.tuple.package-info" />
+	<class name="com.mongodb.package-info" />
+	<class name="com.mongodb.internal.thread.package-info" />
+	<class name="com.mongodb.client.gridfs.model.package-info" />
+	<class name="com.mongodb.internal.session.package-info" />
+	<class name="com.mongodb.client.gridfs.codecs.package-info" />
+	<class name="com.mongodb.internal.connection.netty.package-info" />
+	<class name="com.mongodb.internal.async.package-info" />
+	<class name="org.apache.commons.lang3.text.translate.package-info" />
+	<class name="com.mongodb.client.model.fill.package-info" />
+	<class name="org.apache.commons.lang3.arch.package-info" />
+	<class name="org.apache.commons.lang3.mutable.package-info" />
+	<class name="com.mongodb.internal.validator.package-info" />
+	<class name="com.mongodb.event.package-info" />
+	<class name="com.mongodb.connection.package-info" />
+	<class name="com.mongodb.client.model.mql.package-info" />
+	<class name="org.apache.tools.ant.taskdefs.modules.package-info" />
+	<class name="org.apache.commons.text.translate.package-info" />
+	<class name="org.apache.commons.lang3.compare.package-info" />
+	<class name="org.apache.commons.lang3.math.package-info" />
+	<class name="com.mongodb.client.model.densify.package-info" />
+	<class name="org.apache.commons.lang3.text.package-info" />
+	<class name="com.mongodb.client.result.package-info" />
+	<class name="com.mongodb.client.internal.package-info" />
+	<class name="com.mongodb.internal.diagnostics.logging.package-info" />
+	<class name="com.mongodb.bulk.package-info" />
+	<class name="com.mongodb.client.gridfs.package-info" />
+	<class name="com.mongodb.internal.logging.package-info" />
+	<class name="com.mongodb.internal.client.vault.package-info" />
+	<class name="com.mongodb.internal.client.model.package-info" />
+	<class name="org.apache.commons.text.matcher.package-info" />
+	<class name="org.apache.commons.lang3.function.package-info" />
+	<class name="com.mongodb.internal.operation.retry.package-info" />
+	<class name="com.mongodb.client.model.changestream.package-info" />
+	<class name="com.mongodb.client.model.geojson.package-info" />
+	<class name="com.mongodb.client.model.geojson.codecs.package-info" />
+	<class name="org.apache.commons.lang3.concurrent.locks.package-info" />
+	<class name="com.mongodb.client.model.vault.package-info" />
+	<class name="com.mongodb.internal.bulk.package-info" />
+	<class name="com.mongodb.internal.inject.package-info" />
+	<class name="com.mongodb.internal.operation.package-info" />
+	<class name="com.mongodb.internal.connection.package-info" />
+	<class name="org.apache.commons.lang3.time.package-info" />
+	<class name="com.mongodb.internal.package-info" />
+	<class name="org.apache.commons.lang3.concurrent.package-info" />
+	<class name="com.mongodb.internal.selector.package-info" />
+	<class name="org.apache.commons.text.package-info" />
+	<class name="org.apache.commons.lang3.event.package-info" />
+	<class name="org.apache.commons.lang3.stream.package-info" />
+	<class name="org.apache.commons.text.diff.package-info" />
+	<class name="com.mongodb.spi.dns.package-info" />
+	<class name="com.mongodb.internal.event.package-info" />
+	<class name="Scripts.CommissionScripts.MeleeTrainer" />
+	<class name="org.apache.commons.lang3.package-info" />
+	<class name="com.mongodb.internal.binding.package-info" />
+	<class name="org.apache.commons.lang3.reflect.package-info" />
+	<class name="com.mongodb.session.package-info" />
+	<class name="com.mongodb.management.package-info" />
+	<class name="com.mongodb.internal.client.model.changestream.package-info" />
+	<class name="org.apache.commons.text.lookup.package-info" />
+	<class name="org.apache.commons.lang3.util.package-info" />
+	<class name="com.mongodb.internal.capi.package-info" />
+	<class name="org.apache.commons.text.io.package-info" />
+	<class name="com.mongodb.client.model.search.package-info" />
+	<class name="com.mongodb.internal.dns.package-info" />
+	<class name="com.mongodb.internal.async.function.package-info" />
+	<class name="org.apache.commons.lang3.builder.package-info" />
+	<class name="com.mongodb.internal.authentication.package-info" />
+	<class name="com.mongodb.selector.package-info" />
+	<class name="org.apache.commons.lang3.exception.package-info" />
+	<class name="com.mongodb.internal.time.package-info" />
+	<class name="com.mongodb.client.vault.package-info" />
+	<class name="com.mongodb.client.model.package-info" />
+</entrypoints>
+
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.listener.GameStateListener not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.impl.TaskScript not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.listener.GameTickListener not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.listener.GameStateListener not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.listener.ItemContainerListener not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.listener.PaintListener not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.listener.HitSplatListener not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.methods.walking.web.node.AbstractWebNode not found! -->
+<!-- WARNING:Unresolved external dependency: org.dreambot.api.script.TaskNode not found! -->
+<!-- ERROR: 
+Cannot invoke "com.yworks.yshrink.model.AbstractDescriptor.getNode()" because "target" is null
+java.lang.NullPointerException: Cannot invoke "com.yworks.yshrink.model.AbstractDescriptor.getNode()" because "target" is null
+	at com.yworks.yshrink.model.Model.createDependencyEdge(Model.java:168)
+	at com.yworks.yshrink.core.Analyzer.createInvokeEdges(Analyzer.java:450)
+	at com.yworks.yshrink.core.Analyzer.createDependencyEdges(Analyzer.java:186)
+	at com.yworks.yshrink.core.Analyzer.createEdges(Analyzer.java:51)
+	at com.yworks.yshrink.YShrink.doShrinkPairs(YShrink.java:111)
+	at com.yworks.yshrink.ant.ShrinkTask.execute(ShrinkTask.java:208)
+	at com.yworks.yguard.YGuardTask.execute(YGuardTask.java:118)
+	at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:299)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:99)
+	at org.apache.tools.ant.Task.perform(Task.java:350)
+	at org.apache.tools.ant.Target.execute(Target.java:449)
+	at org.apache.tools.ant.Target.performTasks(Target.java:470)
+	at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1401)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1374)
+	at org.apache.maven.plugins.antrun.AntRunMojo.execute(AntRunMojo.java:297)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:126)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2(MojoExecutor.java:328)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute(MojoExecutor.java:316)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:212)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:174)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.access$000(MojoExecutor.java:75)
+	at org.apache.maven.lifecycle.internal.MojoExecutor$1.run(MojoExecutor.java:162)
+	at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute(DefaultMojosExecutionStrategy.java:39)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:159)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:105)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:73)
+	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:53)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:118)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:261)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:173)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:101)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:906)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:283)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:206)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:283)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:226)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:407)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:348)
+	at org.codehaus.classworlds.Launcher.main(Launcher.java:47)
+-->
+</yshrink>
+

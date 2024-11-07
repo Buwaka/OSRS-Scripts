@@ -24,6 +24,7 @@ public class MouseParameterTester extends javax.swing.JFrame
     private java.awt.Label       label5;
     private java.awt.Label       label6;
     private java.awt.Label       label7;
+
     /**
      * Creates new form MouseParameterTester
      */
@@ -296,7 +297,7 @@ public class MouseParameterTester extends javax.swing.JFrame
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[])
+    public static void main(String[] args)
     {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

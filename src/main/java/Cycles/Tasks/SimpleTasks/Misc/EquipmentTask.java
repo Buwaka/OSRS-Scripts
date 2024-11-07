@@ -1,8 +1,9 @@
 package Cycles.Tasks.SimpleTasks.Misc;
 
 import Cycles.Tasks.SimpleTasks.Bank.BankItemsTask;
-import Utilities.Combat.EquipmentHelper;
+import Utilities.Combat.EquipmentLoadout;
 import Utilities.Combat.EquipmentManager;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.methods.combat.Combat;
 import org.dreambot.api.methods.combat.CombatStyle;
@@ -10,7 +11,6 @@ import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.equipment.Equipment;
 import org.dreambot.api.methods.container.impl.equipment.EquipmentSlot;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
 
 import javax.annotation.Nonnull;
@@ -18,20 +18,20 @@ import java.util.*;
 
 public class EquipmentTask extends SimpleTask
 {
+    private final int     Retries                  = 5;
     HashMap<EquipmentSlot, Integer> ToEquip    = new HashMap<>();
     Set<EquipmentSlot>              ToUnEquip  = new HashSet<>();
     List<Integer>                   ToDeposit  = new ArrayList<>();
     boolean                         UnEquipAll = false;
-    private int     Fails                    = 0;
-    private int     Retries                  = 5;
-    private boolean DepositPreviousEquipment = true;
+    private       int     Fails                    = 0;
+    private       boolean DepositPreviousEquipment = true;
 
     public EquipmentTask(String Name)
     {
         super(Name);
     }
 
-    public EquipmentTask(String Name, EquipmentHelper.Equipment equipment)
+    public EquipmentTask(String Name, EquipmentLoadout equipment)
     {
         super(Name);
 

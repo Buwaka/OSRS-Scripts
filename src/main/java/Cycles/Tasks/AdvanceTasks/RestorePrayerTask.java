@@ -2,20 +2,20 @@ package Cycles.Tasks.AdvanceTasks;
 
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import OSRSDatabase.PrayerDB;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.Client;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.skills.Skill;
 import org.dreambot.api.methods.skills.Skills;
 import org.dreambot.api.methods.walking.pathfinding.impl.local.LocalPathFinder;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 public class RestorePrayerTask extends SimpleTask
 {
-    private TravelTask TravelToAltar = null;
+    private final TravelTask TravelToAltar = null;
 
     public RestorePrayerTask(String Name)
     {

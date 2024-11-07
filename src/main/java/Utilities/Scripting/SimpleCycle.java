@@ -2,10 +2,15 @@ package Utilities.Scripting;
 
 
 import Utilities.ECycleTags;
-import Utilities.Patterns.Delegates.Delegate;
+import Utilities.Patterns.Delegates.*;
+import Utilities.Patterns.GameTickDelegate;
 import Utilities.Requirement.IRequirement;
+import org.dreambot.api.data.GameState;
 import org.dreambot.api.methods.container.impl.bank.Bank;
-import org.dreambot.api.utilities.Logger;
+import org.dreambot.api.script.event.impl.ExperienceEvent;
+import org.dreambot.api.wrappers.interactive.Entity;
+import org.dreambot.api.wrappers.interactive.NPC;
+import org.dreambot.api.wrappers.items.Item;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -15,6 +20,20 @@ import java.util.function.Supplier;
 
 public abstract class SimpleCycle implements ICycle, Serializable
 {
+    private final     EnumSet<ECycleTags>          Tags                  = EnumSet.noneOf(ECycleTags.class);
+    public Delegate4<SimpleCycle, IFScript.ItemAction, Item, Item>                     onInventory       = new Delegate4<>();
+    public GameTickDelegate                                                            onGameTick        = new GameTickDelegate();
+    public Delegate1<SimpleCycle>                                                      onTaskRemoved     = new Delegate1();
+    public Delegate1<SimpleCycle>                                                      onTaskAdded       = new Delegate1();
+    public Delegate1<SimpleCycle>                                                      onBankCached      = new Delegate1();
+    public Delegate2<SimpleCycle, NPC>                                                 onNpcDespawn      = new Delegate2<>();
+    public Delegate2<SimpleCycle, NPC>                                                 onNpcSpawn        = new Delegate2<>();
+    // Entity, type, damage, id, special, gameCycle
+    public Delegate3<SimpleCycle, GameState/*last*/, GameState/*current*/>             onGameStateChange = new Delegate3<>();
+    public Delegate7<SimpleCycle, Entity, Integer, Integer, Integer, Integer, Integer> onHitSplat        = new Delegate7<>();
+    public Delegate2<SimpleCycle, ExperienceEvent>                                     onEXPGained       = new Delegate2<>();
+    public Delegate2<SimpleCycle, ExperienceEvent>                                     onLevelUp         = new Delegate2<>();
+    public Delegate2<SimpleCycle, ExperienceEvent>                                     onLevelChange     = new Delegate2<>();
     /**
      * When a cycle is completed, this is called, the goal might not have been met yet
      */
@@ -38,9 +57,8 @@ public abstract class SimpleCycle implements ICycle, Serializable
     private transient int                          CycleCount            = 0;
     private @Nullable Integer                      CycleCountLimit       = null;
     private transient boolean                      Started               = false;
-    private           EnumSet<ECycleTags>          Tags                  = EnumSet.noneOf(ECycleTags.class);
-
     private transient WeakReference<IFScript> ParentScript = null;
+    private transient String AuthKey = null;
 
     private SimpleCycle()
     {
@@ -49,9 +67,10 @@ public abstract class SimpleCycle implements ICycle, Serializable
     }
 
 
-    public SimpleCycle(String name)
+    public SimpleCycle(String name, String authKey)
     {
         CycleName = name;
+        AuthKey = authKey;
     }
 
     public void AddEndTask(Supplier<SimpleTask[]>... TaskGenerator)
@@ -75,6 +94,19 @@ public abstract class SimpleCycle implements ICycle, Serializable
             return;
         }
         Logger.log("SimpleCycle: AddGoal: " + Collections.addAll(Goal, requirement));
+    }
+
+    public void AddGoal(List<IRequirement> requirements)
+    {
+        if(Goal == null)
+        {
+            Goal = new ArrayList<>();
+        }
+        if(requirements == null)
+        {
+            return;
+        }
+        Logger.log("SimpleCycle: AddGoal: " + Goal.addAll(requirements));
     }
 
     public void AddRequirement(IRequirement... requirement)
@@ -168,22 +200,13 @@ public abstract class SimpleCycle implements ICycle, Serializable
 
     public boolean hasEndTasks()
     {
-        if(EndTaskGenerators == null || EndTaskGenerators.isEmpty() || EndTasksCreated)
-        {
-            return false;
-        }
-
-        return true;
+        return EndTaskGenerators != null && !EndTaskGenerators.isEmpty() && !EndTasksCreated;
     }
 
     public boolean hasStartUpTasks()
     {
-        if(StartUpTaskGenerators == null || StartUpTaskGenerators.isEmpty() || StartUpTasksCreated)
-        {
-            return false;
-        }
-
-        return true;
+        return StartUpTaskGenerators != null && !StartUpTaskGenerators.isEmpty() &&
+               !StartUpTasksCreated;
     }
 
     public boolean isNeedsCachedBank()
@@ -226,7 +249,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
      * @return Whether the goal of this cycle has been met, based on CycleType
      */
 
-    boolean isGoalMet()
+    public boolean isGoalMet()
     {
         if(NeedsCachedBank && !Bank.isCached())
         {
@@ -253,6 +276,7 @@ public abstract class SimpleCycle implements ICycle, Serializable
                     }
 
                     boolean result = true;
+                    Logger.log("SimpleCycle: isGoalMet: Goal count: " + Goal.size());
                     for(var goal : Goal)
                     {
                         result &= goal.isRequirementMet();
@@ -363,6 +387,11 @@ public abstract class SimpleCycle implements ICycle, Serializable
     public String toString()
     {
         return CycleName + " type: " + Type.name() + " CycleCount: " + CycleCount;
+    }
+
+    private boolean isAuthenticated()
+    {
+        return false;
     }
 
     @Override

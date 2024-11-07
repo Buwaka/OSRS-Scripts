@@ -5,13 +5,13 @@ import Cycles.Tasks.SimpleTasks.ItemProcessing.AlchTask;
 import OSRSDatabase.ItemDB;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleCycle;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.equipment.Equipment;
 import org.dreambot.api.methods.container.impl.equipment.EquipmentSlot;
 import org.dreambot.api.methods.grandexchange.LivePrices;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
 
 import java.time.Instant;
@@ -22,18 +22,18 @@ import java.util.List;
 
 public class AlchCycle extends SimpleCycle
 {
-    private final     int              NatureRuneID   = 561;
-    private final     int              FireStaffID    = 1387;
-    public            int              ProfitMargin   = 50;
-    public            int[]            TabsToConsider = {1};
-    private           Instant          StartTime      = null;
-    private           LinkedList<Item> ItemsToAlch    = null;
-    private transient boolean          Started        = false;
-    private transient List<AlchTask>   Alchs          = new ArrayList<>();
+    private final           int              NatureRuneID   = 561;
+    private final           int              FireStaffID    = 1387;
+    private final transient List<AlchTask>   Alchs          = new ArrayList<>();
+    public                  int              ProfitMargin   = 50;
+    public                  int[]            TabsToConsider = {1};
+    private                 Instant          StartTime      = null;
+    private                 LinkedList<Item> ItemsToAlch    = null;
+    private transient       boolean          Started        = false;
 
     public AlchCycle(String name)
     {
-        super(name);
+        super(name, null);
     }
 
     /**

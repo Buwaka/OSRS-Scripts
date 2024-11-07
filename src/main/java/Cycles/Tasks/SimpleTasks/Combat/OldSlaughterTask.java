@@ -4,13 +4,13 @@ import OSRSDatabase.MonsterDB;
 import Utilities.Combat.CombatManager;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.walking.impl.Walking;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.Character;
 import org.dreambot.api.wrappers.interactive.NPC;
@@ -24,15 +24,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class OldSlaughterTask extends SimpleTask
 {
+    private final long                               _taskTimeoutStart = 0;
+    private final ConcurrentHashMap<Integer, Thread> TargetListeners   = new ConcurrentHashMap<>();
     public PropertyChangeSupport onKill        = new PropertyChangeSupport(this);
     public AtomicInteger         TaskTimeout   = new AtomicInteger(120000);
     public AtomicInteger         CombatTimeout = new AtomicInteger(1000);
     public AtomicInteger         CacheTimeout  = new AtomicInteger(300);
     NPC _closestTarget = null;
-    private Area[]                             KillingAreas      = null;
-    private int[]                              TargetIDs         = null;
-    private long                               _taskTimeoutStart = 0;
-    private ConcurrentHashMap<Integer, Thread> TargetListeners   = new ConcurrentHashMap<>();
+    private       Area[]                             KillingAreas      = null;
+    private       int[]                              TargetIDs         = null;
 
     public OldSlaughterTask(String Name, Area[] TargetAreas, String TargetName, boolean Exact)
     {
@@ -120,9 +120,8 @@ public class OldSlaughterTask extends SimpleTask
         {
             Logger.log("OldSlaughterTask: TargetListener: Target Timeout");
         }
-        Logger.log(
-                "OldSlaughterTask: TargetListener: Stop listening to target: " + Target.toString() +
-                " hashcode: " + Target.hashCode());
+        Logger.log("OldSlaughterTask: TargetListener: Stop listening to target: " + Target +
+                   " hashcode: " + Target.hashCode());
         TargetListeners.remove(Target.hashCode());
     }
 

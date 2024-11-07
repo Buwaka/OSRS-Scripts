@@ -1,10 +1,10 @@
 package Utilities.Requirement;
 
+import Utilities.Scripting.Logger;
 import org.dreambot.api.methods.quest.book.FreeQuest;
 import org.dreambot.api.methods.quest.book.MiniQuest;
 import org.dreambot.api.methods.quest.book.PaidQuest;
 import org.dreambot.api.methods.quest.book.Quest;
-import org.dreambot.api.utilities.Logger;
 
 import java.io.Serial;
 

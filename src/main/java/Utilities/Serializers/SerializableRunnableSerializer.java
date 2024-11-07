@@ -1,7 +1,7 @@
 package Utilities.Serializers;
 
+import Utilities.Scripting.Logger;
 import com.google.gson.*;
-import org.dreambot.api.utilities.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;

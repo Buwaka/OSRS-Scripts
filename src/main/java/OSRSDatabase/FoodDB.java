@@ -184,11 +184,7 @@ public class FoodDB extends OSRSDataBase
     public static boolean isFood(int ID)
     {
         var food = GetFood(ID);
-        if(food != null)
-        {
-            return true;
-        }
-        return false;
+        return food != null;
     }
 
     public static Food GetFood(int FoodID)

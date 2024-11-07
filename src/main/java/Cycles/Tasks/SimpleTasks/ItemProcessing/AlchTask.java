@@ -1,21 +1,21 @@
 package Cycles.Tasks.SimpleTasks.ItemProcessing;
 
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.magic.Magic;
 import org.dreambot.api.methods.magic.Normal;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
 
 import javax.annotation.Nonnull;
 
 public class AlchTask extends SimpleTask
 {
-    private int     AlchItemID;
-    private Item    AlchItem;
-    private int     TotalToAlch = -1;
-    private boolean Ready       = true;
+    private final int     AlchItemID;
+    private       Item    AlchItem;
+    private       int     TotalToAlch = -1;
+    private       boolean Ready       = true;
 
     public AlchTask(String Name, int ToAlch, int count)
     {

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Basically don't change the function signature, function name, parameters, parameter names,..., otherwise Lambda might break
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.TYPE_USE, ElementType.METHOD, ElementType.MODULE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExternalLambdaUsage
 {}

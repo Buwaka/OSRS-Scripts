@@ -1,12 +1,13 @@
 package OSRSDatabase;
 
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.Logger;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,13 +16,13 @@ public class CookingDB extends OSRSDataBase
 {
     final private static String                                   CookingDBPath  = "FuckedcookingDB.json";
     final private static String                                   MeatFishDBPath = "cookingMeatFishDB.json";
-    private static       ConcurrentHashMap<Integer, CookingData>  MeatFishDBMap  = null;
+    private static final ConcurrentHashMap<Integer, CookingData>  MeatFishDBMap  = null;
     private static       ConcurrentHashMap<Integer, CookingData2> CookingDBMap   = null;
 
 
     //TODO database for food that just needs to be cooked, and one for food that needs to be combined
 
-    public static class CookingData
+    public static class CookingData implements Serializable
     {
         public @Nullable Integer   id;
         public           int       level;
@@ -32,7 +33,7 @@ public class CookingDB extends OSRSDataBase
         public           int       burnt_id;
     }
 
-    public static class CookingData2
+    public static class CookingData2 implements Serializable
     {
         public String  Name;
         public Boolean Members;
@@ -146,63 +147,63 @@ public class CookingDB extends OSRSDataBase
         System.out.println(gson.toJson(CookingDBMap.values()));
     }
 
-    private static void ReadMeatFishDB()
-    {
-        MeatFishDBMap = new ConcurrentHashMap<>();
-
-        try
-        {
-            InputStreamReader File   = new InputStreamReader(GetInputStream(MeatFishDBPath));
-            JsonReader        Reader = new JsonReader(File);
-            Gson              gson   = new Gson();
-            Reader.setLenient(true);
-
-            //Reader.beginObject();
-            Reader.beginArray();
-
-            int i = 0;
-            while(Reader.hasNext())
-            {
-                //int             ID  = Integer.parseInt(Reader.nextName());
-                CookingData Obj = gson.fromJson(Reader, CookingData.class);
-                MeatFishDBMap.put(i, Obj);
-
-                i++;
-            }
-
-            Reader.endArray();
-            //Reader.endObject();
-            Reader.close();
-
-        } catch(Exception e)
-        {
-            Logger.log("Error reading HerbDB, Exception: " + e);
-            throw new RuntimeException(e);
-        }
-
-        for(var item : MeatFishDBMap.entrySet())
-        {
-            ItemDB.ItemData CookedData = ItemDB.GetClosestMatch(item.getValue().name, true);
-            String          RawName    = item.getValue().name;
-            if(RawName.contains("Cooked"))
-            {
-                RawName = RawName.replace("Cooked", "Raw");
-            }
-            else
-            {
-                RawName = "Raw " + RawName;
-            }
-            ItemDB.ItemData RawData = ItemDB.GetClosestMatch(RawName, true);
-
-            System.out.println(
-                    item.getValue().name + " = " + CookedData.name + " = " + RawData.name);
-            MeatFishDBMap.get(item.getKey()).id          = CookedData.id;
-            MeatFishDBMap.get(item.getKey()).ingredients = new Integer[]{RawData.id};
-        }
-
-        Gson gson = OSRSUtilities.OSRSGsonBuilder.create();
-        System.out.println(gson.toJson(MeatFishDBMap.values()));
-    }
+    //    private static void ReadMeatFishDB()
+    //    {
+    //        MeatFishDBMap = new ConcurrentHashMap<>();
+    //
+    //        try
+    //        {
+    //            InputStreamReader File   = new InputStreamReader(GetInputStream(MeatFishDBPath));
+    //            JsonReader        Reader = new JsonReader(File);
+    //            Gson              gson   = new Gson();
+    //            Reader.setLenient(true);
+    //
+    //            //Reader.beginObject();
+    //            Reader.beginArray();
+    //
+    //            int i = 0;
+    //            while(Reader.hasNext())
+    //            {
+    //                //int             ID  = Integer.parseInt(Reader.nextName());
+    //                CookingData Obj = gson.fromJson(Reader, CookingData.class);
+    //                MeatFishDBMap.put(i, Obj);
+    //
+    //                i++;
+    //            }
+    //
+    //            Reader.endArray();
+    //            //Reader.endObject();
+    //            Reader.close();
+    //
+    //        } catch(Exception e)
+    //        {
+    //            Logger.log("Error reading HerbDB, Exception: " + e);
+    //            throw new RuntimeException(e);
+    //        }
+    //
+    //        for(var item : MeatFishDBMap.entrySet())
+    //        {
+    //            ItemDB.ItemData CookedData = ItemDB.GetClosestMatch(item.getValue().name, true);
+    //            String          RawName    = item.getValue().name;
+    //            if(RawName.contains("Cooked"))
+    //            {
+    //                RawName = RawName.replace("Cooked", "Raw");
+    //            }
+    //            else
+    //            {
+    //                RawName = "Raw " + RawName;
+    //            }
+    //            ItemDB.ItemData RawData = ItemDB.GetClosestMatch(RawName, true);
+    //
+    //            System.out.println(
+    //                    item.getValue().name + " = " + CookedData.name + " = " + RawData.name);
+    //            MeatFishDBMap.get(item.getKey()).id          = CookedData.id;
+    //            MeatFishDBMap.get(item.getKey()).ingredients = new Integer[]{RawData.id};
+    //        }
+    //
+    //        Gson gson = OSRSUtilities.OSRSGsonBuilder.create();
+    //        System.out.println(gson.toJson(MeatFishDBMap.values()));
+    //    }
 
 
 }

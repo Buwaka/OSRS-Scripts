@@ -15,18 +15,18 @@ public class PotionCycle extends SimpleCycle
     @Serial
     private static final long serialVersionUID = 9219489276057601669L;
 
-    private PotionDB.PotionStep PotionPlan;
-    private int                 Amount;
-    private boolean             SellProduct                 = true;
-    private boolean             DecantProduct               = true;
-    private boolean             WearNecklaceOfAlchemy       = true;
-    private int                 AmuletOfChemistryID         = 21163;
-    private int                 UpgradedAmuletOfChemistryID = -1;
+    private final PotionDB.PotionStep PotionPlan;
+    private final int                 Amount;
+    private final int                 AmuletOfChemistryID         = 21163;
+    private final int                 UpgradedAmuletOfChemistryID = -1;
+    private       boolean             SellProduct                 = true;
+    private       boolean             DecantProduct               = true;
+    private       boolean             WearNecklaceOfAlchemy       = true;
 
 
     public PotionCycle(String name, PotionDB.PotionStep steps, int amount)
     {
-        super(name);
+        super(name, null);
         PotionPlan = steps;
         Amount     = amount;
     }

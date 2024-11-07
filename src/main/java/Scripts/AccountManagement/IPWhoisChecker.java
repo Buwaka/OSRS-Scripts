@@ -9,10 +9,6 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.dreambot.api.methods.container.impl.bank.Bank;
-import org.dreambot.api.methods.prayer.Prayer;
-import org.dreambot.api.methods.quest.Quests;
-import org.dreambot.api.methods.quest.book.Quest;
-import org.dreambot.api.methods.skills.Skill;
 import org.dreambot.api.wrappers.items.Item;
 
 import java.io.File;
@@ -27,32 +23,8 @@ import java.util.Map;
 
 public class IPWhoisChecker
 {
-    static File ProxyList = new File("C:/Users/SammyLaptop/Downloads/data.txt");
-
-    public static void main(String[] args) throws IOException, RateLimitedException
-    {
-        List<String> lines = Files.readAllLines(Path.of(
-                "C:/Users/SammyLaptop/Downloads/commands.txt"));
-
-        //Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        Map<String, IPResponse> responses = new HashMap<>();
-
-        for(var line : lines)
-        {
-            var parts    = line.splitWithDelimiters(":", 6);
-            var response = GetResponse(parts[0], Integer.parseInt(parts[2]), parts[4], parts[6]);
-
-            System.out.print(
-                    parts[4] + "\n" + response.getIp() + " " + response.getAsn().getName() + " " +
-                    response.getAsn().getRoute() + " " + response.getAsn().getType() + "\n");
-        }
-        var item = new Item(69,69);
-        Bank.contains(item);
-        //                String json = gson.toJson(responses);
-        //                System.out.println(json);
-        //                Files.writeString(Path.of("C:/Users/SammyLaptop/Downloads/datatest.json"), json);
-    }
+    static File                 ProxyList = new File("C:/Users/SammyLaptop/Downloads/data.txt");
+    static DefaultAuthenticator auth      = DefaultAuthenticator.getInstance();
 
     //    public static void main(String[] args) throws Exception
     //    {
@@ -82,10 +54,7 @@ public class IPWhoisChecker
     //        System.out.println(json);
     //        Files.writeString(Path.of("C:/Users/SammyLaptop/Downloads/datatest.json"), json);
     //    }
-
-
-    static DefaultAuthenticator auth  = DefaultAuthenticator.getInstance();
-    static ProxyAuth            auth2 = null;
+    static ProxyAuth auth2 = null;
 
     static
     {
@@ -95,7 +64,7 @@ public class IPWhoisChecker
 
     public static class ProxyAuth extends Authenticator
     {
-        private PasswordAuthentication auth;
+        private final PasswordAuthentication auth;
 
         private ProxyAuth(String user, String password)
         {
@@ -109,6 +78,31 @@ public class IPWhoisChecker
         {
             return auth;
         }
+    }
+
+    public static void main(String[] args) throws IOException, RateLimitedException
+    {
+        List<String> lines = Files.readAllLines(Path.of(
+                "C:/Users/SammyLaptop/Downloads/commands.txt"));
+
+        //Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Map<String, IPResponse> responses = new HashMap<>();
+
+        for(var line : lines)
+        {
+            var parts    = line.splitWithDelimiters(":", 6);
+            var response = GetResponse(parts[0], Integer.parseInt(parts[2]), parts[4], parts[6]);
+
+            System.out.print(
+                    parts[4] + "\n" + response.getIp() + " " + response.getAsn().getName() + " " +
+                    response.getAsn().getRoute() + " " + response.getAsn().getType() + "\n");
+        }
+        var item = new Item(69, 69);
+        Bank.contains(item);
+        //                String json = gson.toJson(responses);
+        //                System.out.println(json);
+        //                Files.writeString(Path.of("C:/Users/SammyLaptop/Downloads/datatest.json"), json);
     }
 
     static IPResponse GetResponse(String Address, int port, String username, String password) throws

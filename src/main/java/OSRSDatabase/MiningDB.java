@@ -1,12 +1,13 @@
 package OSRSDatabase;
 
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.Logger;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.HashMap;
 
 public class MiningDB extends OSRSDataBase
@@ -17,7 +18,7 @@ public class MiningDB extends OSRSDataBase
     private static       HashMap<Integer, MineToolData> ToolDBMap  = null;
 
 
-    public static class OreData
+    public static class OreData implements Serializable
     {
         public           Integer   id;
         public @Nullable Integer[] variations;

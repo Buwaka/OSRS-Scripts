@@ -139,7 +139,7 @@ public class NewJFrame extends javax.swing.JFrame implements OSRSForm
         jLabel1.setForeground(new java.awt.Color(255, 0, 0));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-                "/icons/Attack_icon_(detail).png"))); // NOI18N
+                "/icons/Skills/Attack_icon_(detail).png"))); // NOI18N
         jLabel1.setText("0 / 99");
         jLabel1.setAlignmentX(0.5F);
         jLabel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -520,7 +520,7 @@ public class NewJFrame extends javax.swing.JFrame implements OSRSForm
 
         jList1.setModel(new javax.swing.AbstractListModel<String>()
         {
-            String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+            final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
 
             public int getSize() {return strings.length;}
 
@@ -537,7 +537,7 @@ public class NewJFrame extends javax.swing.JFrame implements OSRSForm
 
         jList2.setModel(new javax.swing.AbstractListModel<String>()
         {
-            String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+            final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
 
             public int getSize() {return strings.length;}
 
@@ -654,7 +654,7 @@ public class NewJFrame extends javax.swing.JFrame implements OSRSForm
 
         jList3.setModel(new javax.swing.AbstractListModel<String>()
         {
-            String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+            final String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
 
             public int getSize() {return strings.length;}
 
@@ -745,7 +745,7 @@ public class NewJFrame extends javax.swing.JFrame implements OSRSForm
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[])
+    public static void main(String[] args)
     {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

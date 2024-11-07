@@ -1,12 +1,12 @@
 package Cycles.Tasks.AdvanceTasks;
 
 import Cycles.Tasks.SimpleTasks.TravelTask;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.settings.PlayerSettings;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.interactive.NPC;
 
 import javax.annotation.Nonnull;
@@ -18,7 +18,7 @@ public class GraveStoneTask extends SimpleTask
     public static final  int    GraveTimerVarBitID = 10465;
     private static final String LootAction         = "Loot";
     private static final String GraveName          = "Grave";
-    private              Tile   GraveStoneLocation;
+    private final        Tile   GraveStoneLocation;
 
 
     private TravelTask Travel = null;

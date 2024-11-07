@@ -1,7 +1,7 @@
 package Utilities.Patterns.Delegates;
 
 
-import org.dreambot.api.utilities.Logger;
+import Utilities.Scripting.Logger;
 
 import java.util.WeakHashMap;
 

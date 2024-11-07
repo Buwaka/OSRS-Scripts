@@ -2,10 +2,10 @@ package Cycles.Tasks.SimpleTasks.Combat;
 
 import OSRSDatabase.MonsterDB;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
-import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.walking.impl.Walking;
-import org.dreambot.api.utilities.Logger;
+import org.dreambot.api.wrappers.interactive.NPC;
 import org.dreambot.api.wrappers.items.GroundItem;
 
 import javax.annotation.Nonnull;
@@ -31,17 +31,17 @@ public class LootKillsTask extends SimpleTask
     }
 
 
-    public boolean onKill(Integer ID, Tile lootTile)
+    public boolean onKill(NPC npc)
     {
-        Logger.log("LootKillsTask: onKill: Loot found:" + ID + " " + lootTile);
+        Logger.log("LootKillsTask: onKill: Loot found:" + npc);
 
-        var LootTable = MonsterDB.GetMonsterLootTable(ID);
-        var size      = MonsterDB.GetMonsterSize(ID);
+        var LootTable = MonsterDB.GetMonsterLootTable(npc.getID());
+        var size      = MonsterDB.GetMonsterSize(npc.getID());
         size = size == null ? 3 : size;
         if(LootTable != null && LootTable.length > 0)
         {
             var drops    = Arrays.stream(LootTable).mapToInt(t -> t.id).toArray();
-            var newItems = OSRSUtilities.GetLootItemsInclude(lootTile.getArea(size), drops);
+            var newItems = OSRSUtilities.GetLootItemsInclude(npc.getTile().getArea(size), drops);
             LootItems.addAll(newItems);
         }
 
@@ -104,19 +104,18 @@ public class LootKillsTask extends SimpleTask
             if(!loot.exists())
             {
                 LootItems.remove(loot);
-                Logger.log("LootKillsTask: Cleanup: " + loot.toString() + " removing from loot");
+                Logger.log("LootKillsTask: Cleanup: " + loot + " removing from loot");
             }
             if(IgnoreLoot != null && Arrays.stream(IgnoreLoot).anyMatch((t) -> t == loot.getID()))
             {
                 LootItems.remove(loot);
-                Logger.log("LootKillsTask: Cleanup: " + loot.toString() +
+                Logger.log("LootKillsTask: Cleanup: " + loot +
                            " removing from loot because of ignore");
             }
             else
             {
-                Logger.log(
-                        "LootKillsTask: Cleanup: " + loot.toString() + " exists:" + loot.exists() +
-                        " isonscreen:" + loot.isOnScreen());
+                Logger.log("LootKillsTask: Cleanup: " + loot + " exists:" + loot.exists() +
+                           " isonscreen:" + loot.isOnScreen());
             }
 
         }

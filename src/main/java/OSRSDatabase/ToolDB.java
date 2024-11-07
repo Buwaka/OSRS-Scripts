@@ -8,13 +8,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
 import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ToolDB
 {
-    public static class ToolData
+    public static class ToolData implements Serializable
     {
         public           int            id;
         public           Type           type;
@@ -25,7 +26,7 @@ public class ToolDB
         public @Nullable IRequirement[] requirements;
         public @Nullable DBTags[]       tags;
 
-        public enum Type
+        public enum Type implements Serializable
         {
             Axe,
             Chisel,

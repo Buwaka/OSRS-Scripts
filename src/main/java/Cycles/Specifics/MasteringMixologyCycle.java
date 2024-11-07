@@ -3,6 +3,7 @@ package Cycles.Specifics;
 import OSRSDatabase.HerbDB;
 import OSRSDatabase.OSRSPrices;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleCycle;
 import io.vavr.Tuple2;
 import org.dreambot.api.data.GameState;
@@ -15,7 +16,6 @@ import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.settings.PlayerSettings;
 import org.dreambot.api.methods.walking.impl.Walking;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.jetbrains.annotations.Range;
 
@@ -26,45 +26,45 @@ import java.util.List;
 
 public class MasteringMixologyCycle extends SimpleCycle
 {
-    static final int RefinerID      = 54904;
-    static final int HopperID       = 54903;
-    static final int MixingVesselID = 55395;
-    static final int ConveyorBeltID = 54917;
-    static final int CrystallizerID = 55391;
-    static final int MixerID        = 55390;
-    static final int BoilerID       = 55389;
-    static final int MatureDigweedObjectID = 55396; // TODO
-    static final int MatureDigweedItemID   = 30031; // TODO
-    static final int MoxLeverID = 54868;
-    static final int AgaLeverID = 54867;
-    static final int LyeLeverID = 54869;
-    static final int MoxPasteID = 30005;
-    static final int AgaPasteID = 30007;
-    static final int LyePasteID = 30009;
-    static final int MoxDepositVarbit = 11431;
-    static final int AgaDepositVarbit = 11432;
-    static final int LyeDepositVarbit = 11433;
-    static final int LeftMixerVarbit   = 11326;
-    static final int MiddleMixerVarbit = 11325;
-    static final int RightMixerVarbit  = 11324;
-    static final int BoilerProgressVarbit  = 11327;
-    static final int MixerProgressVarbit   = 11329;
-    static final int CrystalProgressVarbit = 11328;
-    static final int ProgressFinalState    = 16;
-    static final Tile StartTile        = new Tile(1394, 9321, 0);
-    static final Tile PotionSelectTile = new Tile(1394, 9324, 0);
-    static final int PotionSlots         = 3;
-    static final int Potion1Varbit       = 11315;
-    static final int Potion1MethodVarbit = 11316;
-    static final int Potion2Varbit       = 11317;
-    static final int Potion2MethodVarbit = 11318;
-    static final int Potion3Varbit       = 11319;
-    static final int Potion3MethodVarbit = 11320;
-    static final int GetMinimumDeposit = 100;
-    static final int MixalotID1 = 30020;
-    static final int MixalotID2 = 30030;
+    static final         int  RefinerID             = 54904;
+    static final         int  HopperID              = 54903;
+    static final         int  MixingVesselID        = 55395;
+    static final         int  ConveyorBeltID        = 54917;
+    static final         int  CrystallizerID        = 55391;
+    static final         int  MixerID               = 55390;
+    static final         int  BoilerID              = 55389;
+    static final         int  MatureDigweedObjectID = 55396; // TODO
+    static final         int  MatureDigweedItemID   = 30031; // TODO
+    static final         int  MoxLeverID            = 54868;
+    static final         int  AgaLeverID            = 54867;
+    static final         int  LyeLeverID            = 54869;
+    static final         int  MoxPasteID            = 30005;
+    static final         int  AgaPasteID            = 30007;
+    static final         int  LyePasteID            = 30009;
+    static final         int  MoxDepositVarbit      = 11431;
+    static final         int  AgaDepositVarbit      = 11432;
+    static final         int  LyeDepositVarbit      = 11433;
+    static final         int  LeftMixerVarbit       = 11326;
+    static final         int  MiddleMixerVarbit     = 11325;
+    static final         int  RightMixerVarbit      = 11324;
+    static final         int  BoilerProgressVarbit  = 11327;
+    static final         int  MixerProgressVarbit   = 11329;
+    static final         int  CrystalProgressVarbit = 11328;
+    static final         int  ProgressFinalState    = 16;
+    static final         Tile StartTile             = new Tile(1394, 9321, 0);
+    static final         Tile PotionSelectTile      = new Tile(1394, 9324, 0);
+    static final         int  PotionSlots           = 3;
+    static final         int  Potion1Varbit         = 11315;
+    static final         int  Potion1MethodVarbit   = 11316;
+    static final         int  Potion2Varbit         = 11317;
+    static final         int  Potion2MethodVarbit   = 11318;
+    static final         int  Potion3Varbit         = 11319;
+    static final         int  Potion3MethodVarbit   = 11320;
+    static final         int  GetMinimumDeposit     = 100;
+    static final         int  MixalotID1            = 30020;
+    static final         int  MixalotID2            = 30030;
     @Serial
-    private static final long serialVersionUID = 5504318900349378426L;
+    private static final long serialVersionUID      = 5504318900349378426L;
     int ToCreateIndex  = 0;
     int ToProcessIndex = 0;
 
@@ -217,7 +217,7 @@ public class MasteringMixologyCycle extends SimpleCycle
 
     public MasteringMixologyCycle(String name)
     {
-        super(name);
+        super(name, null);
     }
 
     @Override
@@ -234,7 +234,6 @@ public class MasteringMixologyCycle extends SimpleCycle
             {
                 ResetMMStates();
             }
-            return true;
         });
         return super.onStart(Script);
     }
@@ -732,11 +731,7 @@ public class MasteringMixologyCycle extends SimpleCycle
 
         // TODO do fancy speedup thing
 
-        if(BoilerProgress + MixerProgress + CrystalProgress > 0)
-        {
-            return true;
-        }
-        return false;
+        return BoilerProgress + MixerProgress + CrystalProgress > 0;
     }
 
     boolean GetUnpreparedPotion(Potion potion)

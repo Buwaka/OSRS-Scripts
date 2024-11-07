@@ -117,7 +117,8 @@ public class AIOActivityMenu implements OSRSForm
         AttackLabel.setForeground(new Color(-65536));
         AttackLabel.setHorizontalAlignment(0);
         AttackLabel.setHorizontalTextPosition(0);
-        AttackLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Attack_icon_(detail).png")));
+        AttackLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Attack_icon_(detail).png")));
         AttackLabel.setOpaque(true);
         AttackLabel.setText("1");
         GridBagConstraints gbc;
@@ -139,7 +140,7 @@ public class AIOActivityMenu implements OSRSForm
         StrengthLabel.setHorizontalAlignment(0);
         StrengthLabel.setHorizontalTextPosition(0);
         StrengthLabel.setIcon(new ImageIcon(getClass().getResource(
-                "/icons/Strength_icon_(detail).png")));
+                "/icons/Skills/Strength_icon_(detail).png")));
         StrengthLabel.setOpaque(true);
         StrengthLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -159,7 +160,8 @@ public class AIOActivityMenu implements OSRSForm
         DefenseLabel.setForeground(new Color(-65536));
         DefenseLabel.setHorizontalAlignment(0);
         DefenseLabel.setHorizontalTextPosition(0);
-        DefenseLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Defence_icon_(detail).png")));
+        DefenseLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Defence_icon_(detail).png")));
         DefenseLabel.setOpaque(true);
         DefenseLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -179,7 +181,8 @@ public class AIOActivityMenu implements OSRSForm
         RangedLabel.setForeground(new Color(-65536));
         RangedLabel.setHorizontalAlignment(0);
         RangedLabel.setHorizontalTextPosition(0);
-        RangedLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Ranged icon (detail).png")));
+        RangedLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Ranged icon (detail).png")));
         RangedLabel.setOpaque(true);
         RangedLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -199,7 +202,8 @@ public class AIOActivityMenu implements OSRSForm
         PrayerLabel.setForeground(new Color(-65536));
         PrayerLabel.setHorizontalAlignment(0);
         PrayerLabel.setHorizontalTextPosition(0);
-        PrayerLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Prayer_icon_(detail).png")));
+        PrayerLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Prayer_icon_(detail).png")));
         PrayerLabel.setOpaque(true);
         PrayerLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -219,7 +223,8 @@ public class AIOActivityMenu implements OSRSForm
         MagicLabel.setForeground(new Color(-65536));
         MagicLabel.setHorizontalAlignment(0);
         MagicLabel.setHorizontalTextPosition(0);
-        MagicLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Magic icon (detail).png")));
+        MagicLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Magic icon (detail).png")));
         MagicLabel.setOpaque(true);
         MagicLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -239,7 +244,8 @@ public class AIOActivityMenu implements OSRSForm
         HPLabel.setForeground(new Color(-65536));
         HPLabel.setHorizontalAlignment(0);
         HPLabel.setHorizontalTextPosition(0);
-        HPLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Hitpoints_icon_(detail).png")));
+        HPLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Hitpoints_icon_(detail).png")));
         HPLabel.setOpaque(true);
         HPLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -259,7 +265,8 @@ public class AIOActivityMenu implements OSRSForm
         AgilityLabel.setForeground(new Color(-65536));
         AgilityLabel.setHorizontalAlignment(0);
         AgilityLabel.setHorizontalTextPosition(0);
-        AgilityLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Agility_icon_(detail).png")));
+        AgilityLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Agility_icon_(detail).png")));
         AgilityLabel.setOpaque(true);
         AgilityLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -280,7 +287,7 @@ public class AIOActivityMenu implements OSRSForm
         HerbloreLabel.setHorizontalAlignment(0);
         HerbloreLabel.setHorizontalTextPosition(0);
         HerbloreLabel.setIcon(new ImageIcon(getClass().getResource(
-                "/icons/Herblore_icon_(detail).png")));
+                "/icons/Skills/Herblore_icon_(detail).png")));
         HerbloreLabel.setOpaque(true);
         HerbloreLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -301,7 +308,7 @@ public class AIOActivityMenu implements OSRSForm
         ThievingLabel.setHorizontalAlignment(0);
         ThievingLabel.setHorizontalTextPosition(0);
         ThievingLabel.setIcon(new ImageIcon(getClass().getResource(
-                "/icons/Thieving_icon_(detail).png")));
+                "/icons/Skills/Thieving_icon_(detail).png")));
         ThievingLabel.setOpaque(true);
         ThievingLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -322,7 +329,7 @@ public class AIOActivityMenu implements OSRSForm
         CraftingLabel.setHorizontalAlignment(0);
         CraftingLabel.setHorizontalTextPosition(0);
         CraftingLabel.setIcon(new ImageIcon(getClass().getResource(
-                "/icons/Crafting icon (detail).png")));
+                "/icons/Skills/Crafting icon (detail).png")));
         CraftingLabel.setOpaque(true);
         CraftingLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -343,7 +350,7 @@ public class AIOActivityMenu implements OSRSForm
         FletchingLabel.setHorizontalAlignment(0);
         FletchingLabel.setHorizontalTextPosition(0);
         FletchingLabel.setIcon(new ImageIcon(getClass().getResource(
-                "/icons/Fletching_icon_(detail).png")));
+                "/icons/Skills/Fletching_icon_(detail).png")));
         FletchingLabel.setOpaque(true);
         FletchingLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -367,7 +374,7 @@ public class AIOActivityMenu implements OSRSForm
         RunecraftingLabel.setHorizontalAlignment(0);
         RunecraftingLabel.setHorizontalTextPosition(0);
         RunecraftingLabel.setIcon(new ImageIcon(getClass().getResource(
-                "/icons/Runecraft_icon_(detail).png")));
+                "/icons/Skills/Runecraft_icon_(detail).png")));
         RunecraftingLabel.setOpaque(true);
         RunecraftingLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -391,7 +398,7 @@ public class AIOActivityMenu implements OSRSForm
         ConstructionLabel.setHorizontalAlignment(0);
         ConstructionLabel.setHorizontalTextPosition(0);
         ConstructionLabel.setIcon(new ImageIcon(getClass().getResource(
-                "/icons/Construction_icon_(detail).png")));
+                "/icons/Skills/Construction_icon_(detail).png")));
         ConstructionLabel.setOpaque(true);
         ConstructionLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -411,7 +418,8 @@ public class AIOActivityMenu implements OSRSForm
         SlayerLabel.setForeground(new Color(-65536));
         SlayerLabel.setHorizontalAlignment(0);
         SlayerLabel.setHorizontalTextPosition(0);
-        SlayerLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Slayer icon (detail).png")));
+        SlayerLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Slayer icon (detail).png")));
         SlayerLabel.setOpaque(true);
         SlayerLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -431,7 +439,8 @@ public class AIOActivityMenu implements OSRSForm
         HunterLabel.setForeground(new Color(-65536));
         HunterLabel.setHorizontalAlignment(0);
         HunterLabel.setHorizontalTextPosition(0);
-        HunterLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Hunter_icon_(detail).png")));
+        HunterLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Hunter_icon_(detail).png")));
         HunterLabel.setOpaque(true);
         HunterLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -451,7 +460,8 @@ public class AIOActivityMenu implements OSRSForm
         MiningLabel.setForeground(new Color(-65536));
         MiningLabel.setHorizontalAlignment(0);
         MiningLabel.setHorizontalTextPosition(0);
-        MiningLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Mining_icon_(detail).png")));
+        MiningLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Mining_icon_(detail).png")));
         MiningLabel.setOpaque(true);
         MiningLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -472,7 +482,7 @@ public class AIOActivityMenu implements OSRSForm
         SmithingLabel.setHorizontalAlignment(0);
         SmithingLabel.setHorizontalTextPosition(0);
         SmithingLabel.setIcon(new ImageIcon(getClass().getResource(
-                "/icons/Smithing_icon_(detail).png")));
+                "/icons/Skills/Smithing_icon_(detail).png")));
         SmithingLabel.setOpaque(true);
         SmithingLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -492,7 +502,8 @@ public class AIOActivityMenu implements OSRSForm
         FishingLabel.setForeground(new Color(-65536));
         FishingLabel.setHorizontalAlignment(0);
         FishingLabel.setHorizontalTextPosition(0);
-        FishingLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Fishing icon (detail).png")));
+        FishingLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Fishing icon (detail).png")));
         FishingLabel.setOpaque(true);
         FishingLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -512,7 +523,8 @@ public class AIOActivityMenu implements OSRSForm
         CookingLabel.setForeground(new Color(-65536));
         CookingLabel.setHorizontalAlignment(0);
         CookingLabel.setHorizontalTextPosition(0);
-        CookingLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Cooking_icon_(detail).png")));
+        CookingLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Cooking_icon_(detail).png")));
         CookingLabel.setOpaque(true);
         CookingLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -536,7 +548,7 @@ public class AIOActivityMenu implements OSRSForm
         FiremakingLabel.setHorizontalAlignment(0);
         FiremakingLabel.setHorizontalTextPosition(0);
         FiremakingLabel.setIcon(new ImageIcon(getClass().getResource(
-                "/icons/Firemaking_icon_(detail).png")));
+                "/icons/Skills/Firemaking_icon_(detail).png")));
         FiremakingLabel.setOpaque(true);
         FiremakingLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -560,7 +572,7 @@ public class AIOActivityMenu implements OSRSForm
         WoodcuttingLabel.setHorizontalAlignment(0);
         WoodcuttingLabel.setHorizontalTextPosition(0);
         WoodcuttingLabel.setIcon(new ImageIcon(getClass().getResource(
-                "/icons/Woodcutting_icon_(detail).png")));
+                "/icons/Skills/Woodcutting_icon_(detail).png")));
         WoodcuttingLabel.setOpaque(true);
         WoodcuttingLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -580,7 +592,8 @@ public class AIOActivityMenu implements OSRSForm
         FarmingLabel.setForeground(new Color(-65536));
         FarmingLabel.setHorizontalAlignment(0);
         FarmingLabel.setHorizontalTextPosition(0);
-        FarmingLabel.setIcon(new ImageIcon(getClass().getResource("/icons/Farming_icon_(detail).png")));
+        FarmingLabel.setIcon(new ImageIcon(getClass().getResource(
+                "/icons/Skills/Farming_icon_(detail).png")));
         FarmingLabel.setOpaque(true);
         FarmingLabel.setText("1");
         gbc         = new GridBagConstraints();
@@ -645,7 +658,7 @@ public class AIOActivityMenu implements OSRSForm
     {
         // TODO: place custom component creation code here
         list1 = new JList<>();
-        list1.setListData(new Object[]{new String("test 1"), new String("test 2")});
+        list1.setListData(new Object[]{"test 1", "test 2"});
     }
 
     class CycleGeneratorConfiguration

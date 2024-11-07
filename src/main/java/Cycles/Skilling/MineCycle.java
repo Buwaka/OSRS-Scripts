@@ -20,13 +20,13 @@ import java.util.Arrays;
 public class MineCycle extends SimpleCycle implements Serializable
 {
 
-    public  BankLocation PreferredBank = null;
-    private Area[]       MiningArea;
-    private int[]        Targets;
+    private final Area[]       MiningArea;
+    private final int[]        Targets;
+    public        BankLocation PreferredBank = null;
 
     public MineCycle(String name, Area[] TargetArea, String RockName)
     {
-        super(name);
+        super(name, null);
         MiningArea = TargetArea;
         Targets    = ObjectDB.GetObjectIDsByName(RockName);
     }

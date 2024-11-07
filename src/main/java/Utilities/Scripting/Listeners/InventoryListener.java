@@ -2,8 +2,8 @@ package Utilities.Scripting.Listeners;
 
 import Utilities.Patterns.Delegates.Delegate1;
 import Utilities.Patterns.Delegates.Delegate2;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.script.listener.ItemContainerListener;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
 
 public class InventoryListener implements ItemContainerListener

@@ -13,6 +13,7 @@ import Utilities.GrandExchange.GEInstance;
 import Utilities.GrandExchange.Orders.MarketBuyOrder;
 import Utilities.Requirement.LevelRequirement;
 import Utilities.Requirement.MemberRequirement;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleCycle;
 import org.dreambot.api.Client;
 import org.dreambot.api.methods.container.impl.Inventory;
@@ -20,7 +21,6 @@ import org.dreambot.api.methods.container.impl.equipment.EquipmentSlot;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.skills.Skill;
 import org.dreambot.api.methods.skills.Skills;
-import org.dreambot.api.utilities.Logger;
 
 import java.util.Arrays;
 import java.util.Objects;

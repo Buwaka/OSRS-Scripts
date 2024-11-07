@@ -1,12 +1,12 @@
 package Utilities.Patterns.Delegates;
 
-import io.vavr.Function5;
+import Utilities.Patterns.Runables.Runnable5;
 
 import java.util.WeakHashMap;
 
 public class Delegate5<A, B, C, D, E>
 {
-    WeakHashMap<Object, Function5<A, B, C, D, E, Boolean>> Subscribers = new WeakHashMap<>();
+    WeakHashMap<Object, Runnable5<A, B, C, D, E>> Subscribers = new WeakHashMap<>();
 
     public void Fire(A var1, B var2, C var3, D var4, E var5)
     {
@@ -14,12 +14,12 @@ public class Delegate5<A, B, C, D, E>
         {
             if(func.getValue() != null)
             {
-                func.getValue().apply(var1, var2, var3, var4, var5);
+                func.getValue().Run(var1, var2, var3, var4, var5);
             }
         }
     }
 
-    public void Subscribe(Object caller, Function5<A, B, C, D, E, Boolean> function)
+    public void Subscribe(Object caller, Runnable5<A, B, C, D, E> function)
     {
         Subscribers.put(caller, function);
     }

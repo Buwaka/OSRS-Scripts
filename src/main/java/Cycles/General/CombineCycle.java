@@ -5,11 +5,11 @@ import Cycles.Tasks.SimpleTasks.ItemProcessing.CombineTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleCycle;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
-import org.dreambot.api.utilities.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
@@ -17,26 +17,26 @@ import java.io.Serializable;
 
 public class CombineCycle extends SimpleCycle implements Serializable
 {
+    @Nullable
+    private final     Integer       sourceRatio;
+    @Nullable
+    private final     Integer       targetRatio;
     private           int           source;
-    @Nullable
-    private           Integer       sourceRatio;
     private           int           target;
-    @Nullable
-    private           Integer       targetRatio;
     private           boolean       UseSkillingMenu = true;
     private transient CombineTask   combineTask;
     private transient BankItemsTask bankItemsTask;
 
     private CombineCycle()
     {
-        super("");
+        super("", null);
         sourceRatio = 1;
         targetRatio = 1;
     }
 
     public CombineCycle(String name, int Source, int Target)
     {
-        super(name);
+        super(name, null);
         source      = Source;
         sourceRatio = 1;
         target      = Target;
@@ -45,7 +45,7 @@ public class CombineCycle extends SimpleCycle implements Serializable
 
     public CombineCycle(String name, int Source, int RatioSource, int Target, int RatioTarget)
     {
-        super(name);
+        super(name, null);
         source      = Source;
         sourceRatio = RatioSource;
         target      = Target;
@@ -80,11 +80,7 @@ public class CombineCycle extends SimpleCycle implements Serializable
             return true;
         }
 
-        if(Bank.count(source) >= sourceRatio && Bank.count(target) >= targetRatio)
-        {
-            return true;
-        }
-        return false;
+        return Bank.count(source) >= sourceRatio && Bank.count(target) >= targetRatio;
     }
 
     /**

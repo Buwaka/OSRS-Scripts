@@ -37,11 +37,11 @@ public class FreakyForesterSolver extends RandomSolver implements ChatListener
 {
     private final int freakOverworld = 6748;
     private final int freakInstance  = 372;
+    private final int     solveState = 0;
     Area areaFreak = new Area(2589, 4785, 2616, 4763);
-    private int     tailID     = 0;
-    private boolean leave      = false;
-    private boolean drop       = false;
-    private int     solveState = 0;
+    private       int     tailID     = 0;
+    private       boolean leave      = false;
+    private       boolean drop       = false;
 
     public FreakyForesterSolver()
     {

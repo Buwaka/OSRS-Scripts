@@ -62,7 +62,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Attack_icon_(detail).png"/>
+                  <icon value="icons/Skills/Attack_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -81,7 +81,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Strength_icon_(detail).png"/>
+                  <icon value="icons/Skills/Strength_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -100,7 +100,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Defence_icon_(detail).png"/>
+                  <icon value="icons/Skills/Defence_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -119,7 +119,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Ranged icon (detail).png"/>
+                  <icon value="icons/Skills/Ranged icon (detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -138,7 +138,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Prayer_icon_(detail).png"/>
+                  <icon value="icons/Skills/Prayer_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -157,7 +157,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Magic icon (detail).png"/>
+                  <icon value="icons/Skills/Magic icon (detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -176,7 +176,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Hitpoints_icon_(detail).png"/>
+                  <icon value="icons/Skills/Hitpoints_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -195,7 +195,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Agility_icon_(detail).png"/>
+                  <icon value="icons/Skills/Agility_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -214,7 +214,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Herblore_icon_(detail).png"/>
+                  <icon value="icons/Skills/Herblore_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -233,7 +233,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Thieving_icon_(detail).png"/>
+                  <icon value="icons/Skills/Thieving_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -252,7 +252,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Crafting icon (detail).png"/>
+                  <icon value="icons/Skills/Crafting icon (detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -271,7 +271,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Fletching_icon_(detail).png"/>
+                  <icon value="icons/Skills/Fletching_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -290,7 +290,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Runecraft_icon_(detail).png"/>
+                  <icon value="icons/Skills/Runecraft_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -309,7 +309,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Construction_icon_(detail).png"/>
+                  <icon value="icons/Skills/Construction_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -328,7 +328,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Slayer icon (detail).png"/>
+                  <icon value="icons/Skills/Slayer icon (detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -347,7 +347,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Hunter_icon_(detail).png"/>
+                  <icon value="icons/Skills/Hunter_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -366,7 +366,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Mining_icon_(detail).png"/>
+                  <icon value="icons/Skills/Mining_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -385,7 +385,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Smithing_icon_(detail).png"/>
+                  <icon value="icons/Skills/Smithing_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -404,7 +404,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Fishing icon (detail).png"/>
+                  <icon value="icons/Skills/Fishing icon (detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -423,7 +423,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Cooking_icon_(detail).png"/>
+                  <icon value="icons/Skills/Cooking_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -442,7 +442,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Firemaking_icon_(detail).png"/>
+                  <icon value="icons/Skills/Firemaking_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -461,7 +461,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Woodcutting_icon_(detail).png"/>
+                  <icon value="icons/Skills/Woodcutting_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>
@@ -480,7 +480,7 @@
                   <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="icons/Farming_icon_(detail).png"/>
+                  <icon value="icons/Skills/Farming_icon_(detail).png"/>
                   <opaque value="true"/>
                   <text value="1"/>
                 </properties>

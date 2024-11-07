@@ -18,7 +18,7 @@ public class CleanHerbsScript extends IFScript
     public void onStart()
     {
         AddCycle(HerbloreCycleGenerator::GetCleanGrimyHerbsCycle);
-        //AddCycle(HerbloreCycleGenerator::GetUnfPotionCycle);
+        AddCycle(HerbloreCycleGenerator::GetUnfPotionCycle);
 
         super.onStart();
     }

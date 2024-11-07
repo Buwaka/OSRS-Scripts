@@ -7,6 +7,7 @@ import Utilities.Scripting.ExternalLambdaUsage;
 
 import java.io.Serial;
 
+@ExternalLambdaUsage
 public class MarketBuyOrder extends BaseOrder
 {
 

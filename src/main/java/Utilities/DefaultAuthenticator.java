@@ -25,6 +25,11 @@ public final class DefaultAuthenticator extends Authenticator
     {
     }
 
+    public void SetUserPass(String user, String pass)
+    {
+        Current = (new PasswordAuthentication(user, pass.toCharArray()));
+    }
+
     public static synchronized DefaultAuthenticator getInstance()
     {
         if(instance == null)
@@ -35,13 +40,6 @@ public final class DefaultAuthenticator extends Authenticator
         return instance;
     }
 
-    // unit testing
-    static void reset()
-    {
-        instance = null;
-        Authenticator.setDefault(null);
-    }
-
     @Override
     protected PasswordAuthentication getPasswordAuthentication()
     {
@@ -49,9 +47,11 @@ public final class DefaultAuthenticator extends Authenticator
         return Current;
     }
 
-    public void SetUserPass(String user, String pass)
+    // unit testing
+    static void reset()
     {
-        Current = (new PasswordAuthentication(user, pass.toCharArray()));
+        instance = null;
+        Authenticator.setDefault(null);
     }
 
 }

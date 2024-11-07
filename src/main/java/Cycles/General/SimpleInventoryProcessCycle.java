@@ -5,19 +5,19 @@ import Cycles.Tasks.SimpleTasks.ItemProcessing.InteractInventoryTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleCycle;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.bank.BankLocation;
 import org.dreambot.api.methods.dialogues.Dialogues;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.items.Item;
 
 public class SimpleInventoryProcessCycle extends SimpleCycle
 {
+    private final     int                   SourceItemID;
     private           String                Action            = null;
-    private           int                   SourceItemID;
     private           Integer               Tool              = null;
     private transient InteractInventoryTask InteractTask      = null;
     private transient BankItemsTask         BankTask          = null;
@@ -28,20 +28,20 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
 
     public SimpleInventoryProcessCycle(String name, int ItemID)
     {
-        super(name);
+        super(name, null);
         SourceItemID = ItemID;
     }
 
     public SimpleInventoryProcessCycle(String name, int ItemID, int Tool)
     {
-        super(name);
+        super(name, null);
         SourceItemID = ItemID;
         this.Tool    = Tool;
     }
 
     public SimpleInventoryProcessCycle(String name, int ItemID, String action)
     {
-        super(name);
+        super(name, null);
         Action       = action;
         SourceItemID = ItemID;
     }
@@ -248,19 +248,7 @@ public class SimpleInventoryProcessCycle extends SimpleCycle
         }
         else
         {
-            if(InteractEveryItem)
-            {
-                for(var inv : Inventory.all())
-                {
-                    if(inv != null && inv.getID() == SourceItemID)
-                    {
-                        InteractTask = new InteractInventoryTask("Interacting with items",
-                                                                 Action,
-                                                                 inv);
-                    }
-                }
-            }
-            else
+            if(!InteractEveryItem)
             {
                 InteractTask = new InteractInventoryTask("Interacting with items", Action, item);
             }

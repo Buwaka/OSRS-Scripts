@@ -1,6 +1,6 @@
 package Scripts.Private;
 
-import Cycles.General.CombatLootBankCycle;
+import Cycles.Combat.CombatLootBankCycle;
 import Cycles.General.SimpleProcessCycle;
 import Cycles.Tasks.SimpleTasks.ItemProcessing.TanTask;
 import OSRSDatabase.ItemDB;

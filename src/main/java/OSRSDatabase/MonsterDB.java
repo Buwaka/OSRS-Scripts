@@ -1,12 +1,13 @@
 package OSRSDatabase;
 
+import Utilities.Scripting.Logger;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +21,7 @@ public class MonsterDB extends OSRSDataBase
     final private static ConcurrentHashMap<String, int[]>        MonsterIDsByNameCache = new ConcurrentHashMap<>();
     final private static ConcurrentHashMap<Integer, MonsterData> MonsterDBCache        = new ConcurrentHashMap<>();
 
-    public static class MonsterData
+    public static class MonsterData implements Serializable
     {
 
         public           int                            id;
@@ -68,7 +69,7 @@ public class MonsterDB extends OSRSDataBase
         public           int                            defence_ranged;
         public           MonsterDrop[]                  drops;
 
-        public enum MonsterAttribute
+        public enum MonsterAttribute implements Serializable
         {
             spectral,
             golem,
@@ -84,7 +85,7 @@ public class MonsterDB extends OSRSDataBase
             kalphite
         }
 
-        public enum MonsterCategory
+        public enum MonsterCategory implements Serializable
         {
             @SerializedName("cave bugs") cave_bugs,
             crocodiles,
@@ -205,7 +206,7 @@ public class MonsterDB extends OSRSDataBase
             drakes
         }
 
-        public enum SlayerMaster
+        public enum SlayerMaster implements Serializable
         {
             duradel,
             @SerializedName("konar quo maten") konar_quo_maten,
@@ -219,7 +220,7 @@ public class MonsterDB extends OSRSDataBase
             turael
         }
 
-        public static class MonsterDrop
+        public static class MonsterDrop implements Serializable
         {
             public           int     id; //The ID number of the item drop
             public           String  name;//	The name of the item drop

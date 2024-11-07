@@ -12,11 +12,11 @@ public class BaseOrder implements GEOrder, Comparable<BaseOrder>, Serializable
 
     @Serial
     private static final long                          serialVersionUID = 3343306652600915000L;
+    private final        int                           ID; // item ID
+    private final        TransactionType               TType;
+    private final        OrderType                     OType;
     public               SerializableSupplier<Integer> PriceGenerator;
-    private              int                           ID; // item ID
     private              int                           Count;
-    private              TransactionType               TType;
-    private              OrderType                     OType;
 
 
     BaseOrder(int id, int count, TransactionType ttype, OrderType otype)

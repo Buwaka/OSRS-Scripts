@@ -2,6 +2,7 @@ package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
@@ -10,7 +11,6 @@ import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.Character;
 import org.dreambot.api.wrappers.items.GroundItem;
@@ -45,7 +45,7 @@ public class CowSlaughterScript extends IFScript
     int[]  InventoryExcepts = {};
     States LastState        = States.TravelToCows;
 
-    public enum States
+    enum States
     {
         TravelToCows,
         Pickup,

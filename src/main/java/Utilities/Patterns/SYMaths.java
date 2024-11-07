@@ -1,10 +1,16 @@
 package Utilities.Patterns;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class SYMaths
+public class SYMaths implements Serializable
 {
+
+    @Serial
+    private static final long serialVersionUID = -6699390512791046631L;
+
 
     public static double AddPercentage(double number, double percentage)
     {

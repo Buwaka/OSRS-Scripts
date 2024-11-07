@@ -8,9 +8,9 @@ import java.awt.*;
 
 public class ProfitTracker implements PaintListener
 {
-    private long UnrealizedProfit = 0;
-    private long RealizedProfit   = 0;
-    private long NetWorth         = 0;
+    private final long UnrealizedProfit = 0;
+    private final long RealizedProfit   = 0;
+    private final long NetWorth         = 0;
 
     private GrandExchangeListener GEListener   = null;
     private InventoryListener     ItemListener = null;

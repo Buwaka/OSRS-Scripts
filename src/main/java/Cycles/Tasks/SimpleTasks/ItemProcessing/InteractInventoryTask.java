@@ -1,20 +1,24 @@
 package Cycles.Tasks.SimpleTasks.ItemProcessing;
 
 import Utilities.Scripting.ITask;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
 import org.dreambot.api.methods.container.impl.Inventory;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.wrappers.items.Item;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InteractInventoryTask extends SimpleTask
 {
-    private int[]  ItemID  = null;
-    private Item   ItemRef = null;
-    private String Action  = null;
+    private int[]   ItemID        = null;
+    private Item    ItemRef       = null;
+    private String  Action        = null;
+    private Integer Tool          = null;
+    private int     InteractCount = 1;
+    private int     count         = 0;
 
-    private Integer Tool = null;
 
     public InteractInventoryTask(String Name, String InteractAction, int... ItemIDs)
     {
@@ -47,6 +51,52 @@ public class InteractInventoryTask extends SimpleTask
         Tool = tool;
     }
 
+    public static InteractInventoryTask[] PrayBonesAndAshes()
+    {
+        final String BuryAction    = "Bury";
+        final String ScatterAction = "Scatter";
+
+
+        var Bury = Inventory.all(t -> t.hasAction(BuryAction))
+                            .stream()
+                            .mapToInt((t) -> t.getID())
+                            .distinct()
+                            .toArray();
+        var Scatter = Inventory.all(t -> t.hasAction(ScatterAction))
+                               .stream()
+                               .mapToInt((t) -> t.getID())
+                               .distinct()
+                               .toArray();
+
+        List<InteractInventoryTask> out = new ArrayList<>();
+        if(Bury != null && Bury.length > 0)
+        {
+            var task = new InteractInventoryTask("Bury", BuryAction, Bury);
+            task.setInteractCount(-1);
+            out.add(task);
+        }
+        if(Scatter != null && Scatter.length > 0)
+        {
+            var task = new InteractInventoryTask("Bury", ScatterAction, Scatter);
+            task.setInteractCount(-1);
+            out.add(task);
+        }
+
+        return out.toArray(new InteractInventoryTask[0]);
+    }
+
+    public void setInteractCount(int interactCount)
+    {
+        if(interactCount < 0)
+        {
+            InteractCount = Integer.MAX_VALUE;
+        }
+        else
+        {
+            InteractCount = interactCount;
+        }
+    }
+
     @Nonnull
     @Override
     public TaskType GetTaskType()
@@ -70,10 +120,7 @@ public class InteractInventoryTask extends SimpleTask
     protected int Loop()
     {
         boolean success = false;
-        if(ItemRef == null)
-        {
-            ItemRef = Inventory.get(ItemID);
-        }
+        ItemRef = Inventory.get(ItemID);
 
         if(ItemRef != null)
         {
@@ -108,7 +155,15 @@ public class InteractInventoryTask extends SimpleTask
             }
 
         }
+        if(success)
+        {
+            count++;
+        }
 
-        return success ? 0 : super.Loop();
+        if(count >= InteractCount || ItemRef == null)
+        {
+            return 0;
+        }
+        return super.Loop();
     }
 }

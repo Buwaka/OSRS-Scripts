@@ -6,7 +6,7 @@ import org.dreambot.api.methods.walking.web.node.AbstractWebNode;
 
 public class WebObstacleNode extends AbstractWebNode
 {
-    private Tile Location;
+    private final Tile Location;
 
     public WebObstacleNode(Tile location)
     {

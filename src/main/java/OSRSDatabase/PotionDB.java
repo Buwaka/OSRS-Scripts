@@ -2,16 +2,17 @@ package OSRSDatabase;
 
 import Utilities.OSRSUtilities;
 import Utilities.Requirement.IRequirement;
+import Utilities.Scripting.Logger;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import io.vavr.Function2;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.skills.Skill;
 import org.dreambot.api.methods.skills.Skills;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nullable;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -21,7 +22,7 @@ public class PotionDB extends OSRSDataBase
     final private static String                       PotionDBPath = "Skilling/potionDB.json";
     private static final HashMap<Integer, PotionData> PotionDBMap  = new HashMap<>();
 
-    public static class PotionData
+    public static class PotionData implements Serializable
     {
         public           int                        id;
         public           String                     name;
@@ -42,7 +43,7 @@ public class PotionDB extends OSRSDataBase
         }
     }
 
-    public static class PotionStep
+    public static class PotionStep implements Serializable
     {
         public  PotionData result;
         public  PotionStep base       = null;
@@ -84,8 +85,7 @@ public class PotionDB extends OSRSDataBase
         {
             if(price == null)
             {
-                Logger.log(
-                        "PotionStep: GetProfit: price hasn't been calculated yet, " + toString());
+                Logger.log("PotionStep: GetProfit: price hasn't been calculated yet, " + this);
                 return 0;
             }
 
@@ -115,7 +115,7 @@ public class PotionDB extends OSRSDataBase
             {
                 priceStr = "(" + price + " * " + count + ")";
             }
-            return ingredient.name + " * " + String.valueOf(count) + priceStr;
+            return ingredient.name + " * " + count + priceStr;
         }
 
         private String StepString()
@@ -214,7 +214,6 @@ public class PotionDB extends OSRSDataBase
             Logger.log("Error reading PotionDB, Exception: " + e);
             return;
         }
-        return;
     }
 
     public static PotionData[] GetAllPotions(boolean includeNonTradable)

@@ -1,7 +1,7 @@
 package Utilities.Requirement;
 
+import Utilities.Scripting.Logger;
 import com.google.gson.annotations.SerializedName;
-import org.dreambot.api.utilities.Logger;
 
 import java.io.Serializable;
 

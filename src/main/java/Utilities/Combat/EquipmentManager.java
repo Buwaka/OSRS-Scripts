@@ -2,9 +2,9 @@ package Utilities.Combat;
 
 import OSRSDatabase.ItemDB;
 import Utilities.GrandExchange.GEInstance;
+import Utilities.Scripting.Logger;
 import io.vavr.Tuple4;
 import org.dreambot.api.methods.combat.CombatStyle;
-import org.dreambot.api.utilities.Logger;
 
 import java.util.HashMap;
 
@@ -26,16 +26,14 @@ public class EquipmentManager
                 put(ItemDB.EquipmentData.EquipmentSlot.ammo, EquipmentHelper.StatFocus.Melee);
                 put(ItemDB.EquipmentData.EquipmentSlot.two_handed, EquipmentHelper.StatFocus.Melee);
             }});
-
-
-    private static ItemDB.StanceData.ExperienceType   EXPFocus          = ItemDB.StanceData.ExperienceType.attack;
-    private static ItemDB.StanceData.Attacktype       CurrentAttackType = ItemDB.StanceData.Attacktype.slash;
-    private static CombatStyle                        CurrentDBCStyle   = CombatStyle.ATTACK;
-    private static EquipmentHelper.EquipmentSlotFocus EquipmentFocus    = new EquipmentHelper.EquipmentSlotFocus(
+    private static final EquipmentHelper.EquipmentSlotFocus EquipmentFocus    = new EquipmentHelper.EquipmentSlotFocus(
             DefaultEquipmentFocus);
-    private static EquipmentHelper.Equipment          CurrentEquipment  = EquipmentHelper.Equipment.GetCurrentEquipment();
+    private static       ItemDB.StanceData.ExperienceType   EXPFocus          = ItemDB.StanceData.ExperienceType.attack;
+    private static       ItemDB.StanceData.Attacktype       CurrentAttackType = ItemDB.StanceData.Attacktype.slash;
+    private static       CombatStyle                        CurrentDBCStyle   = CombatStyle.ATTACK;
+    private static       EquipmentLoadout                   CurrentEquipment  = EquipmentLoadout.GetCurrentEquipment();
 
-    public static EquipmentHelper.Equipment GetBestEquipment()
+    public static EquipmentLoadout GetBestEquipment()
     {
         UpdateEquipment();
         return CurrentEquipment;
@@ -52,21 +50,21 @@ public class EquipmentManager
         return CurrentDBCStyle;
     }
 
-    public static EquipmentHelper.Equipment GetEquipment()
+    public static EquipmentLoadout GetEquipment()
     {
         return CurrentEquipment;
     }
 
-    public static EquipmentHelper.Equipment GetWeaponOnly()
+    public static EquipmentLoadout GetWeaponOnly()
     {
-        EquipmentHelper.Equipment empty = new EquipmentHelper.Equipment();
-        var                       best  = EquipmentHelper.GetBestEquipment(EquipmentFocus);
+        EquipmentLoadout empty = new EquipmentLoadout();
+        var              best  = EquipmentHelper.GetBestEquipment(EquipmentFocus);
         empty.equip.put(ItemDB.EquipmentData.EquipmentSlot.weapon,
                         best.equip.get(ItemDB.EquipmentData.EquipmentSlot.weapon));
         return empty;
     }
 
-    public static EquipmentHelper.Equipment SetEXPFocus(ItemDB.StanceData.ExperienceType focus)
+    public static EquipmentLoadout SetEXPFocus(ItemDB.StanceData.ExperienceType focus)
     {
         UpdateEquipment();
         EXPFocus = focus;

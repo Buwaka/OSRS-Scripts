@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ObjectDB extends OSRSDataBase
     final private static ConcurrentHashMap<Integer, EntityObject> ObjectsDBCache         = new ConcurrentHashMap<>();
     final private static ConcurrentHashMap<String, Set<Integer>>  ObjectIDsByNameDBCache = new ConcurrentHashMap<>();
 
-    public static class EntityObject
+    public static class EntityObject implements Serializable
     {
         public int    id;
         public String name;

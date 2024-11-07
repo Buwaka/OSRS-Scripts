@@ -1,8 +1,8 @@
 package Cycles.Tasks.SimpleTasks.Bank;
 
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
-import org.dreambot.api.utilities.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.List;

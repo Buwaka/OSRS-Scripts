@@ -2,6 +2,7 @@ package Scripts.AccountManagement;
 
 import DataBase.PerformanceDatabase;
 import Utilities.OSRSUtilities;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.magic.Magic;
 import org.dreambot.api.methods.magic.Normal;
@@ -10,7 +11,6 @@ import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.script.listener.ActionListener;
 import org.dreambot.api.utilities.AccountManager;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.widgets.MenuRow;
 
@@ -20,13 +20,12 @@ import java.util.concurrent.TimeUnit;
 
 public class PerformanceReport extends AbstractScript implements ActionListener
 {
+    private final int MaxUploadAttempts = 10;
     long startTime = 0;
     long wait      = 0;
-
     String Activity = "";
     long   LastAction;
-    private int UploadAttempt     = 0;
-    private int MaxUploadAttempts = 10;
+    private       int UploadAttempt     = 0;
 
     @Override
     public void onAction(MenuRow eventRow, int mouseX, int mouseY)

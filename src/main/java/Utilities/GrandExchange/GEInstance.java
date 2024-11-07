@@ -4,13 +4,13 @@ import Utilities.GrandExchange.Orders.BaseOrder;
 import Utilities.GrandExchange.Orders.GEOrder;
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import io.vavr.Tuple2;
 import org.dreambot.api.Client;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.container.impl.equipment.Equipment;
 import org.dreambot.api.methods.grandexchange.GrandExchange;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.items.Item;
 
@@ -21,18 +21,19 @@ import java.util.concurrent.TimeUnit;
 
 public class GEInstance implements Serializable
 {
-    public static final  int                    CoinID                 = 995;
-    public static final  String                 ConfigID               = "GrandExchangeOrders";
+    public static final     int                    CoinID                 = 995;
+    public static final     String                 ConfigID               = "GrandExchangeOrders";
     @Serial
-    private static final long                   serialVersionUID       = 6064461425258339028L;
-    private final        long                   MarketOrderGracePeriod = TimeUnit.SECONDS.toNanos(10);
-    private final        long                   LimitOrderGracePeriod  = TimeUnit.DAYS.toNanos(7);
-    private final        int                    MaxAttempts            = 5;
-    private transient    PriorityQueue<GEOrder> Orders                 = new PriorityQueue<>();
-    private              Map<Integer, GESlot>   ActiveOrders           = new HashMap<>();
-    private              List<BaseOrder>        OrdersToCancel         = new ArrayList<>();
-    private transient    int                    Attempts               = 0;
-    private transient    IFScript               OwnerScript;
+    private static final    long                   serialVersionUID       = 6064461425258339028L;
+    private final           long                   MarketOrderGracePeriod = TimeUnit.SECONDS.toNanos(
+            10);
+    private final           long                   LimitOrderGracePeriod  = TimeUnit.DAYS.toNanos(7);
+    private final           int                    MaxAttempts            = 5;
+    private final transient PriorityQueue<GEOrder> Orders                 = new PriorityQueue<>();
+    private final           Map<Integer, GESlot>   ActiveOrders           = new HashMap<>();
+    private final           List<BaseOrder>        OrdersToCancel         = new ArrayList<>();
+    private transient       int                    Attempts               = 0;
+    private transient       IFScript               OwnerScript;
 
     public GEInstance(IFScript owner)
     {

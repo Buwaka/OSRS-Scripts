@@ -6,6 +6,7 @@ import Utilities.Combat.CombatManager;
 import Utilities.Patterns.GameTickDelegate;
 import Utilities.Requirement.IRequirement;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Serializers.*;
 import com.google.gson.GsonBuilder;
 import io.vavr.Tuple2;
@@ -35,7 +36,6 @@ import org.dreambot.api.methods.widget.Widgets;
 import org.dreambot.api.methods.world.World;
 import org.dreambot.api.methods.world.Worlds;
 import org.dreambot.api.methods.worldhopper.WorldHopper;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.Character;
 import org.dreambot.api.wrappers.interactive.*;
@@ -81,6 +81,8 @@ public class OSRSUtilities
                                             new SerializableSupplierSerializer<>());
         OSRSGsonBuilder.registerTypeAdapter(ItemDB.Requirement.class,
                                             new ItemDB.Requirement.RequirementDeserializer());
+        OSRSGsonBuilder.registerTypeAdapter(ItemDB.Requirement.class,
+                                            new ItemDB.Requirement.RequirementSerializer());
         OSRSGsonBuilder.registerTypeAdapter(SerializableRunnable.class,
                                             new SerializableRunnableSerializer());
 
@@ -681,7 +683,7 @@ public class OSRSUtilities
         var Items = GroundItems.all(t -> area.contains(t.getTile()) ||
                                          Arrays.stream(ItemsToAlwaysPickUp)
                                                .anyMatch(x -> x.contains(t.getName())));
-        ; // Always pickup clue scrolls lol
+        // Always pickup clue scrolls lol
         Items.sort(Comparator.comparingDouble(p -> {
             double dist = p.walkingDistance(Players.getLocal().getTile());
 
@@ -711,6 +713,17 @@ public class OSRSUtilities
         return (Skills.getRealLevel(Skill.HITPOINTS) - Skills.getBoostedLevel(Skill.HITPOINTS));
     }
 
+    public static WidgetChild GetSkillingMenu()
+    {
+        WidgetChild child = Widgets.get(270, 0);
+        if(child != null && child.isVisible())
+        {
+            return child;
+        }
+        Logger.log("OSRSUtilities: Failed to get child item, " + child);
+        return null;
+    }
+
 
     //    public static void ShiftCameraToDirection(Direction direction)
     //    {
@@ -728,17 +741,6 @@ public class OSRSUtilities
     //            }
     //        }
     //    }
-
-    public static WidgetChild GetSkillingMenu()
-    {
-        WidgetChild child = Widgets.get(270, 0);
-        if(child != null && child.isVisible())
-        {
-            return child;
-        }
-        Logger.log("OSRSUtilities: Failed to get child item, " + child);
-        return null;
-    }
 
     public static BankLocation GetValidBank()
     {
@@ -783,6 +785,14 @@ public class OSRSUtilities
             }
         }
         return false;
+    }
+
+    public static boolean InventoryContainsPrayables()
+    {
+        final String BuryAction    = "Bury";
+        final String ScatterAction = "Scatter";
+        return (Inventory.contains(t -> t.hasAction(BuryAction)) ||
+                Inventory.contains(t -> t.hasAction(ScatterAction)));
     }
 
     public static int InventoryHPCount()
@@ -1283,7 +1293,7 @@ public class OSRSUtilities
             Logger.log("No Foe found");
             return null;
         }
-        Logger.log("Foe: " + Foe.toString());
+        Logger.log("Foe: " + Foe);
         return CombatManager.GetInstance(player).Fight(Foe);
     }
 
@@ -1317,7 +1327,7 @@ public class OSRSUtilities
                 return false;
             }
             // loot
-            Logger.log("Looting Foe " + Foe.toString());
+            Logger.log("Looting Foe " + Foe);
             ExecutorService Executor = Executors.newSingleThreadExecutor();
             Future<Boolean> result = Executor.submit(() -> PickupOnAreaExcepts(GetLootArea(Foe),
                                                                                LootExcepts));

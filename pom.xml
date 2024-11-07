@@ -15,99 +15,145 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <DBScriptFolder>C:\Users\SammyLaptop\DreamBot\Scripts</DBScriptFolder>
+        <EncryptionKey>U9>c1D27rdQ38[5c</EncryptionKey>
+        <EncryptedResourceDirectory>
+            ${project.build.directory}/encrypted-resources
+        </EncryptedResourceDirectory>
+        <CycleAuthentication>//</CycleAuthentication>
+
+        <!--        Script Inclusions -->
+        <Scripts/>
+
     </properties>
 
-    <!--    <dependencyManagement>-->
-    <!--        <dependencies>-->
-    <!--            <dependency>-->
-    <!--                <groupId>org.apache.logging.log4j</groupId>-->
-    <!--                <artifactId>log4j-api</artifactId>-->
-    <!--                <version>2.23.1</version>-->
-    <!--            </dependency>-->
-    <!--            <dependency>-->
-    <!--                <groupId>org.apache.logging.log4j</groupId>-->
-    <!--                <artifactId>log4j-core</artifactId>-->
-    <!--                <version>2.23.1</version>-->
-    <!--            </dependency>-->
-    <!--            <dependency>-->
-    <!--                <groupId>org.apache.logging.log4j</groupId>-->
-    <!--                <artifactId>log4j-slf4j-impl</artifactId>-->
-    <!--                <version>2.23.1</version>-->
-    <!--            </dependency>-->
-    <!--            &lt;!&ndash;            https://mvnrepository.com/artifact/org.neo4j/neo4j-logging&ndash;&gt;-->
-    <!--            <dependency>-->
-    <!--                <groupId>org.neo4j</groupId>-->
-    <!--                <artifactId>neo4j-logging</artifactId>-->
-    <!--                <version>5.22.0</version>-->
-    <!--                <scope>test</scope>-->
-    <!--            </dependency>-->
-    <!--            &lt;!&ndash; https://mvnrepository.com/artifact/io.r2dbc/r2dbc-spi &ndash;&gt;-->
-    <!--            &lt;!&ndash;        <dependency>&ndash;&gt;-->
-    <!--            &lt;!&ndash;            <groupId>io.r2dbc</groupId>&ndash;&gt;-->
-    <!--            &lt;!&ndash;            <artifactId>r2dbc-spi</artifactId>&ndash;&gt;-->
-    <!--            &lt;!&ndash;            <version>1.0.0.RELEASE</version>&ndash;&gt;-->
-    <!--            &lt;!&ndash;        </dependency>&ndash;&gt;-->
-    <!--            &lt;!&ndash; https://mvnrepository.com/artifact/org.mapdb/mapdb &ndash;&gt;-->
+    <profiles>
+        <profile>
+            <id>Obfuscate</id>
+            <build>
+                <plugins>
+                    <!--            Obfuscate-->
+                    <plugin>
+                        <groupId>com.github.wvengen</groupId>
+                        <artifactId>proguard-maven-plugin</artifactId>
+                        <version>2.6.1</version>
+                        <executions>
+                            <execution>
+                                <id>obfuscation-packaging</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>proguard</goal>
+                                </goals>
+                                <configuration>
+                                    <proguardVersion>7.6.0</proguardVersion>
+                                    <obfuscate>true</obfuscate>
+                                    <attach>true</attach>
+                                    <appendClassifier>false</appendClassifier>
+                                    <addMavenDescriptor>true
+                                    </addMavenDescriptor>
+                                    <injar>${project.build.finalName}.jar
+                                    </injar>
+                                    <!--                                    <outjar>-->
+                                    <!--                                        ${basedir}/${project.build.finalName}_obfuscated.jar-->
+                                    <!--                                    </outjar>-->
+                                    <proguardInclude>
+                                        ${basedir}/ProguardConfig.pro
+                                    </proguardInclude>
+                                    <injarNotExistsSkip>true
+                                    </injarNotExistsSkip>
 
 
-    <!--            &lt;!&ndash; https://mvnrepository.com/artifact/org.ehcache/ehcache &ndash;&gt;-->
-    <!--            &lt;!&ndash;        <dependency>&ndash;&gt;-->
-    <!--            &lt;!&ndash;            <groupId>org.ehcache</groupId>&ndash;&gt;-->
-    <!--            &lt;!&ndash;            <artifactId>ehcache</artifactId>&ndash;&gt;-->
-    <!--            &lt;!&ndash;            <version>3.10.8</version>&ndash;&gt;-->
-    <!--            &lt;!&ndash;            <exclusions>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                <exclusion>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                    <groupId>org.glassfish.jaxb</groupId>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                    <artifactId>jaxb-runtime</artifactId>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                </exclusion>&ndash;&gt;-->
-    <!--            &lt;!&ndash;            </exclusions>&ndash;&gt;-->
-    <!--            &lt;!&ndash;            <classifier>jakarta</classifier>&ndash;&gt;-->
-    <!--            &lt;!&ndash;        </dependency>&ndash;&gt;-->
-    <!--            &lt;!&ndash;        &lt;!&ndash;         https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime&ndash;&gt;&ndash;&gt;-->
-    <!--            &lt;!&ndash;                <dependency>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                    <groupId>org.glassfish.jaxb</groupId>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                    <artifactId>jaxb-runtime</artifactId>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                    <version>2.2.10</version>&ndash;&gt;-->
-    <!--            &lt;!&ndash;                </dependency>&ndash;&gt;-->
-    <!--            &lt;!&ndash; https://mvnrepository.com/artifact/org.osgi/osgi.core &ndash;&gt;-->
-    <!--            <dependency>-->
-    <!--                <groupId>org.osgi</groupId>-->
-    <!--                <artifactId>osgi.core</artifactId>-->
-    <!--                <version>8.0.0</version>-->
-    <!--                &lt;!&ndash;            <scope>provided</scope>&ndash;&gt;-->
-    <!--            </dependency>-->
-    <!--            &lt;!&ndash; mvn install:install-file -Dfile="C:\Users\SammyLaptop\DreamBot\BotData\client.jar" -DgroupId="org.dreambot" -DartifactId="BotData" -Dversion="1.0" -Dpackaging=jar &ndash;&gt;-->
-    <!--            <dependency>-->
-    <!--                <groupId>org.jetbrains</groupId>-->
-    <!--                <artifactId>annotations</artifactId>-->
-    <!--                <version>23.0.0</version>-->
-    <!--                <scope>compile</scope>-->
-    <!--            </dependency>-->
-    <!--        </dependencies>-->
-    <!--    </dependencyManagement>-->
+                                    <options>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.base.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.desktop.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.datatransfer.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.logging.jmod"
+                                        </option>
+                                        <!--                                        <option>-dontwarn</option>-->
+                                        <option>-allowaccessmodification
+                                        </option>
+                                        <option>-overloadaggressively</option>
+                                        <option>-useuniqueclassmembernames
+                                        </option>
+                                        <option>-optimizationpasses 10</option>
+                                        <option>-mergeinterfacesaggressively
+                                        </option>
+                                        <option>-optimizeaggressively</option>
+                                        <option>-repackageclasses</option>
+                                        <option>-flattenpackagehierarchy
+                                        </option>
+                                        <option>-keepattributes
+                                            Signature,*Annotation*,InnerClasses
+                                        </option>
+                                        <!--                                        <option>-dontoptimize</option>-->
+                                        <!--                                                                     <option>-dontobfuscate</option>-->
+                                        <option>-verbose</option>
+                                        <option>-whyareyoukeeping public class
+                                            OSRSDatabase.ItemDB$EquipmentData
+                                        </option>
+                                    </options>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.guardsquare</groupId>
+                                <artifactId>proguard-base</artifactId>
+                                <version>7.6.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>MeleeTrainer</id>
+            <properties>
+                <Scripts.melee>-keepnames public class
+                    Scripts.CommissionScripts.MeleeTrainer { *; }
+                </Scripts.melee>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>CycleAuthentication</id>
+            <properties>
+                <CycleAuthentication>@Ignored</CycleAuthentication>
+            </properties>
+        </profile>
+
+    </profiles>
+
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.checkerframework</groupId>-->
-<!--            <artifactId>checker-qual</artifactId>-->
-<!--            <version>3.46.0</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.mapdb</groupId>-->
-<!--            <artifactId>mapdb</artifactId>-->
-<!--            <version>3.1.0</version>-->
-<!--        </dependency>-->
-        <!-- https://mvnrepository.com/artifact/com.jetbrains.intellij.uiDesigner/ui-designer -->
         <dependency>
             <groupId>com.intellij</groupId>
             <artifactId>forms_rt</artifactId>
             <version>7.0.3</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.10.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-parent</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
@@ -138,25 +184,44 @@
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
             <version>5.3.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>auth0</artifactId>
+            <version>2.14.0</version>
+        </dependency>
+
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>33.2.0-jre</version>
-                        <scope>provided</scope>
+<!--                        <scope>provided</scope>-->
         </dependency>
-
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.11.0</version>
-                        <scope>provided</scope>
+<!--            <scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>org.dreambot</groupId>
             <artifactId>BotData</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
+<!--            <scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
@@ -164,76 +229,91 @@
             <version>23.0.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.16</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>2.0.16</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.slf4j</groupId>-->
+        <!--            <artifactId>slf4j-api</artifactId>-->
+        <!--            <version>2.0.16</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.slf4j</groupId>-->
+        <!--            <artifactId>slf4j-simple</artifactId>-->
+        <!--            <version>2.0.16</version>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>
             <version>RELEASE220</version>
+            <scope>provided</scope>
         </dependency>
-            <dependency>
-                <groupId>io.ipinfo</groupId>
-                <artifactId>ipinfo-api</artifactId>
-                <version>3.0.0</version>
-                <scope>compile</scope>
-            </dependency>
+        <dependency>
+            <groupId>io.ipinfo</groupId>
+            <artifactId>ipinfo-api</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.MouseVectorRecorder</groupId>
             <artifactId>MouseVectorRecorder</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>fluent-hc</artifactId>
             <version>4.5.14</version>
+            <scope>provided</scope>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/net.sf.proguard/proguard -->
+        <!--        <dependency>-->
+        <!--            <groupId>net.sf.proguard</groupId>-->
+        <!--            <artifactId>proguard</artifactId>-->
+        <!--            <version>4.4</version>-->
+        <!--        </dependency>-->
     </dependencies>
 
     <build>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <!--                <targetPath>${project.build.directory}/resources</targetPath>-->
             </resource>
         </resources>
         <plugins>
+            <!--            Pre-Processing-->
+            <plugin>
+                <groupId>com.igormaznitsa</groupId>
+                <artifactId>jcp</artifactId>
+                <version>7.1.2</version>
+                <executions>
+                    <execution>
+                        <id>preprocessSources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>preprocess</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <vars>
+                        <CycleAuthentication>${CycleAuthentication}
+                        </CycleAuthentication>
+                    </vars>
+                </configuration>
+            </plugin>
+
+            <!--            Uber Jar-->
             <plugin>
                 <configuration>
-                    <!--                    <artifactSet>-->
-                    <!--                        <includes>-->
-                    <!--                            <include>com.google.guava:*</include>-->
-                    <!--                        </includes>-->
-                    <!--                    </artifactSet>-->
-                    <!--                    <relocations>-->
-                    <!--                        <relocation>-->
-                    <!--                            <pattern>com.google</pattern>-->
-                    <!--                            <shadedPattern>OSRS.repackaged.com.google-->
-                    <!--                            </shadedPattern>-->
-                    <!--                        </relocation>-->
-                    <!--                        <relocation>-->
-                    <!--                            <pattern>com.google.guava</pattern>-->
-                    <!--                            <shadedPattern>OSRS.repackaged.com.google.guava-->
-                    <!--                            </shadedPattern>-->
-                    <!--                        </relocation>-->
-                    <!--                        <relocation>-->
-                    <!--                            <pattern>com.google.gson</pattern>-->
-                    <!--                            <shadedPattern>OSRS.repackaged.com.google.gson-->
-                    <!--                            </shadedPattern>-->
-                    <!--                        </relocation>-->
-                    <!--                    </relocations>-->
                     <promoteTransitiveDependencies>true
                     </promoteTransitiveDependencies>
                     <shadeSourcesContent>true</shadeSourcesContent>
                     <filters>
                         <filter>
+                            <!--                            <includes>-->
+                            <!--                                <include>-->
+                            <!--                                    ${EncryptedResourceDirectory}/**-->
+                            <!--                                </include>-->
+                            <!--                            </includes>-->
                             <artifact>*:*</artifact>
                             <excludes>
                                 <exclude>META-INF/*.*</exclude>
@@ -252,12 +332,64 @@
                         </goals>
                         <configuration>
                             <outputFile>
-                                C:\Users\SammyLaptop\DreamBot\Scripts\OSRS-Scripts.jar
+                                ${DBScriptFolder}\OSRS-Scripts.jar
                             </outputFile>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
+            <!--            Encryption of Resources-->
+            <!--            <plugin>-->
+            <!--                <dependencies>-->
+            <!--                    <dependency>-->
+            <!--                        <groupId>org.apache.httpcomponents.client5</groupId>-->
+            <!--                        <artifactId>httpclient5</artifactId>-->
+            <!--                        <version>5.3.1</version>-->
+            <!--                    </dependency>-->
+            <!--                    <dependency>-->
+            <!--                        <groupId>com.google.guava</groupId>-->
+            <!--                        <artifactId>guava</artifactId>-->
+            <!--                        <version>33.2.0-jre</version>-->
+            <!--                    </dependency>-->
+
+            <!--                    <dependency>-->
+            <!--                        <groupId>com.google.code.gson</groupId>-->
+            <!--                        <artifactId>gson</artifactId>-->
+            <!--                        <version>2.11.0</version>-->
+            <!--                    </dependency>-->
+            <!--                </dependencies>-->
+            <!--                <groupId>org.codehaus.mojo</groupId>-->
+            <!--                <artifactId>exec-maven-plugin</artifactId>-->
+            <!--                <version>3.1.0</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>encrypt-resources</id>-->
+            <!--                        <phase>prepare-package</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>java</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <mainClass>Utilities.Encryption.ResourceEncryptor</mainClass>-->
+            <!--                            <arguments>-->
+            <!--                                <argument>${EncryptionKey}</argument>-->
+            <!--                            </arguments>-->
+            <!--                            <systemProperties>-->
+            <!--                                <systemProperty>-->
+            <!--                                    <key>resources.input.directory</key>-->
+            <!--                                    <value>${project.build.directory}/resources</value>-->
+            <!--                                </systemProperty>-->
+            <!--                                <systemProperty>-->
+            <!--                                    <key>resources.output.directory</key>-->
+            <!--                                    <value>${EncryptedResourceDirectory}</value>-->
+            <!--                                </systemProperty>-->
+            <!--                            </systemProperties>-->
+            <!--                            <classpathScope>compile</classpathScope>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
+
         </plugins>
     </build>
 

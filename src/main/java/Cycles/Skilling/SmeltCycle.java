@@ -6,6 +6,7 @@ import Cycles.Tasks.SimpleTasks.ItemProcessing.UseObjectTask;
 import Cycles.Tasks.SimpleTasks.Misc.EquipmentTask;
 import Cycles.Tasks.SimpleTasks.TravelTask;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleCycle;
 import io.vavr.Tuple2;
 import org.dreambot.api.methods.container.impl.Inventory;
@@ -14,7 +15,6 @@ import org.dreambot.api.methods.container.impl.equipment.Equipment;
 import org.dreambot.api.methods.container.impl.equipment.EquipmentSlot;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.map.Tile;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 
 import javax.annotation.Nonnull;
@@ -38,7 +38,7 @@ public class SmeltCycle extends SimpleCycle implements Serializable
     @SafeVarargs
     public SmeltCycle(String name, String SmeltTargetName, @Nonnull Tuple2<Integer, Integer>... Ores)
     {
-        super(name);
+        super(name, null);
         TargetName  = SmeltTargetName;
         ItemIDRatio = Ores;
     }

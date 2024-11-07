@@ -1,52 +1,104 @@
 package Cycles.Tasks.SimpleTasks.Combat;
 
 import OSRSDatabase.MonsterDB;
-import Utilities.Patterns.Delegates.Delegate2;
+import Utilities.Patterns.Delegates.Delegate;
+import Utilities.Patterns.Delegates.Delegate1;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import Utilities.Scripting.SimpleTask;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import org.dreambot.api.data.consumables.Food;
+import org.dreambot.api.methods.combat.Combat;
+import org.dreambot.api.methods.combat.CombatStyle;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
-import org.dreambot.api.methods.map.Area;
-import org.dreambot.api.methods.map.Tile;
-import org.dreambot.api.wrappers.interactive.Entity;
+import org.dreambot.api.methods.skills.Skill;
+import org.dreambot.api.methods.skills.Skills;
+import org.dreambot.api.methods.walking.impl.Walking;
 import org.dreambot.api.wrappers.interactive.NPC;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 import java.util.PriorityQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 public class SlaughterTask extends SimpleTask
 {
-    public  Delegate2<Integer, Tile> onKill = new Delegate2<>();
-    private Area[]                   KillingAreas;
-    private int[]                    TargetIDs;
+    private final int[]       TargetIDs;
+    /**
+     * bool: has supplies
+     */
+    public Delegate1<Boolean> onLowHealth  = new Delegate1<>();
+    public Delegate           onNoSupplies = new Delegate();
+    /**
+     * int: TargetID
+     * Tile: death position
+     */
+    public Delegate1<NPC>     onKill       = new Delegate1<>();
+    Cache<Integer, Integer> Targets = CacheBuilder.newBuilder()
+                                                  .expireAfterAccess(1, TimeUnit.MINUTES)
+                                                  .build();
+    private       Integer     CurrentTargetHash = null;
+    private       CombatStyle Style             = Combat.getCombatStyle();
 
-    private Integer CurrentTargetHash = null;
+    private Supplier<Integer> MinimumHPCondition    = null;
+    private Supplier<Integer> EatThresholdCondition = null;
+    private boolean           isLowHealth           = false;
+    private boolean           isNoSupplies          = false;
 
-    public SlaughterTask(String Name, Area[] TargetAreas, String TargetName, boolean Exact)
+    public SlaughterTask(String Name, String TargetName, boolean Exact)
     {
         super(Name);
-        KillingAreas   = TargetAreas;
         this.TargetIDs = MonsterDB.GetMonsterIDsByName(TargetName, Exact);
     }
 
-    public SlaughterTask(String Name, Area[] TargetAreas, int[] TargetIDs)
+    public SlaughterTask(String Name, int[] TargetIDs)
     {
         super(Name);
-        KillingAreas   = TargetAreas;
         this.TargetIDs = TargetIDs;
     }
 
-    public Area GetCurrentArea()
+    public boolean isLowHealth()
     {
-        var result = Arrays.stream(KillingAreas)
-                           .filter(t -> t.contains(Players.getLocal().getTile()))
-                           .findAny();
-        if(result.isPresent())
-        {
-            return result.get();
-        }
-        return null;
+        return isLowHealth;
+    }
+
+    public boolean isNoSupplies()
+    {
+        return isNoSupplies;
+    }
+
+    public boolean isTargetInSight()
+    {
+        return !GetAllTargets().isEmpty();
+    }
+
+    public void setCombatStyle(CombatStyle style)
+    {
+        Style = style;
+    }
+
+    public void setEatThresholdCondition(int eatThresholdCondition)
+    {
+        EatThresholdCondition = () -> eatThresholdCondition;
+    }
+
+    public void setEatThresholdCondition(Supplier<Integer> eatThresholdCondition)
+    {
+        EatThresholdCondition = eatThresholdCondition;
+    }
+
+    public void setMinimumHPCondition(int minimumHPCondition)
+    {
+        MinimumHPCondition = () -> minimumHPCondition;
+    }
+
+    public void setMinimumHPCondition(Supplier<Integer> minimumHPCondition)
+    {
+        MinimumHPCondition = minimumHPCondition;
     }
 
     @Override
@@ -58,10 +110,7 @@ public class SlaughterTask extends SimpleTask
     PriorityQueue<NPC> GetTargetList()
     {
         // create a list of all viable targets, ordered by their distance
-        var AllOfID = NPCs.all(t -> {
-            boolean IDComp = Arrays.stream(TargetIDs).anyMatch((x) -> x == t.getID());
-            return t.canAttack() && IDComp;
-        });
+        var AllOfID = GetAllTargets();
 
 
         PriorityQueue<NPC> list = new PriorityQueue<>((x, y) -> {
@@ -92,25 +141,107 @@ public class SlaughterTask extends SimpleTask
         return list;
     }
 
+    List<NPC> GetAllTargets()
+    {
+        return NPCs.all(t -> {
+            boolean IDComp = Arrays.stream(TargetIDs).anyMatch((x) -> x == t.getID());
+            return t.canAttack() && IDComp;
+        });
+    }
+
     @Override
     public int Loop()
     {
+        if(MinimumHPCondition != null &&
+           Skills.getBoostedLevel(Skill.HITPOINTS) <= MinimumHPCondition.get())
+        {
+            if(!Heal(true))
+            {
+                onLowHealth.Fire(false);
+            }
+            else
+            {
+                onLowHealth.Fire(true);
+            }
+            isLowHealth = true;
+            return super.Loop();
+        }
+        if(EatThresholdCondition != null &&
+           Skills.getBoostedLevel(Skill.HITPOINTS) <= EatThresholdCondition.get())
+        {
+            if(!Heal(true))
+            {
+                onLowHealth.Fire(false);
+            }
+            else
+            {
+                onLowHealth.Fire(true);
+            }
+            return super.Loop();
+        }
+
+        if(Combat.getCombatStyle() != Style)
+        {
+            Combat.setCombatStyle(Style);
+            return super.Loop();
+        }
+
+        if(!Combat.isInMultiCombat() && Players.getLocal().getInteractingCharacter() != null &&
+           Players.getLocal().getInteractingCharacter().canAttack())
+        {
+            var nuisance = Players.getLocal().getInteractingCharacter();
+            if(GetCurrentTarget() == null)
+            {
+                CurrentTargetHash = nuisance.hashCode();
+            }
+        }
+
         NPC Target = GetCurrentTarget();
         if(Target == null)
         {
-            Target            = GetTargetList().peek();
+            Target = GetTargetList().peek();
+            if(Target == null)
+            {
+                return super.Loop();
+            }
             CurrentTargetHash = Target.hashCode();
+            Targets.put(Target.hashCode(), Target.hashCode());
         }
 
         if(!Players.getLocal().isInteracting(Target))
         {
-            Target.interact();
+            if(Target.canReach())
+            {
+                Target.interact();
+            }
+            else
+            {
+                Walking.walk(Target.getTile().getRandomized(3));
+            }
         }
 
         return super.Loop();
     }
 
-    NPC GetCurrentTarget()
+    private boolean Heal(boolean overeat)
+    {
+        var food = Food.getBestOnHand(overeat);
+        if(food != null)
+        {
+            isNoSupplies = false;
+            if(food.eat())
+            {
+                isLowHealth = false;
+            }
+            return true;
+        }
+        isNoSupplies = true;
+        isLowHealth  = true;
+        onNoSupplies.Fire();
+        return false;
+    }
+
+    public NPC GetCurrentTarget()
     {
         return CurrentTargetHash == null
                 ? null
@@ -127,27 +258,20 @@ public class SlaughterTask extends SimpleTask
     @Override
     public boolean onStartTask(IFScript Script)
     {
-        GetScript().onHitSplat.Subscribe(this, this::HitSplatChecker);
+        Logger.info("SlaughterTask: onStartTask:");
+        Script.onNpcDespawn.Subscribe(this, this::DespawnChecker);
         return super.onStartTask(Script);
     }
 
-    private Boolean HitSplatChecker(Entity entity, int type, int damage, int id, int special, int gameCycle)
+    private Boolean DespawnChecker(NPC npc)
     {
-        if(entity instanceof NPC)
+        if(Targets.getIfPresent(npc.hashCode()) != null)
         {
-            NPC npc = (NPC) entity;
-            if(npc.isInteracting(Players.getLocal()) && npc.getHealthPercent() == 0)
-            {
-                onKill(npc.getID(), npc.getTile());
-                CurrentTargetHash = null;
-            }
+            Targets.invalidate(npc.hashCode());
+            Logger.log("SlaughterTask: onKill " + npc);
+            onKill.Fire(npc);
         }
         return true;
-    }
-
-    private void onKill(int ID, Tile DeathTile)
-    {
-        onKill.Fire(ID, DeathTile);
     }
 
     @Override

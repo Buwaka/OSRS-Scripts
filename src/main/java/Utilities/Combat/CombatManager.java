@@ -1,6 +1,7 @@
 package Utilities.Combat;
 
 import OSRSDatabase.MonsterDB;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.equipment.Equipment;
 import org.dreambot.api.methods.container.impl.equipment.EquipmentSlot;
@@ -13,7 +14,6 @@ import org.dreambot.api.methods.prayer.Prayers;
 import org.dreambot.api.methods.skills.Skill;
 import org.dreambot.api.methods.skills.Skills;
 import org.dreambot.api.methods.walking.impl.Walking;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 import org.dreambot.api.wrappers.interactive.Character;
 import org.dreambot.api.wrappers.interactive.Player;
@@ -27,15 +27,15 @@ public class CombatManager
 {
     private static final Map<Integer, CombatManager> Managers                 = new HashMap<>();
     private final        String                      AttackAction             = "Attack";
+    private final        List<Prayer>                PrayersToUse             = new ArrayList<>();
+    private final        List<Spell>                 SpellsToUse              = new ArrayList<>();
+    private final        Runnable                    FightLoop                = null; // Are we going to do a loop inside here? honestly should probably be inside the task and this as layer inbetween
     public               int                         MinimumHealth            = 5;
     public               int                         MinimumArrows            = 2000;
     public               int                         MinimumSpellCount        = 200;
     public               boolean                     FleeWhenOutOfRunesArrows = false; // TODO
     private              MonsterDB.MonsterData[]     Targets                  = null;
     private              CombatStyle                 Style                    = CombatStyle.Melee;
-    private              List<Prayer>                PrayersToUse             = new ArrayList<>();
-    private              List<Spell>                 SpellsToUse              = new ArrayList<>();
-    private              Runnable                    FightLoop                = null; // Are we going to do a loop inside here? honestly should probably be inside the task and this as layer inbetween
 
     //public EquipmentManager MeleeManager = new EquipmentManager();
 
@@ -155,12 +155,7 @@ public class CombatManager
             return false;
         }
 
-        if(!isFullHealth())
-        {
-            return false;
-        }
-
-        return true;
+        return isFullHealth();
     }
 
     public boolean isArrowsLoaded()

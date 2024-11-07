@@ -1,6 +1,7 @@
 package Utilities.Requirement;
 
 import OSRSDatabase.ItemDB;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.methods.skills.Skill;
 import org.dreambot.api.methods.skills.Skills;
 
@@ -58,6 +59,8 @@ public class LevelRequirement implements IRequirement
     @Override
     public boolean isRequirementMet()
     {
+        Logger.info("LevelRequirement: isRequirementMet: " + Skills.getRealLevel(skill) + " >= " +
+                    level + " < " + maxLevel);
         if(maxLevel != null)
         {
             return Skills.getRealLevel(skill) >= level && Skills.getRealLevel(skill) < maxLevel;

@@ -2,6 +2,7 @@ package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.input.Keyboard;
 import org.dreambot.api.input.Mouse;
 import org.dreambot.api.input.event.impl.keyboard.awt.Key;
@@ -11,7 +12,6 @@ import org.dreambot.api.methods.container.impl.bank.BankQuantitySelection;
 import org.dreambot.api.methods.dialogues.Dialogues;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
-import org.dreambot.api.utilities.Logger;
 import org.dreambot.api.utilities.Sleep;
 
 import java.util.Random;
@@ -25,7 +25,7 @@ public class ClayWatering extends IFScript
     States CurrentState = States.Banking;
     Random rand         = new Random();
 
-    public enum States
+    enum States
     {
         Watering,
         Banking

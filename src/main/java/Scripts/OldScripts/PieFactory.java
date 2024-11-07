@@ -2,10 +2,10 @@ package Scripts.OldScripts;
 
 import Utilities.OSRSUtilities;
 import Utilities.Scripting.IFScript;
+import Utilities.Scripting.Logger;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
-import org.dreambot.api.utilities.Logger;
 
 import java.util.AbstractMap;
 
@@ -18,7 +18,7 @@ public class PieFactory extends IFScript
     final int PastyDoughID = 1953;
     States CurrentState = States.Banking;
 
-    public enum States
+    enum States
     {
         Banking,
         Combining

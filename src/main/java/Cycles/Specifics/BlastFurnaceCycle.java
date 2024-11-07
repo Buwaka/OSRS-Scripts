@@ -35,7 +35,7 @@ public class BlastFurnaceCycle extends SimpleCycle
 
     public BlastFurnaceCycle(String name)
     {
-        super(name);
+        super(name, null);
     }
 
     /**
