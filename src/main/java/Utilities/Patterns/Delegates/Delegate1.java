@@ -1,12 +1,12 @@
 package Utilities.Patterns.Delegates;
 
-import Utilities.Patterns.Runables.Runnable1;
+import Utilities.Patterns.Runables.Runable1;
 
 import java.util.WeakHashMap;
 
 public class Delegate1<A>
 {
-    WeakHashMap<Object, Runnable1<A>> Subscribers = new WeakHashMap<>();
+    WeakHashMap<Object, Runable1<A>> Subscribers = new WeakHashMap<>();
 
     public void Fire(A var1)
     {
@@ -19,7 +19,7 @@ public class Delegate1<A>
         }
     }
 
-    public void Subscribe(Object caller, Runnable1<A> function)
+    public void Subscribe(Object caller, Runable1<A> function)
     {
         Subscribers.put(caller, function);
     }

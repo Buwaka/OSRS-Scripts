@@ -117,7 +117,7 @@
             <id>MeleeTrainer</id>
             <properties>
                 <Scripts.melee>-keepnames public class
-                    Scripts.CommissionScripts.MeleeTrainer { *; }
+                    Scripts.CommissionScripts.FullDragon.FDMeleeTrainer { *; }
                 </Scripts.melee>
             </properties>
         </profile>
@@ -209,19 +209,19 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>33.2.0-jre</version>
-<!--                        <scope>provided</scope>-->
+                        <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.11.0</version>
-<!--            <scope>provided</scope>-->
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.dreambot</groupId>
             <artifactId>BotData</artifactId>
             <version>1.0</version>
-<!--            <scope>provided</scope>-->
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

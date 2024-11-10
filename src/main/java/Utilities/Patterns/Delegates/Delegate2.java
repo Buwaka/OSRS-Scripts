@@ -1,6 +1,6 @@
 package Utilities.Patterns.Delegates;
 
-import Utilities.Patterns.Runables.Runnable2;
+import Utilities.Patterns.Runables.Runable2;
 import Utilities.Scripting.Logger;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.WeakHashMap;
 
 public class Delegate2<A, B>
 {
-    WeakHashMap<Object, List<Runnable2<A, B>>> Subscribers = new WeakHashMap<>();
+    WeakHashMap<Object, List<Runable2<A, B>>> Subscribers = new WeakHashMap<>();
 
     public void Fire(A var1, B var2)
     {
@@ -26,7 +26,7 @@ public class Delegate2<A, B>
         }
     }
 
-    public void Subscribe(Object caller, Runnable2<A, B> function)
+    public void Subscribe(Object caller, Runable2<A, B> function)
     {
         Subscribers.putIfAbsent(caller, new ArrayList<>());
         Subscribers.get(caller).add(function);

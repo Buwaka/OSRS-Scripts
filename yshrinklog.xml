@@ -132,7 +132,7 @@
 	<class name="org.apache.commons.text.diff.package-info" />
 	<class name="com.mongodb.spi.dns.package-info" />
 	<class name="com.mongodb.internal.event.package-info" />
-	<class name="Scripts.CommissionScripts.MeleeTrainer" />
+	<class name="Scripts.CommissionScripts.FullDragon.FDMeleeTrainer" />
 	<class name="org.apache.commons.lang3.package-info" />
 	<class name="com.mongodb.internal.binding.package-info" />
 	<class name="org.apache.commons.lang3.reflect.package-info" />
