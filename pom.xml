@@ -16,18 +16,127 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <DBScriptFolder>C:\Users\SammyLaptop\DreamBot\Scripts</DBScriptFolder>
-        <EncryptionKey>U9>c1D27rdQ38[5c</EncryptionKey>
+        <EncryptionKey>EncryptionKey</EncryptionKey>
         <EncryptedResourceDirectory>
             ${project.build.directory}/encrypted-resources
         </EncryptedResourceDirectory>
         <CycleAuthentication>//</CycleAuthentication>
+        <OptimisationPasses>1</OptimisationPasses>
+        <ShadedJar>${project.build.finalName}-hahahahah shaded.jar</ShadedJar>
 
         <!--        Script Inclusions -->
-        <Scripts/>
+        <Scripts.FullDragon></Scripts.FullDragon>
 
     </properties>
 
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>snapshots-repo</id>
+            <url>https://mvnrepository.com/artifact</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>Google</id>
+            <url>https://maven.google.com/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <profiles>
+        <!--        // Scripts-->
+        <profile>
+            <id>FullDragon's scripts</id>
+            <properties>
+                <Scripts.FullDragon>-keep
+                    public
+                    class
+                    Scripts.CommissionScripts.FullDragon.FDMeleeTrainer { *; }
+                </Scripts.FullDragon>
+            </properties>
+        </profile>
+
+
+        <profile>
+            <id>debug</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <maven.verbose>true</maven.verbose>
+            </properties>
+        </profile>
+        <profile>
+            <id>HardOptimisation</id>
+            <properties>
+                <OptimisationPasses>10</OptimisationPasses>
+            </properties>
+        </profile>
+        <profile>
+            <id>Copy to DB folder</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy-jar</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${DBScriptFolder}
+                                    </outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>
+                                                ${project.build.directory}
+                                            </directory>
+                                            <includes>
+                                                <include>
+                                                    ${project.build.directory}\${project.build.finalName}.jar
+                                                </include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>Obfuscate</id>
             <build>
@@ -51,16 +160,21 @@
                                     <appendClassifier>false</appendClassifier>
                                     <addMavenDescriptor>true
                                     </addMavenDescriptor>
-                                    <injar>${project.build.finalName}.jar
+                                    <injar>
+                                        ${ShadedJar}
+                                        <!--                                        ${project.build.finalName}-shaded.jar-->
                                     </injar>
-                                    <!--                                    <outjar>-->
-                                    <!--                                        ${basedir}/${project.build.finalName}_obfuscated.jar-->
-                                    <!--                                    </outjar>-->
+                                    <injarNotExistsSkip>false
+                                    </injarNotExistsSkip>
+                                    <outjar>
+                                        ${project.build.directory}\${project.build.finalName}-obf.jar
+                                    </outjar>
                                     <proguardInclude>
                                         ${basedir}/ProguardConfig.pro
                                     </proguardInclude>
-                                    <injarNotExistsSkip>true
-                                    </injarNotExistsSkip>
+                                    <includeDependencyInjar>false
+                                    </includeDependencyInjar>
+                                    <includeDependency>false</includeDependency>
 
 
                                     <options>
@@ -68,35 +182,253 @@
                                             "${java.home}/jmods/java.base.jmod"
                                         </option>
                                         <option>-libraryjars
-                                            "${java.home}/jmods/java.desktop.jmod"
+                                            "${java.home}/jmods/java.compiler.jmod"
                                         </option>
                                         <option>-libraryjars
                                             "${java.home}/jmods/java.datatransfer.jmod"
                                         </option>
                                         <option>-libraryjars
+                                            "${java.home}/jmods/java.desktop.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.instrument.jmod"
+                                        </option>
+                                        <option>-libraryjars
                                             "${java.home}/jmods/java.logging.jmod"
                                         </option>
-                                        <!--                                        <option>-dontwarn</option>-->
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.management.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.management.rmi.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.naming.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.net.http.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.prefs.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.rmi.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.scripting.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.se.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.security.jgss.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.security.sasl.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.smartcardio.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.sql.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.sql.rowset.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.transaction.xa.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.xml.crypto.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/java.xml.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.accessibility.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.attach.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.charsets.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.compiler.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.crypto.cryptoki.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.crypto.ec.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.crypto.mscapi.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.dynalink.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.editpad.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.hotspot.agent.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.httpserver.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.incubator.vector.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.internal.ed.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.internal.jvmstat.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.internal.le.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.internal.opt.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.internal.vm.ci.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.internal.vm.compiler.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.internal.vm.compiler.management.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jartool.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.javadoc.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jcmd.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jconsole.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jdeps.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jdi.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jdwp.agent.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jfr.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jlink.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jpackage.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jshell.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jsobject.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.jstatd.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.localedata.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.management.agent.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.management.jfr.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.management.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.naming.dns.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.naming.rmi.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.net.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.nio.mapmode.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.random.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.sctp.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.security.auth.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.security.jgss.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.unsupported.desktop.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.unsupported.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.xml.dom.jmod"
+                                        </option>
+                                        <option>-libraryjars
+                                            "${java.home}/jmods/jdk.zipfs.jmod"
+                                        </option>
+
+
+                                        <option>-libraryjars
+                                            "${settings.localRepository}\org\dreambot\BotData\1.0\BotData-1.0.jar"
+                                        </option>
+
+
+                                        <option>${Scripts.FullDragon}</option>
+
+
                                         <option>-allowaccessmodification
                                         </option>
                                         <option>-overloadaggressively</option>
                                         <option>-useuniqueclassmembernames
                                         </option>
-                                        <option>-optimizationpasses 10</option>
+                                        <option>-optimizationpasses
+                                            ${OptimisationPasses}
+                                        </option>
                                         <option>-mergeinterfacesaggressively
                                         </option>
                                         <option>-optimizeaggressively</option>
-                                        <option>-repackageclasses</option>
-                                        <option>-flattenpackagehierarchy
+<!--                                        <option>-repackageclasses</option>-->
+                                        <option>-repackageclasses "IFOBF"
                                         </option>
                                         <option>-keepattributes
-                                            Signature,*Annotation*,InnerClasses
+                                            Signature,InnerClasses,*Annotation*
                                         </option>
+                                        <option>-dontnote **</option>
+                                        <option>-ignorewarnings</option>
+                                        <!--                                        <option>-dontpreverify</option>-->
+                                        <!--                                        <option>-dontwarn</option>-->
                                         <!--                                        <option>-dontoptimize</option>-->
-                                        <!--                                                                     <option>-dontobfuscate</option>-->
+                                        <option>-optimizations
+                                            library/gson,field/marking/private,field/specialization/type,method/marking/synchronized,method/removal/parameter,method/generalization/class,method/specialization/parametertype,method/specialization/returntype,method/propagation/parameter,method/propagation/returnvalue,method/inlining/short,method/inlining/unique,method/inlining/tailrecursion,code/merging,code/simplification/*
+                                        </option>
+<!--                                                                                <option>-dontobfuscate</option>-->
                                         <option>-verbose</option>
-                                        <option>-whyareyoukeeping public class
-                                            OSRSDatabase.ItemDB$EquipmentData
+<!--                                        <option>-whyareyoukeeping @interface-->
+<!--                                            IF.Utilities.Scripting.Annotations.ScriptMetadata-->
+<!--                                        </option>-->
+                                        <option>-whyareyoukeeping class IF.Scripts.OldScripts.ClayMiningScript {*;}
                                         </option>
                                     </options>
                                 </configuration>
@@ -114,32 +446,64 @@
             </build>
         </profile>
         <profile>
-            <id>MeleeTrainer</id>
-            <properties>
-                <Scripts.melee>-keepnames public class
-                    Scripts.CommissionScripts.FullDragon.FDMeleeTrainer { *; }
-                </Scripts.melee>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>CycleAuthentication</id>
-            <properties>
-                <CycleAuthentication>@Ignored</CycleAuthentication>
-            </properties>
+            <id>Encrypt</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.google.guava</groupId>
+                                <artifactId>guava</artifactId>
+                                <version>33.2.0-jre</version>
+                                <!--                                <scope>runtime</scope>-->
+                            </dependency>
+                            <dependency>
+                                <groupId>com.google.code.gson</groupId>
+                                <artifactId>gson</artifactId>
+                                <version>2.11.0</version>
+                                <!--                                <scope>runtime</scope>-->
+                            </dependency>
+                            <dependency>
+                                <groupId>org.dreambot</groupId>
+                                <artifactId>BotData</artifactId>
+                                <version>1.0</version>
+                                <!--                                <scope>runtime</scope>-->
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>encrypt-classes</id>
+                                <phase>package
+                                </phase> <!-- Run after proguard obfuscation -->
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>
+                                        IF.Utilities.Encryption.JarEncrypter
+                                    </mainClass>
+                                    <arguments>
+                                        <argument>${EncryptionKey}</argument>
+                                        <argument>
+                                            ${project.build.directory}\${ShadedJar}
+                                        </argument>
+                                    </arguments>
+                                    <classpathScope>compile</classpathScope>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
     </profiles>
 
 
     <dependencies>
-        <dependency>
-            <groupId>com.intellij</groupId>
-            <artifactId>forms_rt</artifactId>
-            <version>7.0.3</version>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
@@ -152,6 +516,10 @@
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>jsr305</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -169,11 +537,27 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.12.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
             <version>0.10.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.17.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>1.6.6</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
@@ -196,20 +580,26 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.36</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+        <!-- https://mvnrepository.com/artifact/org.apache.directory.studio/org.apache.commons.io -->
         <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>auth0</artifactId>
-            <version>2.14.0</version>
+            <groupId>org.apache.directory.studio</groupId>
+            <artifactId>org.apache.commons.io</artifactId>
+            <version>2.4</version>
         </dependency>
 
+
+        <!--         https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy-dep -->
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy-dep</artifactId>
+            <version>1.15.10</version>
+        </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>33.2.0-jre</version>
-                        <scope>provided</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -228,39 +618,10 @@
             <artifactId>annotations</artifactId>
             <version>23.0.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.slf4j</groupId>-->
-        <!--            <artifactId>slf4j-api</artifactId>-->
-        <!--            <version>2.0.16</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.slf4j</groupId>-->
-        <!--            <artifactId>slf4j-simple</artifactId>-->
-        <!--            <version>2.0.16</version>-->
-        <!--        </dependency>-->
-        <dependency>
-            <groupId>org.netbeans.external</groupId>
-            <artifactId>AbsoluteLayout</artifactId>
-            <version>RELEASE220</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.ipinfo</groupId>
-            <artifactId>ipinfo-api</artifactId>
-            <version>3.0.0</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.MouseVectorRecorder</groupId>
             <artifactId>MouseVectorRecorder</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>fluent-hc</artifactId>
-            <version>4.5.14</version>
             <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/net.sf.proguard/proguard -->
@@ -280,33 +641,42 @@
         </resources>
         <plugins>
             <!--            Pre-Processing-->
-            <plugin>
-                <groupId>com.igormaznitsa</groupId>
-                <artifactId>jcp</artifactId>
-                <version>7.1.2</version>
-                <executions>
-                    <execution>
-                        <id>preprocessSources</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>preprocess</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <vars>
-                        <CycleAuthentication>${CycleAuthentication}
-                        </CycleAuthentication>
-                    </vars>
-                </configuration>
-            </plugin>
-
+            <!--            <plugin>-->
+            <!--                <groupId>com.igormaznitsa</groupId>-->
+            <!--                <artifactId>jcp</artifactId>-->
+            <!--                <version>7.1.2</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>preprocessSources</id>-->
+            <!--                        <phase>generate-sources</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>preprocess</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--                <configuration>-->
+            <!--                    <vars>-->
+            <!--                        <CycleAuthentication>${CycleAuthentication}-->
+            <!--                        </CycleAuthentication>-->
+            <!--                    </vars>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
             <!--            Uber Jar-->
             <plugin>
                 <configuration>
+                    <outputFile>${project.build.directory}\${ShadedJar}
+                    </outputFile>
                     <promoteTransitiveDependencies>true
                     </promoteTransitiveDependencies>
                     <shadeSourcesContent>true</shadeSourcesContent>
+                    <artifactSet>
+                        <excludes>
+                            <exclude>org.passay:passay</exclude>
+                            <!--                            <exclude>com.google.guava:guava</exclude>-->
+                            <!--                            <exclude>com.google.code.gson:gson</exclude>-->
+                            <!--                            <exclude>org.dreambot:BotData</exclude>-->
+                        </excludes>
+                    </artifactSet>
                     <filters>
                         <filter>
                             <!--                            <includes>-->
@@ -316,7 +686,7 @@
                             <!--                            </includes>-->
                             <artifact>*:*</artifact>
                             <excludes>
-                                <exclude>META-INF/*.*</exclude>
+                                <exclude>META-INF/**</exclude>
                             </excludes>
                         </filter>
                     </filters>
@@ -331,64 +701,10 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputFile>
-                                ${DBScriptFolder}\OSRS-Scripts.jar
-                            </outputFile>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
-            <!--            Encryption of Resources-->
-            <!--            <plugin>-->
-            <!--                <dependencies>-->
-            <!--                    <dependency>-->
-            <!--                        <groupId>org.apache.httpcomponents.client5</groupId>-->
-            <!--                        <artifactId>httpclient5</artifactId>-->
-            <!--                        <version>5.3.1</version>-->
-            <!--                    </dependency>-->
-            <!--                    <dependency>-->
-            <!--                        <groupId>com.google.guava</groupId>-->
-            <!--                        <artifactId>guava</artifactId>-->
-            <!--                        <version>33.2.0-jre</version>-->
-            <!--                    </dependency>-->
-
-            <!--                    <dependency>-->
-            <!--                        <groupId>com.google.code.gson</groupId>-->
-            <!--                        <artifactId>gson</artifactId>-->
-            <!--                        <version>2.11.0</version>-->
-            <!--                    </dependency>-->
-            <!--                </dependencies>-->
-            <!--                <groupId>org.codehaus.mojo</groupId>-->
-            <!--                <artifactId>exec-maven-plugin</artifactId>-->
-            <!--                <version>3.1.0</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <id>encrypt-resources</id>-->
-            <!--                        <phase>prepare-package</phase>-->
-            <!--                        <goals>-->
-            <!--                            <goal>java</goal>-->
-            <!--                        </goals>-->
-            <!--                        <configuration>-->
-            <!--                            <mainClass>Utilities.Encryption.ResourceEncryptor</mainClass>-->
-            <!--                            <arguments>-->
-            <!--                                <argument>${EncryptionKey}</argument>-->
-            <!--                            </arguments>-->
-            <!--                            <systemProperties>-->
-            <!--                                <systemProperty>-->
-            <!--                                    <key>resources.input.directory</key>-->
-            <!--                                    <value>${project.build.directory}/resources</value>-->
-            <!--                                </systemProperty>-->
-            <!--                                <systemProperty>-->
-            <!--                                    <key>resources.output.directory</key>-->
-            <!--                                    <value>${EncryptedResourceDirectory}</value>-->
-            <!--                                </systemProperty>-->
-            <!--                            </systemProperties>-->
-            <!--                            <classpathScope>compile</classpathScope>-->
-            <!--                        </configuration>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
 
         </plugins>
     </build>

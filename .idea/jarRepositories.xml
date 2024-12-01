@@ -3,8 +3,23 @@
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
       <option name="id" value="central" />
+      <option name="name" value="central" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="snapshots-repo" />
+      <option name="name" value="snapshots-repo" />
+      <option name="url" value="https://mvnrepository.com/artifact" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="Google" />
+      <option name="name" value="Google" />
+      <option name="url" value="https://maven.google.com/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />

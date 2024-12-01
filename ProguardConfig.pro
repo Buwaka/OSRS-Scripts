@@ -1,9 +1,17 @@
--keepclassmembers  enum * {
+-keep class IF.Utilities.Encryption.ClassProxy {*;}
+
+
+-keepclassmembers,allowoptimization enum * implements java.io.Serializable {
+    public <fields>;
+    <init>(...);
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
 
+
 -keepclassmembers  class * implements java.io.Serializable {
+    public <fields>;
+    <init>(...);
     static final long serialVersionUID;
     private static final java.io.ObjectStreamField[] serialPersistentFields;
     private void writeObject(java.io.ObjectOutputStream);
@@ -11,10 +19,7 @@
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
 }
--keepclassmembers  class **$* {
-  public <fields>;
-}
--keepclassmembers  public enum ** { *; }
--keepclassmembers  enum ** implements java.io.Serializable { public <fields>; <init>(...);}
--keep @Utilities.Scripting.ExternalLambdaUsage class ** {@Utilities.Scripting.ExternalLambdaUsage *;}
--keep @org.dreambot.api.script.ScriptManifest class ** {@Override public *;}
+
+
+-keep @IF.Utilities.Scripting.ExternalLambdaUsage class ** {@IF.Utilities.Scripting.ExternalLambdaUsage *;}
+-keep class IF.Scripts.ScriptTemplate { public <methods>; }
